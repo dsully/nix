@@ -45,7 +45,6 @@
   # However, `self` is an exception, this special parameter points to the `outputs` itself (self-reference)
   # The `@` syntax here is used to alias the attribute set of the inputs's parameter, making it convenient to use inside the function.
   outputs = inputs @ {
-    self,
     nixpkgs,
     nix-darwin,
     home-manager,
@@ -141,7 +140,7 @@
     mkDarwin = args:
       mkSystem (args // {system = args.system or "aarch64-darwin";});
 
-    mkNixOS = args: hostName:
+    mkNixOS = args:
       mkSystem (args // {system = args.system or "x86_64-linux";});
   in {
     lib = {

@@ -7,10 +7,6 @@
 
     onActivation = {
       autoUpdate = true;
-      cleanup = "zap";
-      extraFlags = [
-        "--force"
-      ];
       upgrade = true;
     };
 
@@ -26,17 +22,14 @@
       "boltai"
       "cleanshot"
       "daisydisk"
-      "discord"
       "font-monaspace"
       "ghostty"
       "iina"
       "jordanbaird-ice"
       "keka"
-      "latest"
       "lm-studio"
       "lunar"
       "monodraw"
-      "ogdesign-eagle"
       "powerflow"
       "raindropio"
       "rapidapi"
@@ -80,7 +73,6 @@
       "TestFlight" = 899247664;
       "Text Lens" = 6743369285;
       "TrashMe 3" = 1490879410;
-      "Tuneful" = 6739804295;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
       "WordService" = 899972312;
@@ -88,7 +80,6 @@
     };
 
     taps = [
-      "homebrew/cask"
       "lzt1008/powerflow"
     ];
   };
