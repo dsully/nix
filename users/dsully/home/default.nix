@@ -6,7 +6,8 @@
 
   imports = [
     inputs.nix-index-database.hmModules.nix-index
-    ./home-manager/bat.nix
+    ./bat.nix
+    # ./btop.nix
   ];
 
   programs = {

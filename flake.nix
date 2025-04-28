@@ -33,6 +33,9 @@
     nur.url = "github:nix-community/NUR";
     nur.inputs.nixpkgs.follows = "nixpkgs";
 
+    nh.url = "github:viperML/nh";
+    nh.inputs.nixpkgs.follows = "nixpkgs";
+
     dsully.url = "github:dsully/nur";
     dsully.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -61,13 +64,6 @@
     # Default username (can be overridden per host)
     defaultUserName = "dsully";
 
-    # Helper function to create system-specific pkgs
-    mkPkgs = system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-
     # Generic function to create system configurations
     mkSystem = {
       system,
@@ -83,7 +79,7 @@
       # Select the appropriate system function based on isDarwin
       systemFunc =
         if isDarwin
-        then inputs.nix-darwin.lib.darwinSystem
+        then nix-darwin.lib.darwinSystem
         else nixpkgs.lib.nixosSystem;
 
       # Select the appropriate home-manager module based on isDarwin
@@ -125,14 +121,6 @@
             osCommonConfig
             osUserConfig
             hmModule
-
-            {
-              home-manager = {
-                users.${userName} = import ./users/${userName}/home-manager.nix {
-                  inherit inputs;
-                };
-              };
-            }
           ]
           ++ extraModules;
       };
@@ -144,7 +132,7 @@
       mkSystem (args // {system = args.system or "x86_64-linux";});
   in {
     lib = {
-      inherit mkDarwin mkNixOS mkPkgs;
+      inherit mkDarwin mkNixOS;
 
       # Expose to consumers
       homebrew = import ./lib/common/homebrew.nix;
@@ -154,9 +142,10 @@
       jarvis = mkDarwin {
         hostName = "jarvis";
         extraModules = [
-          ./machines/jarvis.nix
+          ./machines/jarvis
         ];
         extraOverlays = [
+          inputs.nh.overlays.default
           inputs.morlana.overlays.default
         ];
       };

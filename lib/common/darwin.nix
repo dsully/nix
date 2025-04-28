@@ -1,6 +1,7 @@
 {
   hostName,
   userName,
+  pkgs,
   ...
 }: let
   icon_view_settings = {
@@ -619,5 +620,13 @@ in {
     reattach = true;
   };
 
-  users.users.${userName}.home = "/Users/${userName}";
+  users = {
+    knownUsers = [userName];
+
+    users.${userName} = {
+      home = "/Users/${userName}";
+      shell = pkgs.fish;
+      uid = 501;
+    };
+  };
 }

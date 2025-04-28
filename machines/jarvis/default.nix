@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   system.stateVersion = 6;
 
   environment = {
@@ -23,7 +27,7 @@
 
   homebrew = {
     onActivation = {
-      cleanup = "zap";
+      cleanup = "uninstall";
       extraFlags = [
         "--force"
       ];
@@ -54,8 +58,10 @@
       "rio"
       "signal"
       "soulseek"
+      "superduper"
       "syncthing"
       "tableplus"
+      "tailscale"
       "telegram"
       "whatsapp"
       "zipic"
@@ -117,6 +123,19 @@
     taps = [
       "lihaoyun6/tap" # quickrecorder
       "rajiv/fastmate"
+    ];
+  };
+
+  home-manager = {
+    backupFileExtension = "bak";
+
+    extraSpecialArgs = {
+      inherit inputs;
+    };
+
+    users.dsully.imports = [
+      ../../users/dsully/home
+      ./home.nix
     ];
   };
 }
