@@ -53,7 +53,12 @@
     home-manager,
     ...
   }: let
-    # Common overlays for all systems
+    commonModules = [
+      ./lib/nix-core.nix
+      ./lib/common/packages.nix
+      ./lib/common/home
+    ];
+
     commonOverlays = [
       inputs.dsully.overlays.default
       inputs.morlana.overlays.default
@@ -63,79 +68,72 @@
       inputs.rust-overlay.overlays.default
     ];
 
-    # Default username (can be overridden per host)
-    defaultUserName = "dsully";
+    commonGlobals = {
+      host = {};
+      user = {
+        name = "dsully";
+      };
+    };
 
     # Generic function to create system configurations
-    mkSystem = {
-      system,
+    mkDarwin = {
+      system ? "aarch64-darwin",
       hostName,
-      userName ? defaultUserName,
       extraModules ? [],
       extraOverlays ? [],
       extraSpecialArgs ? {},
       ...
     }: let
-      isDarwin = builtins.match ".*-darwin" system != null;
-
-      # Select the appropriate system function based on isDarwin
-      systemFunc =
-        if isDarwin
-        then nix-darwin.lib.darwinSystem
-        else nixpkgs.lib.nixosSystem;
-
-      # Select the appropriate home-manager module based on isDarwin
-      hmModule =
-        if isDarwin
-        then home-manager.darwinModules.home-manager
-        else home-manager.nixosModules.home-manager;
-
-      osCommonConfig =
-        ./lib/common/${
-          if isDarwin
-          then "darwin"
-          else "nixos"
-        }.nix;
-
-      osUserConfig =
-        ./users/${userName}/${
-          if isDarwin
-          then "darwin"
-          else "nixos"
-        }.nix;
+      globals = commonGlobals // {host.name = hostName;};
     in
-      systemFunc {
+      nix-darwin.lib.darwinSystem {
         inherit system;
 
-        specialArgs =
-          {
-            inherit system userName hostName inputs isDarwin;
-          }
-          // extraSpecialArgs;
-
         modules =
-          [
+          commonModules
+          ++ [
             {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
-            hmModule
 
-            ./lib/nix-core.nix
-            ./lib/common/packages.nix
-            ./lib/common/home
+            home-manager.darwinModules.home-manager
 
-            osCommonConfig
-            osUserConfig
+            ./lib/common/darwin.nix
+            ./users/${globals.user.name}/darwin.nix
           ]
           ++ extraModules;
+
+        specialArgs = {inherit globals inputs;} // extraSpecialArgs;
       };
 
-    mkDarwin = args:
-      mkSystem (args // {system = args.system or "aarch64-darwin";});
+    mkLinux = {
+      system ? "x86_64-linux",
+      hostName,
+      extraModules ? [],
+      extraOverlays ? [],
+      extraSpecialArgs ? {},
+      ...
+    }: let
+      globals = commonGlobals // {host.name = hostName;};
+    in
+      nixpkgs.lib.nixosSystem {
+        inherit system;
 
-    mkNixOS = args:
-      mkSystem (args // {system = args.system or "x86_64-linux";});
+        modules =
+          commonModules
+          ++ [
+            {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
+
+            home-manager.nixosModules.home-manager
+
+            ./lib/common/linux.nix
+            ./users/${globals.user.name}/linux.nix
+          ]
+          ++ extraModules;
+
+        specialArgs = {inherit globals inputs;} // extraSpecialArgs;
+      };
   in {
     lib = {
-      inherit mkDarwin mkNixOS;
+      inherit mkDarwin mkLinux;
 
       # Expose to consumers
       homebrew = import ./lib/common/homebrew.nix;

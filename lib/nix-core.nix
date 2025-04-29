@@ -1,6 +1,6 @@
 {
+  globals,
   pkgs,
-  userName,
   ...
 }: {
   nix = {
@@ -50,7 +50,7 @@
       trusted-users = [
         "@admin"
         "@wheel"
-        userName
+        globals.user.name
       ];
 
       # Conform to the XDG Base Directory Specification

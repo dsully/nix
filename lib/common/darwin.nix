@@ -1,8 +1,7 @@
 {
-  hostName,
+  globals,
   lib,
   pkgs,
-  userName,
   ...
 }: let
   icon_view_settings = {
@@ -48,8 +47,8 @@ in {
   '';
 
   networking = {
-    computerName = hostName;
-    inherit hostName;
+    computerName = globals.host.name;
+    hostName = globals.host.name;
   };
 
   system = {
@@ -607,7 +606,7 @@ in {
         LSQuarantine = false;
       };
 
-      smb.NetBIOSName = hostName;
+      smb.NetBIOSName = globals.host.name;
     };
 
     keyboard = {
@@ -622,10 +621,10 @@ in {
   };
 
   users = {
-    knownUsers = [userName];
+    knownUsers = [globals.user.name];
 
-    users.${userName} = {
-      home = "/Users/${userName}";
+    users.${globals.user.name} = {
+      home = "/Users/${globals.user.name}";
       shell = pkgs.fish;
       uid = lib.mkDefault 501;
     };

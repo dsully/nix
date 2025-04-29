@@ -19,12 +19,8 @@ default:
 
 [group('desktop')]
 switch:
-    @nix build .#darwinConfigurations.{{ hostname }}.system \
-      --extra-experimental-features 'nix-command flakes' \
-    .#darwinConfigurations.{{ hostname }}.system
-
-    @./result/sw/bin/darwin-rebuild switch --flake .#{{ hostname }}
-    @/bin/rm result*
+    @nh darwin build --hostname {{ hostname }} .
+    @morlana switch --no-confirm --nom true --nvd true --flake .
 
 [group('desktop')]
 darwin-debug:
