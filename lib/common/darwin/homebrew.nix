@@ -65,6 +65,7 @@
       "JSONPeep" = 1458969831;
       "Kagi Search" = 1622835804;
       "Marked 2" = 890031187;
+      "Parcel" = 639968404;
       "Patterns" = 429449079;
       "Protego" = 6737959724;
       "Refined GitHub" = 1519867270;

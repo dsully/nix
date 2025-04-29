@@ -89,7 +89,6 @@
       "Ivory" = 6444602274;
       "MetaImage" = 1397099749;
       "Paprika Recipe Manager 3" = 1303222628;
-      "Parcel" = 639968404;
       "PDF Expert" = 1055273043;
       "Picview" = 6452016140;
       "Play" = 1596506190;
