@@ -5,6 +5,13 @@
 }: {
   environment = {
     pathsToLink = ["/share/fish"];
+
+    # https://github.com/nix-darwin/nix-darwin/issues/943
+    profiles = lib.mkOrder 700 [
+      "\$HOME/.local/state/nix/profile"
+      "/etc/profiles/per-user/$USER"
+    ];
+
     shells = [pkgs.fish];
     systemPackages = with pkgs; let
       mine = [
@@ -25,12 +32,16 @@
       ];
 
       nix = [
+        cachix
         deadnix
         flake-checker
+        morlana
+        nh
         nix-init
         nix-tree
         nix-update
         nixpkgs-lint
+        nvd
         statix
       ];
 
@@ -260,5 +271,9 @@
 
   programs = {
     fish.enable = true;
+  };
+
+  system = {
+    stateVersion = 6;
   };
 }

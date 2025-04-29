@@ -56,7 +56,9 @@
     # Common overlays for all systems
     commonOverlays = [
       inputs.dsully.overlays.default
+      inputs.morlana.overlays.default
       inputs.neovim-nightly-overlay.overlays.default
+      inputs.nh.overlays.default
       inputs.nur.overlays.default
       inputs.rust-overlay.overlays.default
     ];
@@ -114,13 +116,14 @@
         modules =
           [
             {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
+            hmModule
 
             ./lib/nix-core.nix
             ./lib/common/packages.nix
+            ./lib/common/home
 
             osCommonConfig
             osUserConfig
-            hmModule
           ]
           ++ extraModules;
       };
@@ -136,17 +139,17 @@
 
       # Expose to consumers
       homebrew = import ./lib/common/homebrew.nix;
+      hm = import ./lib/common/home;
     };
 
     darwinConfigurations = {
       jarvis = mkDarwin {
         hostName = "jarvis";
         extraModules = [
-          ./machines/jarvis
+          ./machines/jarvis.nix
+          ./users/dsully/home
         ];
         extraOverlays = [
-          inputs.nh.overlays.default
-          inputs.morlana.overlays.default
         ];
       };
     };

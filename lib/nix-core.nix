@@ -3,10 +3,6 @@
   userName,
   ...
 }: {
-  environment.systemPackages = with pkgs; [
-    cachix
-  ];
-
   nix = {
     enable = true;
 
@@ -28,22 +24,26 @@
 
       # Enable flakes globally
       experimental-features = ["nix-command" "flakes"];
+      extra-nix-path = "nixpkgs=flake:nixpkgs";
+
       keep-outputs = true;
       keep-derivations = true;
 
       max-jobs = "auto";
 
       substituters = [
-        "https://nix-community.cachix.org"
+        "https://cache.lix.systems"
         "https://cache.nixos.org/"
         "https://dsully.cachix.org"
+        "https://nix-community.cachix.org"
         "https://ryanccn.cachix.org"
       ];
 
       trusted-public-keys = [
+        "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "ryanccn.cachix.org-1:Or82F8DeVLJgjSKCaZmBzbSOhnHj82Of0bGeRniUgLQ="
       ];
 
@@ -52,6 +52,9 @@
         "@wheel"
         userName
       ];
+
+      # Conform to the XDG Base Directory Specification
+      use-xdg-base-directories = true;
     };
   };
 

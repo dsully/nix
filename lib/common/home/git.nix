@@ -41,6 +41,8 @@
       column.ui = "auto";
 
       core = {
+        sshCommand = "/usr/bin/ssh";
+
         # Make `git rebase` safer on macOS.
         # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
         trustctime = false;
@@ -122,7 +124,6 @@
       };
 
       user = {
-        email = "dsully@users.noreply.github.com";
         name = "Dan Sully";
         useConfigOnly = true;
       };

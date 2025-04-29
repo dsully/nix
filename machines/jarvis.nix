@@ -1,13 +1,8 @@
 {
-  inputs,
   pkgs,
   ...
 }: {
-  system.stateVersion = 6;
-
   environment = {
-    pathsToLink = ["/share/fish"];
-    shells = with pkgs; [bashInteractive zsh fish];
     systemPackages = with pkgs; [
       apple-photos-export
       autorebase
@@ -15,8 +10,6 @@
       claude-code
       ghostscript_headless
       git-ai-commit
-      morlana
-      nh
       nix-output-monitor
       reading-list-to-pinboard-rs
       # systemd-language-server
@@ -121,21 +114,10 @@
     };
 
     taps = [
+      # "homebrew/homebrew-core" = inputs.homebrew-core
+      # "homebrew/homebrew-cask" = inputs.homebrew-cask
       "lihaoyun6/tap" # quickrecorder
       "rajiv/fastmate"
-    ];
-  };
-
-  home-manager = {
-    backupFileExtension = "bak";
-
-    extraSpecialArgs = {
-      inherit inputs;
-    };
-
-    users.dsully.imports = [
-      ../../users/dsully/home
-      ./home.nix
     ];
   };
 }

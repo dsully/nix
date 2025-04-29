@@ -1,7 +1,8 @@
 {
   hostName,
-  userName,
+  lib,
   pkgs,
+  userName,
   ...
 }: let
   icon_view_settings = {
@@ -626,7 +627,7 @@ in {
     users.${userName} = {
       home = "/Users/${userName}";
       shell = pkgs.fish;
-      uid = 501;
+      uid = lib.mkDefault 501;
     };
   };
 }
