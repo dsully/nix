@@ -244,14 +244,6 @@
         yamllint
         zls
       ];
-
-      macos =
-        lib.optionals stdenv.isDarwin [
-        ];
-
-      linux =
-        lib.optionals stdenv.isLinux [
-        ];
     in
       mine
       ++ custom
@@ -259,8 +251,6 @@
       ++ editor
       ++ files
       ++ forked
-      ++ linux
-      ++ macos
       ++ network
       ++ nix
       ++ python

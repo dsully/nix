@@ -38,7 +38,9 @@
   };
 in {
   imports = [
+    ./activation.nix
     ./homebrew.nix
+    ./packages.nix
   ];
 
   environment.etc."sudoers.d/custom".text = ''

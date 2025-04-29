@@ -96,7 +96,7 @@
 
             home-manager.darwinModules.home-manager
 
-            ./lib/common/darwin.nix
+            ./lib/common/darwin
             ./users/${globals.user.name}/darwin.nix
           ]
           ++ extraModules;
@@ -124,7 +124,7 @@
 
             home-manager.nixosModules.home-manager
 
-            ./lib/common/linux.nix
+            ./lib/common/linux
             ./users/${globals.user.name}/linux.nix
           ]
           ++ extraModules;
@@ -136,7 +136,7 @@
       inherit mkDarwin mkLinux;
 
       # Expose to consumers
-      homebrew = import ./lib/common/homebrew.nix;
+      homebrew = import ./lib/common/darwin/homebrew.nix;
       hm = import ./lib/common/home;
     };
 
@@ -145,6 +145,18 @@
         hostName = "jarvis";
         extraModules = [
           ./machines/jarvis.nix
+          ./users/dsully/home
+        ];
+        extraOverlays = [
+        ];
+      };
+    };
+
+    nixosConfigurations = {
+      server = mkLinux {
+        hostName = "server";
+        extraModules = [
+          ./machines/server.nix
           ./users/dsully/home
         ];
         extraOverlays = [
