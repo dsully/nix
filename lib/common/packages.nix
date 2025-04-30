@@ -35,7 +35,6 @@
         cachix
         deadnix
         flake-checker
-        morlana
         nh
         nix-init
         nix-tree

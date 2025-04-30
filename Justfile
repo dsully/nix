@@ -19,8 +19,7 @@ default:
 
 [group('desktop')]
 switch:
-    @nh darwin build --hostname {{ hostname }} .
-    @morlana switch --no-confirm --nom true --nvd true --flake .
+    @nh darwin build --update --hostname {{ hostname }} .
 
 [group('desktop')]
 darwin-debug:
