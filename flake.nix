@@ -30,9 +30,6 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    nur.url = "github:nix-community/NUR";
-    nur.inputs.nixpkgs.follows = "nixpkgs";
-
     nh.url = "github:viperML/nh";
     nh.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -61,7 +58,6 @@
       inputs.dsully.overlays.default
       inputs.neovim-nightly-overlay.overlays.default
       inputs.nh.overlays.default
-      inputs.nur.overlays.default
       inputs.rust-overlay.overlays.default
     ];
 

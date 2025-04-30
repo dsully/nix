@@ -40,6 +40,7 @@
         nix-tree
         nix-update
         nixpkgs-lint
+        nurl
         nvd
         statix
       ];
@@ -138,10 +139,10 @@
         iperf3
         ipmitool
         mtr
-        nur.repos.caarlos0.xdg-open-svc
         q
         sniffnet
         wget
+        xdg-open-svc
         xh
       ];
 
