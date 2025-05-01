@@ -35,6 +35,9 @@
 
     dsully.url = "github:dsully/nur";
     dsully.inputs.nixpkgs.follows = "nixpkgs";
+
+    morlana.url = "github:ryanccn/morlana";
+    morlana.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   # The `outputs` function will return all the build results of the flake.
@@ -56,6 +59,7 @@
 
     commonOverlays = [
       inputs.dsully.overlays.default
+      inputs.morlana.overlays.default
       inputs.neovim-nightly-overlay.overlays.default
       inputs.nh.overlays.default
       inputs.rust-overlay.overlays.default
