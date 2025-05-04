@@ -209,6 +209,7 @@
         harper
         imagemagick
         jinja-lsp
+        just-lsp
         lemminx
         lua-language-server
         luajit
