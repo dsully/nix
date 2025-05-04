@@ -1,5 +1,5 @@
 # https://github.com/sharkdp/bat
-{
+{config, ...}: {
   programs.bat = {
     enable = true;
     config = {
@@ -12,6 +12,7 @@
         ".eslintrc:JSON"
         ".lua-format:YAML"
         ".luacheckrc:Lua"
+        "${config.xdg.configHome}/ghostty/config*:Ghostty Config"
       ];
     };
   };
