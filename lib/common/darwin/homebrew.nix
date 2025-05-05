@@ -33,7 +33,7 @@
       "lm-studio"
       "lunar"
       "monodraw"
-      "monofocus"
+      # "monofocus"
       "neat"
       "powerflow"
       "raindropio"
