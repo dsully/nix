@@ -1,5 +1,7 @@
 # https://github.com/sharkdp/bat
 {config, ...}: {
+  xdg.enable = true;
+
   programs.bat = {
     enable = true;
     config = {

@@ -12,8 +12,6 @@
       inherit inputs;
     };
 
-    xdg.enable = true;
-
     users.dsully = {
       # See here what bumping this value impacts:
       # https://nix-community.github.io/home-manager/release-notes.xhtml
