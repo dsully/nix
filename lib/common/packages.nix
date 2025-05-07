@@ -165,6 +165,7 @@
         git-lfs
         git-quick-stats
         git-sizer
+        git-who
         glow
         gnused
         go
