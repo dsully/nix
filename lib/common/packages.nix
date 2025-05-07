@@ -221,6 +221,7 @@
         nil
         nixd
         nixpkgs-fmt
+        pkl
         pkl-lsp
         protolint
         pyproject-fmt
