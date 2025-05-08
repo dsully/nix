@@ -60,12 +60,6 @@
           # https://apple.stackexchange.com/questions/411497/pam-tid-so-asks-for-password-instead-of-requesting-for-fingerprint-when-docked
           ignoreArd = true;
         };
-
-        "com.apple.Spotlight" = {
-          # Don't display first-time Spotlight messages
-          showedFTE = 1;
-          showedLearnMore = 1;
-        };
       };
     };
   };

@@ -1,6 +1,6 @@
 let
   trackpads = {
-    TrackpadCornerSecondaryClick = true;
+    TrackpadCornerSecondaryClick = 2;
     TrackpadFiveFingerPinchGesture = 0;
     TrackpadFourFingerHorizSwipeGesture = 0;
     TrackpadFourFingerPinchGesture = 0;
@@ -8,7 +8,8 @@ let
     TrackpadHandResting = 1;
     TrackpadHorizScroll = 1;
     TrackpadMomentumScroll = 1;
-    TrackpadPinch = true;
+    TrackpadPinch = false;
+    TrackpadRightClick = false;
     TrackpadRotate = false;
     TrackpadScroll = true;
     TrackpadThreeFingerHorizSwipeGesture = 0;

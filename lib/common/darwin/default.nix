@@ -10,18 +10,19 @@
     ./packages.nix
 
     ./defaults/activity-monitor.nix
+    ./defaults/apps.nix
     ./defaults/contacts.nix
     ./defaults/control-center.nix
     ./defaults/dock.nix
     ./defaults/finder.nix
     ./defaults/global.nix
-    ./defaults/google-chrome.nix
     ./defaults/keyboard.nix
     ./defaults/mail.nix
     ./defaults/messages.nix
     ./defaults/music.nix
     ./defaults/safari.nix
     ./defaults/siri.nix
+    ./defaults/spotlight.nix
     ./defaults/trackpad.nix
   ];
 
@@ -43,39 +44,19 @@
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
-      /usr/bin/killall ControlCenter Dock SystemUIServer
+      sudo -v
+
+      /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
+      sudo /usr/bin/killall cfprefsd
     '';
 
     defaults = {
-      #   CustomSystemPreferences = {
-      #
-      #     # https://apple.stackexchange.com/questions/91679/is-there-a-way-to-set-an-application-shortcut-in-the-keyboard-preference-pane-vi
-      #     "com.apple.symbolichotkeys" = {
-      #       AppleSymbolicHotKeys = {
-      #         # Enable Command-` to switch windows.
-      #         "27" = {
-      #           enabled = true;
-      #           value = {
-      #             parameters = [
-      #               96
-      #               50
-      #               1048576
-      #             ];
-      #             type = "standard";
-      #           };
-      #         };
-      #         # Disable Command-M to minimize
-      #         "223" = {
-      #           enabled = false;
-      #         };
-      #       };
-      #     };
-      #   };
-      #
       CustomUserPreferences = {
         "com.apple.DiskUtility" = {
-          SidebarShowAllDevices = true;
           "OperationProgress DetailsVisible" = true;
+          advanced-image-options = true;
+          DUDebugMenuEnabled = true;
+          SidebarShowAllDevices = true;
         };
 
         #     NSGlobalDomain = {
@@ -95,44 +76,23 @@
         #       EnhancedBackgroundContrastEnabled = true;
         #     };
         #
-        #
-        #     # https://apple.stackexchange.com/questions/91679/is-there-a-way-to-set-an-application-shortcut-in-the-keyboard-preference-pane-vi
-        #     "com.apple.symbolichotkeys".AppleSymbolicHotKeys = {
-        #       # Enable Command-` to switch windows.
-        #       "27" = {
-        #         enabled = true;
-        #         value = {
-        #           parameters = [
-        #             96
-        #             50
-        #             1048576
-        #           ];
-        #           type = "standard";
-        #         };
-        #       };
-        #       # Disable Command-M to minimize
-        #       "223" = {
-        #         enabled = false;
-        #       };
-        #     };
-        #
-        #     "com.apple.SoftwareUpdate" = {
-        #       # Check for software updates daily, not just once per week
-        #       ScheduleFrequency = 1;
-        #
-        #       # Download newly available updates in background
-        #       AutomaticDownload = 1;
-        #
-        #       # Install System data files & security updates
-        #       CriticalUpdateInstall = 1;
-        #
-        #       # Don't download apps purchased on other Macs
-        #       ConfigDataInstall = 0;
-        #
-        #       # Enable the automatic update check
-        #       AutomaticCheckEnabled = true;
-        #     };
-        #
+        "com.apple.SoftwareUpdate" = {
+          # Check for software updates daily, not just once per week
+          ScheduleFrequency = 1;
+
+          # Download newly available updates in background
+          AutomaticDownload = 1;
+
+          # Install System data files & security updates
+          CriticalUpdateInstall = 1;
+
+          # Don't download apps purchased on other Macs
+          ConfigDataInstall = 0;
+
+          # Enable the automatic update check
+          AutomaticCheckEnabled = true;
+        };
+
         "com.apple.TextEdit" = {
           # Open and save files as UTF-8 in TextEdit
           PlainTextEncoding = 4;
@@ -141,35 +101,13 @@
           # Use plain text mode for new TextEdit documents
           RichText = 0;
         };
-        #
-        #     "com.apple.TextInputMenu" = {
-        #       visible = false; # Disable the flag / keyboard icon.
-        #     };
-        #
-        #     "com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
-        #
-        #     # Turn on app auto-update
-        #     "com.apple.commerce".AutoUpdate = true;
-        #
-        "net.matthewpalmer.Rocket" = {
-          "deactivated-apps" = [
-            "Slack"
-            "Xcode"
-            "Terminal"
-            "Quicken"
-            "Code"
-            "Finder"
-            "Raycast"
-            "Ghostty"
-            "Screens 5"
-            "Safari"
-            "Google Chrome"
-            "ChatGPT"
-            "BoltAI"
-            "Zed"
-          ];
-          "hot-key-b8-iaK-thyib-yoV-Kep-It" = ":";
-          "launch-at-login" = 1;
+
+        "com.apple.TextInputMenu" = {
+          visible = false; # Disable the flag / keyboard icon.
+        };
+
+        "com.apple.TimeMachine" = {
+            DoNotOfferNewDisksForBackup = true;
         };
       };
 

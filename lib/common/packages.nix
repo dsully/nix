@@ -221,8 +221,8 @@
         nil
         nixd
         nixpkgs-fmt
-        pkl
         pkl-lsp
+        prettierd
         protolint
         pyproject-fmt
         revive

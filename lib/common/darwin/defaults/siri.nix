@@ -19,6 +19,7 @@
         "com.apple.assistant.support" = {
           # "disable" Enable Ask Siri
           "Assistant Enabled" = false;
+          "Dictation Enabled" = false;
         };
       };
     };

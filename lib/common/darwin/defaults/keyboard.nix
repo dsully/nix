@@ -2,6 +2,10 @@
   system = {
     defaults = {
       CustomUserPreferences = {
+        "com.apple.HIToolbox" = {
+          AppleDictationAutoEnable = false;
+        };
+
         # https://stackoverflow.com/questions/21878482/what-do-the-parameter-values-in-applesymbolichotkeys-plist-dict-represent
         # https://apple.stackexchange.com/questions/474904/what-does-each-part-in-com-apple-symbolichotkeys-plist-mean
         #
@@ -184,6 +188,9 @@
 
             #
             "184" = {enabled = false;};
+
+            # Mission Control: Quick Note
+            "190" = {enabled = false;};
 
             "215" = {enabled = false;};
             "216" = {enabled = false;};

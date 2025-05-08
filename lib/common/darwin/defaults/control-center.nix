@@ -12,10 +12,6 @@
       };
 
       CustomUserPreferences = {
-        "com.apple.Siri" = {
-          StatusMenuVisible = 0;
-        };
-
         "com.apple.Spotlight" = {
           "NSStatusItem Visible Item-0" = false;
         };
