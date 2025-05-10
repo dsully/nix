@@ -198,26 +198,6 @@
         "type": "github"
       }
     },
-    "morlana": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1743340617,
-        "narHash": "sha256-laBEsV4Hxg6BxAjOKf7EclqZiOltNCi/mE4rNzfchME=",
-        "owner": "ryanccn",
-        "repo": "morlana",
-        "rev": "9fe612776403d8eaa6860b78aa7f7dc68f1b41f0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ryanccn",
-        "repo": "morlana",
-        "type": "github"
-      }
-    },
     "neovim-nightly-overlay": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -269,13 +249,13 @@
       "locked": {
         "lastModified": 1746758336,
         "narHash": "sha256-HN7R9p94Othop41GXf//vMxoi9HAx42fjySIRDljUVc=",
-        "owner": "viperML",
+        "owner": "nix-community",
         "repo": "nh",
         "rev": "28972b6fe193151cd52ed5bc4bb6b91cee21467b",
         "type": "github"
       },
       "original": {
-        "owner": "viperML",
+        "owner": "nix-community",
         "repo": "nh",
         "type": "github"
       }
@@ -362,7 +342,6 @@
       "inputs": {
         "dsully": "dsully",
         "home-manager": "home-manager",
-        "morlana": "morlana",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nh": "nh",
         "nix-darwin": "nix-darwin",
@@ -400,11 +379,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1746758179,
-        "narHash": "sha256-JECUw1YBEsTsVauvupRzE5ykZaJoyhHCpoY87ZZJGas=",
+        "lastModified": 1746844454,
+        "narHash": "sha256-GcUWDQUDRYrD34ol90KGUpjbVcOfUNbv0s955jPecko=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "4fd00513eac6b6140c5dced3e1b8133e2369a0f8",
+        "rev": "be092436d4c0c303b654e4007453b69c0e33009e",
         "type": "github"
       },
       "original": {

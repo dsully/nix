@@ -23,7 +23,11 @@
       builders-use-substitutes = true;
 
       # Enable flakes globally
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "flakes"
+        "nix-command"
+        "repl-flake"
+      ];
       extra-nix-path = "nixpkgs=flake:nixpkgs";
 
       keep-outputs = true;

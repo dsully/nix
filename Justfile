@@ -18,17 +18,16 @@ default:
 ############################################################################
 
 [group('desktop')]
+build:
+    @nh darwin build --update --hostname {{ hostname }} .
+
+[group('desktop')]
 switch:
-    # @nh darwin build --update --hostname {{ hostname }} .
-    @morlana switch --no-confirm --flake .
+    @nh darwin switch --update --hostname {{ hostname }} .
 
 [group('desktop')]
 darwin-debug:
-    @nix build .#darwinConfigurations.{{ hostname }}.system --show-trace --verbose \
-      --extra-experimental-features 'nix-command flakes' \
-    .#darwinConfigurations.{{ hostname }}.system
-
-    ./result/sw/bin/darwin-rebuild switch --flake .#{{ hostname }} --show-trace --verbose
+    @nh darwin switch --update --verbose --hostname {{ hostname }} .
 
 ############################################################################
 #
