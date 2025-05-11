@@ -42,6 +42,7 @@
 
         ./bat.nix
         ./git.nix
+        (import ./ssh.nix {inherit globals lib pkgs;})
       ];
 
       programs = {
