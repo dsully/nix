@@ -89,6 +89,7 @@ in {
 
       (lib.mkIf onHomeNetwork {
         "sisyphus" = {
+          hostname = "10.0.0.135";
           user = "pi";
         };
 
@@ -107,6 +108,7 @@ in {
 
         "nvr" = {
           user = "root";
+          hostname = "10.0.0.2";
           identityFile = "${builtins.getEnv "HOME"}/.ssh/id_rsa";
         };
 
@@ -117,6 +119,7 @@ in {
         };
 
         "server" = {
+          hostname = "10.0.0.100";
           setEnv = {
             SSH_CLIENT_OS = "Darwin";
             SSH_CLIENT_HOME = "/Users/dsully";
