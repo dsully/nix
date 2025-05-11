@@ -23,7 +23,7 @@ build:
 
 [group('desktop')]
 switch:
-    @nh darwin switch --update --hostname {{ hostname }} .
+    @nh darwin switch --hostname {{ hostname }} .
 
 [group('desktop')]
 darwin-debug:

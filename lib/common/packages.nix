@@ -152,6 +152,7 @@
       ];
 
       development = [
+        aider-chat
         better-commits # git bc
         cyme
         fork-cleaner
@@ -221,6 +222,7 @@
         nil
         nixd
         nixpkgs-fmt
+        pandoc
         pkl-lsp
         prettierd
         protolint
