@@ -1,5 +1,6 @@
 {
   globals,
+  lib,
   pkgs,
   ...
 }: {
@@ -40,7 +41,6 @@
         "https://cache.nixos.org/"
         "https://dsully.cachix.org"
         "https://nix-community.cachix.org"
-        "https://ryanccn.cachix.org"
       ];
 
       trusted-public-keys = [
@@ -48,7 +48,6 @@
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "ryanccn.cachix.org-1:Or82F8DeVLJgjSKCaZmBzbSOhnHj82Of0bGeRniUgLQ="
       ];
 
       trusted-users = [

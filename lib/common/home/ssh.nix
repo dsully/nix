@@ -4,10 +4,9 @@
   pkgs,
   ...
 }: let
-  inherit (pkgs.stdenv) isDarwin;
-
   onHomeNetwork = let
     result = pkgs.runCommand "home-network-check" {} ''
+      # shellcheck disable=SC2154,SC2086
       if /sbin/ifconfig | grep '10\.0\.0\.255'; then
         echo true > $out
       else
@@ -19,19 +18,6 @@
 in {
   programs.ssh = {
     enable = true;
-
-    # Global settings
-    extraConfig =
-      if isDarwin
-      then ''
-        LogLevel ERROR
-        IdentityAgent = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-        UseKeychain yes
-      ''
-      else ''
-        LogLevel ERROR
-        IdentityFile = "${builtins.getEnv "HOME"}/.ssh/id_ed25519"
-      '';
 
     # Global options for all hosts
     addKeysToAgent = "yes";

@@ -1,9 +1,7 @@
-{
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   environment = {
     systemPackages = with pkgs; [
+      aider-chat
       apple-photos-export
       autorebase
       bacon
@@ -11,6 +9,7 @@
       ghostscript_headless
       git-ai-commit
       nix-output-monitor
+      pandoc
       reading-list-to-pinboard-rs
       # systemd-language-server
       turbo-commit
