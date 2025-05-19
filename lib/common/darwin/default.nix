@@ -5,7 +5,6 @@
   ...
 }: {
   imports = [
-    ./activation.nix
     ./homebrew.nix
     ./packages.nix
 
@@ -36,11 +35,12 @@
     hostName = globals.host.name;
   };
 
+
   system = {
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
 
-    activationScripts.postUserActivation.text = ''
+    activationScripts.postActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
@@ -126,6 +126,8 @@
       enableKeyMapping = true;
       remapCapsLockToControl = true;
     };
+
+    primaryUser = globals.user.name;
   };
 
   security.pam.services.sudo_local = {
