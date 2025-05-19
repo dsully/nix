@@ -42,12 +42,10 @@
 
     activationScripts.postActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
-      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-
-      sudo -v
+      sudo -u ${globals.user.name} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
       /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
-      sudo /usr/bin/killall cfprefsd
+      /usr/bin/killall cfprefsd
     '';
 
     defaults = {
