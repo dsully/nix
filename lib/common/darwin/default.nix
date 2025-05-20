@@ -35,7 +35,6 @@
     hostName = globals.host.name;
   };
 
-
   system = {
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
@@ -107,7 +106,7 @@
         };
 
         "com.apple.TimeMachine" = {
-            DoNotOfferNewDisksForBackup = true;
+          DoNotOfferNewDisksForBackup = true;
         };
       };
 

@@ -3,19 +3,7 @@
   lib,
   pkgs,
   ...
-}: let
-  onHomeNetwork = let
-    result = pkgs.runCommand "home-network-check" {} ''
-      # shellcheck disable=SC2154,SC2086
-      if /sbin/ifconfig | grep '10\.0\.0\.255'; then
-        echo true > $out
-      else
-        echo false > $out
-      fi
-    '';
-  in
-    import result;
-in {
+}: {
   programs.ssh = {
     enable = true;
 
@@ -73,7 +61,7 @@ in {
         };
       }
 
-      (lib.mkIf onHomeNetwork {
+      (lib.mkIf (globals.host.name != "stelvio") {
         "sisyphus" = {
           hostname = "10.0.0.135";
           user = "pi";
@@ -103,7 +91,9 @@ in {
           user = "ubnt";
           identityFile = "${builtins.getEnv "HOME"}/.ssh/id_rsa";
         };
+      })
 
+      (lib.mkIf (globals.host.name != "server") {
         "server" = {
           hostname = "10.0.0.100";
           setEnv = {
@@ -113,26 +103,27 @@ in {
         };
       })
 
-      (lib.mkIf (onHomeNetwork && globals.host.name != "jarvis") {
+      (lib.mkIf (globals.host.name != "jarvis") {
         "jarvis" = {
           hostname = "10.0.0.97";
         };
       })
 
-      (lib.mkIf (onHomeNetwork && globals.host.name == "jarvis") {
-        "parents" = {
-          hostname = "67.183.128.190";
-        };
+      (lib.mkIf (globals.host.name == "jarvis")
+        {
+          "parents" = {
+            hostname = "67.183.128.190";
+          };
 
-        "travel" = {
-          hostname = "192.168.8.1";
-          user = "root";
-        };
+          "travel" = {
+            hostname = "192.168.8.1";
+            user = "root";
+          };
 
-        "work" = {
-          hostname = "10.0.0.95";
-        };
-      })
+          "work" = {
+            hostname = "10.0.0.95";
+          };
+        })
     ];
   };
 }

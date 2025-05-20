@@ -10,8 +10,6 @@
           windowCorner = 5;
         };
 
-
-
         "co.podzim.BoltGPT" = {
           SUAutomaticallyUpdate = 1;
           SUEnableAutomaticChecks = 1;
