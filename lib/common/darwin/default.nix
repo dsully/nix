@@ -44,6 +44,8 @@
       # Following line should allow us to avoid a logout/login cycle
       sudo -u ${globals.user.name} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
+      chflags nohidden ~/Library /Volumes
+
       /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
       /usr/bin/killall cfprefsd
     '';

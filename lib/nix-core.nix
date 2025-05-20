@@ -20,6 +20,9 @@
 
     settings = {
       allow-dirty = true;
+      allow-import-from-derivation = false;
+      allow-symlinked-store = true;
+      allow-unsafe-native-code-during-evaluation = true;
       always-allow-substitutes = true;
       builders-use-substitutes = true;
 
@@ -31,9 +34,11 @@
       ];
       extra-nix-path = "nixpkgs=flake:nixpkgs";
 
-      keep-outputs = true;
-      keep-derivations = true;
+      # Don't limit the number of http connections.
+      http-connections = 0;
 
+      # Whether to keep building derivations when another build fails.
+      keep-going = true;
       max-jobs = "auto";
 
       substituters = [
