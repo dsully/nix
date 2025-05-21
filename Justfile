@@ -1,12 +1,5 @@
-hostname := `hostname`
-
-# switch:
-#   if uname == "Darwin"
-#     nix build --extra-experimental-features nix-command --extra-experimental-features flakes ".#darwinConfigurations.{{nixname()}}.system"
-#     ./result/sw/bin/darwin-rebuild switch --flake "{{pwd()}}#{{nixname()}}"
-#   else
-#     sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake ".#{{nixname()}}"
-#   end
+export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
+export NIX_CONFIG := "experimental-features = nix-command flakes"
 
 default:
     @just --list
@@ -19,15 +12,15 @@ default:
 
 [group('desktop')]
 build:
-    @nh darwin build --update --hostname {{ hostname }} .
+    @nh darwin build --update .
 
 [group('desktop')]
 switch:
-    @nh darwin switch --hostname {{ hostname }} .
+    @nh darwin switch --update --ask .
 
 [group('desktop')]
 darwin-debug:
-    @nh darwin switch --update --verbose --hostname {{ hostname }} .
+    @nh darwin switch --update --ask --verbose .
 
 ############################################################################
 #
