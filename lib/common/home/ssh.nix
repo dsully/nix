@@ -27,25 +27,22 @@
           };
         };
 
-        "* !github.com !electricrain.com" = {
+        "* !github.* !electricrain.com" = {
           # https://carlosbecker.com/posts/pbcopy-pbpaste-open-ssh/
           remoteForwards = lib.mkIf pkgs.stdenv.isDarwin [
             {
-              bind.address = "localhost";
               bind.port = 2224;
-              host.address = "127.0.0.1";
+              host.address = "localhost";
               host.port = 2224;
             }
             {
-              bind.address = "localhost";
               bind.port = 2225;
-              host.address = "127.0.0.1";
+              host.address = "localhost";
               host.port = 2225;
             }
             {
-              bind.address = "localhost";
               bind.port = 2226;
-              host.address = "127.0.0.1";
+              host.address = "localhost";
               host.port = 2226;
             }
           ];
