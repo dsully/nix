@@ -7,14 +7,6 @@
   nix = {
     enable = true;
 
-    # Do garbage collection weekly to keep disk usage low
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 7d";
-    };
-
-    optimise.automatic = true;
-
     # Auto upgrade nix package
     package = pkgs.lix;
 

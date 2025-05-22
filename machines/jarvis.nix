@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   environment = {
     systemPackages = with pkgs; [
-      aider-chat
       apple-photos-export
       autorebase
       bacon

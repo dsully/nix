@@ -51,7 +51,6 @@
     commonModules = [
       ./lib/nix-core.nix
       ./lib/common/packages.nix
-      ./lib/common/home
     ];
 
     commonOverlays = [
@@ -61,7 +60,7 @@
       inputs.rust-overlay.overlays.default
     ];
 
-    commonGlobals = {
+    globals = {
       host = {};
       user = {
         name = "dsully";
@@ -77,7 +76,7 @@
       extraSpecialArgs ? {},
       ...
     }: let
-      globals = commonGlobals // {host.name = hostName;};
+      mergedGlobals = globals // {host.name = hostName;};
     in
       nix-darwin.lib.darwinSystem {
         inherit system;
@@ -87,14 +86,17 @@
           ++ [
             {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
 
-            home-manager.darwinModules.home-manager
-
             ./lib/common/darwin
             ./users/${globals.user.name}/darwin.nix
           ]
           ++ extraModules;
 
-        specialArgs = {inherit globals inputs;} // extraSpecialArgs;
+        specialArgs =
+          {
+            globals = mergedGlobals;
+            inherit inputs;
+          }
+          // extraSpecialArgs;
       };
 
     mkLinux = {
@@ -105,7 +107,7 @@
       extraSpecialArgs ? {},
       ...
     }: let
-      globals = commonGlobals // {host.name = hostName;};
+      mergedGlobals = globals // {host.name = hostName;};
     in
       nixpkgs.lib.nixosSystem {
         inherit system;
@@ -115,22 +117,55 @@
           ++ [
             {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
 
-            home-manager.nixosModules.home-manager
-
             ./lib/common/linux
             ./users/${globals.user.name}/linux.nix
           ]
           ++ extraModules;
 
-        specialArgs = {inherit globals inputs;} // extraSpecialArgs;
+        specialArgs =
+          {
+            globals = mergedGlobals;
+            inherit inputs;
+          }
+          // extraSpecialArgs;
+      };
+
+    mkHome = {
+      system ? "aarch64-darwin",
+      username ? "dsully",
+      hostName,
+      extraModules ? [],
+      ...
+    }: let
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = commonOverlays;
+      };
+
+      mergedGlobals = globals // {host.name = hostName;};
+    in
+      home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+
+        modules =
+          [
+            ./lib/nix-core.nix
+            ./lib/common/home
+            ./users/${username}/home
+          ]
+          ++ extraModules;
+
+        extraSpecialArgs = {
+          inherit inputs;
+          globals = mergedGlobals;
+        };
       };
   in {
     lib = {
-      inherit mkDarwin mkLinux;
+      inherit mkDarwin mkHome mkLinux;
 
       # Expose to consumers
       homebrew = import ./lib/common/darwin/homebrew.nix;
-      hm = import ./lib/common/home;
     };
 
     darwinConfigurations = {
@@ -138,7 +173,6 @@
         hostName = "jarvis";
         extraModules = [
           ./machines/jarvis.nix
-          ./users/dsully/home
         ];
         extraOverlays = [
         ];
@@ -150,10 +184,17 @@
         hostName = "server";
         extraModules = [
           ./machines/server.nix
-          ./users/dsully/home
         ];
         extraOverlays = [
         ];
+      };
+    };
+
+    homeConfigurations = {
+      "dsully@jarvis" = mkHome {
+        system = "aarch64-darwin";
+        hostName = "jarvis";
+        userName = "dsully";
       };
     };
   };
