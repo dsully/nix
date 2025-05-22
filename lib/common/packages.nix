@@ -100,6 +100,7 @@
         lsd
         moar
         p7zip
+        rip2
         ripgrep
         rnr
         rsync
@@ -173,6 +174,7 @@
         gotools
         gron
         helix
+        hyperfine
         jq
         kickstart
         nodejs
