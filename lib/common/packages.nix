@@ -204,7 +204,7 @@
         dockerfile-language-server-nodejs
         fish-lsp
         ghostty-ls
-        github-actions-languageserver
+        gh-actions-language-server
         gitui
         gofumpt
         gopls

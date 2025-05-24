@@ -41,6 +41,7 @@
       "renamer"
       "rocket"
       "soulver"
+      "stay"
       "suspicious-package"
       "syncthing"
       "tableplus"
