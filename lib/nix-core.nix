@@ -2,7 +2,14 @@
   globals,
   pkgs,
   ...
-}: {
+}: let
+  substituters = [
+    "https://cache.nixos.org/"
+    "https://nix-community.cachix.org"
+    "https://cache.lix.systems"
+    "https://dsully.cachix.org"
+  ];
+in {
   nix = {
     enable = true;
 
@@ -31,12 +38,8 @@
       keep-going = true;
       max-jobs = "auto";
 
-      substituters = [
-        "https://cache.lix.systems"
-        "https://cache.nixos.org/"
-        "https://dsully.cachix.org"
-        "https://nix-community.cachix.org"
-      ];
+      inherit substituters;
+      trusted-substituters = substituters;
 
       trusted-public-keys = [
         "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
