@@ -1,6 +1,5 @@
 {
   globals,
-  lib,
   pkgs,
   ...
 }: {
@@ -8,7 +7,7 @@
     enable = true;
 
     # Auto upgrade nix package
-    package = pkgs.lix;
+    package = pkgs.lixPackageSets.latest.lix;
 
     settings = {
       allow-dirty = true;
@@ -22,7 +21,6 @@
       experimental-features = [
         "flakes"
         "nix-command"
-        "repl-flake"
       ];
       extra-nix-path = "nixpkgs=flake:nixpkgs";
 
