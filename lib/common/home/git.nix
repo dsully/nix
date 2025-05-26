@@ -23,6 +23,8 @@
       }
     ];
 
+    userEmail = lib.mkDefault "dsully@users.noreply.github.com";
+
     extraConfig = {
       advice.skippedCherryPicks = false;
 

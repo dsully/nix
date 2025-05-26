@@ -131,7 +131,6 @@
 
     mkHome = {
       system ? "aarch64-darwin",
-      username ? "dsully",
       hostName,
       extraModules ? [],
       ...
@@ -150,7 +149,6 @@
           [
             ./lib/nix-core.nix
             ./lib/common/home
-            ./users/${username}/home
           ]
           ++ extraModules;
 
@@ -193,7 +191,6 @@
       "dsully@jarvis" = mkHome {
         system = "aarch64-darwin";
         hostName = "jarvis";
-        userName = "dsully";
       };
     };
   };
