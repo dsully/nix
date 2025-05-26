@@ -148,6 +148,7 @@
       ];
 
       system = [
+        (hiPrio uutils-coreutils-noprefix) # Rust versions
         btop
         procs
       ];
