@@ -203,6 +203,8 @@
         codesort
         commitlint-rs
         dockerfile-language-server-nodejs
+        emmylua_check
+        emmylua_ls
         fish-lsp
         ghostty-ls
         gh-actions-language-server
@@ -241,6 +243,7 @@
         taplo
         tectonic-unwrapped
         ts_query_ls
+        ty
         typos
         vscode-langservers-extracted
         vtsls
