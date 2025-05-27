@@ -3,29 +3,66 @@ on:
   #   - cron: '* * * * 0'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update:
     name: "Update flake inputs"
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
+      GH_TOKEN: ${{ secrets.API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: cachix/install-nix-action@v31
         with:
+          enable_kvm: false
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          install_options: --no-daemon
           nix_path: nixpkgs=channel:nixos-unstable
-      - name: Update lockfile
-        id: update
-        run: |
-          cp flake.lock /tmp/oldlock
-          nix --extra-experimental-features 'nix-command flakes repl-flake' flake update
-          if cmp -s flake.lock /tmp/oldlock; then
-            echo "MOD=1" >> $GITHUB_OUTPUT
-          else
-            echo "MOD=0" >> $GITHUB_OUTPUT
-          fi
-      - uses: actions4git/add-commit-push@v1
-        if: ${{ steps.update.outpus.MOD == '1' }}
+
+      # - name: Update and create the PR
+      #   run: |
+      #     export BRANCH_NAME=update_$(date +%Y%m%d%H%M%S)
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "<>"
+      #
+      #     git checkout -b $BRANCH_NAME
+      #     nix flake update --commit-lock-file
+      #     git push origin $BRANCH_NAME
+      #     pr_url="$(gh pr create --title 'Update flake.lock' --body 'Update flake.lock')"
+      #     gh pr merge --auto -r "$pr_url"
+
+      - name: Update flake.lock
+        uses: DeterminateSystems/update-flake-lock@main
+        # Needed for the "gh pr merge"
+        id: update-flake-lock
         with:
-          commit-message: "Update flake lockfile"
+          commit-msg: "chore(deps): update `flake.lock`"
+          git-author-email: github-actions[bot]@users.noreply.github.com
+          git-author-name: github-actions[bot]
+          git-committer-email: github-actions[bot]@users.noreply.github.com
+          git-committer-name: github-actions[bot]
+          pr-body: |
+            Automated changes by the [update-flake-lock](https://github.com/DeterminateSystems/update-flake-lock) GitHub Action.
+            ```
+            {{ env.GIT_COMMIT_MESSAGE }}
+            ```
+          pr-labels: | # Labels to be set on the PR
+            automated
+            dependencies
+          pr-title: "chore(deps): update `flake.lock`"
+          # token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Pull Request Automerge
+        run: gh pr merge --rebase --auto "${{ steps.update-flake-lock.outputs.pull-request-number }}"
+        # env:
+        #   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - uses: actions4git/add-commit-push@v1
+      #   if: ${{ steps.update.outpus.MOD == '1' }}
+      #   with:
+      #     commit-message: "Update flake lockfile"
