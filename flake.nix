@@ -26,9 +26,6 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    rust-overlay.url = "github:oxalica/rust-overlay";
-    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-
     nh.url = "github:nix-community/nh";
     nh.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -53,10 +50,10 @@
     ];
 
     commonOverlays = [
+      inputs.dsully.inputs.rust-overlay.overlays.default
       inputs.dsully.overlays.default
       inputs.neovim-nightly-overlay.overlays.default
       inputs.nh.overlays.default
-      inputs.rust-overlay.overlays.default
     ];
 
     globals = {
