@@ -13,8 +13,6 @@
     };
 
     brews = [
-      "lume"
-      "mas"
     ];
 
     casks = [
@@ -33,7 +31,6 @@
       "lm-studio"
       "lunar"
       "monodraw"
-      # "monofocus"
       "powerflow"
       "raindropio"
       "rapidapi"

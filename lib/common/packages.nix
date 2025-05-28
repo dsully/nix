@@ -39,7 +39,7 @@
         nix-init
         nix-tree
         nix-update
-        nixpkgs-lint
+        nixpkgs-lint-community
         nurl
         nvd
         statix
@@ -151,10 +151,12 @@
         (hiPrio uutils-coreutils-noprefix) # Rust versions
         btop
         procs
+        mas
       ];
 
       development = [
         better-commits # git bc
+        curlconverter
         cyme
         fork-cleaner
         fx
