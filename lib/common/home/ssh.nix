@@ -14,17 +14,12 @@
     forwardAgent = true;
     serverAliveInterval = 10;
 
+    extraConfig = lib.mkIf pkgs.stdenv.isDarwin ''
+      UseKeychain yes
+    '';
+
     matchBlocks = lib.mkMerge [
       {
-        "*" = {
-          extraOptions = lib.mkMerge [
-            (lib.mkIf pkgs.stdenv.isDarwin {
-              AddKeysToAgent = "yes";
-              UseKeychain = "yes";
-            })
-          ];
-        };
-
         "github.com" = {
           user = "git";
           hostname = "github.com.";
