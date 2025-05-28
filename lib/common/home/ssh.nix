@@ -16,6 +16,15 @@
 
     matchBlocks = lib.mkMerge [
       {
+        "*" = {
+          extraOptions = lib.mkMerge [
+            (lib.mkIf pkgs.stdenv.isDarwin {
+              AddKeysToAgent = "yes";
+              UseKeychain = "yes";
+            })
+          ];
+        };
+
         "github.com" = {
           user = "git";
           hostname = "github.com.";
