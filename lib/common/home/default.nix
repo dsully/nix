@@ -35,6 +35,18 @@
           ${lib.getExe pkgs.git} clone git@github.com:dsully/nvim.git ~/.config/nvim
         fi
       '';
+
+      symlinks = ''
+        if ! [ -d $HOME/Downloads ] && ! [ -L $HOME/Downloads ]; then
+            echo "Moving ~/Downloads to symlink into iCloud."
+
+            # sudo rm -rf $HOME/Downloads $HOME/Downloads.original
+        fi
+
+        ln -sf ~/Library/Mobile Documents/com~apple~CloudDocs iCloud
+        ln -sf ~/dev/src
+        ln -sf ~/iCloud/Downloads
+      '';
     };
   };
 
