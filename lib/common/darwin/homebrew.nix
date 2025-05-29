@@ -38,7 +38,6 @@
       "renamer"
       "rocket"
       "soulver"
-      "stay"
       "suspicious-package"
       "syncthing"
       "tableplus"
@@ -62,10 +61,11 @@
       "Dato" = 1470584107;
       "DevCleaner" = 1388020431;
       "File Icons for GitHub and GitLab" = 1631366167;
-      "iPreview" = 1519213509;
+      "Hyperspace" = 6739505345;
       "JSONPeep" = 1458969831;
-      "Kagi Search" = 1622835804;
+      "Kagi for Safari" = 1622835804;
       "Marked 2" = 890031187;
+      "One Thing" = 1604176982;
       "Parcel" = 639968404;
       "Patterns" = 429449079;
       "Protego" = 6737959724;
@@ -77,10 +77,13 @@
       "TestFlight" = 899247664;
       "Text Lens" = 6743369285;
       "TrashMe 3" = 1490879410;
+      "Tripsy" = 1429967544;
+      "Tuneful" = 6739804295;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
       "WordService" = 899972312;
       "Yoink" = 457622435;
+      "iPreview" = 1519213509;
     };
 
     taps = [

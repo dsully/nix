@@ -1,3 +1,4 @@
+# Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
 {
   lib,
   pkgs,
