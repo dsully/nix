@@ -38,7 +38,7 @@
       "latest"
       "macdive"
       "mist"
-      "mullvadvpn"
+      "mullvad-vpn"
       "ogdesign-eagle"
       "orion"
       "protonvpn"
