@@ -33,13 +33,6 @@ darwin-debug:
 up:
     nix flake update
 
-# Update specific input
-
-# Usage: just upp nixpkgs
-[group('nix')]
-upp input:
-    nix flake update {{ input }}
-
 # List all generations of the system profile
 [group('nix')]
 history:
@@ -60,8 +53,7 @@ clean:
 # Garbage collect all unused nix store entries
 [group('nix')]
 gc:
-    @sudo nix-collect-garbage --delete-older-than 7d
-    @nix-collect-garbage --delete-older-than 7d
+    @nh clean all
 
 # Format the nix files in this repo
 [group('nix')]
@@ -69,31 +61,3 @@ fmt:
     @alejandra .
     @deadnix .
     @statix check
-
-# Show all the auto gc roots in the nix store
-[group('nix')]
-gcroot:
-    ls -al /nix/var/nix/gcroots/auto/
-
-# Create a .nix file from a URL using nix-init
-
-# Usage: just init-from-url https://github.com/anistark/feluda
-[group('nix')]
-init-from-url URL:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    # Extract the last path component from the URL
-    LAST_COMPONENT=$(echo "{{ URL }}" | sed -E 's|.*/([^/]+)/?$|\1|')
-
-    # Remove any trailing .git if present
-    LAST_COMPONENT=${LAST_COMPONENT%.git}
-
-    # Create the output filename
-    OUTPUT_FILE=pkgs/"${LAST_COMPONENT}.nix"
-
-    # Run nix-init with the specified parameters
-    nix-init -n 'builtins.getFlake "nixpkgs"' -u "{{ URL }}" "${OUTPUT_FILE}"
-
-    # Add useFetchCargoVendor = true; to the file
-    sed -i '/cargoHash = ".*";/a \    useFetchCargoVendor = true;' "${OUTPUT_FILE}"
