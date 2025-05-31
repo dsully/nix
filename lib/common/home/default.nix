@@ -40,12 +40,17 @@
         if ! [ -d $HOME/Downloads ] && ! [ -L $HOME/Downloads ]; then
             echo "Moving ~/Downloads to symlink into iCloud."
 
-            # sudo rm -rf $HOME/Downloads $HOME/Downloads.original
+            sudo rm -rf $HOME/Downloads
+            ln -sf $HOME/iCloud/Downloads $HOME/Downloads
         fi
 
-        ln -sf ~/Library/Mobile Documents/com~apple~CloudDocs iCloud
-        ln -sf ~/dev/src
-        ln -sf ~/iCloud/Downloads
+        if ! [ -L $HOME/iCloud ]; then
+            ln -s $HOME/Library/Mobile\ Documents/com~apple~CloudDocs $HOME/iCloud
+        fi
+
+        if ! [ -L $HOME/src ]; then
+            ln -sf $HOME/dev/src $HOME/src
+        fi
       '';
     };
   };
