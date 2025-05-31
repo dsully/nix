@@ -49,10 +49,12 @@ in {
         deadnix
         flake-checker
         nh
+        nix-converter
         nix-init
         nix-tree
         nix-update
         nixpkgs-lint-community
+        njq
         nurl
         nvd
         statix
