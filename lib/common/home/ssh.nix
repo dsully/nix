@@ -11,7 +11,7 @@
     addKeysToAgent = "yes";
     compression = true;
     controlMaster = "auto";
-    forwardAgent = true;
+    forwardAgent = lib.mkDefault true;
     serverAliveInterval = 10;
 
     extraConfig = lib.mkIf pkgs.stdenv.isDarwin ''
