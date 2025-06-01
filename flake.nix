@@ -26,6 +26,9 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
+    system-manager.url = "github:numtide/system-manager";
+    system-manager.inputs.nixpkgs.follows = "nixpkgs";
+
     nh.url = "github:nix-community/nh";
     nh.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -42,13 +45,9 @@
     nixpkgs,
     nix-darwin,
     home-manager,
+    system-manager,
     ...
   }: let
-    commonModules = [
-      ./lib/nix-core.nix
-      ./lib/common/packages.nix
-    ];
-
     commonOverlays = [
       inputs.dsully.inputs.rust-overlay.overlays.default
       inputs.dsully.overlays.default
@@ -78,16 +77,17 @@
         inherit system;
 
         modules =
-          commonModules
-          ++ [
+          [
             {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
 
+            ./lib/nix-core.nix
             ./lib/common/darwin
+            ./lib/common/packages.nix
             ./users/${globals.user.name}/darwin.nix
           ]
           ++ extraModules;
 
-        specialArgs =
+        extraSpecialArgs =
           {
             globals = mergedGlobals;
             inherit inputs;
@@ -95,8 +95,8 @@
           // extraSpecialArgs;
       };
 
-    mkLinux = {
-      system ? "x86_64-linux",
+    # https://github.com/numtide/system-manager/issues/98
+    mkSystem = {
       hostName,
       extraModules ? [],
       extraOverlays ? [],
@@ -105,20 +105,18 @@
     }: let
       mergedGlobals = globals // {host.name = hostName;};
     in
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-
+      system-manager.lib.makeSystemConfig {
         modules =
-          commonModules
-          ++ [
-            {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
-
+          [
             ./lib/common/linux
+            ./lib/common/packages.nix
             ./users/${globals.user.name}/linux.nix
           ]
           ++ extraModules;
 
-        specialArgs =
+        overlays = commonOverlays ++ extraOverlays;
+
+        extraSpecialArgs =
           {
             globals = mergedGlobals;
             inherit inputs;
@@ -127,7 +125,7 @@
       };
 
     mkHome = {
-      system ? "aarch64-darwin",
+      system,
       hostName,
       extraModules ? [],
       ...
@@ -156,7 +154,7 @@
       };
   in {
     lib = {
-      inherit mkDarwin mkHome mkLinux;
+      inherit mkDarwin mkHome mkSystem;
 
       # Expose to consumers
       homebrew = import ./lib/common/darwin/homebrew.nix;
@@ -173,14 +171,16 @@
       };
     };
 
-    nixosConfigurations = {
-      server = mkLinux {
-        hostName = "server";
-        extraModules = [
-          ./machines/server.nix
-        ];
-        extraOverlays = [
-        ];
+    systemConfigs = {
+      x86_64-linux = {
+        server = mkSystem {
+          hostName = "server";
+          extraModules = [
+            ./machines/server.nix
+          ];
+          extraOverlays = [
+          ];
+        };
       };
     };
 
@@ -188,6 +188,11 @@
       "dsully@jarvis" = mkHome {
         system = "aarch64-darwin";
         hostName = "jarvis";
+      };
+
+      "dsully@server" = mkHome {
+        system = "x86_64-linux";
+        hostName = "server";
       };
     };
   };
