@@ -87,7 +87,7 @@
           ]
           ++ extraModules;
 
-        extraSpecialArgs =
+        specialArgs =
           {
             globals = mergedGlobals;
             inherit inputs;

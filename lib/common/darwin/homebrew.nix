@@ -1,5 +1,13 @@
 {
-  environment.variables.HOMEBREW_NO_ANALYTICS = "1";
+  environment = {
+    variables = {
+      HOMEBREW_BAT = "1";
+      HOMEBREW_BUNDLE_NO_LOCK = "1";
+      HOMEBREW_NO_ANALYTICS = "1";
+      HOMEBREW_NO_COMPAT = "1";
+      HOMEBREW_NO_ENV_HINTS = "1";
+    };
+  };
 
   homebrew = {
     enable = true;
@@ -8,7 +16,7 @@
     caskArgs.no_quarantine = true;
 
     onActivation = {
-      autoUpdate = true;
+      autoUpdate = false;
       upgrade = true;
     };
 
@@ -43,6 +51,7 @@
       "tableplus"
       "tower"
       "transmit"
+      "typora"
       "zed"
     ];
 
