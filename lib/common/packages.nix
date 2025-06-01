@@ -1,9 +1,5 @@
 # Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
-{
-  lib,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   yaml-language-server-patched = pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
     # Apply patch to source before build
     postPatch =
@@ -16,16 +12,15 @@
       '';
   });
 in {
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+    };
+  };
+
   environment = {
     pathsToLink = ["/share/fish"];
 
-    # https://github.com/nix-darwin/nix-darwin/issues/943
-    profiles = lib.mkOrder 700 [
-      "\$HOME/.local/state/nix/profile"
-      "/etc/profiles/per-user/$USER"
-    ];
-
-    shells = [pkgs.fish];
     systemPackages = with pkgs; let
       mine = [
         devmoji-log
@@ -35,7 +30,6 @@ in {
 
       forked = [
         git-trim
-        safari-rs
       ];
 
       custom = [
@@ -166,7 +160,6 @@ in {
         (hiPrio uutils-coreutils-noprefix) # Rust versions
         btop
         procs
-        mas
       ];
 
       development = [
@@ -283,13 +276,5 @@ in {
       ++ rust
       ++ shell
       ++ system;
-  };
-
-  programs = {
-    fish.enable = true;
-  };
-
-  system = {
-    stateVersion = 6;
   };
 }

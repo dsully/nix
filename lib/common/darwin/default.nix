@@ -127,6 +127,8 @@
     };
 
     primaryUser = globals.user.name;
+
+    stateVersion = 6;
   };
 
   security.pam.services.sudo_local = {

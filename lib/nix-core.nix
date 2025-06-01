@@ -58,10 +58,4 @@ in {
       use-xdg-base-directories = true;
     };
   };
-
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-    };
-  };
 }
