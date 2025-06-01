@@ -62,11 +62,11 @@
     # otherwise Apple Store will refuse to install them.
     # For details, see https://github.com/mas-cli/mas
     masApps = {
+      "1Blocker" = 1365531024;
+      "AVR Control" = 1059512196;
       "Acidity" = 6472630023;
       "AirPlayable" = 6475483628;
-      "AllMyBatteries" = 1621263412;
       "AutoMounter" = 1160435653;
-      "AVR Control" = 1059512196;
       "Book Tracker" = 1496543317;
       "Brother P-touch Editor" = 1453365242;
       "Croissant" = 6670288979;
@@ -79,23 +79,25 @@
       "Flighty" = 1358823008;
       "Globetrotter" = 6469319235;
       "GoPro Quik" = 561350520;
+      "Homie" = 1533590432;
       "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
       "Hyperspace" = 6739505345;
       "Infuse" = 1136220934;
       "Ivory" = 6444602274;
       "MetaImage" = 1397099749;
-      "Paprika Recipe Manager 3" = 1303222628;
       "PDF Expert" = 1055273043;
+      "Paprika Recipe Manager 3" = 1303222628;
       "Picview" = 6452016140;
       "Play" = 1596506190;
       "Prime Video" = 545519333;
       "QR Studio" = 6740007834;
       "Radiance" = 1573366225;
-      "Reeder" = 1529448980;
+      "Reeder Classic" = 1529448980;
+      "Reeder New" = 6475002485;
       "Rules" = 6461118886;
-      "Screens 5" = 1663047912;
       "SD Gallery" = 6445901857;
+      "Screens 5" = 1663047912;
       "Secret Inbox" = 6462335670;
       "ServerCat" = 1501532023;
       "SmugMug" = 1115348888;
@@ -106,12 +108,11 @@
       "Tripsy" = 1429967544;
       "Tuneful" = 6739804295;
       "UnTrap" = 1637438059;
+      "Userscripts" = 1463298887;
       "Zero Loss Compress" = 6738362427;
     };
 
     taps = [
-      # "homebrew/homebrew-core" = inputs.homebrew-core
-      # "homebrew/homebrew-cask" = inputs.homebrew-cask
       "lihaoyun6/tap" # quickrecorder
       "rajiv/fastmate"
     ];

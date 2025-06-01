@@ -38,6 +38,7 @@
       "little-snitch"
       "lm-studio"
       "lunar"
+      "markedit"
       "monodraw"
       "powerflow"
       "raindropio"
@@ -72,7 +73,8 @@
       "File Icons for GitHub and GitLab" = 1631366167;
       "Hyperspace" = 6739505345;
       "JSONPeep" = 1458969831;
-      "Kagi for Safari" = 1622835804;
+      "Kagi Search" = 1622835804;
+      "MarkChart" = 6475648822;
       "Marked 2" = 890031187;
       "One Thing" = 1604176982;
       "Parcel" = 639968404;
@@ -91,6 +93,7 @@
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
       "WordService" = 899972312;
+      "Xcode" = 497799835;
       "Yoink" = 457622435;
       "iPreview" = 1519213509;
     };
