@@ -1,4 +1,15 @@
-{pkgs, ...}: {
+{
+  flake,
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+    flake.modules.darwin.common
+    flake.modules.common.common
+  ];
+
   environment = {
     systemPackages = with pkgs; [
       apple-photos-export

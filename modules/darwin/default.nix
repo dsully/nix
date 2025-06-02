@@ -5,9 +5,6 @@
   ...
 }: {
   imports = [
-    ./homebrew.nix
-    ./packages.nix
-
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix
     ./defaults/contacts.nix
@@ -145,4 +142,6 @@
       uid = lib.mkDefault 501;
     };
   };
+
+
 }
