@@ -1,11 +1,10 @@
 {
-  globals,
+  config,
   lib,
   pkgs,
   ...
 }: rec {
   imports = [
-    ./packages.nix
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix
     ./defaults/contacts.nix
@@ -28,18 +27,13 @@
     Defaults timestamp_timeout=-1
   '';
 
-  networking = {
-    computerName = globals.host.name;
-    hostName = globals.host.name;
-  };
-
   system = {
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
 
     activationScripts.postActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
-      sudo -u ${globals.user.name} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      sudo -u ${system.primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
       chflags nohidden ~/Library /Volumes
 
@@ -116,7 +110,7 @@
         GuestEnabled = false;
       };
 
-      smb.NetBIOSName = globals.host.name;
+      smb.NetBIOSName = config.networking.hostName;
     };
 
     keyboard = {

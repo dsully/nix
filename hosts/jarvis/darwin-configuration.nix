@@ -1,18 +1,22 @@
 {
   flake,
   inputs,
-  perSystem,
+  pkgs,
   ...
-}: let
-  pkgs = perSystem.nixpkgs.legacyPackages.${perSystem.system};
-in {
+}: {
   nixpkgs.hostPlatform = "aarch64-darwin";
+
+  networking = {
+    computerName = "jarvis";
+    hostName = "jarvis";
+  };
+
   system.primaryUser = "dsully";
 
   imports = [
     inputs.home-manager.darwinModules.home-manager
-    flake.modules.darwin.common
     flake.modules.common.default
+    flake.modules.darwin.default
   ];
 
   environment = {

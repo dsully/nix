@@ -1,11 +1,8 @@
 {
   inputs,
-  lib,
   pkgs,
   ...
 }: let
-  flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-
   substituters = [
     "https://cache.nixos.org/"
     "https://nix-community.cachix.org"
@@ -14,8 +11,6 @@
   ];
 in {
   config = {
-    nixpkgs.config.allowUnfree = true;
-
     nix = {
       enable = true;
 
@@ -57,19 +52,22 @@ in {
         trusted-users = [
           "@admin"
           "@wheel"
-          #globals.user.name
         ];
 
         # Conform to the XDG Base Directory Specification
         use-xdg-base-directories = true;
-
-        # Opinionated: disable channels
-        channel.enable = false;
-
-        # Opinionated: make flake registry and nix path match flake inputs
-        registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
-        nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
       };
+    };
+
+    nixpkgs = {
+      config.allowUnfree = true;
+
+      overlays = [
+        inputs.dsully.inputs.rust-overlay.overlays.default
+        inputs.dsully.overlays.default
+        inputs.neovim-nightly-overlay.overlays.default
+        inputs.nh.overlays.default
+      ];
     };
   };
 }
