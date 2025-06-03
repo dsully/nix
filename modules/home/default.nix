@@ -1,18 +1,11 @@
 {
-  globals,
   inputs,
   lib,
   pkgs,
+  system,
   ...
 }: {
   home = {
-    username = globals.user.name;
-
-    homeDirectory =
-      if pkgs.stdenv.isDarwin
-      then "/Users/${globals.user.name}"
-      else "/home/${globals.user.name}";
-
     # See here what bumping this value impacts:
     # https://nix-community.github.io/home-manager/release-notes.xhtml
     stateVersion = "25.05";
@@ -24,7 +17,7 @@
         if ! [ -d "$HOME/.local/share/chezmoi" ]; then
           ${lib.getExe pkgs.git} clone git@github.com:dsully/dotfiles.git ~/.local/share/chezmoi
 
-          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${globals.user.name} < /dev/null
+          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${system.primaryUser} < /dev/null
           ${lib.getExe pkgs.chezmoi} apply || true
         fi
       '';

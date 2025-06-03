@@ -3,8 +3,9 @@
   lib,
   pkgs,
   ...
-}: {
+}: rec {
   imports = [
+    ./packages.nix
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix
     ./defaults/contacts.nix
@@ -123,7 +124,7 @@
       remapCapsLockToControl = true;
     };
 
-    primaryUser = globals.user.name;
+    primaryUser = "dsully";
 
     stateVersion = 6;
   };
@@ -134,14 +135,12 @@
   };
 
   users = {
-    knownUsers = [globals.user.name];
+    knownUsers = [system.primaryUser];
 
-    users.${globals.user.name} = {
-      home = "/Users/${globals.user.name}";
+    users.${system.primaryUser} = {
+      home = "/Users/${system.primaryUser}";
       shell = pkgs.fish;
       uid = lib.mkDefault 501;
     };
   };
-
-
 }
