@@ -48,13 +48,6 @@
     system-manager,
     ...
   }: let
-    commonOverlays = [
-      inputs.dsully.inputs.rust-overlay.overlays.default
-      inputs.dsully.overlays.default
-      inputs.neovim-nightly-overlay.overlays.default
-      inputs.nh.overlays.default
-    ];
-
     globals = {
       host = {};
       user = {
@@ -78,7 +71,7 @@
 
         modules =
           [
-            {nixpkgs.overlays = commonOverlays ++ extraOverlays;}
+            {nixpkgs.overlays = extraOverlays;}
 
             ./lib/nix-core.nix
             ./lib/common/darwin
@@ -114,7 +107,7 @@
           ]
           ++ extraModules;
 
-        overlays = commonOverlays ++ extraOverlays;
+        overlays = extraOverlays;
 
         extraSpecialArgs =
           {
@@ -128,11 +121,12 @@
       system,
       hostName,
       extraModules ? [],
+      extraOverlays ? [],
       ...
     }: let
       pkgs = import nixpkgs {
         inherit system;
-        overlays = commonOverlays;
+        overlays = extraOverlays;
       };
 
       mergedGlobals = globals // {host.name = hostName;};
@@ -152,7 +146,7 @@
           globals = mergedGlobals;
         };
       };
-  in {
+  in rec {
     lib = {
       inherit mkDarwin mkHome mkSystem;
 
@@ -160,14 +154,20 @@
       homebrew = import ./lib/common/darwin/homebrew.nix;
     };
 
+    overlays = [
+      inputs.dsully.inputs.rust-overlay.overlays.default
+      inputs.dsully.overlays.default
+      inputs.neovim-nightly-overlay.overlays.default
+      inputs.nh.overlays.default
+    ];
+
     darwinConfigurations = {
       jarvis = mkDarwin {
         hostName = "jarvis";
         extraModules = [
           ./machines/jarvis.nix
         ];
-        extraOverlays = [
-        ];
+        extraOverlays = overlays;
       };
     };
 
@@ -188,11 +188,13 @@
       "dsully@jarvis" = mkHome {
         system = "aarch64-darwin";
         hostName = "jarvis";
+        extraOverlays = overlays;
       };
 
       "dsully@server" = mkHome {
         system = "x86_64-linux";
         hostName = "server";
+        extraOverlays = overlays;
       };
     };
   };
