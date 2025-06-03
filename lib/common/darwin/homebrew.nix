@@ -31,6 +31,7 @@
       "boltai"
       "cleanshot"
       "daisydisk"
+      "dash"
       "font-monaspace"
       "ghostty"
       "iina"
