@@ -63,7 +63,7 @@
         mnemonicPrefix = true; # Use better letters than a/ and b/ in diffs.
       };
 
-      dive.theme = "Nord";
+      # dive.theme = "Nord";
 
       fetch = {
         # Delete local tracking branches if remote is gone.

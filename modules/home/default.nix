@@ -2,9 +2,17 @@
   inputs,
   lib,
   pkgs,
-  system,
+  username,
   ...
 }: {
+  # options.globals.username = lib.mkOption {
+  #   type = lib.types.str;
+  # };
+  #
+  # config = {
+  #   globals.username.text = config.globals.username;
+  # };
+
   home = {
     # See here what bumping this value impacts:
     # https://nix-community.github.io/home-manager/release-notes.xhtml
@@ -17,7 +25,7 @@
         if ! [ -d "$HOME/.local/share/chezmoi" ]; then
           ${lib.getExe pkgs.git} clone git@github.com:dsully/dotfiles.git ~/.local/share/chezmoi
 
-          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${system.primaryUser} < /dev/null
+          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${username} < /dev/null
           ${lib.getExe pkgs.chezmoi} apply || true
         fi
       '';

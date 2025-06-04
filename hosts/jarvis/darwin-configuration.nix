@@ -14,7 +14,8 @@
   system.primaryUser = "dsully";
 
   imports = [
-    inputs.home-manager.darwinModules.home-manager
+    # inputs.home-manager.darwinModules.home-manager
+    # flake.modules.home.default
     flake.modules.common.default
     flake.modules.darwin.default
   ];

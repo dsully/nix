@@ -1,10 +1,9 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }: let
-  hostname = config.networking.hostName;
+  hostname = builtins.getEnv "HOSTNAME";
 in {
   programs.ssh = {
     enable = true;
