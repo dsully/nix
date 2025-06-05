@@ -115,6 +115,10 @@
         submoduleSummary = true;
       };
 
+      trim = {
+        bases = "main,master,develop";
+      };
+
       url = {
         "git@github.com:" = {
           insteadOf = "gh:";
