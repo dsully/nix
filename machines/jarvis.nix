@@ -1,4 +1,13 @@
 {pkgs, ...}: {
+  nixpkgs.hostPlatform = "aarch64-darwin";
+
+  networking = {
+    computerName = "jarvis";
+    hostName = "jarvis";
+  };
+
+  system.primaryUser = "dsully";
+
   environment = {
     systemPackages = with pkgs; [
       apple-photos-export

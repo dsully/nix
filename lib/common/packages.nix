@@ -12,12 +12,6 @@
       '';
   });
 in {
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-    };
-  };
-
   environment = {
     pathsToLink = ["/share/fish"];
 

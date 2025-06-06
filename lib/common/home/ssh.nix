@@ -1,9 +1,10 @@
 {
-  globals,
   lib,
   pkgs,
   ...
-}: {
+}: let
+  hostname = "jarvis"; # builtins.getEnv "HOSTNAME";
+in {
   programs.ssh = {
     enable = true;
 
@@ -62,7 +63,7 @@
         };
       }
 
-      (lib.mkIf (globals.host.name != "stelvio") {
+      (lib.mkIf (hostname != "stelvio") {
         "sisyphus" = {
           hostname = "10.0.0.135";
           user = "pi";
@@ -94,7 +95,7 @@
         };
       })
 
-      (lib.mkIf (globals.host.name != "server") {
+      (lib.mkIf (hostname != "server") {
         "server" = {
           hostname = "10.0.0.100";
           setEnv = {
@@ -104,13 +105,13 @@
         };
       })
 
-      (lib.mkIf (globals.host.name != "jarvis") {
+      (lib.mkIf (hostname != "jarvis") {
         "jarvis" = {
           hostname = "10.0.0.97";
         };
       })
 
-      (lib.mkIf (globals.host.name == "jarvis")
+      (lib.mkIf (hostname == "jarvis")
         {
           "parents" = {
             hostname = "67.183.128.190";

@@ -1,9 +1,9 @@
 {
-  globals,
+  config,
   lib,
   pkgs,
   ...
-}: {
+}: rec {
   imports = [
     ./homebrew.nix
     ./packages.nix
@@ -30,18 +30,13 @@
     Defaults timestamp_timeout=-1
   '';
 
-  networking = {
-    computerName = globals.host.name;
-    hostName = globals.host.name;
-  };
-
-  system = {
+  system = rec {
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
 
     activationScripts.postActivation.text = ''
       # Following line should allow us to avoid a logout/login cycle
-      sudo -u ${globals.user.name} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
       chflags nohidden ~/Library /Volumes
 
@@ -118,7 +113,7 @@
         GuestEnabled = false;
       };
 
-      smb.NetBIOSName = globals.host.name;
+      smb.NetBIOSName = config.networking.hostName;
     };
 
     keyboard = {
@@ -126,7 +121,7 @@
       remapCapsLockToControl = true;
     };
 
-    primaryUser = globals.user.name;
+    primaryUser = "dsully";
 
     stateVersion = 6;
   };
@@ -137,10 +132,10 @@
   };
 
   users = {
-    knownUsers = [globals.user.name];
+    knownUsers = [system.primaryUser];
 
-    users.${globals.user.name} = {
-      home = "/Users/${globals.user.name}";
+    users.${system.primaryUser} = {
+      home = "/Users/${system.primaryUser}";
       shell = pkgs.fish;
       uid = lib.mkDefault 501;
     };
