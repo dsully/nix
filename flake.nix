@@ -48,24 +48,15 @@
     system-manager,
     ...
   }: let
-    globals = {
-      host = {};
-      user = {
-        name = "dsully";
-      };
-    };
-
     # Generic function to create system configurations
     mkDarwin = {
       system ? "aarch64-darwin",
-      hostName,
+      # hostName,
       extraModules ? [],
       extraOverlays ? [],
       extraSpecialArgs ? {},
       ...
-    }: let
-      mergedGlobals = globals // {host.name = hostName;};
-    in
+    }:
       nix-darwin.lib.darwinSystem {
         inherit system;
 
@@ -76,50 +67,36 @@
             ./lib/nix-core.nix
             ./lib/common/darwin
             ./lib/common/packages.nix
-            ./users/${globals.user.name}/darwin.nix
           ]
           ++ extraModules;
 
-        specialArgs =
-          {
-            globals = mergedGlobals;
-            inherit inputs;
-          }
-          // extraSpecialArgs;
+        specialArgs = {inherit inputs;} // extraSpecialArgs;
       };
 
     # https://github.com/numtide/system-manager/issues/98
     mkSystem = {
-      hostName,
+      # hostName,
       extraModules ? [],
       extraOverlays ? [],
       extraSpecialArgs ? {},
       ...
-    }: let
-      mergedGlobals = globals // {host.name = hostName;};
-    in
+    }:
       system-manager.lib.makeSystemConfig {
         modules =
           [
             ./lib/common/linux
             ./lib/common/packages.nix
-            ./users/${globals.user.name}/linux.nix
           ]
           ++ extraModules;
 
         overlays = extraOverlays;
 
-        extraSpecialArgs =
-          {
-            globals = mergedGlobals;
-            inherit inputs;
-          }
-          // extraSpecialArgs;
+        extraSpecialArgs = {inherit inputs;} // extraSpecialArgs;
       };
 
     mkHome = {
       system,
-      hostName,
+      # hostName,
       extraModules ? [],
       extraOverlays ? [],
       ...
@@ -128,8 +105,6 @@
         inherit system;
         overlays = extraOverlays;
       };
-
-      mergedGlobals = globals // {host.name = hostName;};
     in
       home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -141,10 +116,7 @@
           ]
           ++ extraModules;
 
-        extraSpecialArgs = {
-          inherit inputs;
-          globals = mergedGlobals;
-        };
+        extraSpecialArgs = {inherit inputs;};
       };
   in rec {
     lib = {
