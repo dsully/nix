@@ -1,0 +1,5 @@
+{
+  environment = {
+    pathsToLink = ["/share/fish"];
+  };
+}

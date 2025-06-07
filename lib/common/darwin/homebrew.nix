@@ -1,4 +1,4 @@
-{
+{pkgs, ...}: {
   environment = {
     variables = {
       HOMEBREW_BAT = "1";
@@ -7,6 +7,10 @@
       HOMEBREW_NO_COMPAT = "1";
       HOMEBREW_NO_ENV_HINTS = "1";
     };
+
+    systemPackages = [
+      pkgs.mas
+    ];
   };
 
   homebrew = {

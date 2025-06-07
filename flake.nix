@@ -51,7 +51,7 @@
     # Generic function to create system configurations
     mkDarwin = {
       system ? "aarch64-darwin",
-      # hostName,
+      hostName,
       extraModules ? [],
       extraOverlays ? [],
       extraSpecialArgs ? {},
@@ -66,7 +66,7 @@
 
             ./lib/nix-core.nix
             ./lib/common/darwin
-            ./lib/common/packages.nix
+            ./machines/${hostName}.nix
           ]
           ++ extraModules;
 
@@ -75,7 +75,7 @@
 
     # https://github.com/numtide/system-manager/issues/98
     mkSystem = {
-      # hostName,
+      hostName,
       extraModules ? [],
       extraOverlays ? [],
       extraSpecialArgs ? {},
@@ -85,7 +85,7 @@
         modules =
           [
             ./lib/common/linux
-            ./lib/common/packages.nix
+            ./machines/${hostName}.nix
           ]
           ++ extraModules;
 
@@ -96,14 +96,20 @@
 
     mkHome = {
       system,
-      # hostName,
       extraModules ? [],
       extraOverlays ? [],
       ...
     }: let
       pkgs = import nixpkgs {
         inherit system;
-        overlays = extraOverlays;
+        overlays =
+          [
+            inputs.dsully.inputs.rust-overlay.overlays.default
+            inputs.dsully.overlays.default
+            inputs.neovim-nightly-overlay.overlays.default
+            inputs.nh.overlays.default
+          ]
+          ++ extraOverlays;
       };
     in
       home-manager.lib.homeManagerConfiguration {
@@ -118,7 +124,7 @@
 
         extraSpecialArgs = {inherit inputs;};
       };
-  in rec {
+  in {
     lib = {
       inherit mkDarwin mkHome mkSystem;
 
@@ -126,20 +132,9 @@
       homebrew = import ./lib/common/darwin/homebrew.nix;
     };
 
-    overlays = [
-      inputs.dsully.inputs.rust-overlay.overlays.default
-      inputs.dsully.overlays.default
-      inputs.neovim-nightly-overlay.overlays.default
-      inputs.nh.overlays.default
-    ];
-
     darwinConfigurations = {
       jarvis = mkDarwin {
         hostName = "jarvis";
-        extraModules = [
-          ./machines/jarvis.nix
-        ];
-        extraOverlays = overlays;
       };
     };
 
@@ -147,11 +142,6 @@
       x86_64-linux = {
         server = mkSystem {
           hostName = "server";
-          extraModules = [
-            ./machines/server.nix
-          ];
-          extraOverlays = [
-          ];
         };
       };
     };
@@ -159,14 +149,16 @@
     homeConfigurations = {
       "dsully@jarvis" = mkHome {
         system = "aarch64-darwin";
-        hostName = "jarvis";
-        extraOverlays = overlays;
+        extraModules = [
+          ./home/dsully/jarvis.nix
+        ];
       };
 
       "dsully@server" = mkHome {
         system = "x86_64-linux";
-        hostName = "server";
-        extraOverlays = overlays;
+        extraModules = [
+          # ./home/dsully/server.nix
+        ];
       };
     };
   };

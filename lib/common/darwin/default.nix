@@ -6,7 +6,6 @@
 }: rec {
   imports = [
     ./homebrew.nix
-    ./packages.nix
 
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix
@@ -25,10 +24,27 @@
     ./defaults/trackpad.nix
   ];
 
-  environment.etc."sudoers.d/custom".text = ''
-    Defaults env_keep += "TERMINFO"
-    Defaults timestamp_timeout=-1
-  '';
+  environment = {
+    pathsToLink = ["/share/fish"];
+
+    # Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
+    # https://github.com/nix-darwin/nix-darwin/issues/943
+    profiles = lib.mkOrder 700 [
+      "\$HOME/.local/state/nix/profile"
+      "/etc/profiles/per-user/$USER"
+    ];
+
+    etc."sudoers.d/custom".text = ''
+      Defaults env_keep += "TERMINFO"
+      Defaults timestamp_timeout=-1
+    '';
+
+    shells = [pkgs.fish];
+  };
+
+  programs = {
+    fish.enable = true;
+  };
 
   system = rec {
     # Turn off NIX_PATH warnings now that we're using flakes

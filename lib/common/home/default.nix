@@ -56,6 +56,8 @@
 
   imports = [
     inputs.nix-index-database.hmModules.nix-index
+    ./packages
+
     ./bat.nix
     ./git.nix
     ./ssh.nix

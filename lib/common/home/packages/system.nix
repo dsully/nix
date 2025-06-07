@@ -1,0 +1,64 @@
+{pkgs, ...}: {
+  home = {
+    packages = with pkgs; [
+      (hiPrio uutils-coreutils-noprefix) # Rust versions
+      act
+      age
+      aichat
+      b3sum
+      bandwhich
+      bat
+      bombardier
+      btop
+      checkip
+      chezmoi
+      choose
+      croc
+      curl
+      dasel
+      delta
+      direnv
+      dua
+      dust
+      fclones
+      fd
+      fselect
+      fzf
+      gnutar
+      gomi
+      hexyl
+      inetutils
+      iperf3
+      ipmitool
+      just
+      kondo
+      lsd
+      macchina
+      moar
+      mtr
+      p7zip
+      procs
+      q
+      rip2
+      ripgrep
+      rnr
+      rsync
+      sd
+      see-cat
+      sniffnet
+      starship
+      topgrade
+      tree
+      unar
+      unzip
+      viu
+      wget
+      xcp
+      xdg-open-svc
+      xh
+      xz
+      zellij
+      zoxide
+    ];
+  };
+}
