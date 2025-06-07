@@ -1,17 +1,22 @@
 {
+  flake,
   inputs,
   lib,
   pkgs,
+  username,
   ...
 }: {
-  home = rec {
-    username = "dsully";
+  imports = [
+    inputs.nix-index-database.hmModules.nix-index
+    flake.modules.common.nix
 
-    homeDirectory =
-      if pkgs.stdenv.isDarwin
-      then "/Users/${username}"
-      else "/home/${username}";
+    ./packages
+    ./bat.nix
+    ./git.nix
+    ./ssh.nix
+  ];
 
+  home = {
     # See here what bumping this value impacts:
     # https://nix-community.github.io/home-manager/release-notes.xhtml
     stateVersion = "25.05";
@@ -21,7 +26,7 @@
         mkdir -p ~/.local/share
 
         if ! [ -d "$HOME/.local/share/chezmoi" ]; then
-          ${lib.getExe pkgs.git} clone git@github.com:dsully/dotfiles.git ~/.local/share/chezmoi
+          ${lib.getExe pkgs.git} clone git@github.com:${username}/dotfiles.git ~/.local/share/chezmoi
 
           ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${username} < /dev/null
           ${lib.getExe pkgs.chezmoi} apply || true
@@ -31,7 +36,7 @@
       neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
 
         if ! [ -d "$HOME/.config/nvim" ]; then
-          ${lib.getExe pkgs.git} clone git@github.com:dsully/nvim.git ~/.config/nvim
+          ${lib.getExe pkgs.git} clone git@github.com:${username}/nvim.git ~/.config/nvim
         fi
       '';
 
@@ -54,15 +59,6 @@
     };
   };
 
-  imports = [
-    inputs.nix-index-database.hmModules.nix-index
-    ./packages
-
-    ./bat.nix
-    ./git.nix
-    ./ssh.nix
-  ];
-
   programs = {
     # https://github.com/me-and/nixcfg/blob/689c91c8f5bdd7bed0d95ba2c85f6466d8b7452f/nixos/common/nix-index.nix#L11
     command-not-found.enable = false;
@@ -78,7 +74,7 @@
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 4d --keep 3";
-      flake = "/home/user/my-nixos-config";
+      flake = "/Users/${username}/.config/nix";
     };
 
     # generate index with: nix-index --filter-prefix '/bin/'

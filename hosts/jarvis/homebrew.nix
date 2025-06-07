@@ -1,13 +1,4 @@
 {
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
-  networking = {
-    computerName = "jarvis";
-    hostName = "jarvis";
-  };
-
-  system.primaryUser = "dsully";
-
   homebrew = {
     onActivation = {
       cleanup = "uninstall";

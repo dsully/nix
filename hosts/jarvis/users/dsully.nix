@@ -1,4 +1,14 @@
-{pkgs, ...}: {
+{
+  flake,
+  pkgs,
+  ...
+}: {
+  _module.args.username = "dsully";
+
+  imports = [
+    flake.homeModules.dsully
+  ];
+
   home = {
     packages = with pkgs; [
       apple-photos-export

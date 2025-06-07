@@ -45,6 +45,7 @@
       "lunar"
       "monodraw"
       "powerflow"
+      "processspy"
       "raindropio"
       "rapidapi"
       "raycast"

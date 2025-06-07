@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -129,7 +128,7 @@
         GuestEnabled = false;
       };
 
-      smb.NetBIOSName = config.networking.hostName;
+      # smb.NetBIOSName = config.networking.hostName;
     };
 
     keyboard = {
