@@ -10,7 +10,6 @@
     "https://dsully.cachix.org"
   ];
 in {
-  # config = {
   nix = {
     enable = true;
 
@@ -68,5 +67,4 @@ in {
       inputs.nh.overlays.default
     ];
   };
-  # };
 }

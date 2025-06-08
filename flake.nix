@@ -1,6 +1,4 @@
 {
-  description = "Nix for macOS configuration";
-
   ##################################################################################################################
   #
   # Want to know Nix in details? Looking for a beginner-friendly tutorial?
@@ -39,5 +37,13 @@
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs: inputs.blueprint {inherit inputs;};
+  outputs = inputs:
+    inputs.blueprint {
+      inherit inputs;
+      # prefix = "nix/";
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+      ];
+    };
 }

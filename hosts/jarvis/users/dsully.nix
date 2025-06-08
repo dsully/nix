@@ -20,7 +20,6 @@
       nix-output-monitor
       pandoc
       reading-list-to-pinboard-rs
-      # systemd-language-server
       turbo-commit
       werk
     ];

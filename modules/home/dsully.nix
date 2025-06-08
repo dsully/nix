@@ -1,5 +1,4 @@
 {
-  flake,
   inputs,
   lib,
   pkgs,
@@ -8,7 +7,7 @@
 }: {
   imports = [
     inputs.nix-index-database.hmModules.nix-index
-    flake.modules.common.nix
+    ../common/nix.nix
 
     ./packages
     ./bat.nix
