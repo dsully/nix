@@ -29,7 +29,6 @@
 
     casks = [
       "1password"
-      "1password-cli"
       "adguard"
       "bartender"
       "boltai"

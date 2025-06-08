@@ -1,7 +1,8 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
-      (hiPrio uutils-coreutils-noprefix) # Rust versions
+      (hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
+      _1password-cli
       act
       age
       aichat
@@ -17,6 +18,7 @@
       curl
       dasel
       delta
+      # Fix newline issue https://github.com/direnv/direnv/pull/1426
       (pkgs.direnv.overrideAttrs (oldAttrs: {
         doCheck = false;
         patches =
