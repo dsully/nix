@@ -1,11 +1,10 @@
 {
-  perSystem,
+  flake,
   pkgs,
   ...
 }: {
   home = {
-    # packages = with pkgs; [
-    packages = with pkgs;
+    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
         (hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
         _1password-cli
@@ -77,8 +76,8 @@
         zellij
         zoxide
       ]
-      ++ (with perSystem.self; [
+      ++ [
         xdg-open-svc
-      ]);
+      ];
   };
 }

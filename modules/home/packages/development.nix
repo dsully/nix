@@ -1,10 +1,10 @@
 {
-  perSystem,
+  flake,
   pkgs,
   ...
 }: {
   home = {
-    packages = with pkgs;
+    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
         cyme
         fork-cleaner
@@ -44,10 +44,10 @@
         yq
         zig
       ]
-      ++ (with perSystem.self; [
+      ++ [
         aichat
         better-commits # git bc
         curlconverter
-      ]);
+      ];
   };
 }

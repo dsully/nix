@@ -1,7 +1,7 @@
 # Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
 {
+  flake,
   inputs,
-  perSystem,
   pkgs,
   ...
 }: let
@@ -24,7 +24,7 @@
     ;
 in {
   home = {
-    packages = with pkgs;
+    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
         actionlint
         alejandra
@@ -77,7 +77,7 @@ in {
         yamllint
         zls
       ]
-      ++ (with perSystem.self; [
+      ++ [
         codesort
         ghostty-ls
         gh-actions-language-server
@@ -87,6 +87,6 @@ in {
         sphinx-lint
         ty
         xmlformatter
-      ]);
+      ];
   };
 }

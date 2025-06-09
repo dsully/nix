@@ -1,10 +1,10 @@
 {
-  perSystem,
+  flake,
   pkgs,
   ...
 }: {
   home = {
-    packages = with pkgs;
+    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
         cachix
         deadnix
@@ -19,8 +19,8 @@
         nvd
         statix
       ]
-      ++ (with perSystem.self; [
+      ++ [
         njq
-      ]);
+      ];
   };
 }

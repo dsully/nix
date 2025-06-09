@@ -1,5 +1,5 @@
 {
-  perSystem,
+  flake,
   pkgs,
   ...
 }: {
@@ -12,7 +12,8 @@
   ];
 
   home = {
-    packages = with perSystem.self;
+    # Handle merging nixpkgs, the packages in this flake and allowing dependent to use the packages from this flake.
+    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
         devmoji-log
         dirstat-rs
