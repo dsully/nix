@@ -1,0 +1,70 @@
+name: "Build and populate cache"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "*.md"
+      - ".github/**"
+      - "Justfile"
+      - "bootstrap.sh"
+  schedule:
+    # rebuild everyday at 2:51
+    # TIP: Choose a random time here so not all repositories are build at once:
+    # https://www.random.org/clock-times/?num=1&earliest=01%3A00&latest=08%3A00&interval=5&format=html&rnd=new
+    - cron: "51 2 * * *"
+  workflow_dispatch:
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+
+        # Set this to notify the global nur package registry that changes are
+        # available.
+        #
+        # The repo name as used in
+        # https://github.com/nix-community/NUR/blob/master/repos.json
+        # nurRepo:
+        #   - dsully
+        # Set this to cache your build results in cachix for faster builds
+        # in CI and for everyone who uses your cache.
+        #
+        # Format: Your cachix cache host name without the ".cachix.org" suffix.
+        # Example: mycache (for mycache.cachix.org)
+        #
+        # For this to work, you also need to set the CACHIX_SIGNING_KEY or
+        # CACHIX_AUTH_TOKEN secret in your repository secrets settings in
+        # Github found at
+        # https://github.com/<your_githubname>/nur-packages/settings/secrets
+        cachixName:
+          - dsully
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+        with:
+          enable_kvm: false
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+          install_options: --no-daemon
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Setup cachix
+        uses: cachix/cachix-action@v16
+        # Don't replace <YOUR_CACHIX_NAME> here!
+        if: ${{ matrix.cachixName != '<YOUR_CACHIX_NAME>' }}
+        with:
+          name: ${{ matrix.cachixName }}
+          signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Build nix packages
+        run: nix run nixpkgs#just -- build-packages
