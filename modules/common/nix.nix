@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   pkgs,
   ...
 }: let
@@ -23,9 +24,6 @@ in {
       allow-unsafe-native-code-during-evaluation = true;
       always-allow-substitutes = true;
       builders-use-substitutes = true;
-
-      # 1024 * 1024 * 128
-      download-buffer-size = 134217728;
 
       # Enable flakes globally
       experimental-features = [

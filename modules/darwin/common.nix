@@ -1,8 +1,11 @@
 {
+  config,
   lib,
   pkgs,
   ...
-}: rec {
+}: let
+  fish = config.programs.fish;
+in rec {
   imports = [
     ./homebrew.nix
 
@@ -24,7 +27,13 @@
   ];
 
   environment = {
-    pathsToLink = ["/share/fish"];
+    # Avoid using programs.fish.enable = true, as that forces either
+    # bableFish or foreign-env, both of which have significant startup cost.
+    pathsToLink =
+      ["/share/fish"]
+      ++ lib.optional fish.vendor.config.enable "/share/fish/vendor_conf.d"
+      ++ lib.optional fish.vendor.completions.enable "/share/fish/vendor_completions.d"
+      ++ lib.optional fish.vendor.functions.enable "/share/fish/vendor_functions.d";
 
     # Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
     # https://github.com/nix-darwin/nix-darwin/issues/943
@@ -39,10 +48,10 @@
     '';
 
     shells = [pkgs.fish];
-  };
 
-  programs = {
-    fish.enable = true;
+    systemPackages = [
+      pkgs.fish
+    ];
   };
 
   system = rec {
@@ -151,6 +160,7 @@
 
     users.${system.primaryUser} = {
       home = "/Users/${system.primaryUser}";
+      ignoreShellProgramCheck = true;
       shell = pkgs.fish;
       uid = lib.mkDefault 501;
     };
