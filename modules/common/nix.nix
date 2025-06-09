@@ -24,6 +24,9 @@ in {
       always-allow-substitutes = true;
       builders-use-substitutes = true;
 
+      # 1024 * 1024 * 128
+      download-buffer-size = 134217728;
+
       # Enable flakes globally
       experimental-features = [
         "flakes"
@@ -55,6 +58,8 @@ in {
 
       # Conform to the XDG Base Directory Specification
       use-xdg-base-directories = true;
+
+      warn-dirty = false;
     };
   };
 

@@ -1,2 +1,4 @@
+build-results/
 nix.conf
-result*
+result
+result-*

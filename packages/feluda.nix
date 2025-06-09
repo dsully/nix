@@ -7,12 +7,12 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "anistark";
       repo = "feluda";
-      rev = "73953e4babf83ae11b8ba11a32019d89e811d747";
-      hash = "sha256-rx+VZuA896TNlacIhMMMMhjz3L2BZouiY6HNYCm6nK8=";
+      rev = "341a07ee34e0bf382de54c6ae573af835c518602";
+      hash = "sha256-grb167ol00ywmeULSt2G3qlTcQval4i2uRzUmLRLqWM=";
     };
 
     useFetchCargoVendor = true;
-    cargoHash = "sha256-JXDd2EB2ew9f+EvK76nkV0eBC4gshpo1eXWvRb2PHgs=";
+    cargoHash = "sha256-MwfdP7Lbu2PK7KuzPAEuCMFvQM1rNKOAcvJ3HmoM07A=";
     doCheck = false;
 
     nativeBuildInputs = [
