@@ -43,6 +43,9 @@
       column.ui = "auto";
 
       core = {
+        # https://stackoverflow.com/questions/4994772/ways-to-improve-git-status-performance
+        fsmonitor = true;
+
         sshCommand = "/usr/bin/ssh";
 
         # Make `git rebase` safer on macOS.
@@ -112,7 +115,8 @@
 
       status = {
         relativePaths = true;
-        submoduleSummary = true;
+        showUntrackedFiles = false;
+        submoduleSummary = false;
       };
 
       trim = {
