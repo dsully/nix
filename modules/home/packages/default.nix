@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  perSystem,
+  pkgs,
+  ...
+}: {
   imports = [
     ./development.nix
     ./editor.nix
@@ -8,7 +12,7 @@
   ];
 
   home = {
-    packages = with pkgs;
+    packages = with perSystem.self;
       [
         devmoji-log
         dirstat-rs
@@ -18,7 +22,7 @@
         lolcate-rs
         magic-opener
       ]
-      ++ (lib.optionals pkgs.stdenv.isDarwin [
+      ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
         safari-rs
         sps
       ]);

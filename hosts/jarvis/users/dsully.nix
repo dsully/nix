@@ -1,5 +1,6 @@
 {
   flake,
+  perSystem,
   pkgs,
   ...
 }: {
@@ -10,18 +11,21 @@
   ];
 
   home = {
-    packages = with pkgs; [
-      apple-photos-export
-      autorebase
-      bacon
-      claude-code
-      ghostscript_headless
-      git-ai-commit
-      nix-output-monitor
-      pandoc
-      reading-list-to-pinboard-rs
-      turbo-commit
-      werk
-    ];
+    packages = with pkgs;
+      [
+        bacon
+        claude-code
+        ghostscript_headless
+        nix-output-monitor
+        pandoc
+      ]
+      ++ (with perSystem.self; [
+        apple-photos-export
+        autorebase
+        git-ai-commit
+        reading-list-to-pinboard-rs
+        turbo-commit
+        werk
+      ]);
   };
 }

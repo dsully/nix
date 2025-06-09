@@ -30,8 +30,14 @@
     nh.url = "github:nix-community/nh";
     nh.inputs.nixpkgs.follows = "nixpkgs";
 
-    dsully.url = "github:dsully/nur";
-    dsully.inputs.nixpkgs.follows = "nixpkgs";
+    bun2nix.url = "github:baileyluTCD/bun2nix";
+    bun2nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+
+    emmylua-analyzer-rust.url = "github:EmmyLuaLs/emmylua-analyzer-rust";
+    emmylua-analyzer-rust.inputs.nixpkgs.follows = "nixpkgs";
 
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
@@ -40,7 +46,6 @@
   outputs = inputs:
     inputs.blueprint {
       inherit inputs;
-      # prefix = "nix/";
       systems = [
         "aarch64-darwin"
         "x86_64-linux"
