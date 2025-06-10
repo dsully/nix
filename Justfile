@@ -144,7 +144,7 @@ build-packages +packages='all':
 
             if string match -qr 'sha256' -- $new_hash
                 echo
-                echo "  Got a new cargoHash: $new_hash"
+                echo "  Got a new package hash: $new_hash"
                 echo -n "  Rebuilding ..."
 
                 sd "cargoHash = .*" "cargoHash = \"$new_hash\";" "$file"
