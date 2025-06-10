@@ -119,7 +119,7 @@ build-packages +packages='all':
 
         echo (set_color green) "success!" (set_color normal)
 
-        if test -n "{{ cache }}"
+        if test "{{ cache }}" -eq 1
             echo (set_color cyan) "  Pushing to cachix.. " (set_color normal)
 
             command nix path-info .#$pkg | cachix push dsully 2>&1
@@ -139,7 +139,7 @@ build-packages +packages='all':
 
         if nix build .#$pkg --no-link > build-results/$pkg.log 2>&1
             success $pkg
-        else if test {{ update }} == 1
+        else if test {{ update }} -eq 1
             set new_hash (grep "got:" build-results/$pkg.log | awk '{print $2}')
 
             if string match -qr 'sha256' -- $new_hash

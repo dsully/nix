@@ -68,5 +68,6 @@ jobs:
 
       - name: Build Nix packages
         env:
+          CACHE: 1
           UPDATE: 0
-        run: nix develop --quiet --command just build-packages
+        run: nix shell -f '<nixpkgs>' nix-build-uncached -c just build-packages
