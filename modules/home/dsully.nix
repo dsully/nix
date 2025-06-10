@@ -40,15 +40,17 @@
       '';
 
       symlinks = ''
-        if ! [ -d $HOME/Downloads ] && ! [ -L $HOME/Downloads ]; then
-            echo "Moving ~/Downloads to symlink into iCloud."
+        if [ "$(uname -s)" == "Darwin" ]; then
+            if ! [ -d $HOME/Downloads ] && ! [ -L $HOME/Downloads ]; then
+                echo "Moving ~/Downloads to symlink into iCloud."
 
-            sudo rm -rf $HOME/Downloads
-            ln -sf $HOME/iCloud/Downloads $HOME/Downloads
-        fi
+                /usr/bin/sudo rm -rf $HOME/Downloads
+                ln -sf $HOME/iCloud/Downloads $HOME/Downloads
+            fi
 
-        if ! [ -L $HOME/iCloud ]; then
-            ln -s $HOME/Library/Mobile\ Documents/com~apple~CloudDocs $HOME/iCloud
+            if ! [ -L $HOME/iCloud ]; then
+                ln -s $HOME/Library/Mobile\ Documents/com~apple~CloudDocs $HOME/iCloud
+            fi
         fi
 
         if ! [ -L $HOME/src ]; then

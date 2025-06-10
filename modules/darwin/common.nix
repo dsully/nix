@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  fish = config.programs.fish;
+  inherit (config.programs) fish;
 in rec {
   imports = [
     ./homebrew.nix
@@ -28,7 +28,7 @@ in rec {
 
   environment = {
     # Avoid using programs.fish.enable = true, as that forces either
-    # bableFish or foreign-env, both of which have significant startup cost.
+    # babelFish or foreign-env, both of which have significant startup cost.
     pathsToLink =
       ["/share/fish"]
       ++ lib.optional fish.vendor.config.enable "/share/fish/vendor_conf.d"
