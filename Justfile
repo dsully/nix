@@ -6,36 +6,22 @@ export NIX_CONFIG := "experimental-features = nix-command flakes"
 cache := env("CACHE", "1")
 update := env("UPDATE", "1")
 
+# This list
 default:
     @just --list
 
-# system:
-#     #!/usr/bin/env bash
-#     if [ "{{ os() }}" == "linux" ]; then
-#         sudo --preserve-env=PATH env nix run 'github:numtide/system-manager' -- switch --flake '.#default'
-#     elif [ "{{ os() }}" == "macos" ]; then
-#         just _install-nix-darwin
-#     else
-#         echo "Unsupported OS: {{ os() }}"
-#     fi
-
 # Build Darwin or Linux configuration
+[group('desktop')]
 system:
     #!/usr/bin/env bash
     if [ "{{ os() }}" == "linux" ]; then
-        #export TYPE=system-manager
 
-        if ! command -v nh 2>&1 >/dev/null; then
-            @nix run nixpkgs#nh -- home switch --update --ask .
-        else
-            @sudo env "PATH=$PATH" system-manager switch --flake .
-        fi
+        @/usr/bin/sudo --preserve-env=PATH env nix run 'github:numtide/system-manager' -- switch --flake .
+
     elif [ "{{ os() }}" == "macos" ]; then
-        if ! command -v nh 2>&1 >/dev/null; then
-            @nix run nixpkgs#nh -- darwin switch --update --ask .
-        else
-            @nh darwin switch --update --ask .
-        fi
+
+        @nh darwin switch --update --ask .
+
     else
         echo "Unsupported OS: {{ os() }}"
     fi
