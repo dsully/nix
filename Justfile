@@ -1,6 +1,5 @@
 set shell := ["fish", "-c"]
 
-export HOSTNAME := `hostname`
 export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NIX_CONFIG := "experimental-features = nix-command flakes"
