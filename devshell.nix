@@ -1,10 +1,18 @@
 {pkgs}:
 pkgs.mkShell {
-  packages = [
-    pkgs.cachix
-    pkgs.fish
-    pkgs.just
-    pkgs.ripgrep
+  packages = with pkgs; [
+    alejandra
+    cachix
+    deadnix
+    fd
+    fish
+    jq
+    just
+    nh
+    nurl
+    ripgrep
+    sd
+    statix
   ];
 
   env = {};
