@@ -1,5 +1,6 @@
 {
   flake,
+  perSystem,
   pkgs,
   ...
 }: {
@@ -10,16 +11,19 @@
   ];
 
   home = {
-    packages = with pkgs; [
-      autorebase
-      bacon
-      claude-code
-      ghostscript_headless
-      git-ai-commit
-      nix-output-monitor
-      pandoc
-      systemd-language-server
-      turbo-commit
-    ];
+    packages = with pkgs;
+      [
+        bacon
+        claude-code
+        ghostscript_headless
+        nix-output-monitor
+        pandoc
+      ]
+      ++ (with perSystem.self; [
+        autorebase
+        git-ai-commit
+        turbo-commit
+        werk
+      ]);
   };
 }
