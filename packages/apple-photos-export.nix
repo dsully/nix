@@ -34,4 +34,4 @@ then
         platforms = lib.platforms.darwin;
       };
     }
-else {}
+else pkgs.emptyFile

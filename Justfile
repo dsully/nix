@@ -4,6 +4,7 @@ export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NIX_CONFIG := "experimental-features = nix-command flakes"
 cache := env("CACHE", "1")
+update := env("UPDATE", "1")
 
 default:
     @just --list
@@ -138,7 +139,7 @@ build-packages +packages='all':
 
         if nix build .#$pkg --no-link > build-results/$pkg.log 2>&1
             success $pkg
-        else
+        else if test {{ update }} == 1
             set new_hash (grep "got:" build-results/$pkg.log | awk '{print $2}')
 
             if string match -qr 'sha256' -- $new_hash

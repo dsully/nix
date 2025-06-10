@@ -66,8 +66,7 @@ jobs:
           signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Install fish, just & ripgrep
-        run: nix profile install nixpkgs#fish nixpkgs#just nixpkgs#ripgrep
-
       - name: Build Nix packages
-        run: just build-packages
+        env:
+          UPDATE: 0
+        run: nix develop --quiet --command just build-packages

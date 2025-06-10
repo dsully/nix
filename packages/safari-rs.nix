@@ -37,4 +37,4 @@ in
           platforms = lib.platforms.darwin;
         };
       }
-    else {}
+    else pkgs.emptyFile
