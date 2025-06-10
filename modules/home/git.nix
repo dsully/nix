@@ -115,7 +115,7 @@
 
       status = {
         relativePaths = true;
-        showUntrackedFiles = false;
+        showUntrackedFiles = true;
         submoduleSummary = false;
       };
 
