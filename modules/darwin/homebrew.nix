@@ -103,6 +103,7 @@
     };
 
     taps = [
+      "homebrew/cask"
       "lzt1008/powerflow"
     ];
   };
