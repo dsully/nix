@@ -16,11 +16,11 @@ system:
     #!/usr/bin/env bash
     if [ "{{ os() }}" == "linux" ]; then
 
-        @/usr/bin/sudo --preserve-env=PATH env nix run 'github:numtide/system-manager' -- switch --flake .
+        /usr/bin/sudo --preserve-env=PATH env nix run 'github:numtide/system-manager' -- switch --flake .
 
     elif [ "{{ os() }}" == "macos" ]; then
 
-        @nh darwin switch --update --ask .
+        nh darwin switch --update --ask .
 
     else
         echo "Unsupported OS: {{ os() }}"
@@ -34,17 +34,17 @@ switch:
 # Update all the flake inputs
 [group('nix')]
 up:
-    nix flake update
+    @nix flake update
 
 # List all generations of the system profile
 [group('nix')]
 history:
-    nix profile history
+    @nix profile history
 
 # Open a nix shell with the flake
 [group('nix')]
 repl:
-    nix repl -f flake:nixpkgs
+    @nix repl -f flake:nixpkgs
 
 # Garbage collect all unused nix store entries
 
