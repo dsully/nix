@@ -79,7 +79,7 @@ init-from-url URL:
     LAST_COMPONENT=${LAST_COMPONENT%.git}
 
     # Create the output filename
-    OUTPUT_FILE=pkgs/"${LAST_COMPONENT}.nix"
+    OUTPUT_FILE=packages/"${LAST_COMPONENT}.nix"
 
     # Run nix-init with the specified parameters
     nix-init -n 'builtins.getFlake "nixpkgs"' -u "{{ URL }}" "${OUTPUT_FILE}"

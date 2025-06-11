@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    rev = "b44062b9ae08dcd8941ac76dbce2ab2c61840691";
+    rev = "a2de81cb27541b7f09d57644539cea566cc0ece1";
     pname = "ty";
     version = "0.0.1-alpha.8-${rev}";
 
@@ -9,7 +9,7 @@ with pkgs;
       inherit rev;
       owner = "astral-sh";
       repo = "ruff";
-      hash = "sha256-Lk26bY21BPugOTz3aSKsa1zHGOC90cQZ5S9BPBQlQKk=";
+      hash = "sha256-ZU36WWSmInvr6v6KjXHZ7G58emo194p0iW6kKvderJo=";
     };
 
     cargoBuildFlags = ["--package=ty"];
