@@ -1,4 +1,3 @@
-# Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
 {
   flake,
   inputs,
@@ -16,6 +15,9 @@
                     "if (err.message === this.MATCHES_MULTIPLE)"
       '';
   });
+
+  local =
+    (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
   inherit
     (inputs.emmylua-analyzer-rust.packages.${pkgs.system})
@@ -51,7 +53,8 @@ in {
         luajit
         markdownlint-cli2
         marksman
-        mermaid-cli
+        # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
+        (pkgs.mermaid-cli.override {chromium = local.chromium;})
         neovim
         nil
         nixd
