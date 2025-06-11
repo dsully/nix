@@ -54,7 +54,7 @@ in {
         markdownlint-cli2
         marksman
         # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
-        (pkgs.mermaid-cli.override {chromium = local.chromium;})
+        (pkgs.mermaid-cli.override {inherit (local) chromium;})
         neovim
         nil
         nixd

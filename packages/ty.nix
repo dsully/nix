@@ -41,7 +41,7 @@ with pkgs;
       homepage = "https://github.com/astral-sh/ruff";
       changelog = "https://github.com/astral-sh/ty/blob/${version}/CHANGELOG.md";
       license = lib.licenses.mit;
-      version = version;
+      inherit version;
       mainProgram = pname;
     };
   }
