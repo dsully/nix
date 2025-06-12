@@ -19,11 +19,9 @@
   local =
     (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
-  inherit
-    (inputs.emmylua-analyzer-rust.packages.${pkgs.system})
-    emmylua_check
-    emmylua_ls
-    ;
+  inherit (inputs.emmylua-analyzer-rust.packages.${pkgs.system}) emmylua_check emmylua_ls;
+
+  tombi = inputs.tombi.packages.${pkgs.system}.default;
 in {
   home = {
     packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
@@ -71,6 +69,7 @@ in {
         superhtml
         taplo
         tectonic-unwrapped
+        tombi
         ts_query_ls
         typos
         vscode-langservers-extracted

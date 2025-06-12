@@ -39,6 +39,9 @@
     emmylua-analyzer-rust.url = "github:EmmyLuaLs/emmylua-analyzer-rust";
     emmylua-analyzer-rust.inputs.nixpkgs.follows = "nixpkgs";
 
+    tombi.url = "github:tombi-toml/tombi";
+    tombi.inputs.nixpkgs.follows = "nixpkgs";
+
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
   };
