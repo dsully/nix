@@ -21,7 +21,7 @@
 
     onActivation = {
       autoUpdate = false;
-      upgrade = true;
+      upgrade = false;
     };
 
     brews = [
