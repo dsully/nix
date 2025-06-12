@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "anistark";
       repo = "feluda";
-      rev = "341a07ee34e0bf382de54c6ae573af835c518602";
-      hash = "sha256-grb167ol00ywmeULSt2G3qlTcQval4i2uRzUmLRLqWM=";
+      rev = "d5cd951ad9af234d9b6ca6fcadd43f6c50c8c3f0";
+      hash = "sha256-cyX5Cyz8NHl3M0uu5dB3E13YF+XIcnt8pjtd4qj+fSk=";
     };
 
     useFetchCargoVendor = true;
