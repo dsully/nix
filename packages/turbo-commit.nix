@@ -26,9 +26,9 @@ with pkgs;
     ];
 
     meta = {
-      description = "Turbocommit is a Rust-based CLI tool that generates high-quality git commit messages in accordance with the Conventional Commits specification, using OpenAI API compatible service. It is easy to use and a cost-effective way to keep git commit history at a higher quality, helping developers stay on track with their work";
+      description = "Turbocommit is a tool that generates high-quality git commit messages in accordance with the Conventional Commits specification";
       homepage = "https://github.com/dikkadev/turboCommit";
       license = lib.licenses.mit;
-      mainProgram = "turbo-commit";
+      mainProgram = "turbocommit";
     };
   }

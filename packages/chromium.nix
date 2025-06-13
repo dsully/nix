@@ -13,14 +13,14 @@ in
 
         src = pkgs.fetchurl {
           url = "https://github.com/ungoogled-software/ungoogled-chromium-macos/releases/download/${version}/ungoogled-chromium_${version}_arm64-macos.dmg";
-          sha256 = "1lawy52gq9d361bhaf7iynryas38bwm5kww52agy329vhj92rf8p";
+          hash = "sha256-F7kskoQ7ieGfEoXzWSpfaGjls/XxOAVXMKMl/ETxXNE=";
         };
 
         sourceRoot = "Chromium.app";
 
         nativeBuildInputs = [
-          pkgs._7zz
-          pkgs.makeWrapper
+          _7zz
+          makeWrapper
         ];
 
         unpackPhase = ''
@@ -44,11 +44,12 @@ in
 
         meta = {
           description = "Google Chromium, sans integration with Google";
-          homepage = "https://ungoogled-software.github.io/";
+          homepage = "https://github.com/ungoogled-software/ungoogled-chromium";
           license = lib.licenses.bsd3;
           maintainers = with lib.maintainers; [sudosubin];
           platforms = ["aarch64-darwin"];
-          mainProgram = "chromium";
+          mainProgram = pname;
         };
       }
   else pkgs.chromium
+

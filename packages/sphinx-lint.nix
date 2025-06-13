@@ -1,14 +1,15 @@
 {pkgs, ...}:
 with pkgs;
-  python3.pkgs.buildPythonApplication rec {
+  python3.pkgs.buildPythonApplication {
     pname = "sphinx-lint";
     version = "1.0.0";
     pyproject = true;
 
-    src = fetchPypi {
-      pname = "sphinx_lint";
-      inherit version;
-      hash = "sha256-bq/bRBcs5Sb0Bb82xxPrJG8TQOwtZn5ymOJIftdt7NI=";
+    src = fetchFromGitHub {
+      owner = "sphinx-contrib";
+      repo = "sphinx-lint";
+      rev = "9c97dd9b26f393464c3375f8cdc065c2c9ff3839";
+      hash = "sha256-Vvr158lrsF8WCGK4fYsnaaOYI2VPRrYu1aPq8Yu2M5I=";
     };
 
     build-system = [
@@ -23,7 +24,7 @@ with pkgs;
 
     meta = {
       description = "Check for stylistic and formal issues in .rst and .py files included in the documentation";
-      homepage = "https://pypi.org/project/sphinx-lint/";
+      homepage = "https://github.com/sphinx-contrib/sphinx-lint";
       mainProgram = "sphinx-lint";
     };
   }

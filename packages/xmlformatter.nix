@@ -3,11 +3,12 @@ with pkgs;
   python3.pkgs.buildPythonApplication rec {
     pname = "xmlformatter";
     version = "0.2.8";
-    pyproject = true;
 
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-3cgufLT/Jmn1QBTi6vhrST1eLalbU2+XTwoV8Cdj9kw=";
+    src = fetchFromGitHub {
+      owner = "pamoller";
+      repo = "xmlformatter";
+      rev = "53068c4fdbbec295ae8d17cd71daa8e7ed3240fd";
+      hash = "sha256-YQscegxq+6ftTyBeFtYjhtoNPe+dv2eGsine6HyCKaA=";
     };
 
     build-system = [
@@ -16,13 +17,13 @@ with pkgs;
     ];
 
     pythonImportsCheck = [
-      "xmlformatter"
+      pname
     ];
 
     meta = {
       description = "Format and compress XML documents";
-      homepage = "https://pypi.org/project/xmlformatter/";
+      homepage = "https://github.com/pamoller/xmlformatter";
       license = lib.licenses.mit;
-      mainProgram = "xmlformatter";
+      mainProgram = pname;
     };
   }

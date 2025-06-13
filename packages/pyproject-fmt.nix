@@ -1,45 +1,20 @@
-{
-  perSystem,
-  pkgs,
-  ...
-}:
+{pkgs, ...}:
 with pkgs;
   python3.pkgs.buildPythonApplication rec {
     pname = "pyproject-fmt";
-    version = "2.5.1";
-    pyproject = true;
+    version = "2.6.0";
+    format = "wheel";
 
     src = fetchPypi {
       pname = "pyproject_fmt";
-      inherit version;
-      hash = "sha256-x9/h9izJH99+xzBDsSwN8DqagozgkGf6S7Ui/qWyQmk=";
+      version = "2.6.0";
+      hash = "sha256-ZkCDD1n2XSaqlT9c6IfSO5NZhWpdDhDTPHVrlnayKd8=";
     };
-
-    cargoDeps = rustPlatform.fetchCargoVendor {
-      inherit src;
-      name = "${pname}-${version}";
-      hash = "sha256-0AK/5tukGq0tYfIbgdVDNu3pUVvZpP8rbsCRGxtztPA=";
-    };
-
-    build-system = [
-      cargo
-      rustPlatform.cargoSetupHook
-      rustPlatform.maturinBuildHook
-      rustc
-    ];
-
-    dependencies = [
-      perSystem.self.toml-fmt-common
-    ];
-
-    pythonImportsCheck = [
-      "pyproject_fmt"
-    ];
 
     meta = {
       description = "Format your pyproject.toml file";
-      homepage = "https://pypi.org/project/pyproject-fmt/";
+      homepage = "https://github.com/tox-dev/toml-fmt";
       license = lib.licenses.mit;
-      mainProgram = "pyproject-fmt";
+      mainProgram = pname;
     };
   }
