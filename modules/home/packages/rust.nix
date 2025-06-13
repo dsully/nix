@@ -20,11 +20,8 @@
       cargo-unused-features
       cargo-update
       cargo-wizard
-      (rust-bin.stable.latest.default.override
-        {
-          extensions = ["rust-analyzer" "rust-src"];
-        })
       rustcat
+      rustup
       sccache
     ];
   };

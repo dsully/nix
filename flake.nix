@@ -33,9 +33,6 @@
     bun2nix.url = "github:baileyluTCD/bun2nix";
     bun2nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    rust-overlay.url = "github:oxalica/rust-overlay";
-    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-
     emmylua-analyzer-rust.url = "github:EmmyLuaLs/emmylua-analyzer-rust";
     emmylua-analyzer-rust.inputs.nixpkgs.follows = "nixpkgs";
 

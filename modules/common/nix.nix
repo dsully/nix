@@ -63,7 +63,6 @@ in {
   nixpkgs = {
     config.allowUnfree = true;
     overlays = [
-      inputs.rust-overlay.overlays.default
       inputs.neovim-nightly-overlay.overlays.default
       inputs.nh.overlays.default
     ];
