@@ -20,11 +20,12 @@
     (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
   inherit (inputs.emmylua-analyzer-rust.packages.${pkgs.system}) emmylua_check emmylua_ls;
+  inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
 
   tombi = inputs.tombi.packages.${pkgs.system}.default;
 in {
   home = {
-    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
+    packages = with (pkgs // local);
       [
         actionlint
         alejandra
