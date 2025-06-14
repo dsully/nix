@@ -92,4 +92,6 @@
     # * https://github.com/bswrundquist/dotfiles/blob/f51c42c7e4b1c9d27f2ce81281e58bdccb5fb766/home/fish.nix#L9
     # * https://github.com/awalker/nixos-config/blob/943d50e5e1e545719e6933221255c14b0a60fdbc/home.nix#L84
   };
+
+  targets.darwin.linkApps.enable = false;
 }

@@ -35,7 +35,6 @@ in rec {
       ++ lib.optional fish.vendor.completions.enable "/share/fish/vendor_completions.d"
       ++ lib.optional fish.vendor.functions.enable "/share/fish/vendor_functions.d";
 
-    # Fix mermaid: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
     # https://github.com/nix-darwin/nix-darwin/issues/943
     profiles = lib.mkOrder 700 [
       "\$HOME/.local/state/nix/profile"
@@ -55,18 +54,31 @@ in rec {
   };
 
   system = rec {
+    activationScripts = {
+      # Disable nix-darwin features I don't care about.
+      applications.text = lib.mkForce "";
+      fonts.text = lib.mkForce "";
+      nvram.text = lib.mkForce "";
+
+      postActivation.text = ''
+        # Following line should allow us to avoid a logout/login cycle
+        sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
+        chflags nohidden ~/Library /Volumes
+
+        /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
+        /usr/bin/killall cfprefsd
+      '';
+    };
+
+    # Disable nix-darwin features I don't care about.
+    build = {
+      applications = lib.mkForce "";
+      fonts = lib.mkForce "";
+    };
+
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
-
-    activationScripts.postActivation.text = ''
-      # Following line should allow us to avoid a logout/login cycle
-      sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-
-      chflags nohidden ~/Library /Volumes
-
-      /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
-      /usr/bin/killall cfprefsd
-    '';
 
     defaults = {
       CustomUserPreferences = {
