@@ -16,7 +16,7 @@ system:
     #!/usr/bin/env bash
     if [ "{{ os() }}" == "linux" ]; then
 
-        /usr/bin/sudo --preserve-env=PATH env nix run 'github:numtide/system-manager' -- switch --flake .
+        /usr/bin/sudo --preserve-env=PATH system-manager -- switch --flake .
 
     elif [ "{{ os() }}" == "macos" ]; then
 
