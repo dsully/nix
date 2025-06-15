@@ -1,9 +1,30 @@
 {
+  config,
   lib,
   pkgs,
   ...
 }: let
-  hostname = "jarvis"; # builtins.getEnv "HOSTNAME";
+  # Need to run with --impure
+  hostname = builtins.getEnv "HOSTNAME";
+  homeDirectory = config.home.homeDirectory;
+
+  remote_forwards = [
+    {
+      bind.port = 2224;
+      host.address = "localhost";
+      host.port = 2224;
+    }
+    {
+      bind.port = 2225;
+      host.address = "localhost";
+      host.port = 2225;
+    }
+    {
+      bind.port = 2226;
+      host.address = "localhost";
+      host.port = 2226;
+    }
+  ];
 in {
   programs.ssh = {
     enable = true;
@@ -32,27 +53,6 @@ in {
           };
         };
 
-        "* !github.* !electricrain.com" = {
-          # https://carlosbecker.com/posts/pbcopy-pbpaste-open-ssh/
-          remoteForwards = lib.mkIf pkgs.stdenv.isDarwin [
-            {
-              bind.port = 2224;
-              host.address = "localhost";
-              host.port = 2224;
-            }
-            {
-              bind.port = 2225;
-              host.address = "localhost";
-              host.port = 2225;
-            }
-            {
-              bind.port = 2226;
-              host.address = "localhost";
-              host.port = 2226;
-            }
-          ];
-        };
-
         "er" = {
           hostname = "172.104.194.233";
 
@@ -72,7 +72,7 @@ in {
         "unifi gateway 10.0.0.1" = {
           hostname = "10.0.0.1";
           user = "root";
-          identityFile = "${builtins.getEnv "HOME"}/.ssh/id_rsa";
+          identityFile = "${homeDirectory}/.ssh/id_rsa";
           localForwards = [
             {
               bind.port = 27017;
@@ -85,23 +85,13 @@ in {
         "nvr" = {
           user = "root";
           hostname = "10.0.0.2";
-          identityFile = "${builtins.getEnv "HOME"}/.ssh/id_rsa";
+          identityFile = "${homeDirectory}/.ssh/id_rsa";
         };
 
         "switch" = {
           hostname = "10.0.0.3";
           user = "ubnt";
-          identityFile = "${builtins.getEnv "HOME"}/.ssh/id_rsa";
-        };
-      })
-
-      (lib.mkIf (hostname != "server") {
-        "server" = {
-          hostname = "10.0.0.100";
-          setEnv = {
-            SSH_CLIENT_OS = "Darwin";
-            SSH_CLIENT_HOME = "/Users/dsully";
-          };
+          identityFile = "${homeDirectory}/.ssh/id_rsa";
         };
       })
 
@@ -113,8 +103,15 @@ in {
 
       (lib.mkIf (hostname == "jarvis")
         {
-          "parents" = {
-            hostname = "67.183.128.190";
+          "server" = {
+            hostname = "10.0.0.100";
+
+            remoteForwards = remote_forwards;
+
+            setEnv = {
+              SSH_CLIENT_OS = "Darwin";
+              SSH_CLIENT_HOME = homeDirectory;
+            };
           };
 
           "travel" = {
