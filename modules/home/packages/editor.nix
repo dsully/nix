@@ -23,6 +23,12 @@
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
 
   tombi = inputs.tombi.packages.${pkgs.system}.default;
+
+  # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
+  mermaid =
+    if pkgs.stdenv.isDarwin
+    then pkgs.mermaid-cli.override {inherit (local) chromium;}
+    else pkgs.mermaid-cli;
 in {
   home = {
     packages = with (pkgs // local);
@@ -52,8 +58,7 @@ in {
         luajit
         markdownlint-cli2
         marksman
-        # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
-        (pkgs.mermaid-cli.override {inherit (local) chromium;})
+        mermaid
         neovim
         nil
         nixd
