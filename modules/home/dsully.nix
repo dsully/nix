@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   pkgs,
@@ -75,7 +76,7 @@
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 4d --keep 3";
-      flake = "/Users/${username}/.config/nix";
+      flake = "${config.xdg.configHome}/nix";
     };
 
     # generate index with: nix-index --filter-prefix '/bin/'
@@ -85,12 +86,6 @@
       enableZshIntegration = false;
       enableFishIntegration = true;
     };
-
-    # Fish plugins:
-    #
-    # * https://github.com/shanyouli/nur-packages/blob/a7cf65f573baa8d6e655f42adedff17a8014935d/pkgs/fish/fisher.nix#L27
-    # * https://github.com/bswrundquist/dotfiles/blob/f51c42c7e4b1c9d27f2ce81281e58bdccb5fb766/home/fish.nix#L9
-    # * https://github.com/awalker/nixos-config/blob/943d50e5e1e545719e6933221255c14b0a60fdbc/home.nix#L84
   };
 
   targets.darwin.linkApps.enable = false;

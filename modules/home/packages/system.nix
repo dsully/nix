@@ -39,6 +39,7 @@
         dust
         fclones
         fd
+        fishPlugins.plugin-git
         fselect
         fzf
         gnutar
@@ -78,6 +79,9 @@
       ]
       ++ [
         xdg-open-svc
-      ];
+      ]
+      ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
+        fishPlugins.macos
+      ]);
   };
 }

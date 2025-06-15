@@ -19,6 +19,8 @@
     # Don't quarantine apps installed by homebrew with gatekeeper
     caskArgs.no_quarantine = true;
 
+    global.autoUpdate = false;
+
     onActivation = {
       autoUpdate = false;
       upgrade = false;
@@ -29,7 +31,7 @@
 
     casks = [
       "1password"
-      "adguard"
+      # "adguard"
       "bartender"
       "boltai"
       "cleanshot"
@@ -37,7 +39,6 @@
       "dash"
       "font-monaspace"
       "ghostty"
-      "iina"
       "keka"
       "little-snitch"
       "lm-studio"
@@ -53,7 +54,6 @@
       "soulver"
       "stay"
       "suspicious-package"
-      "syncthing"
       "tableplus"
       "tower"
       "transmit"
@@ -61,14 +61,9 @@
       "zed"
     ];
 
-    # Applications to install from Mac App Store using mas.
-    # You need to install all these Apps manually first so that your apple account have records for them.
-    # otherwise Apple Store will refuse to install them.
-    # For details, see https://github.com/mas-cli/mas
     masApps = {
       "1Password for Safari" = 1569813296;
       "Amphetamine" = 937984704;
-      "Black Out" = 1319884285;
       "Bonjourr Startpage" = 1615431236;
       "CleanMyKeyboard" = 6468120888;
       "Color Picker" = 1545870783;
@@ -92,7 +87,6 @@
       "TestFlight" = 899247664;
       "Text Lens" = 6743369285;
       "TrashMe 3" = 1490879410;
-      "Tripsy" = 1429967544;
       "Tuneful" = 6739804295;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;

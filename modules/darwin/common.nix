@@ -1,11 +1,9 @@
 {
-  config,
+  hostName,
   lib,
   pkgs,
   ...
-}: let
-  inherit (config.programs) fish;
-in rec {
+}: rec {
   imports = [
     ./homebrew.nix
 
@@ -29,23 +27,6 @@ in rec {
   environment = {
     # Avoid using programs.fish.enable = true, as that forces either
     # babelFish or foreign-env, both of which have significant startup cost.
-    pathsToLink =
-      ["/share/fish"]
-      ++ lib.optional fish.vendor.config.enable "/share/fish/vendor_conf.d"
-      ++ lib.optional fish.vendor.completions.enable "/share/fish/vendor_completions.d"
-      ++ lib.optional fish.vendor.functions.enable "/share/fish/vendor_functions.d";
-
-    # https://github.com/nix-darwin/nix-darwin/issues/943
-    profiles = lib.mkOrder 700 [
-      "\$HOME/.local/state/nix/profile"
-      "/etc/profiles/per-user/$USER"
-    ];
-
-    etc."sudoers.d/custom".text = ''
-      Defaults env_keep += "TERMINFO"
-      Defaults timestamp_timeout=-1
-    '';
-
     shells = [pkgs.fish];
 
     systemPackages = [
@@ -66,8 +47,7 @@ in rec {
 
         chflags nohidden ~/Library /Volumes
 
-        /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
-        /usr/bin/killall cfprefsd
+        # /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
       '';
     };
 
@@ -149,7 +129,7 @@ in rec {
         GuestEnabled = false;
       };
 
-      # smb.NetBIOSName = config.networking.hostName;
+      smb.NetBIOSName = hostName;
     };
 
     keyboard = {
@@ -162,16 +142,32 @@ in rec {
     stateVersion = 6;
   };
 
-  security.pam.services.sudo_local = {
-    touchIdAuth = true;
-    reattach = true;
+  security = {
+    pam.services.sudo_local = {
+      touchIdAuth = true;
+      reattach = true;
+    };
+
+    sudo.extraConfig = let
+      commands = [
+        "/run/current-system/sw/bin/darwin-rebuild"
+        "/run/current-system/sw/bin/nix*"
+      ];
+      commandsString = builtins.concatStringsSep ", " commands;
+    in ''
+      %admin ALL=(ALL:ALL) NOPASSWD: ${commandsString}
+
+      # Keep SSH_AUTH_SOCK so that pam_ssh_agent_auth.so can do its magic.
+      Defaults env_keep+=SSH_AUTH_SOCK
+
+      Defaults timestamp_timeout=-1
+    '';
   };
 
   users = {
     knownUsers = [system.primaryUser];
 
     users.${system.primaryUser} = {
-      home = "/Users/${system.primaryUser}";
       ignoreShellProgramCheck = true;
       shell = pkgs.fish;
       uid = lib.mkDefault 501;

@@ -17,6 +17,7 @@
       "fastmate"
       "fission"
       "google-chrome"
+      "iina"
       "insta360-studio"
       "latest"
       "macdive"
@@ -30,7 +31,6 @@
       "quickrecorder"
       "retrobatch"
       "signal"
-      # "soulseek"
       "superduper"
       "syncthing"
       "tableplus"
@@ -40,16 +40,13 @@
       "zipic"
     ];
 
-    # Applications to install from Mac App Store using mas.
-    # You need to install all these Apps manually first so that your apple account have records for them.
-    # otherwise Apple Store will refuse to install them.
-    # For details, see https://github.com/mas-cli/mas
     masApps = {
       "1Blocker" = 1365531024;
       "AVR Control" = 1059512196;
       "Acidity" = 6472630023;
       "AirPlayable" = 6475483628;
       "AutoMounter" = 1160435653;
+      "Black Out" = 1319884285;
       "Book Tracker" = 1496543317;
       "Brother P-touch Editor" = 1453365242;
       "Croissant" = 6670288979;
@@ -65,7 +62,6 @@
       "Homie" = 1533590432;
       "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
-      "Hyperspace" = 6739505345;
       "Infuse" = 1136220934;
       "Ivory" = 6444602274;
       "MetaImage" = 1397099749;
