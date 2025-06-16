@@ -6,7 +6,7 @@
   home = {
     packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
-        (hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
+        # (hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
         _1password-cli
         act
         age
@@ -64,7 +64,6 @@
         sd
         see-cat
         sniffnet
-        starship
         topgrade
         tree
         unar

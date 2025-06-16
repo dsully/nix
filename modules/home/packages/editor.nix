@@ -19,7 +19,7 @@
   local =
     (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
-  inherit (inputs.emmylua-analyzer-rust.packages.${pkgs.system}) emmylua_check emmylua_ls;
+  inherit (inputs.emmylua-analyzer-rust.packages.${pkgs.system}) emmylua_ls;
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
 
   tombi = inputs.tombi.packages.${pkgs.system}.default;
@@ -42,7 +42,6 @@ in {
         ccls
         commitlint-rs
         dockerfile-language-server-nodejs
-        emmylua_check
         emmylua_ls
         fish-lsp
         gitui
@@ -54,8 +53,6 @@ in {
         jinja-lsp
         just-lsp
         lemminx
-        lua-language-server
-        luajit
         markdownlint-cli2
         marksman
         mermaid
