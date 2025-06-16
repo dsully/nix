@@ -1,8 +1,4 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: let
+{pkgs, ...}: let
   substituters = [
     "https://cache.nixos.org/"
     "https://nix-community.cachix.org"
@@ -62,8 +58,5 @@ in {
 
   nixpkgs = {
     config.allowUnfree = true;
-    overlays = [
-      inputs.nh.overlays.default
-    ];
   };
 }
