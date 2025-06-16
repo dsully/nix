@@ -58,6 +58,7 @@
       "tower"
       "transmit"
       "typora"
+      "yaak"
       "zed"
     ];
 
