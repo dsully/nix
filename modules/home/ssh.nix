@@ -6,7 +6,7 @@
 }: let
   # Need to run with --impure
   hostname = builtins.getEnv "HOSTNAME";
-  homeDirectory = config.home.homeDirectory;
+  inherit (config.home) homeDirectory;
 
   remote_forwards = [
     {
