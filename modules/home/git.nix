@@ -4,7 +4,7 @@
   #
   #    https://git-scm.com/docs/git-config#Documentation/git-config.txt---global
   home.activation.removeExistingGitconfig = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
-    rm -f ~/.gitconfig
+    /bin/rm -f ~/.gitconfig
   '';
 
   programs.git = {
@@ -19,7 +19,7 @@
       {path = "conf.d/ghq.conf";}
       {
         condition = "hasconfig:remote.*.url:git@github.com:dsully/**";
-        path = "~/.config/git/conf.d/public.conf";
+        path = "conf.d/public.conf";
       }
     ];
 
@@ -44,7 +44,7 @@
 
       core = {
         # https://stackoverflow.com/questions/4994772/ways-to-improve-git-status-performance
-        fsmonitor = true;
+        fsmonitor = false;
 
         sshCommand = "/usr/bin/ssh";
 
