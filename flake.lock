@@ -93,11 +93,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1750061666,
-        "narHash": "sha256-eCxt7EKiefdDJc7vDUS9xlYFe/w5sfj/KyIgtbxW5JA=",
+        "lastModified": 1750139816,
+        "narHash": "sha256-Q/ZPCRDU+6OKbSVxcdWdOJsQ1jfFbaKqKcM3u4/Txws=",
         "owner": "EmmyLuaLs",
         "repo": "emmylua-analyzer-rust",
-        "rev": "0dc5f8029117ccf9e595c394b26658b723548d40",
+        "rev": "7d56390fbcfc0dddd0c4416a96b77f0f76302c1c",
         "type": "github"
       },
       "original": {
@@ -306,11 +306,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1750107071,
-        "narHash": "sha256-yfuHCO4m+gu3OBNGnP0/TL5W8nLXrC/EV1fs/+YcoL8=",
+        "lastModified": 1750127463,
+        "narHash": "sha256-K2xFtlD3PcKAZriOE3LaBLYmVfGQu+rIF4Jr1RFYR0Q=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "0edffd088e42fdc48598b37d88eb5345e2ca3937",
+        "rev": "28eef8722d1af18ca13e687dbf485e1c653a0402",
         "type": "github"
       },
       "original": {
@@ -586,11 +586,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1749994308,
-        "narHash": "sha256-ay8arpV/IVSOBIOQKDnixcdP/CtHbMb3CVQ+yoJQPnI=",
+        "lastModified": 1750129234,
+        "narHash": "sha256-jVN+I5xeeAsfmzGjqFu1V00SAbhgS5eo8TWEyvVz0Mc=",
         "owner": "tombi-toml",
         "repo": "tombi",
-        "rev": "64bf6bace478ed0da4b3b4f5741609a9a179b7ed",
+        "rev": "65d0b0383125e638f2819e3bce330ac6cd8904f9",
         "type": "github"
       },
       "original": {
