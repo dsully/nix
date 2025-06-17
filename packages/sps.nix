@@ -9,11 +9,11 @@ with pkgs;
       src = fetchFromGitHub {
         owner = "alexykn";
         repo = "sps";
-        rev = "6bb507dfd56d01732b05c4c4b7ec70bfffe78ae9";
-        hash = "sha256-AaSrqrNFjpftH9MHRiezWO2EhYJqFygJGhVvuIXxgHA=";
+        rev = "7afbc6ccce0da39b7cf7ff6f9aa472df1257cc01";
+        hash = "sha256-bmcr26uZDEpaifG0sTA+mpsDxAsW9DhT7TcoRwBdip0=";
       };
 
-      cargoHash = "sha256-43Uh6JBlQMDTwb2BCkdlBlgYiFwQP4kxNuw5OJYVJdo=";
+      cargoHash = "sha256-AD++cxM3nVuzzJxljgzEhcKZba2Z2ggBuRFCA5hefzg=";
       useFetchCargoVendor = true;
       doCheck = false;
 
