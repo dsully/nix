@@ -47,7 +47,6 @@ in {
         gitui
         gofumpt
         gopls
-        gotools
         harper
         imagemagick
         jinja-lsp
@@ -70,7 +69,6 @@ in {
         stylelint
         stylua
         superhtml
-        taplo
         tectonic-unwrapped
         tombi
         ts_query_ls

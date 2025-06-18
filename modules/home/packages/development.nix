@@ -24,7 +24,6 @@
         gnused
         go
         gofumpt
-        gotools
         gron
         helix
         hyperfine
