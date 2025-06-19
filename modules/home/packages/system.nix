@@ -70,7 +70,6 @@
         unzip
         viu
         wget
-        xcp
         xh
         xz
         zellij
@@ -79,8 +78,11 @@
       ++ [
         xdg-open-svc
       ]
-      ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
+      ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         fishPlugins.macos
-      ]);
+      ]
+      ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+        xcp
+      ];
   };
 }
