@@ -18,7 +18,11 @@
       {path = "conf.d/gist.conf";}
       {path = "conf.d/ghq.conf";}
       {
-        condition = "hasconfig:remote.*.url:git@github.com:dsully/**";
+        condition = "hasconfig:remote.*.url:git@github.com:.*";
+        path = "conf.d/public.conf";
+      }
+      {
+        condition = "hasconfig:remote.*.url:https://github.com/.*";
         path = "conf.d/public.conf";
       }
     ];
