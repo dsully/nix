@@ -13,6 +13,7 @@
     ./packages
     ./bat.nix
     ./git.nix
+    ./lolcate.nix
     ./ssh.nix
   ];
 

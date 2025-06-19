@@ -19,5 +19,6 @@ with pkgs;
       description = "xdg-open as a service";
       homepage = "https://github.com/caarlos0/xdg-open-svc";
       license = licenses.mit;
+      mainProgram = pname;
     };
   }

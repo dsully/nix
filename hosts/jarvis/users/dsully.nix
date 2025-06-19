@@ -8,6 +8,8 @@
 
   imports = [
     flake.homeModules.dsully
+    flake.homeModules.paste
+    flake.homeModules.xdg-open-svc
   ];
 
   home = {
