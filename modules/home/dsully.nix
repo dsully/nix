@@ -65,10 +65,9 @@
     # https://github.com/me-and/nixcfg/blob/689c91c8f5bdd7bed0d95ba2c85f6466d8b7452f/nixos/common/nix-index.nix#L11
     command-not-found.enable = false;
 
-    # direnv = {
-    #   enable = true;
-    #   nix-direnv.enable = true;
-    # };
+    direnv = {
+      nix-direnv.enable = true;
+    };
 
     home-manager.enable = true;
 

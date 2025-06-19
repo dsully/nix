@@ -11,6 +11,7 @@
         flake-checker
         nh
         nix-converter
+        nix-direnv
         nix-init
         nix-tree
         nix-update
