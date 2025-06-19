@@ -34,6 +34,15 @@
     ];
   };
 
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      # Allow xdg-open-svc to work.
+      AcceptEnv SSH_CLIENT_HOME SSH_CLIENT
+      StreamLocalBindUnlink yes
+    '';
+  };
+
   system = rec {
     activationScripts = {
       # Disable nix-darwin features I don't care about.
@@ -171,6 +180,16 @@
       ignoreShellProgramCheck = true;
       shell = pkgs.fish;
       uid = lib.mkDefault 501;
+
+      openssh.authorizedKeys = {
+        keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL4sDwDRuvlgW8AYzUsPoEyBxeJjl+ZpR3ScuCVg1gfL jarvis"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGC8/dtnUtRtj7vRv7StxW0xQ+VwfoBkenADsOpvxUAD server"
+          "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAwTWYLzOamYF5oiR5UmDAVrg1cJjSGoHD7L9oSpEELI0s8EJHQ9kNkse5Kg9qFYyJr5guTUfktekbwf6Vl2USs=
+stelvio"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGr3JjNRLsHjC1QgSPT/Qb25tTC/NbOl0zuJIraRfUXg zap"
+        ];
+      };
     };
   };
 }

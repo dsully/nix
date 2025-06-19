@@ -37,6 +37,7 @@ in {
     serverAliveInterval = 10;
 
     extraConfig = lib.mkIf pkgs.stdenv.isDarwin ''
+      SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_OS="Darwin"
       UseKeychain yes
     '';
 
@@ -105,13 +106,7 @@ in {
         {
           "server" = {
             hostname = "10.0.0.100";
-
             remoteForwards = remote_forwards;
-
-            setEnv = {
-              SSH_CLIENT_OS = "Darwin";
-              SSH_CLIENT_HOME = homeDirectory;
-            };
           };
 
           "travel" = {
