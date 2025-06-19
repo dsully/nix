@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage {
     pname = "magic-opener";
-    version = "0.2.1";
+    version = "0.2.2";
 
     src = fetchFromGitHub {
       owner = "dsully";
       repo = "magic-opener";
-      rev = "132fb9d24d00b93d5b3d49a0053c0ee9c0171f96";
-      hash = "sha256-nHRXGXcxOQt+ZzAWd0p6god4GkZbO3eiUCx7M5CzebM=";
+      rev = "039003d4a9b11cf338681c3d6093f6b6b91a92cd";
+      hash = "sha256-KyJndhXJIgofs+0JbYd7fCJaTXMI8T6rb+7sQc1bUuY=";
     };
 
-    cargoHash = "sha256-zhhbvOhP7fM5vSwts6uAmEkx1hRPg9zEs13bXPQ46VE=";
+    cargoHash = "sha256-wDUPVWQBCGGGkxs+vqBTz/5itKB4lpRpDIPJYAJknJM=";
     useFetchCargoVendor = true;
 
     meta = {
