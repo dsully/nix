@@ -19,10 +19,7 @@
   local =
     (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
-  inherit (inputs.emmylua-analyzer-rust.packages.${pkgs.system}) emmylua_ls;
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
-
-  tombi = inputs.tombi.packages.${pkgs.system}.default;
 
   # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
   mermaid =
@@ -42,7 +39,7 @@ in {
         ccls
         commitlint-rs
         dockerfile-language-server-nodejs
-        emmylua_ls
+        emmylua-analyzer-rust
         fish-lsp
         gitui
         gofumpt
@@ -60,7 +57,6 @@ in {
         nixd
         nixpkgs-fmt
         prettierd
-        protolint
         revive
         rstcheck
         ruff

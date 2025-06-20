@@ -23,7 +23,6 @@
         glow
         gnused
         go
-        gofumpt
         gron
         helix
         hyperfine
