@@ -41,7 +41,6 @@
     ];
 
     masApps = {
-      "1Blocker" = 1365531024;
       "AVR Control" = 1059512196;
       "Acidity" = 6472630023;
       "AirPlayable" = 6475483628;
@@ -72,8 +71,7 @@
       "Prime Video" = 545519333;
       "QR Studio" = 6740007834;
       "Radiance" = 1573366225;
-      "Reeder Classic" = 1529448980;
-      "Reeder New" = 6475002485;
+      "Reeder" = 6475002485;
       "Rules" = 6461118886;
       "SD Gallery" = 6445901857;
       "Screens 5" = 1663047912;
