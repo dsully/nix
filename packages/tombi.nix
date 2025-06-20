@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "tombi-toml";
       repo = "tombi";
-      rev = "459ba700e2a396d9bcd384f5c7ffbe9aae9b2e8f";
-      hash = "sha256-kh39BCKTDwYoijvT+VkWowawPsuF0E4o+buP1Invfe4=";
+      rev = "a458538a71b67968fa986cb07818df1ca0378f02";
+      hash = "sha256-xSxNisKJAA9lvAq1KzTxh3Lhc+p3ol55XzSKjg7m7RY=";
     };
 
     cargoHash = "sha256-y2pwEu006PsVmJKesAD/UDDbhdNre79AKZRAmFEZVDQ=";
