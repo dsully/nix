@@ -33,6 +33,7 @@ in {
         actionlint
         alejandra
         ast-grep
+        bake
         basedpyright
         bash-language-server
         biome
