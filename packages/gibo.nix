@@ -8,9 +8,8 @@ in
     src = pkgs.fetchFromGitHub {
       owner = "simonwhitaker";
       repo = "gibo";
-      # Keep at this rev until Nix has go 1.24.4+
-      rev = "ad7f4a114a30eea01cf52bf49cd52c9fd5eb87e1";
-      hash = "sha256-AC6PtEMJV92kw+8BrOOsHLxVvirBpkOdahgSHrrunaY=";
+      rev = "df8ff667b98085ea9d8ef6433d11c5f0d817049f";
+      hash = "sha256-Yj9q0UJQUxpNdIvWr++NAXBd6kcqQT1PFSUV5/2/HTs=";
     };
 
     vendorHash = "sha256-pD+7yvBydg1+BQFP0G8rRYTCO//Wg/6pzY19DLs42Gk=";

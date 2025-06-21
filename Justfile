@@ -125,11 +125,6 @@ build-packages +packages='all':
         set -l url (rg 'homepage = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
         set -l pkg (rg 'pname = "([^"]+)"' $file -o --max-count=1 --replace '$1' --no-line-number --color=never)
 
-        # Skip until go 1.24.4 is in nixpkgs
-        if test "$pkg" = "gibo"
-            continue
-        end
-
         echo -n "Checking $pkg: "
 
         set -l building "building..."
