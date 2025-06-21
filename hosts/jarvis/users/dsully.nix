@@ -26,7 +26,6 @@
         git-ai-commit
         reading-list-to-pinboard-rs
         turbo-commit
-        werk
       ]);
   };
 }

@@ -25,7 +25,6 @@
       ]
       ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
         safari-rs
-        sps
       ]);
   };
 }

@@ -22,7 +22,6 @@
         autorebase
         git-ai-commit
         turbo-commit
-        werk
       ]);
   };
 }
