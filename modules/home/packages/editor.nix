@@ -50,6 +50,7 @@ in {
         jinja-lsp
         just-lsp
         lemminx
+        mado
         markdownlint-cli2
         marksman
         mermaid
