@@ -20,6 +20,7 @@
     caskArgs.no_quarantine = true;
 
     global.autoUpdate = false;
+    greedyCasks = true;
 
     onActivation = {
       autoUpdate = false;
