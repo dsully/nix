@@ -9,11 +9,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "facebook";
       repo = "pyrefly";
-      rev = "39f10ddef76a9d8a135b8ba4ccd688cddd7b001c";
-      hash = "sha256-OIG2TMH+/CMXOssWeczXAnbORCsls/AgOtvq3NZq6vY=";
+      rev = "5baea66d94edffdd85458fafa8a34996854681a2";
+      hash = "sha256-ZlNreo/6zfkdP9+vt/2dM/4pLH7tjnbV4L3ApP1GxhQ=";
     };
 
-    cargoHash = "sha256-NNnj90N6KGskZgs5xM4Dzmz1h53Cw/53uX5B4npdzKk=";
+    cargoHash = "sha256-kmsRwcmXrBISTWIvGX+zOYPZp27N3yo4IrA9dd/19iE=";
 
     doCheck = false;
     useFetchCargoVendor = true;
