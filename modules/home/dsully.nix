@@ -12,6 +12,7 @@
 
     ./packages
     ./bat.nix
+    ./gh.nix
     ./git.nix
     ./lolcate.nix
     ./ssh.nix
