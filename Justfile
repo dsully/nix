@@ -16,7 +16,8 @@ system:
     #!/usr/bin/env bash
     if [ "{{ os() }}" == "linux" ]; then
 
-        /usr/bin/sudo --preserve-env=PATH /run/system-manager/sw/bin/system-manager switch --flake .
+        /usr/bin/sudo --preserve-env=PATH $(which system-manager) switch --flake .
+        /bin/rm -f result
 
     elif [ "{{ os() }}" == "macos" ]; then
 
@@ -52,7 +53,7 @@ alias clean := gc
 
 [group('nix')]
 gc:
-    @nh clean all
+    @sudo --preserve-env=PATH (which nh) clean all
 
 # Format the nix files in this repo
 
