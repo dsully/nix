@@ -58,6 +58,7 @@ in {
         nixd
         nixpkgs-fmt
         prettierd
+        pyrefly
         revive
         rstcheck
         ruff
