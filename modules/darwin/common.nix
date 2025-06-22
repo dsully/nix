@@ -159,6 +159,9 @@
 
     sudo.extraConfig = let
       commands = [
+        "/bin/launchctl"
+        "/nix/store/*/activate"
+        "/nix/var/nix/profiles/default/bin/nix*"
         "/run/current-system/sw/bin/darwin-rebuild"
         "/run/current-system/sw/bin/nix*"
       ];
