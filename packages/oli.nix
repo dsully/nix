@@ -1,6 +1,6 @@
 {pkgs, ...}:
 with pkgs;
-  rustPlatform.buildRustPackage {
+  rustPlatform.buildRustPackage rec {
     pname = "oli";
     version = "bb66e7c98b41b093780033797f0eba33fb71584c";
 
