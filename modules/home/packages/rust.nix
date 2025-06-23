@@ -8,6 +8,7 @@
       cargo-clone
       cargo-dist
       cargo-duplicates
+      cargo-edit
       cargo-features-manager
       cargo-insta
       cargo-llvm-lines

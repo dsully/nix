@@ -59,6 +59,7 @@ in {
         nixpkgs-fmt
         prettierd
         pyrefly
+        python313Packages.jedi-language-server
         revive
         rstcheck
         ruff
@@ -67,6 +68,9 @@ in {
         stylelint
         stylua
         superhtml
+        (systemd-language-server.overridePythonAttrs (_: {
+          doCheck = false;
+        }))
         tectonic-unwrapped
         tombi
         ts_query_ls
