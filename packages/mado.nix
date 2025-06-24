@@ -7,11 +7,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "akiomik";
       repo = "mado";
-      rev = "b0b0ef7fc4db96079b59f10afdd5b62455a0ba8c";
-      hash = "sha256-fjXP5s7KionIcSYAcy1tckHoiziSzDOguq3N3VYsoTc=";
+      rev = "59501455c0e870ffb2500ba84e3656b834d845ac";
+      hash = "sha256-nG7UkgJm9QcMCsORjQjw+BBJqwsShhhtaRaVwjzWAmg=";
     };
 
-    cargoHash = "sha256-h26a6C6Z9thkzZeZkSV3a04lXjhjDcRnCbZoPJb00gg=";
+    cargoHash = "sha256-zeldjoH5I4rLXrn145i2WAlg2m7QGIElP0GkmeYjmaU=";
     useFetchCargoVendor = true;
     doCheck = false;
 

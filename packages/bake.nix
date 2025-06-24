@@ -8,8 +8,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "EbodShojaei";
       repo = "bake";
-      rev = "6daf1b705abea40efed07b63464b376c353bb2c7";
-      hash = "sha256-Q1vmwnSNkg81WHThyw2xd3tLYwOHUzcwRgVmEYnJmCM=";
+      rev = "766d59ed4bfa14a600bc19e064277c7883b84d27";
+      hash = "sha256-vkK/NudpYs/7v2iXux9SD/JJ/bp3S+EycWk6deFV9ZE=";
     };
 
     build-system = [

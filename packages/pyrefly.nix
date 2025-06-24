@@ -9,8 +9,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "facebook";
       repo = "pyrefly";
-      rev = "005de4d51b70046221680344a769c983405129e6";
-      hash = "sha256-pHipReYWrhr0MJzZd7pkGCO8K0+0xpMMdvVXrQbJq4w=";
+      rev = "affebbea85d42e41f923464c7ddaeba531ad8acf";
+      hash = "sha256-h7eAt1kZOkbmbZlfAk0XaR0bnci0Iq6ph1bjx6HnrIE=";
     };
 
     cargoHash = "sha256-0MMWz2PxQJp6P0Kn0zer1qckZOA+i7DhIK6JBgfo3Lg=";
