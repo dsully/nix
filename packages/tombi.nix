@@ -7,11 +7,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "tombi-toml";
       repo = "tombi";
-      rev = "aefa853123ce5e84b8a000c067737f8d0bad57ab";
-      hash = "sha256-+0yzy2cysgZbccvt93Fls7xg7ieyq+cVpbFsV8x6cgQ=";
+      rev = "c051f9399c3bfad663f7ce166d3e799ddf11c073";
+      hash = "sha256-ZJ84JyIdHOJsksqUVYbFbND+Zif5L7j2UCmKVQTJetI=";
     };
 
-    cargoHash = "sha256-JyYA/Bu1gcj7s5hxx9LOcrN28Klhz3Qy1SbGoWEiwnA=";
+    cargoHash = "sha256-MVfUey9WG2SN6FwN7phR/1+W7XG+W3JvafAHLaCNvSo=";
     useFetchCargoVendor = true;
     doCheck = false;
 
