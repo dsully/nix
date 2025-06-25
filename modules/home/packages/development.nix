@@ -39,6 +39,7 @@
         uv
         vivid
         xan
+        yarn
         yek
         yq
         zig
