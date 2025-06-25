@@ -38,6 +38,7 @@
       "cleanshot"
       "daisydisk"
       "dash"
+      "fastmate"
       "font-monaspace"
       "ghostty"
       "keka"
@@ -91,14 +92,16 @@
       "Tuneful" = 6739804295;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
+      "iPreview" = 1519213509;
+      "Userscripts" = 1463298887;
       "WordService" = 899972312;
       "Xcode" = 497799835;
       "Yoink" = 457622435;
-      "iPreview" = 1519213509;
     };
 
     taps = [
       "lzt1008/powerflow"
+      "rajiv/fastmate"
     ];
   };
 }
