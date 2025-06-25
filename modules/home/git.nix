@@ -312,6 +312,8 @@ in {
 
       trim = {
         bases = "main,master,develop";
+        confirm = false;
+        update = true;
       };
 
       url = {
