@@ -4,6 +4,7 @@ export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NIX_CONFIG := "experimental-features = nix-command flakes"
 cache := env("CACHE", "1")
+force := env("FORCE", "0")
 update := env("UPDATE", "1")
 
 # This list
@@ -115,6 +116,15 @@ build-packages +packages='all':
         end
     end
 
+    function version
+        set -l repo (string join "/" (string split "/" $argv)[4..5])
+        set -l ver (xh -b https://api.github.com/repos/$repo/releases/latest Authorization:"token $GITHUB_TOKEN" | jq -r '.tag_name | ltrimstr("v")')
+
+        if test $status -eq 0
+            echo -n $ver
+        end
+    end
+
     set files (rg -l --color=never --sort path --type nix $pattern "src = " packages/)
 
     command mkdir -p build-results
@@ -163,30 +173,36 @@ build-packages +packages='all':
             set -l current_hash (rg '\bhash = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
             set -l current_rev (rg '\brev = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
 
-            if test -n "$current_rev"; and begin; test "$new_hash" != "$current_hash"; or test "$new_rev" != "$current_rev"; end
+            if test "$new_hash" = "$current_hash" -a "$new_rev" = "$current_rev" -a "{{ force }}" -eq 0
+                echo -s (set_color cyan) "up to date." (set_color normal)
+                continue
+            end
 
-                sd --fixed-strings "$current_hash" "$new_hash" "$file"
-                sd --fixed-strings "$current_rev" "$new_rev" "$file"
+            set -l new_version (version $url)
+            set -l current_version (rg '\bversion = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
 
-                # Clear cargo/vendor hashes
-                sd 'cargoHash = "[^"]*"' 'cargoHash = ""' "$file"
+            sd --fixed-strings "$current_hash" "$new_hash" "$file"
+            sd --fixed-strings "$current_rev" "$new_rev" "$file"
+            sd --fixed-strings "$current_version" "$new_version" "$file"
+
+            # Clear cargo/vendor hashes
+            sd 'cargoHash = "[^"]*"' 'cargoHash = ""' "$file"
+            sd "vendorHash = .*" "vendorHash = \"$new_hash\";" "$file"
+
+            echo -n "building for new hash @ $new_version..."
+
+            nix build .#$pkg --no-link > build-results/$pkg.log 2>&1
+
+            set new_hash (grep "got:" build-results/$pkg.log | awk '{print $2}')
+
+            if string match -qr 'sha256' -- "$new_hash"
+                echo
+                echo "  Got a new package hash: $new_hash"
+
+                sd "cargoHash = .*" "cargoHash = \"$new_hash\";" "$file"
                 sd "vendorHash = .*" "vendorHash = \"$new_hash\";" "$file"
 
-                echo -n "building for new hash..."
-
-                nix build .#$pkg --no-link > build-results/$pkg.log 2>&1
-
-                set new_hash (grep "got:" build-results/$pkg.log | awk '{print $2}')
-
-                if string match -qr 'sha256' -- "$new_hash"
-                    echo
-                    echo "  Got a new package hash: $new_hash"
-
-                    sd "cargoHash = .*" "cargoHash = \"$new_hash\";" "$file"
-                    sd "vendorHash = .*" "vendorHash = \"$new_hash\";" "$file"
-
-                    set building "  Rebuilding..."
-                end
+                set building "  Rebuilding..."
             end
         end
 
@@ -195,7 +211,7 @@ build-packages +packages='all':
         if nix build .#$pkg --no-link > build-results/$pkg.log 2>&1
             success $pkg
         else
-            echo (set_color red) "failed" (set_color normal) "! See build-results/$pkg.log for details."
+            echo -n -s (set_color red) " failed" (set_color normal) "! See build-results/$pkg.log for details."
             set failed true
         end
 
