@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "pamoller";
-      repo = "xmlformatter";
+      repo = pname;
       rev = "53068c4fdbbec295ae8d17cd71daa8e7ed3240fd";
       hash = "sha256-YQscegxq+6ftTyBeFtYjhtoNPe+dv2eGsine6HyCKaA=";
     };

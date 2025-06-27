@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "caarlos0";
-      repo = "xdg-open-svc";
+      repo = pname;
       rev = "65283ef6cd6ac632a749d41b5822e7d832733555";
       hash = "sha256-YCKiM/J76ajMCj15vtTtvCq51Whfv05Fw+4ebJgVMjY=";
     };

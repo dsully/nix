@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "anistark";
-      repo = "feluda";
+      repo = pname;
       rev = "cb0214e22999cbee8406035ff02d45651a31d266";
       hash = "sha256-+zEDfqX6DybtqEtci6jX6xyLx2CQAEPWSlWaE99RDHI=";
     };
@@ -27,6 +27,6 @@ with pkgs;
       description = "Detect license usage restrictions in your project";
       homepage = "https://github.com/anistark/feluda";
       license = lib.licenses.mit;
-      mainProgram = "feluda";
+      mainProgram = pname;
     };
   }

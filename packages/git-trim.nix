@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "foriequal0";
-      repo = "git-trim";
+      repo = pname;
       rev = "07c2f508308a4a59dfb333969518d02f8e328983";
       hash = "sha256-HAj5Ss8tSlc2wXvNIG9+I4wFMPr/Kf06zHyvWeFF7Ac=";
     };
@@ -29,6 +29,6 @@ with pkgs;
       description = "Automatically trims your branches whose tracking remote refs are merged or stray";
       homepage = "https://github.com/foriequal0/git-trim";
       license = lib.licenses.mit;
-      mainProgram = "git-trim";
+      mainProgram = pname;
     };
   }

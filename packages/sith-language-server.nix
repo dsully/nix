@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "LaBatata101";
-      repo = "sith-language-server";
+      repo = pname;
       rev = "2373054412a0e85ddb9554e40573fef2171b6370";
       hash = "sha256-eQjbKm+4GlPW3sumi1qHypgsOVTcU8Z8Afm4S8MjDUI=";
     };

@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "Rucadi";
-      repo = "njq";
+      repo = pname;
       rev = "fdf802c36bce38629a47af06f33b8376aeff46e8";
       hash = "sha256-AQlAeGS3WHf2Ke7Fk5v5DtiCrLfhtmX0E1eStGiALsc=";
     };
@@ -19,6 +19,6 @@ with pkgs;
       homepage = "https://github.com/Rucadi/njq";
       license = lib.licenses.mit;
       maintainers = with lib.maintainers; [dsully];
-      mainProgram = "njq";
+      mainProgram = pname;
     };
   }

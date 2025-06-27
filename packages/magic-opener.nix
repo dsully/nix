@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "dsully";
-      repo = "magic-opener";
+      repo = pname;
       rev = "039003d4a9b11cf338681c3d6093f6b6b91a92cd";
       hash = "sha256-KyJndhXJIgofs+0JbYd7fCJaTXMI8T6rb+7sQc1bUuY=";
     };

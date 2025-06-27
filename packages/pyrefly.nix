@@ -2,19 +2,18 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "pyrefly";
-    version = "0.20.0";
+    version = "0.21.0";
 
     env.RUSTC_BOOTSTRAP = 1;
 
     src = fetchFromGitHub {
       owner = "facebook";
-      repo = "pyrefly";
-      rev = "71a577153c463ea95fb967a9aa963a4ef25101a6";
-      hash = "sha256-WZy9BJdfjNck3LVm5I0FgS7G/Y+UvHJF3EMu5pJEmXc=";
+      repo = pname;
+      rev = "e18a21af44a51df7303f80d626f7190e164f9181";
+      hash = "sha256-OYyqVPcDg34kgf0p85h9kAcmt5xe0DSKi4yaJGHDRVE=";
     };
 
-    cargoHash = "sha256-0MMWz2PxQJp6P0Kn0zer1qckZOA+i7DhIK6JBgfo3Lg=";
-
+    cargoHash = "sha256-OQoUUAFS5c3YX27gmWeiHRIwaFpsXI8ibz3LO2cnOys=";
     doCheck = false;
     useFetchCargoVendor = true;
 

@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "akiomik";
-      repo = "mado";
+      repo = pname;
       rev = "59501455c0e870ffb2500ba84e3656b834d845ac";
       hash = "sha256-nG7UkgJm9QcMCsORjQjw+BBJqwsShhhtaRaVwjzWAmg=";
     };
@@ -45,6 +45,6 @@ with pkgs;
       homepage = "https://github.com/akiomik/mado";
       changelog = "https://github.com/akiomik/mado/blob/${src.rev}/CHANGELOG.md";
       license = lib.licenses.asl20;
-      mainProgram = "mado";
+      mainProgram = pname;
     };
   }

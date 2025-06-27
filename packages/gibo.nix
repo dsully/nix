@@ -7,7 +7,7 @@ in
 
     src = pkgs.fetchFromGitHub {
       owner = "simonwhitaker";
-      repo = "gibo";
+      repo = pname;
       rev = "df8ff667b98085ea9d8ef6433d11c5f0d817049f";
       hash = "sha256-Yj9q0UJQUxpNdIvWr++NAXBd6kcqQT1PFSUV5/2/HTs=";
     };

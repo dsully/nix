@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchFromGitHub {
       owner = "schwa";
-      repo = "reading-list-to-pinboard-rs";
+      repo = pname;
       rev = "1c15b962baef8311a46181ebcfd6d2cf5abc38e3";
       hash = "sha256-3dqB5B2Onp+hXbiQcNSKb1BRlDCSStR8EZpmph95Shg=";
     };
@@ -31,6 +31,6 @@ with pkgs;
       description = "A simple rust project to upload Safari Reading List links to pinboard or raindrop";
       homepage = "https://github.com/schwa/reading-list-to-pinboard-rs";
       license = lib.licenses.mit;
-      mainProgram = "reading-list-to-pinboard-rs";
+      mainProgram = pname;
     };
   }

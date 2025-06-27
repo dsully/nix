@@ -173,6 +173,11 @@ build-packages +packages='all':
             set -l current_hash (rg '\bhash = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
             set -l current_rev (rg '\brev = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
 
+            if test -z "$current_rev" -o -z "$new_rev"
+                echo -s (set_color red) "current_rev or new_rev was empty!." (set_color normal)
+                continue
+            end
+
             if test "$new_hash" = "$current_hash" -a "$new_rev" = "$current_rev" -a "{{ force }}" -eq 0
                 echo -s (set_color cyan) "up to date." (set_color normal)
                 continue
@@ -181,9 +186,17 @@ build-packages +packages='all':
             set -l new_version (version $url)
             set -l current_version (rg '\bversion = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
 
-            sd --fixed-strings "$current_hash" "$new_hash" "$file"
-            sd --fixed-strings "$current_rev" "$new_rev" "$file"
-            sd --fixed-strings "$current_version" "$new_version" "$file"
+            if test -n "$current_hash" -a -n "$new_hash"
+                sd --fixed-strings "$current_hash" "$new_hash" "$file"
+            end
+
+            if test -n "$current_rev" -a -n "$new_rev"
+                sd --fixed-strings "$current_rev" "$new_rev" "$file"
+            end
+
+            if test -n "$current_version" -a -n "$new_version"
+                sd --fixed-strings "$current_version" "$new_version" "$file"
+            end
 
             # Clear cargo/vendor hashes
             sd 'cargoHash = "[^"]*"' 'cargoHash = ""' "$file"
