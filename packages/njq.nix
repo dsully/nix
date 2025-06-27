@@ -1,6 +1,6 @@
 {pkgs, ...}:
 with pkgs;
-  rustPlatform.buildRustPackage {
+  rustPlatform.buildRustPackage rec {
     pname = "njq";
     version = "0.1.0";
 

@@ -1,6 +1,6 @@
 {pkgs, ...}:
 with pkgs;
-  rustPlatform.buildRustPackage {
+  rustPlatform.buildRustPackage rec {
     pname = "sith-language-server";
     version = "0.2.4-alpha";
 

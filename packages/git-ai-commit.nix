@@ -1,6 +1,6 @@
 {pkgs, ...}:
 with pkgs;
-  rustPlatform.buildRustPackage {
+  rustPlatform.buildRustPackage rec {
     pname = "git-ai-commit";
     version = "0.1.1";
 

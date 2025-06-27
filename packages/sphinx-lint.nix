@@ -1,6 +1,6 @@
 {pkgs, ...}:
 with pkgs;
-  python3.pkgs.buildPythonApplication {
+  python3.pkgs.buildPythonApplication rec {
     pname = "sphinx-lint";
     version = "1.0.0";
     pyproject = true;

@@ -84,7 +84,6 @@ in {
       ]
       ++ [
         codesort
-        ghostty-ls
         gh-actions-language-server
         pkl-lsp
         pyproject-fmt
