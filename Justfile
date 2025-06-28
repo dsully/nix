@@ -136,6 +136,10 @@ build-packages +packages='all':
         set -l url (rg 'homepage = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
         set -l pkg (rg 'pname = "([^"]+)"' $file -o --max-count=1 --replace '$1' --no-line-number --color=never)
 
+        if test $pkg = "chromium"
+            continue
+        end
+
         echo -n "Checking $pkg: "
 
         set -l building "building..."
