@@ -1,11 +1,13 @@
 {
   config,
+  flake,
   inputs,
   lib,
   pkgs,
-  username,
   ...
-}: {
+}: let
+  username = flake.lib.defaultUser;
+in {
   imports = [
     inputs.nix-index-database.hmModules.nix-index
     ../common/nix.nix

@@ -1,10 +1,9 @@
 {
+  flake,
   lib,
   pkgs,
-  username,
   ...
 }: let
-  name = "Dan Sully";
   editor = lib.getExe pkgs.neovim;
 in {
   # `programs.git` will generate the config file: ~/.config/git/config
@@ -20,7 +19,7 @@ in {
       ".config/git/public.conf" = {
         force = true;
         text = lib.generators.toGitINI {
-          user.email = "${username}@users.noreply.github.com";
+          user.email = flake.lib.publicEmail;
         };
       };
     };
@@ -50,7 +49,7 @@ in {
       first = "rev-list --max-parents=0 HEAD";
       incoming = "log HEAD..@{upstream}";
       last = "log -1 HEAD";
-      mine = "log --author=dsully";
+      mine = "log --author=${flake.lib.defaultUser}";
       outgoing = "log @{upstream}..HEAD";
       root = "rev-parse --show-toplevel";
       whoami = "config user.email";
@@ -327,7 +326,7 @@ in {
       };
 
       user = {
-        inherit name;
+        name = flake.lib.defaultUser;
         useConfigOnly = true;
       };
     };

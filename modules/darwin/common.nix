@@ -1,4 +1,5 @@
 {
+  flake,
   hostName,
   lib,
   pkgs,
@@ -146,7 +147,7 @@
       remapCapsLockToControl = true;
     };
 
-    primaryUser = "dsully";
+    primaryUser = flake.lib.defaultUser;
 
     stateVersion = 6;
   };

@@ -22,7 +22,7 @@ system:
 
     elif [ "{{ os() }}" == "macos" ]; then
 
-        nh darwin switch --update --ask .
+        nh darwin switch --ask .
 
     else
         echo "Unsupported OS: {{ os() }}"

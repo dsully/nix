@@ -4,10 +4,8 @@
   pkgs,
   ...
 }: {
-  _module.args.username = "dsully";
-
   imports = [
-    flake.homeModules.dsully
+    flake.homeModules.${flake.lib.defaultUser}
   ];
 
   home = {

@@ -23,5 +23,5 @@
     hostName = "jarvis";
   };
 
-  system.primaryUser = "dsully";
+  system.primaryUser = flake.lib.defaultUser;
 }
