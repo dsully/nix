@@ -54,7 +54,7 @@ alias clean := gc
 
 [group('nix')]
 gc:
-    @sudo --preserve-env=PATH (which nh) clean all
+    @/usr/bin/sudo --preserve-env=PATH (which nh) clean all
 
 # Format the nix files in this repo
 
