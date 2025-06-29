@@ -6,7 +6,6 @@
   ...
 }: rec {
   imports = [
-    ../common/chsh
     ./homebrew.nix
 
     ./defaults/activity-monitor.nix
@@ -34,11 +33,6 @@
     systemPackages = [
       pkgs.fish
     ];
-  };
-
-  chsh = {
-    users."${flake.lib.defaultUser}" = pkgs.fish;
-    useWrapper = true;
   };
 
   services.openssh = {

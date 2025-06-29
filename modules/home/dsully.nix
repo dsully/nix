@@ -11,6 +11,7 @@ in {
   imports = [
     inputs.nix-index-database.hmModules.nix-index
     ../common/nix.nix
+    ../common/chsh
 
     ./packages
     ./bat.nix
@@ -63,6 +64,8 @@ in {
         fi
       '';
     };
+
+    defaultShell = pkgs.fish;
   };
 
   programs = {
