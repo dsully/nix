@@ -58,6 +58,7 @@ in {
         nil
         nixd
         nixpkgs-fmt
+        oxc
         prettierd
         pyrefly
         python313Packages.jedi-language-server
