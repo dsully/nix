@@ -40,6 +40,7 @@ in {
         ccls
         commitlint-rs
         dockerfile-language-server-nodejs
+        dockerfmt
         emmylua-analyzer-rust
         fish-lsp
         gitui
