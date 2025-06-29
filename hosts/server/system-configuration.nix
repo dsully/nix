@@ -1,9 +1,16 @@
 {
+  flake,
   pkgs,
   system-manager,
   ...
 }: {
   config = {
+    imports = [
+      flake.modules.common.chsh
+    ];
+
+    chsh.users."${flake.lib.defaultUser}" = pkgs.fish;
+
     environment = {
       etc = {
         "sudoers.d/10-nix-commands".text = let
