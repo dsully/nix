@@ -77,6 +77,7 @@ in {
         typos
         vscode-langservers-extracted
         vtsls
+        wordnet
         write-good
         yaml-language-server-patched
         yamllint
