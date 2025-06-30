@@ -5,6 +5,7 @@
   ...
 }: let
   editor = lib.getExe pkgs.neovim;
+  email = (flake.inputs.upstream or flake).lib.publicEmail;
   username = (flake.inputs.upstream or flake).lib.defaultUser;
 in {
   # `programs.git` will generate the config file: ~/.config/git/config
@@ -20,7 +21,7 @@ in {
       ".config/git/public.conf" = {
         force = true;
         text = lib.generators.toGitINI {
-          user.email = flake.lib.publicEmail;
+          user.email = email;
         };
       };
     };
