@@ -116,15 +116,6 @@ build-packages +packages='all':
         end
     end
 
-    function version
-        set -l repo (string join "/" (string split "/" $argv)[4..5])
-        set -l ver (xh -b https://api.github.com/repos/$repo/releases/latest Authorization:"token $GITHUB_TOKEN" | jq -r '.tag_name | ltrimstr("v")')
-
-        if test $status -eq 0
-            echo -n $ver
-        end
-    end
-
     set files (rg -l --color=never --sort path --type nix $pattern "src = " packages/)
 
     command mkdir -p build-results
@@ -187,9 +178,6 @@ build-packages +packages='all':
                 continue
             end
 
-            set -l new_version (version $url)
-            set -l current_version (rg '\bversion = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
-
             if test -n "$current_hash" -a -n "$new_hash"
                 sd --fixed-strings "$current_hash" "$new_hash" "$file"
             end
@@ -198,15 +186,11 @@ build-packages +packages='all':
                 sd --fixed-strings "$current_rev" "$new_rev" "$file"
             end
 
-            if test -n "$current_version" -a -n "$new_version"
-                sd --fixed-strings "$current_version" "$new_version" "$file"
-            end
-
             # Clear cargo/vendor hashes
             sd 'cargoHash = "[^"]*"' 'cargoHash = ""' "$file"
             sd "vendorHash = .*" "vendorHash = \"$new_hash\";" "$file"
 
-            echo -n "building for new hash @ $new_version..."
+            echo -n "building for new hash ..."
 
             nix build .#$pkg --no-link > build-results/$pkg.log 2>&1
 
