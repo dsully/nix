@@ -4,7 +4,10 @@
   lib,
   pkgs,
   ...
-}: rec {
+}: let
+  username =
+    (flake.inputs.upstream or flake).lib.defaultUser;
+in rec {
   imports = [
     ./homebrew.nix
 
@@ -147,7 +150,7 @@
       remapCapsLockToControl = true;
     };
 
-    primaryUser = flake.lib.defaultUser;
+    primaryUser = username;
 
     stateVersion = 6;
   };

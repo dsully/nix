@@ -6,7 +6,7 @@
   pkgs,
   ...
 }: let
-  username = flake.lib.defaultUser;
+  username = (flake.inputs.upstream or flake).lib.defaultUser;
 in {
   imports = [
     inputs.nix-index-database.hmModules.nix-index

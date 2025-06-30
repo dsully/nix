@@ -5,6 +5,7 @@
   ...
 }: let
   editor = lib.getExe pkgs.neovim;
+  username = (flake.inputs.upstream or flake).lib.defaultUser;
 in {
   # `programs.git` will generate the config file: ~/.config/git/config
   # to make git use this config file, `~/.gitconfig` should not exist!
@@ -49,7 +50,7 @@ in {
       first = "rev-list --max-parents=0 HEAD";
       incoming = "log HEAD..@{upstream}";
       last = "log -1 HEAD";
-      mine = "log --author=${flake.lib.defaultUser}";
+      mine = "log --author=${username}";
       outgoing = "log @{upstream}..HEAD";
       root = "rev-parse --show-toplevel";
       whoami = "config user.email";
@@ -326,7 +327,7 @@ in {
       };
 
       user = {
-        name = flake.lib.defaultUser;
+        name = username;
         useConfigOnly = true;
       };
     };
