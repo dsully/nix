@@ -70,9 +70,7 @@ in {
         stylelint
         stylua
         superhtml
-        (systemd-language-server.overridePythonAttrs (_: {
-          doCheck = false;
-        }))
+        systemd-lsp
         tectonic-unwrapped
         tombi
         ts_query_ls
