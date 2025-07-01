@@ -1,9 +1,8 @@
 {
-  config,
   flake,
   lib,
   ...
-}: rec {
+}: {
   # Disable home-manager via nix-darwin
   #
   # https://github.com/numtide/blueprint/issues/116
@@ -16,13 +15,4 @@
     ./homebrew.nix
     ./options.nix
   ];
-
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
-  networking = {
-    computerName = system.hostName;
-    inherit (system) hostName;
-  };
-
-  system.primaryUser = config.system.userName;
 }

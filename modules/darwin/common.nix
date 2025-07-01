@@ -1,10 +1,11 @@
 {
   config,
-  hostName,
   lib,
   pkgs,
   ...
-}: rec {
+}: let
+  hostName = config.system.hostName;
+in rec {
   imports = [
     ./homebrew.nix
 
@@ -34,6 +35,13 @@
       pkgs.fish
     ];
   };
+
+  networking = {
+    computerName = hostName;
+    inherit hostName;
+  };
+
+  nixpkgs.hostPlatform = "aarch64-darwin";
 
   services.openssh = {
     enable = true;
