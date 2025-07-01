@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    rev = "28ab61d8850af9abe7f5b3f0406008b8abde4f8c";
+    rev = "316c1b21e29f553c28533216221fd679258bf67d";
     pname = "ty";
     version = "0.12.1";
 
@@ -9,11 +9,11 @@ with pkgs;
       inherit rev;
       owner = "astral-sh";
       repo = "ruff";
-      hash = "sha256-mpL2bFKGSxPsddXKLxXDeIDXaKEyhkvsINohyYHBFhM=";
+      hash = "sha256-Z3zLHemzLwYtfumjNGbhwO6UITRavUD+9BtJtK2jTlo=";
     };
 
     cargoBuildFlags = ["--package=ty"];
-    cargoHash = "sha256-s1KSEByAcsNz2fGN5hh/wXUACKdDVD7hS8aA8wC9mYs=";
+    cargoHash = "sha256-x5GpmNGuXfavnWH1umExp3EqM2GoyhyNZwAZVMIgGv4=";
 
     doCheck = false;
     nativeBuildInputs = [installShellFiles];
