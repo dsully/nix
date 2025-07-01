@@ -31,7 +31,7 @@ system:
 # Switch Home Manager Configuration
 [group('desktop')]
 switch:
-    @nh home switch --ask . -- --impure
+    @nh home switch --ask .
 
 # Update all the flake inputs
 [group('nix')]

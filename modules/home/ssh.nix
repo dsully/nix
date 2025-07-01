@@ -1,11 +1,12 @@
 {
   config,
+  flake,
   lib,
   pkgs,
   ...
 }: let
-  # Need to run with --impure
-  hostname = builtins.getEnv "HOSTNAME";
+  hostname = flake.lib.hostname;
+
   inherit (config.home) homeDirectory;
 
   remote_forwards = [
@@ -39,6 +40,8 @@ in {
     extraConfig = lib.mkIf pkgs.stdenv.isDarwin ''
       SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_OS="Darwin"
       UseKeychain yes
+
+      # ${hostname}
     '';
 
     matchBlocks = lib.mkMerge [

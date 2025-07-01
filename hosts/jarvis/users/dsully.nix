@@ -11,6 +11,8 @@
     flake.homeModules.xdg-open-svc
   ];
 
+  lib.hostname = "jarvis";
+
   home = {
     packages = with pkgs;
       [
