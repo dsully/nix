@@ -1,17 +1,16 @@
 {
   config,
-  flake,
   inputs,
   lib,
   pkgs,
   ...
 }: let
-  username = (flake.inputs.upstream or flake).lib.defaultUser;
+  inherit (config.system) userName;
 in {
   imports = [
     inputs.nix-index-database.hmModules.nix-index
-    ../common/nix.nix
     ../common/chsh
+    ../common/nix.nix
 
     ./packages
     ./bat.nix
@@ -31,9 +30,9 @@ in {
         mkdir -p ~/.local/share
 
         if ! [ -d "$HOME/.local/share/chezmoi" ]; then
-          ${lib.getExe pkgs.git} clone git@github.com:${username}/dotfiles.git ~/.local/share/chezmoi
+          ${lib.getExe pkgs.git} clone git@github.com:${userName}/dotfiles.git ~/.local/share/chezmoi
 
-          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${username} < /dev/null
+          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${userName} < /dev/null
           ${lib.getExe pkgs.chezmoi} apply || true
         fi
       '';
@@ -41,7 +40,7 @@ in {
       neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
 
         if ! [ -d "$HOME/.config/nvim" ]; then
-          ${lib.getExe pkgs.git} clone git@github.com:${username}/nvim.git ~/.config/nvim
+          ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
         fi
       '';
 

@@ -1,13 +1,11 @@
 {
   config,
-  flake,
   lib,
   pkgs,
   ...
 }: let
-  hostname = flake.lib.hostname;
-
   inherit (config.home) homeDirectory;
+  inherit (config.system) hostName;
 
   remote_forwards = [
     {
@@ -41,7 +39,7 @@ in {
       SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_OS="Darwin"
       UseKeychain yes
 
-      # ${hostname}
+      # ${hostName}
     '';
 
     matchBlocks = lib.mkMerge [
@@ -67,7 +65,7 @@ in {
         };
       }
 
-      (lib.mkIf (hostname != "stelvio") {
+      (lib.mkIf (hostName != "stelvio") {
         "sisyphus" = {
           hostname = "10.0.0.135";
           user = "pi";
@@ -99,13 +97,13 @@ in {
         };
       })
 
-      (lib.mkIf (hostname != "jarvis") {
+      (lib.mkIf (hostName != "jarvis") {
         "jarvis" = {
           hostname = "10.0.0.97";
         };
       })
 
-      (lib.mkIf (hostname == "jarvis")
+      (lib.mkIf (hostName == "jarvis")
         {
           "server" = {
             hostname = "10.0.0.100";

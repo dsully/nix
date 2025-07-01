@@ -6,6 +6,10 @@
     "https://dsully.cachix.org"
   ];
 in {
+  imports = [
+    ../common/options.nix
+  ];
+
   nix = {
     enable = true;
 
