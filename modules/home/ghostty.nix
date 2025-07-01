@@ -33,6 +33,7 @@
 
       # Allow for Option-P, etc.
       clipboard-paste-protection = false;
+      clipboard-read = "allow";
 
       keybind = [
         # Remove once there is scroll back search.

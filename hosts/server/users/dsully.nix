@@ -8,6 +8,8 @@
     flake.homeModules.${flake.lib.defaultUser}
   ];
 
+  lib.hostname = "server";
+
   home = {
     packages = with pkgs;
       [
