@@ -9,9 +9,8 @@
     flake.homeModules.ghostty
     flake.homeModules.paste
     flake.homeModules.xdg-open-svc
+    ../options.nix
   ];
-
-  system.hostName = "jarvis";
 
   home = {
     packages = with pkgs;

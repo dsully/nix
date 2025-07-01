@@ -5,10 +5,9 @@
   ...
 }: {
   imports = [
-    flake.homeModules.${flake.lib.defaultUser}
+    flake.homeModules.dsully
+    ../options.nix
   ];
-
-  lib.hostname = "server";
 
   home = {
     packages = with pkgs;

@@ -1,0 +1,3 @@
+_: {
+  system.hostName = "server";
+}

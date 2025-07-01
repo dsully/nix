@@ -1,8 +1,14 @@
 {
+  flake,
   pkgs,
   system-manager,
   ...
 }: {
+  imports = [
+    flake.modules.common.options
+    ./options.nix
+  ];
+
   config = {
     environment = {
       etc = {
@@ -20,12 +26,12 @@
       };
 
       systemPackages = with pkgs; [
+        fish
         liquidctl
         system-manager
       ];
     };
 
     nixpkgs.hostPlatform = "x86_64-linux";
-    system.hostName = "server";
   };
 }
