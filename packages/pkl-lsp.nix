@@ -2,15 +2,15 @@
 with pkgs;
   stdenv.mkDerivation rec {
     pname = "pkl-lsp";
-    version = "0.2.0";
+    version = "0.3.2";
 
     src = fetchurl {
       url = "https://github.com/apple/pkl-lsp/releases/download/${version}/${pname}-${version}.jar";
-      hash = "sha256-X0vjugzNSF3LUJAku/sUkNWrjcZCNUwwuTv6q3Dmsek=";
+      hash = "sha256-83Tl4uhymlgkPX+npEmUM3tyKL8OAVVP4/MGq34goW8=";
     };
 
     nativeBuildInputs = [makeWrapper];
-    buildInputs = [jdk23_headless];
+    buildInputs = [jdk24_headless];
 
     dontUnpack = true;
 
@@ -19,7 +19,7 @@ with pkgs;
       cp $src $out/share/java/${pname}-${version}.jar
 
       # shellcheck disable=SC1072,SC1073,SC1009
-      makeWrapper ${jdk23_headless}/bin/java $out/bin/${pname} --add-flags "-jar $out/share/java/${pname}-${version}.jar"'';
+      makeWrapper ${jdk24_headless}/bin/java $out/bin/${pname} --add-flags "-jar $out/share/java/${pname}-${version}.jar"'';
 
     meta = {
       description = "Language server for Pkl, implementing the server-side of the Language Server Protocol";
