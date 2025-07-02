@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  hostName = config.system.hostName;
+  inherit (config.system) hostName;
 in rec {
   imports = [
     ./homebrew.nix

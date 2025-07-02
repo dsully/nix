@@ -24,6 +24,7 @@ in
         ];
 
         unpackPhase = ''
+          #!/bin/bash
           mkdir -p ./Applications
           ${hdiutil} attach -readonly -mountpoint mnt $src
           cp -r "mnt/${sourceRoot}" .
@@ -31,6 +32,7 @@ in
         '';
 
         installPhase = ''
+          #!/bin/bash
           runHook preInstall
           mkdir -p "$out/Applications/${sourceRoot}"
           cp -R . "$out/Applications/${sourceRoot}"

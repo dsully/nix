@@ -41,23 +41,25 @@ in {
       chsh =
         if types.shellPackage.check shell && pkgs.stdenv.isDarwin
         then
-          lib.hm.dag.entryAfter ["writeBoundary"] ''
-            # Install wrapper and set default shell
-            echo "installing shell wrapper and setting default shell for ${username}..." >&2
+          lib.hm.dag.entryAfter ["writeBoundary"]
+          ''
+            #!/bin/bash
+            if [ ! -x "${wrapperPath}" ]; then
+                echo "installing shell wrapper ..." >&2
 
-            /usr/bin/sudo /bin/mkdir -p "$(dirname ${wrapperPath})"
-            /usr/bin/sudo /bin/cp ${mkWrapper shell}/bin/shell-wrapper ${wrapperPath}
-            /usr/bin/sudo /bin/chmod 0755 "${wrapperPath}"
-            /usr/bin/sudo /usr/sbin/chown root ${wrapperPath}
+                /usr/bin/sudo /bin/mkdir -p "$(dirname ${wrapperPath})"
+                /usr/bin/sudo /bin/cp ${mkWrapper shell}/bin/shell-wrapper ${wrapperPath}
+                /usr/bin/sudo /bin/chmod 0755 "${wrapperPath}"
+                /usr/bin/sudo /usr/sbin/chown root ${wrapperPath}
+            fi
 
             if [ "$(dscl . -read /Users/${username} UserShell 2>/dev/null | sed 's/UserShell: //')" != ${wrapperPath} ]; then
-              $DRY_RUN_CMD /usr/bin/sudo /usr/bin/chsh -s ${wrapperPath} ${username}
+                echo "setting default shell for ${username} ..." >&2
+                $DRY_RUN_CMD /usr/bin/sudo /usr/bin/chsh -s ${wrapperPath} ${username}
             fi
           ''
         else
           lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-            # Set default shell directly
-            echo "setting default shell for ${username}..." >&2
 
             SHELL_PATH="${
               if types.shellPackage.check shell
@@ -68,19 +70,25 @@ in {
             ${
               if pkgs.stdenv.isDarwin
               then ''
-                if [ "$(dscl . -read /Users/${username} UserShell 2>/dev/null | sed 's/UserShell: //')" != "$SHELL_PATH" ]; then
-                  $DRY_RUN_CMD /usr/bin/sudo /usr/bin/chsh -s "$SHELL_PATH" ${username}
+                #!/bin/bash
+                if [ "$(dscl . -read /Users/"$username" UserShell 2> /dev/null | sed 's/UserShell: //')" != "$SHELL_PATH" ]; then
+                    echo "setting default shell for ${username} to $SHELL_PATH..." >&2
+
+                    "$DRY_RUN_CMD" /usr/bin/sudo /usr/bin/chsh -s "$SHELL_PATH" "$username"
                 fi
               ''
               else ''
-                if [ "$(/usr/bin/getent passwd ${username} | cut -d: -f7)" != "$SHELL_PATH" ]; then
+                #!/bin/bash
 
-                  if ! grep -q "$SHELL_PATH" /etc/shells 2>/dev/null; then
-                    echo "Adding $SHELL_PATH to /etc/shells"
-                    echo "$SHELL_PATH" | /usr/bin/sudo tee -a /etc/shells > /dev/null
-                  fi
+                if [ "$(/usr/bin/getent passwd "$username" | cut -d: -f7)" != "$SHELL_PATH" ]; then
+                    echo "setting default shell for ${username} to $SHELL_PATH..." >&2
 
-                  $DRY_RUN_CMD /bin/chsh -s "$SHELL_PATH" ${username}
+                    if ! grep -q "$SHELL_PATH" /etc/shells 2> /dev/null; then
+                        echo "Adding $SHELL_PATH to /etc/shells"
+                        echo "$SHELL_PATH" | /usr/bin/sudo tee -a /etc/shells > /dev/null
+                    fi
+
+                    "$DRY_RUN_CMD" /bin/chsh -s "$SHELL_PATH" "$username"
                 fi
               ''
             }

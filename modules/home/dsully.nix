@@ -27,6 +27,7 @@ in {
 
     activation = {
       chezmoi = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
+        #!/usr/bash
         mkdir -p ~/.local/share
 
         if ! [ -d "$HOME/.local/share/chezmoi" ]; then
@@ -38,28 +39,31 @@ in {
       '';
 
       neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
+        #!/usr/bash
 
         if ! [ -d "$HOME/.config/nvim" ]; then
-          ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
+            ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
         fi
       '';
 
       symlinks = ''
+        #!/usr/bash
+
         if [ "$(uname -s)" == "Darwin" ]; then
-            if ! [ -d $HOME/Downloads ] && ! [ -L $HOME/Downloads ]; then
+            if ! [ -d "$HOME"/Downloads ] && ! [ -L "$HOME"/Downloads ]; then
                 echo "Moving ~/Downloads to symlink into iCloud."
 
-                /usr/bin/sudo rm -rf $HOME/Downloads
-                ln -sf $HOME/iCloud/Downloads $HOME/Downloads
+                /usr/bin/sudo rm -rf "$HOME"/Downloads
+                ln -sf "$HOME"/iCloud/Downloads "$HOME"/Downloads
             fi
 
-            if ! [ -L $HOME/iCloud ]; then
-                ln -s $HOME/Library/Mobile\ Documents/com~apple~CloudDocs $HOME/iCloud
+            if ! [ -L "$HOME"/iCloud ]; then
+                ln -s "$HOME"/Library/Mobile\ Documents/com~apple~CloudDocs "$HOME"/iCloud
             fi
         fi
 
-        if ! [ -L $HOME/src ]; then
-            ln -sf $HOME/dev/src $HOME/src
+        if ! [ -L "$HOME"/src ]; then
+            ln -sf "$HOME"/dev/src "$HOME"/src
         fi
       '';
     };

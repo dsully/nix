@@ -1,6 +1,5 @@
 {
   flake,
-  perSystem,
   pkgs,
   ...
 }: {
@@ -10,10 +9,9 @@
   ];
 
   home = {
-    packages = with pkgs;
-      [
-        nix-output-monitor
-        pandoc
-      ];
+    packages = with pkgs; [
+      nix-output-monitor
+      pandoc
+    ];
   };
 }
