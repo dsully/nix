@@ -55,7 +55,7 @@ in {
             fi
           ''
         else
-          lib.hm.dag.entryAfter ["writeBoundary"] ''
+          lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
             # Set default shell directly
             echo "setting default shell for ${username}..." >&2
 
@@ -73,8 +73,14 @@ in {
                 fi
               ''
               else ''
-                if [ "$(getent passwd ${username} | cut -d: -f7)" != "$SHELL_PATH" ]; then
-                  $DRY_RUN_CMD /bin/sudo /bin/chsh -s "$SHELL_PATH" ${username}
+                if [ "$(/usr/bin/getent passwd ${username} | cut -d: -f7)" != "$SHELL_PATH" ]; then
+
+                  if ! grep -q "$SHELL_PATH" /etc/shells 2>/dev/null; then
+                    echo "Adding $SHELL_PATH to /etc/shells"
+                    echo "$SHELL_PATH" | /usr/bin/sudo tee -a /etc/shells > /dev/null
+                  fi
+
+                  $DRY_RUN_CMD /bin/chsh -s "$SHELL_PATH" ${username}
                 fi
               ''
             }
