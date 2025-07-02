@@ -59,23 +59,15 @@ if ! nix shell nixpkgs#gh --command gh auth status; then
     nix shell nixpkgs#gh --command gh auth login -p ssh
 fi
 
-mkdir -p ~/.config
-cd ~/.config
-
-if [ ! -d ~/.config/nix ]; then
+if [ ! -d "$XDG_CONFIG_HOME"/nix ]; then
     echo "Cloning nix config:"
-    nix shell nixpkgs#gh --command gh repo clone dsully/nix
-else
-    echo "Updating nix config:"
-    cd ~/.config/nix
-    nix shell nixpkgs#git --command git pull
+    nix shell nixpkgs#gh --command gh repo clone dsully/nix $XDG_CONFIG_HOME/nix
 fi
 
-if [ "$OS" = "Darwin" ]; then
-    nix run nixpkgs#nh -- darwin switch --ask .
-else
-    nix run nixpkgs#nh -- os switch --ask .
-fi
+cd "$XDG_CONFIG_HOME"/nix
+
+nix shell nixpkgs#just --command just -f $XDG_CONFIG_HOME/nix/Justfile system
+nix shell nixpkgs#just --command just -f $XDG_CONFIG_HOME/nix/Justfile switch
 
 # Attach to a TTY for input prompting.
 stdin='/dev/null'
