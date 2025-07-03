@@ -8,6 +8,7 @@
       [
         claude-code
         cyme
+        dive
         fork-cleaner
         fx
         gh
