@@ -3,6 +3,7 @@ with pkgs;
   python3.pkgs.buildPythonApplication rec {
     pname = "xmlformatter";
     version = "0.2.8";
+    pyproject = true;
 
     src = fetchFromGitHub {
       owner = "pamoller";
