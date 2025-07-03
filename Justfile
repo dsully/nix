@@ -31,7 +31,7 @@ system:
 # Switch Home Manager Configuration
 [group('desktop')]
 switch:
-    @nh home switch --ask .
+    @nh home switch --ask -b backup .
 
 # Update all the flake inputs
 [group('nix')]

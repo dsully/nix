@@ -71,24 +71,24 @@ in {
               if pkgs.stdenv.isDarwin
               then ''
                 #!/bin/bash
-                if [ "$(dscl . -read /Users/"$username" UserShell 2> /dev/null | sed 's/UserShell: //')" != "$SHELL_PATH" ]; then
+                if [ "$(dscl . -read /Users/${username} UserShell 2> /dev/null | sed 's/UserShell: //')" != "$SHELL_PATH" ]; then
                     echo "setting default shell for ${username} to $SHELL_PATH..." >&2
 
-                    "$DRY_RUN_CMD" /usr/bin/sudo /usr/bin/chsh -s "$SHELL_PATH" "$username"
+                    $DRY_RUN_CMD /usr/bin/chsh -s $SHELL_PATH ${username}
                 fi
               ''
               else ''
                 #!/bin/bash
 
-                if [ "$(/usr/bin/getent passwd "$username" | cut -d: -f7)" != "$SHELL_PATH" ]; then
+                if [ "$(/bin/getent passwd ${username} | /bin/cut -d: -f7)" != "$SHELL_PATH" ]; then
                     echo "setting default shell for ${username} to $SHELL_PATH..." >&2
 
-                    if ! grep -q "$SHELL_PATH" /etc/shells 2> /dev/null; then
+                    if ! /bin/grep -q "$SHELL_PATH" /etc/shells 2> /dev/null; then
                         echo "Adding $SHELL_PATH to /etc/shells"
-                        echo "$SHELL_PATH" | /usr/bin/sudo tee -a /etc/shells > /dev/null
+                        echo "$SHELL_PATH" | /usr/bin/sudo /bin/tee -a /etc/shells > /dev/null
                     fi
 
-                    "$DRY_RUN_CMD" /bin/chsh -s "$SHELL_PATH" "$username"
+                    $DRY_RUN_CMD /bin/chsh -s $SHELL_PATH ${username}
                 fi
               ''
             }
