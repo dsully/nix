@@ -9,11 +9,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "facebook";
       repo = pname;
-      rev = "fe08893549edd24a42562bbcc996ffbe749a2611";
-      hash = "sha256-PQGlCQAsKejSusLzaNXzqgAL+TwUj8MeqZa6ZoF63EM=";
+      rev = "058c3a721593846c8eb665e697c007934428c4df";
+      hash = "sha256-Az+RFte3iwvByrYiFBh0bUIjSspsjmixZrQWvndS244=";
     };
 
-    cargoHash = "sha256-ql66BrQlsTopzfP92+Yosjx6cWmM/9Aikza1YfKlF7U=";
+    cargoHash = "sha256-tBtZCX7HLIAmqBxBaHGzxR7Ro2pVk4VYJmElSQqDl+w=";
     doCheck = false;
     useFetchCargoVendor = true;
 
