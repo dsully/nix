@@ -1,15 +1,16 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
+    rev = "7c8e5c906028488efc24ec81d2f531b45af61591";
     pname = "pyrefly";
-    version = "0.21.0";
+    version = "0.22.0-${rev}";
 
     env.RUSTC_BOOTSTRAP = 1;
 
     src = fetchFromGitHub {
+      inherit rev;
       owner = "facebook";
       repo = pname;
-      rev = "058c3a721593846c8eb665e697c007934428c4df";
       hash = "sha256-Az+RFte3iwvByrYiFBh0bUIjSspsjmixZrQWvndS244=";
     };
 
