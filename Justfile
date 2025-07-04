@@ -127,7 +127,8 @@ build-packages +packages='all':
         set -l url (rg 'homepage = "([^"]+)"' $file -o --replace '$1' --no-line-number --color=never)
         set -l pkg (rg 'pname = "([^"]+)"' $file -o --max-count=1 --replace '$1' --no-line-number --color=never)
 
-        if test $pkg = "chromium"
+        if test $pkg = "chromium" -o $pkg = "pyrefly" -a "{{ force }}" -eq 0
+
             continue
         end
 
