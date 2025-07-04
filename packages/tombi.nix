@@ -1,13 +1,14 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
+    rev = "4753decba90e5fff24c1d44acd60bd48cdd9d30f";
     pname = "tombi";
-    version = "0.4.16";
+    version = "0.4.16-${rev}";
 
     src = fetchFromGitHub {
+      inherit rev;
       owner = "tombi-toml";
       repo = pname;
-      rev = "4753decba90e5fff24c1d44acd60bd48cdd9d30f";
       hash = "sha256-FZijcE+NrRyV0dFL7UZSabYcQwW3vuURne67BFS4Sys=";
     };
 

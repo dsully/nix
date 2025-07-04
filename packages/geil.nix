@@ -1,13 +1,14 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
+    rev = "d0e9dd8564eb2225e4b96f7954f7ad929a3e82f7";
     pname = "geil";
-    version = "0.0.1-alpha.1";
+    version = "0.0.1-alpha.1-${rev}";
 
     src = fetchFromGitHub {
+      inherit rev;
       owner = "Nukesor";
       repo = pname;
-      rev = "d0e9dd8564eb2225e4b96f7954f7ad929a3e82f7";
       hash = "sha256-phGElLly9QrxASwyNAEs6hgreSmFerEfRxcF7MPN1so=";
     };
 
