@@ -61,6 +61,7 @@
         ripgrep
         rnr
         rsync
+        sad
         sd
         see-cat
         sniffnet
