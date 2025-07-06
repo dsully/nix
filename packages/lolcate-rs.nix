@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "lolcate-rs";
-    version = "0.2.2";
+    version = "0.2.3";
 
     src = fetchFromGitHub {
       owner = "dsully";
       repo = pname;
-      rev = "03b1cede298b05a35dcd94a211f043e2d45a2d22";
-      hash = "sha256-3S02l9/I53FuXnwL7pnQx6sIzxVnRMxfN7Ftm4OBmbU=";
+      rev = "aa7325587c3214c17337ab405708c6af2b7f44b8";
+      hash = "sha256-IyGsDvgwzSAYGupdil5RUPDdzG11f/EdtWPa8yyBmHg=";
     };
 
-    cargoHash = "sha256-7p2pBe7gWXw+bnKFBO886AHCNrilPXuGUwf7oAlFx5Y=";
+    cargoHash = "sha256-ktaf+dkhxojj0xbGij02EN7nb8oTLCcaSpzLcRk4wXE=";
     useFetchCargoVendor = true;
 
     meta = {

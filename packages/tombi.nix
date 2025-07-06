@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    rev = "4753decba90e5fff24c1d44acd60bd48cdd9d30f";
+    rev = "ed9cdba29ce916e406361ce3acb7687fac996d15";
     pname = "tombi";
     version = "0.4.16-${rev}";
 
@@ -9,10 +9,10 @@ with pkgs;
       inherit rev;
       owner = "tombi-toml";
       repo = pname;
-      hash = "sha256-FZijcE+NrRyV0dFL7UZSabYcQwW3vuURne67BFS4Sys=";
+      hash = "sha256-4s65aig60ZTt2ubFX+Rp+IvpYnmLJz1Wnb4FguwSqEM=";
     };
 
-    cargoHash = "sha256-is3dAdkaXEUvju0SF3yAyfuMU2SvllE+42ebUHNyOR0=";
+    cargoHash = "sha256-OPcqJtIW4jQn2UM+Sy9CAxYBpF5nqVczQsHZ75nx9qU=";
     useFetchCargoVendor = true;
     doCheck = false;
 
