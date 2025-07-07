@@ -53,7 +53,7 @@ in {
                 /usr/bin/sudo /usr/sbin/chown root ${wrapperPath}
             fi
 
-            if [ "$(dscl . -read /Users/${username} UserShell 2>/dev/null | sed 's/UserShell: //')" != ${wrapperPath} ]; then
+            if [ "$(/usr/bin/dscl . -read /Users/${username} UserShell | /usr/bin/sed 's/UserShell: //')" != ${wrapperPath} ]; then
                 echo "setting default shell for ${username} ..." >&2
                 $DRY_RUN_CMD /usr/bin/sudo /usr/bin/chsh -s ${wrapperPath} ${username}
             fi
@@ -71,7 +71,7 @@ in {
               if pkgs.stdenv.isDarwin
               then ''
                 #!/bin/bash
-                if [ "$(dscl . -read /Users/${username} UserShell 2> /dev/null | sed 's/UserShell: //')" != "$SHELL_PATH" ]; then
+                if [ "$(/usr/bin/dscl . -read /Users/${username} UserShell | /usr/bin/sed 's/UserShell: //')" != "$SHELL_PATH" ]; then
                     echo "setting default shell for ${username} to $SHELL_PATH..." >&2
 
                     $DRY_RUN_CMD /usr/bin/chsh -s $SHELL_PATH ${username}
