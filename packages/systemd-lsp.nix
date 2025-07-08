@@ -7,11 +7,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "JFryy";
       repo = pname;
-      rev = "43e0a26b12653b97939612ce8f4e2f3bae562ea1";
-      hash = "sha256-l2/8khzXZjyga4nEdl4pcl3AOscCBxZHH3tW3Cv+RUk=";
+      rev = "cfb1979edea72ccf89e1b7fed48b6d50335bb9fd";
+      hash = "sha256-ODpmrCq8xXOMUHKEjc6Aea3pvv/7tuo55Y0PxY/h/l4=";
     };
 
-    cargoHash = "sha256-bYksgHTXomeEJuSk800+/PYXzMvrixSjfPnoqxStWAA=";
+    cargoHash = "sha256-G1cQWOgtx+Bmi05ji9Z4TBj5pnhglNcfLRoq2zSmyK0=";
     useFetchCargoVendor = true;
     doCheck = false;
 

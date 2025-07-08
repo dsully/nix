@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "EmmyLuaLs";
       repo = "emmylua-analyzer-rust";
-      rev = "e8604aca29f14d00a388e4b0134dd805695f6be4";
-      hash = "sha256-rykGXLytXa7ndzhjWSOLbxQxgFnuyFtwdeHyHhVaKIQ=";
+      rev = "94f5a50c6f01f74b358b6bad913b6376e29f2057";
+      hash = "sha256-MJcRThsUyq4hlSefqex2fV9XRgix8qviTBTTDqBiGnw=";
     };
 
     cargoHash = "sha256-I5h63A8hAmeQfy0E7zNm91YEUxa7iLNR3o4yMLpvdd4=";
