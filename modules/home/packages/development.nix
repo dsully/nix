@@ -42,6 +42,31 @@
         jq
         kickstart
         nodejs
+        (pkgs.opencode.overrideAttrs (
+          oldAttrs: let
+            newNodeModulesHash = {
+              "aarch64-darwin" = "sha256-uk8HQfHCKTAW54rNHZ1Rr0piZzeJdx6i4o0+xKjfFZs=";
+              "x86_64-linux" = "sha256-uk8HQfHCKTAW54rNHZ1Rr0piZzeJdx6i4o0+xKjfFZs=";
+            };
+          in {
+            version = "0.2.27";
+            src = pkgs.fetchFromGitHub {
+              owner = "sst";
+              repo = "opencode";
+              rev = "b4950a157cb8393e02b925dddf37268fffba525e";
+              sha256 = "sha256-QJRN4tU9yZlj3C3ZkVgXTSsKigVPt4thHhk5IXz+6jg=";
+            };
+            doCheck = false;
+
+            tui = (oldAttrs.tui or (pkgs.buildGoModule {})).overrideAttrs (_: {
+              vendorHash = "sha256-0vf4fOk32BLF9/904W8g+5m0vpe6i6tUFRXqDHVcMIQ=";
+            });
+
+            node_modules = (oldAttrs.node_modules or (pkgs.stdenvNoCC.mkDerivation {})).overrideAttrs (_: {
+              outputHash = newNodeModulesHash.${pkgs.stdenv.hostPlatform.system};
+            });
+          }
+        ))
         ruff
         rye
         scc
