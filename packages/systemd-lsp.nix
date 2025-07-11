@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "JFryy";
       repo = pname;
-      rev = "f6ed3c80774b3b889f0a14301bff7f058a22f592";
-      hash = "sha256-exbAE8iZc8XXBTmXk1oDj8OJHKigGAlxnC4hypr8vss=";
+      rev = "d59bffa9ff1f2c762a67cc0eb7a59134369d8940";
+      hash = "sha256-JjrPgpQ94C01nZ3E1NE88TBzI03YFs+x37edtYStlnc=";
     };
 
     cargoHash = "sha256-G1cQWOgtx+Bmi05ji9Z4TBj5pnhglNcfLRoq2zSmyK0=";
