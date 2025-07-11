@@ -28,7 +28,7 @@
       window-new-tab-position = "end";
 
       # Shell integration
-      shell-integration-features = "no-cursor,sudo,title";
+      shell-integration-features = "no-cursor,sudo,title,ssh-env,ssh-terminfo";
       macos-titlebar-proxy-icon = "hidden";
 
       # Allow for Option-P, etc.
