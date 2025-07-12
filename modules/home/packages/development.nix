@@ -46,7 +46,7 @@
           oldAttrs: let
             newNodeModulesHash = {
               "aarch64-darwin" = "sha256-uk8HQfHCKTAW54rNHZ1Rr0piZzeJdx6i4o0+xKjfFZs=";
-              "x86_64-linux" = "sha256-uk8HQfHCKTAW54rNHZ1Rr0piZzeJdx6i4o0+xKjfFZs=";
+              "x86_64-linux" = "sha256-1ZxetDrrRdNNOfDOW2uMwMwpEs5S3BLF+SejWcRdtik=";
             };
           in {
             version = "0.2.27";
