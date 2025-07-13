@@ -8,7 +8,7 @@
   inherit (config.system) userName;
 in {
   imports = [
-    inputs.nix-index-database.hmModules.nix-index
+    inputs.nix-index-database.homeModules.nix-index
     ../common/chsh
     ../common/nix.nix
 
