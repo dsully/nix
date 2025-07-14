@@ -33,7 +33,6 @@
     casks = [
       "1password"
       # "adguard"
-      "bartender"
       "boltai"
       "cleanshot"
       "daisydisk"
@@ -41,6 +40,7 @@
       "fastmate"
       "font-monaspace"
       "ghostty"
+      "jordanbaird-ice@beta"
       "keka"
       "little-snitch"
       "lm-studio"
