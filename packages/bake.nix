@@ -2,14 +2,14 @@
 with pkgs;
   python3.pkgs.buildPythonApplication rec {
     pname = "bake";
-    version = "1.3.0";
+    version = "1.3.1";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "EbodShojaei";
       repo = pname;
-      rev = "f4b1c9f2424e3175b49771e05d2ea224c70f9db1";
-      hash = "sha256-rfVMFMqkQRQpq5xIUcukyHm0+ETpcCcGrcgCDx+oiZE=";
+      rev = "0c0effaeff172aa00a79e25d6ad49c675ff29be1";
+      hash = "sha256-y5vPYlAhHXTqctC5xmTtBxpmgtdeIixA6DwyvdpTvgI=";
     };
 
     nativeBuildInputs = [
