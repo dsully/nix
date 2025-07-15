@@ -1,20 +1,25 @@
 {pkgs, ...}:
-with pkgs;
+with pkgs; let
+  pkgsWithRust = pkgs.extend (import (builtins.fetchTarball {
+    url = "https://github.com/oxalica/rust-overlay/archive/master.tar.gz";
+    sha256 = "sha256-f4XVgqkWF1vSzPbOG5xvi4aAd/n1GwSNsji3mLMFwYQ=";
+  }));
+in
   rustPlatform.buildRustPackage rec {
-    rev = "7c8e5c906028488efc24ec81d2f531b45af61591";
+    rev = "473c96ae803d437d3004c68362603d630499d7b2";
     pname = "pyrefly";
-    version = "0.22.0-${rev}";
+    version = "0.24.0-${rev}";
 
-    env.RUSTC_BOOTSTRAP = 1;
+    nativeBuildInputs = [pkgsWithRust.rust-bin.nightly.latest.default];
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "facebook";
       repo = pname;
-      hash = "sha256-Az+RFte3iwvByrYiFBh0bUIjSspsjmixZrQWvndS244=";
+      hash = "sha256-EsH6YG+wEMv75Thi/cbCOLnCTtZJV1AucueFduuUF3M=";
     };
 
-    cargoHash = "sha256-tBtZCX7HLIAmqBxBaHGzxR7Ro2pVk4VYJmElSQqDl+w=";
+    cargoHash = "sha256-9OocrBmKTkrd3kAm7PQksaml7Mi79uLDAVvTKzd8CGY=";
     doCheck = false;
     useFetchCargoVendor = true;
 
