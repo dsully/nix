@@ -1,15 +1,14 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    rev = "da29a199b49ee95271052d0461dc522a8210d1de";
     pname = "tombi";
-    version = "0.4.16-${rev}";
+    version = "0.4.32";
 
     src = fetchFromGitHub {
-      inherit rev;
       owner = "tombi-toml";
       repo = pname;
-      hash = "sha256-ekwVaPGoPxv18XDKmSgI6uKI913tIrjmPvipJB7gBuQ=";
+      rev = "8d2953607ac7bad68b0b2bdbf3b6b23d2230fd88";
+      hash = "sha256-aruGr9eG2MHA2seC8nsGwlOyn4Sj5TtUozuFcOWeoTE=";
     };
 
     cargoHash = "sha256-2dLkZnGOVclp0EnAKsVH8HRTOXtq/1ADkoS5UiLGGnQ=";
