@@ -7,12 +7,6 @@
   local = (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
-
-  # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
-  mermaid =
-    if pkgs.stdenv.isDarwin
-    then pkgs.mermaid-cli.override {inherit (local) chromium;}
-    else pkgs.mermaid-cli;
 in {
   home = {
     packages = with (pkgs // local);
@@ -39,7 +33,6 @@ in {
         lemminx
         mado
         marksman
-        mermaid
         neovim
         nil
         nixd
