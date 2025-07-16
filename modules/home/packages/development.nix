@@ -6,7 +6,6 @@
   home = {
     packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
-        claude-code
         codebook
         cyme
         dive
