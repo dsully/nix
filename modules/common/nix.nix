@@ -18,7 +18,7 @@ in {
 
     settings = {
       allow-dirty = true;
-      allow-import-from-derivation = false;
+      allow-import-from-derivation = true;
       allow-symlinked-store = true;
       allow-unsafe-native-code-during-evaluation = true;
       always-allow-substitutes = true;
