@@ -3,7 +3,7 @@ with pkgs; let
   platformData = {
     "x86_64-linux" = {
       filename = "opencode-linux-x64.zip";
-      hash = "sha256-JHZaFKmnnTt/kfTWgzYO1R/x3LAvaOeJEJgYnOQ5W3M=";
+      hash = "sha256-CCawFOXTjvlLGMYNJU1sxoCZ/73ahjga3Enlv49dBuU=";
     };
     "aarch64-darwin" = {
       filename = "opencode-darwin-arm64.zip";
