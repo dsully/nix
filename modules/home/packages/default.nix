@@ -28,9 +28,13 @@ in {
         lolcate-rs
         magic-opener
       ]
-      ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
+      ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+        fishPlugins.macos
         mermaid
         safari-rs
-      ]);
+      ]
+      ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+        xcp
+      ];
   };
 }

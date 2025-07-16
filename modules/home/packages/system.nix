@@ -67,12 +67,6 @@
       ]
       ++ [
         xdg-open-svc
-      ]
-      ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-        fishPlugins.macos
-      ]
-      ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
-        xcp
       ];
   };
 }
