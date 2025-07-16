@@ -4,20 +4,7 @@
   pkgs,
   ...
 }: let
-  yaml-language-server-patched = pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
-    # Apply patch to source before build
-    postPatch =
-      (oldAttrs.postPatch or "")
-      + ''
-        # Patch the TypeScript source
-        substituteInPlace src/languageservice/services/yamlValidation.ts \
-          --replace "if (isKubernetes && err.message === this.MATCHES_MULTIPLE)" \
-                    "if (err.message === this.MATCHES_MULTIPLE)"
-      '';
-  });
-
-  local =
-    (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
+  local = (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
 
@@ -78,7 +65,17 @@ in {
         vtsls
         wordnet
         write-good
-        yaml-language-server-patched
+        (pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
+          # Apply patch to source before build
+          postPatch =
+            (oldAttrs.postPatch or "")
+            + ''
+              # Patch the TypeScript source
+              substituteInPlace src/languageservice/services/yamlValidation.ts \
+                --replace "if (isKubernetes && err.message === this.MATCHES_MULTIPLE)" \
+                          "if (err.message === this.MATCHES_MULTIPLE)"
+            '';
+        }))
         yamllint
         zls
       ]
