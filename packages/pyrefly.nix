@@ -7,7 +7,7 @@ with pkgs; let
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-      hash = "";
+      hash = "sha256-FNCfFmpG5DZV6oEmEYh8oWoMVDhilvTJMz8/X8cjZwk=";
     };
   };
 
