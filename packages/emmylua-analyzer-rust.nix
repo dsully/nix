@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    rev = "f6c88f9cdd0a526d0eff01470a080dc72f09fe23";
+    rev = "99240982b06c9e8be2c8406b731b814493d8b494";
     pname = "emmylua-analyzer-rust";
     version = "0.9.0-${rev}";
 
@@ -9,10 +9,10 @@ with pkgs;
       inherit rev;
       owner = "EmmyLuaLs";
       repo = "emmylua-analyzer-rust";
-      hash = "sha256-x1MTXxxSj/pRqJJftCZw8w6auw+lXbit+MUy46tVChM=";
+      hash = "sha256-ehNzEiNVYl3cJdk9A0rLxQ/H1hl8PNdvlMVXJue+2cQ=";
     };
 
-    cargoHash = "sha256-In1fTvGpt3d6VfSoAXVrdkkIzRRyBlV97NXOvefIOZc=";
+    cargoHash = "sha256-LQ1pCuGZnV+TrhKqoOaLALNGoju5mXeQKK9gLMM2uI8=";
     useFetchCargoVendor = true;
     doCheck = false;
 
