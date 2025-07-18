@@ -14,7 +14,6 @@ in {
         actionlint
         alejandra
         ast-grep
-        bake
         basedpyright
         bash-language-server
         biome
@@ -33,6 +32,7 @@ in {
         lemminx
         mado
         marksman
+        mbake
         neovim
         nil
         nixd
