@@ -77,7 +77,6 @@ in {
         gh-actions-language-server
         pkl-lsp
         pyproject-fmt
-        sith-language-server
         sphinx-lint
         ty
         xmlformatter
