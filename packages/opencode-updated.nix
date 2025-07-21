@@ -3,19 +3,19 @@ with pkgs; let
   platformData = {
     "x86_64-linux" = {
       filename = "opencode-linux-x64.zip";
-      hash = "sha256-CCawFOXTjvlLGMYNJU1sxoCZ/73ahjga3Enlv49dBuU=";
+      hash = "sha256-PMHzk6vk27JuKabdoxAIaDnYtYldM/DKWhBmKMP5y2s=";
     };
     "aarch64-darwin" = {
       filename = "opencode-darwin-arm64.zip";
-      hash = "sha256-NJVuziOQ3cAF5rFVYYnkFxzha/xHzxVuJd3/tBeyOTM=";
+      hash = "sha256-heaHMdf4CDoWt13HySc4Tu/B4n+a7OuKKYbngjp/aNM=";
     };
   };
 
   currentPlatform = platformData.${stdenvNoCC.hostPlatform.system} or (throw "Unsupported platform: ${stdenvNoCC.hostPlatform.system}");
 in
   stdenvNoCC.mkDerivation rec {
-    pname = "opencode";
-    version = "0.3.13";
+    pname = "opencode-updated";
+    version = "0.3.54";
 
     src = fetchurl {
       url = "https://github.com/sst/opencode/releases/download/v${version}/${currentPlatform.filename}";
