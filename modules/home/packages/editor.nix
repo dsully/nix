@@ -53,9 +53,9 @@ in {
         tectonic-unwrapped
         tombi
         ts_query_ls
+        typescript-go
         typos
         vscode-langservers-extracted
-        vtsls
         wordnet
         write-good
         (pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
