@@ -280,6 +280,11 @@ in {
 
       init.defaultBranch = "main";
 
+      # Show dates in the local time zone.
+      log = {
+        date = "iso-local";
+      };
+
       mergetool = {
         cmd = editor;
         hideResolved = true; # Don't show merge conflicts that have already been resolved by git in the mergetool diff.
