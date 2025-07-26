@@ -7,12 +7,12 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "anistark";
       repo = pname;
-      rev = "90c46cfc14708e3c86b65451805d491802ac1adc";
-      hash = "sha256-FSqSaCp6mmnXtGLrwzJUS4b0fB8yMMsrD/qpI3w7HJI=";
+      rev = "c6b47aff524588079f0a1863dc76934730e71283";
+      hash = "sha256-CM3phvSmun0+Uegl8zaiOaWSan5Q8hcM28E2Zck64Dg=";
     };
 
     useFetchCargoVendor = true;
-    cargoHash = "sha256-UmuCSuy02G3QDP6XDr/w2jTHIhIj95WWyCts1w0NDYY=";
+    cargoHash = "sha256-TKLrtfslNQWb6T+EbumbAa4KdGI3H1gP+GNC0myWiiQ=";
     doCheck = false;
 
     nativeBuildInputs = [
