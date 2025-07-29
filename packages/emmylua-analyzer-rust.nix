@@ -13,7 +13,6 @@ with pkgs;
     };
 
     cargoHash = "sha256-MIGYx1qMxsCCq3QkFeOuKbM4w/sJ2K0T+SRIDJQjf/8=";
-    useFetchCargoVendor = true;
     doCheck = false;
 
     nativeBuildInputs = [

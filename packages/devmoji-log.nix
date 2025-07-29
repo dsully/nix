@@ -12,7 +12,6 @@ with pkgs;
     };
 
     cargoHash = "sha256-YqmmY+XxFD1W92fnDmcEdyQ+9WOn6rTBLofJ+LxeDeM=";
-    useFetchCargoVendor = true;
 
     nativeBuildInputs = [
       pkg-config

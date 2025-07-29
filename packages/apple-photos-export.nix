@@ -14,7 +14,6 @@ then
       };
 
       cargoHash = "sha256-1oqtnfqMSYTjCuAF/PNJ6I4LbfxzksGoSVmnCWNcMiQ=";
-      useFetchCargoVendor = true;
       doCheck = false;
 
       nativeBuildInputs = [

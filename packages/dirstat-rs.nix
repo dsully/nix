@@ -11,7 +11,6 @@ with pkgs;
       hash = "sha256-oUeDGNKnPmaEYjbhsNeKeqtn5a/js7U2WzUKcn3MRxM=";
     };
 
-    useFetchCargoVendor = true;
     cargoHash = "sha256-LxUSgIl8r/hWU24CBBBkJXxIodVouxyZb0Dsjic/z0o=";
 
     meta = with lib; {

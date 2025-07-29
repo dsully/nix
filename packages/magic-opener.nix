@@ -12,7 +12,6 @@ with pkgs;
     };
 
     cargoHash = "sha256-wDUPVWQBCGGGkxs+vqBTz/5itKB4lpRpDIPJYAJknJM=";
-    useFetchCargoVendor = true;
 
     meta = {
       description = "A tool for opening the right thing in the right place";

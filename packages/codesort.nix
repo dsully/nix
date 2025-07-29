@@ -11,7 +11,6 @@ with pkgs;
       hash = "sha256-yi5BjlmRHL3J18dP6le08FYesPalZIzIeMV6znHpafo=";
     };
 
-    useFetchCargoVendor = true;
     cargoHash = "sha256-0EY5e5wu9J2zK3S200DbCv6mOj/7iMJ6aw45e5Fg+go=";
     doCheck = false;
 

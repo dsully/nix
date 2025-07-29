@@ -7,12 +7,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "akiomik";
       repo = pname;
-      rev = "dc676712f6e4493d38851f4a5d77b6f00aee2144";
-      hash = "sha256-QkYM6LI7iBO3V2/fqlxovzSsLrnfY/mdS5SxCMSFaHo=";
+      rev = "7d9b7799e3473b2fe7fff64708883de25c223473";
+      hash = "sha256-Y0H1EaWvkq5cFavXcMVit6UB5Gh68b8UN9UunKXMDes=";
     };
 
-    cargoHash = "sha256-tfi5Dk+UB1RrTr+mREEjcUr6qvAxSBbAGZ3gKlF29kc=";
-    useFetchCargoVendor = true;
+    cargoHash = "sha256-G2l3KIyEun7oQ+yseZPp1dP/QsB8psUYcK9wOH7PBeQ=";
     doCheck = false;
 
     nativeBuildInputs = [

@@ -12,7 +12,6 @@ with pkgs;
     };
 
     cargoHash = "sha256-ktaf+dkhxojj0xbGij02EN7nb8oTLCcaSpzLcRk4wXE=";
-    useFetchCargoVendor = true;
 
     meta = {
       description = "Lolcate -- A comically fast way of indexing and querying your filesystem. Replaces locate / mlocate / updatedb. Written in Rust";

@@ -12,7 +12,6 @@ with pkgs;
     };
 
     cargoHash = "sha256-tDz9+iQhutlo7petKmg6n/mg0tDntGRqwBALcATJwdM=";
-    useFetchCargoVendor = true;
 
     meta = {
       description = "Command-line JSON processor using nix as query language";
