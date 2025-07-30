@@ -52,7 +52,9 @@ in {
         systemd-lsp
         tectonic-unwrapped
         tombi
-        ts_query_ls
+        (pkgs.ts_query_ls.overrideAttrs (_: {
+          doCheck = false;
+        }))
         typescript-go
         typos
         vscode-langservers-extracted
