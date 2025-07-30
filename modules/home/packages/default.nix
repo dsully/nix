@@ -27,6 +27,8 @@ in {
         git-trim
         lolcate-rs
         magic-opener
+
+        flake.inputs.nix-package-updater.outputs.defaultPackage.${pkgs.system}
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         fishPlugins.macos

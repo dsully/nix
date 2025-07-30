@@ -32,6 +32,9 @@
 
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-package-updater.url = "github:dsully/nix-package-updater";
+    nix-package-updater.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs:
