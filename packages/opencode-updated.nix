@@ -3,11 +3,11 @@ with pkgs; let
   platformData = {
     "x86_64-linux" = {
       filename = "opencode-linux-x64.zip";
-      hash = "sha256-fwUmBfR/hrrjGDFSF5/FmdJa751zhEX1PYtrUVsIcA0=";
+      hash = "sha256-5dzvyQXNUoBZrSoaLZhqEKxucjKbuBShJvQB7tunSMI=";
     };
     "aarch64-darwin" = {
       filename = "opencode-darwin-arm64.zip";
-      hash = "sha256-UX4Yp/ZGQNWhgToLBscFoqLQpODV2IAwOuF2WXefxxU=";
+      hash = "sha256-EywToUmYG/ttOTKE8AqX+YKR/0F9SFke7xfmmKRH1PI=";
     };
   };
 
@@ -15,7 +15,7 @@ with pkgs; let
 in
   stdenvNoCC.mkDerivation rec {
     pname = "opencode-updated";
-    version = "0.3.93";
+    version = "0.3.101";
 
     src = fetchurl {
       url = "https://github.com/sst/opencode/releases/download/v${version}/${currentPlatform.filename}";
