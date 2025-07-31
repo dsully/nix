@@ -5,6 +5,8 @@
 }: let
   local = (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
 
+  nix-package-updater = (flake.inputs.upstream or flake).inputs.nix-package-updater.outputs.defaultPackage.${pkgs.system};
+
   # Address: https://discourse.nixos.org/t/mermaid-cli-on-macos/45096/3
   mermaid = pkgs.mermaid-cli.override {inherit (local) chromium;};
 in {
@@ -28,7 +30,7 @@ in {
         lolcate-rs
         magic-opener
 
-        flake.inputs.nix-package-updater.outputs.defaultPackage.${pkgs.system}
+        nix-package-updater
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         fishPlugins.macos
