@@ -7,11 +7,11 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "dsully";
       repo = pname;
-      rev = "71d3cde4d35013be11b411d843beb51509fcfc8b";
-      hash = "sha256-xuDu//ORJ0ClKt5nrW2b8gzmGXyjepAO7VzHx14kQOY=";
+      rev = "59f0b367e424c8aa0a7cb7bea94a46ecf0cfca03";
+      hash = "sha256-SwytrsHxowB/DJ1gY257rqILsRrC1iM9FGOwJWA5Nsk=";
     };
 
-    cargoHash = "sha256-YqmmY+XxFD1W92fnDmcEdyQ+9WOn6rTBLofJ+LxeDeM=";
+    cargoHash = "sha256-f4SCbXOc4F154NvPZB/6SSsUcLeIixLcyNFrO9RVNCs=";
 
     nativeBuildInputs = [
       pkg-config
