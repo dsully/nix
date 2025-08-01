@@ -69,6 +69,16 @@ in {
     };
 
     defaultShell = pkgs.fish;
+
+    file = {
+      ".npmrc" = {
+        force = true;
+        text = ''
+          fund=false
+          audit=false
+        '';
+      };
+    };
   };
 
   programs = {

@@ -20,8 +20,6 @@
       ]
       ++ (with perSystem.self; [
         autorebase
-        git-ai-commit
-        turbo-commit
       ]);
   };
 }

@@ -12,12 +12,11 @@ in {
     packages = with (pkgs // local);
       [
         actionlint
-        alejandra
-        ast-grep
+        # ast-grep
         basedpyright
         bash-language-server
         biome
-        ccls
+        # ccls
         commitlint-rs
         dockerfile-language-server-nodejs
         emmylua-analyzer-rust
@@ -38,6 +37,7 @@ in {
         nixd
         nixpkgs-fmt
         oxlint
+        prettier
         prettierd
         pyrefly
         python313Packages.jedi-language-server

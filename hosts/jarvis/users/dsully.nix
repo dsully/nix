@@ -24,9 +24,7 @@
       ++ (with perSystem.self; [
         apple-photos-export
         autorebase
-        git-ai-commit
         reading-list-to-pinboard-rs
-        turbo-commit
       ]);
   };
 }

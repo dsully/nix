@@ -10,7 +10,6 @@
         _1password-cli
         act
         age
-        aichat
         b3sum
         bandwhich
         bat
