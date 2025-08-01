@@ -43,6 +43,6 @@ in
       homepage = "https://github.com/sst/opencode";
       license = licenses.mit;
       platforms = ["x86_64-linux" "aarch64-darwin"];
-      mainProgram = pname;
+      mainProgram = "opencode";
     };
   }
