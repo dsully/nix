@@ -82,6 +82,7 @@ in {
         sphinx-lint
         ty
         xmlformatter
+        zuban
       ];
   };
 }
