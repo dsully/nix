@@ -37,7 +37,6 @@ in {
         nixd
         nixpkgs-fmt
         oxlint
-        prettier
         prettierd
         pyrefly
         python313Packages.jedi-language-server
@@ -52,9 +51,7 @@ in {
         systemd-lsp
         tectonic-unwrapped
         tombi
-        (pkgs.ts_query_ls.overrideAttrs (_: {
-          doCheck = false;
-        }))
+        ts_query_ls
         typescript-go
         typos
         vscode-langservers-extracted
