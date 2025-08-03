@@ -19,6 +19,7 @@
       "iina"
       "insta360-studio"
       "latest"
+      "lm-studio"
       "macdive"
       "mist"
       "mullvad-vpn"

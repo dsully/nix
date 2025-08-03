@@ -32,7 +32,6 @@
 
     casks = [
       "1password"
-      # "adguard"
       "boltai"
       "cleanshot"
       "daisydisk"
@@ -43,7 +42,6 @@
       "jordanbaird-ice@beta"
       "keka"
       "little-snitch"
-      "lm-studio"
       "lunar"
       "monodraw"
       "powerflow"
@@ -61,7 +59,6 @@
       "transmit"
       "typora"
       "yaak"
-      "zed"
     ];
 
     masApps = {

@@ -12,12 +12,11 @@ in {
     packages = with (pkgs // local);
       [
         actionlint
-        # ast-grep
         basedpyright
         bash-language-server
         biome
-        # ccls
         commitlint-rs
+        docker-compose-language-service
         dockerfile-language-server-nodejs
         emmylua-analyzer-rust
         fish-lsp
