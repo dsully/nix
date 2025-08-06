@@ -69,4 +69,4 @@ jobs:
         env:
           CACHE: 1
           UPDATE: 0
-        run: nix develop --quiet --command nix-package-updater --cache
+        run: nix run github:dsully/nix-package-updater -- --cache
