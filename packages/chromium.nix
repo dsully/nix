@@ -1,5 +1,4 @@
 {pkgs, ...}: let
-  version = "137.0.7151.55-1.1";
   hdiutil = "/usr/bin/hdiutil";
 
   inherit (pkgs) lib;
@@ -8,7 +7,7 @@ in
   then
     with pkgs;
       pkgs.stdenvNoCC.mkDerivation rec {
-        inherit version;
+        version = "137.0.7151.55-1.1";
         pname = "chromium";
 
         src = pkgs.fetchurl {
