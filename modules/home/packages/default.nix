@@ -11,6 +11,7 @@
   mermaid = pkgs.mermaid-cli.override {inherit (local) chromium;};
 in {
   imports = [
+    ./ai.nix
     ./development.nix
     ./editor.nix
     ./nix.nix
@@ -29,7 +30,6 @@ in {
         git-trim
         lolcate-rs
         magic-opener
-
         nix-package-updater
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [

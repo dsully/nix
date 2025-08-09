@@ -16,7 +16,6 @@
     packages = with pkgs;
       [
         bacon
-        claude-code
         ghostscript_headless
         nix-output-monitor
         pandoc

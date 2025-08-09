@@ -6,8 +6,6 @@
   home = {
     packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
       [
-        aichat
-        # better-commits # git bc
         codebook
         cyme
         dive
@@ -48,9 +46,6 @@
       ]
       ++ [
         curlconverter
-        git-ai-commit
-        opencode-updated
-        turbo-commit
       ];
   };
 }

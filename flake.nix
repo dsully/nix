@@ -35,6 +35,9 @@
 
     nix-package-updater.url = "github:dsully/nix-package-updater";
     nix-package-updater.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
+    nix-ai-tools.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs:
