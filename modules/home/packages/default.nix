@@ -31,6 +31,7 @@ in {
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
         fishPlugins.macos
+        iproute2mac
         safari-rs
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
