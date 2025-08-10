@@ -27,7 +27,7 @@ in {
 
     activation = {
       chezmoi = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        #!/usr/bash
+        #!/bin/bash
         mkdir -p ~/.local/share
 
         if ! [ -d "$HOME/.local/share/chezmoi" ]; then
@@ -39,7 +39,7 @@ in {
       '';
 
       neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        #!/usr/bash
+        #!/bin/bash
 
         if ! [ -d "$HOME/.config/nvim" ]; then
             ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
@@ -47,7 +47,7 @@ in {
       '';
 
       symlinks = ''
-        #!/usr/bash
+        #!/bin/bash
 
         if [ "$(uname -s)" == "Darwin" ]; then
             if ! [ -d "$HOME"/Downloads ] && ! [ -L "$HOME"/Downloads ]; then
@@ -71,6 +71,25 @@ in {
     defaultShell = pkgs.fish;
 
     file = {
+      ".ignore" = {
+        force = true;
+        text =
+          lib.concatStringsSep "\n"
+          [
+            "*hammerspoon*"
+            "Cargo.lock"
+            "flake.lock"
+            "Library/"
+            "LICENSE"
+            "Movies/"
+            "package-lock.json"
+            "uv.lock"
+            "vendor/"
+            "yarn.lock"
+          ]
+          + "\n";
+      };
+
       ".npmrc" = {
         force = true;
         text = ''
