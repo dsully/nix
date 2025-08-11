@@ -8,7 +8,6 @@
   nix-package-updater = (flake.inputs.upstream or flake).inputs.nix-package-updater.outputs.defaultPackage.${pkgs.system};
 in {
   imports = [
-    ./ai.nix
     ./development.nix
     ./editor.nix
     ./nix.nix

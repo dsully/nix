@@ -6,6 +6,7 @@
 }: {
   imports = [
     flake.homeModules.dsully
+    flake.homeModules.ai
     flake.homeModules.ghostty
     flake.homeModules.paste
     flake.homeModules.xdg-open-svc
