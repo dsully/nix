@@ -8,6 +8,7 @@
       (with ((flake.inputs.upstream or flake).inputs.nix-ai-tools.packages.${pkgs.system} or {}); [
         claude-code
         crush
+        goose-cli
         opencode
         gemini-cli
       ])
