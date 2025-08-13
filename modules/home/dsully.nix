@@ -126,4 +126,5 @@ in {
   };
 
   targets.darwin.linkApps.enable = false;
+  xdg.mime.enable = false;
 }
