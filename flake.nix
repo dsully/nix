@@ -33,7 +33,7 @@
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-package-updater.url = "git+ssh://git@github.com/dsully/nix-package-updater";
+    nix-package-updater.url = "github:dsully/nix-package-updater";
     nix-package-updater.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-ai-tools.url = "github:numtide/nix-ai-tools";
