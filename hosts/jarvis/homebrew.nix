@@ -18,23 +18,23 @@
       "google-chrome"
       "iina"
       "insta360-studio"
+      "jordanbaird-ice"
       "latest"
       "lm-studio"
       "macdive"
       "mist"
-      "mullvad-vpn"
       "ogdesign-eagle"
-      "orion"
       "protonvpn"
       "proxyman"
       "quicken"
       "quickrecorder"
       "retrobatch"
+      "serverbuddy"
       "signal"
       "superduper"
       "syncthing"
       "tableplus"
-      "tailscale"
+      "tailscale-app"
       "telegram"
       "whatsapp"
       "zipic"
@@ -76,7 +76,6 @@
       "SD Gallery" = 6445901857;
       "Screens 5" = 1663047912;
       "Secret Inbox" = 6462335670;
-      "ServerCat" = 1501532023;
       "SmugMug" = 1115348888;
       "Sogni" = 6450021857;
       "Sortio" = 6737292062;

@@ -39,7 +39,6 @@
       "fastmate"
       "font-monaspace"
       "ghostty"
-      "jordanbaird-ice@beta"
       "keka"
       "little-snitch"
       "lunar"
