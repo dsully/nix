@@ -50,4 +50,4 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Build Nix packages
-        run: nix run github:dsully/nix-package-updater -- --cache
+        run: nix run git+ssh://git@github.com/dsully/nix-package-updater -- --cache
