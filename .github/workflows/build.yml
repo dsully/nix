@@ -49,16 +49,9 @@ jobs:
           signingKey: "${{ secrets.CACHIX_SIGNING_KEY }}"
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
-      - name: Build Home Manager Packages Linux
-        uses: workflow/nix-shell-action@v3
-        if: runner.os == 'Linux'
+      - uses: workflow/nix-shell-action@v3.4.0
         with:
-          script: nix build '.#homeConfigurations.dsully@server.config.home.activationPackage'
-            # nix run 'github:numtide/system-manager' -- build --flake '.#systemConfigs.server'
-
-      - name: Build Home Manager Packages Darwin
-        uses: workflow/nix-shell-action@v3
-        if: runner.os == 'macOS'
-        with:
-          script: nix build '.#homeConfigurations.dsully@jarvis.config.home.activationPackage'
-          # nix build '.#darwinConfigurations.jarvis.config.system.build.toplevel'
+          flakes-from-devshell: true
+          script: |
+            nix-package-updater -- --build-only --cache
+          #script: nix run github:dsully/nix-package-updater -- --build-only --cache

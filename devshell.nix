@@ -1,6 +1,11 @@
-{pkgs}:
+{
+  inputs,
+  pkgs,
+}:
 pkgs.mkShell {
   packages = with pkgs; [
+    inputs.nix-package-updater.defaultPackage.${pkgs.system}
+
     alejandra
     cachix
     deadnix
