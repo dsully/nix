@@ -16,11 +16,8 @@ with pkgs;
     doCheck = false;
 
     nativeBuildInputs = [
+      perl
       pkg-config
-    ];
-
-    buildInputs = [
-      openssl
     ];
 
     meta = {
