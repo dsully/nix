@@ -379,11 +379,11 @@
         "treefmt-nix": "treefmt-nix_3"
       },
       "locked": {
-        "lastModified": 1755333853,
-        "narHash": "sha256-xfSLdFUNugHB0iz++QbBD1jYUWeKjYOjpjBvGqf558A=",
+        "lastModified": 1755346692,
+        "narHash": "sha256-1zPs+VnjgoHiM6gPMKDIcBwj2CRFvQjVXCLLnV4KvRw=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "1b7f1c4eab46cb8e511f4805951372f54b78ae72",
+        "rev": "7688318587a33495ab6331582c198f3ddccf4289",
         "type": "github"
       },
       "original": {
@@ -463,11 +463,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1755271328,
-        "narHash": "sha256-SUjsi+mSOmGaBro6tY/rlcjOVpP3P5nWPvPeCH3mQVY=",
+        "lastModified": 1755355272,
+        "narHash": "sha256-19Id7RFtBkz9uTwA00PZpZHcBE/+pi0nmzfn+QtFDE0=",
         "ref": "refs/heads/main",
-        "rev": "a0a1e02dd4aef16926870bb3fa3e8b7c2b0d8e23",
-        "revCount": 18,
+        "rev": "a58300ded4b6515242cecc13f692ac90df008582",
+        "revCount": 19,
         "type": "git",
         "url": "ssh://git@github.com/dsully/nix-package-updater"
       },
