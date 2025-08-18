@@ -24,5 +24,6 @@ with pkgs;
       homepage = "https://github.com/EmmyLuaLs/emmylua-analyzer-rust/";
       changelog = "https://github.com/EmmyLuaLs/emmylua-analyzer-rust/blob/${src.rev}/CHANGELOG.md";
       license = lib.licenses.mit;
+      mainProgram = "emmylua_ls";
     };
   }

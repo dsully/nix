@@ -12,6 +12,9 @@
     go = {
       command = lib.getExe pkgs.gopls;
     };
+    lua = {
+      command = lib.getExe my.pkgs.emmylua-analyzer-rust;
+    };
     nix = {
       command = lib.getExe pkgs.nil;
     };
@@ -22,6 +25,12 @@
       command = "rust-analyzer";
       args = [
         "--disable-build-scripts"
+      ];
+    };
+    toml = {
+      command = lib.getExe pkgs.tombi;
+      args = [
+        "lsp"
       ];
     };
     typescript = {
@@ -132,9 +141,11 @@ in {
           "$schema" = "https://charm.land/crush.json";
           lsp = {
             go.command = lsp.go.command;
+            lua.command = lsp.lua.command;
             nix.command = lsp.nix.command;
             python.command = lsp.python.command;
             inherit (lsp) rust;
+            inherit (lsp) toml;
             inherit (lsp) typescript;
           };
 
@@ -217,120 +228,130 @@ in {
 
       # "mcp/mcp.json".source = mcp-servers;
       # mcp-servers-nix.lib.mkConfig {};
+    };
+  };
 
-      # https://opencode.ai/docs/
-      "opencode/config.json" = {
-        force = true;
-        source = (pkgs.formats.json {}).generate ".config/opencode/config.json" {
-          "$schema" = "https://opencode.ai/config.json";
-          agent = {
-            build = {
-              apiKey = "$ANTHROPIC_API_KEY";
-              mode = "primary";
-              model = "anthropic/claude-sonnet-4-20250514";
-              # prompt = "{file:./prompts/build.txt}";
-              tools = {
-                bash = true;
-                edit = true;
-                write = true;
-              };
-            };
-            plan = {
-              apiKey = "$ANTHROPIC_API_KEY";
-              mode = "primary";
-              model = "anthropic/claude-haiku-4-20250514";
-              tools = {
-                bash = false;
-                edit = false;
-                write = false;
-              };
-            };
-            review = {
-              apiKey = "$ANTHROPIC_API_KEY";
-              description = "Reviews code for best practices and potential issues";
-              mode = "subagent";
-              model = "anthropic/claude-sonnet-4-20250514";
-              prompt = "You are a code reviewer. Focus on security, performance, and maintainability.";
-              tools = {
-                edit = false;
-                write = false;
-              };
+  # https://opencode.ai/docs/
+  programs = {
+    opencode = {
+      enable = true;
+      package = perSystem.nix-ai-tools.opencode;
+      settings = {
+        agent = {
+          build = {
+            apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
+            mode = "primary";
+            model = "anthropic/claude-sonnet-4-20250514";
+            # prompt = "{file:./prompts/build.txt}";
+            tools = {
+              bash = true;
+              edit = true;
+              write = true;
             };
           };
-          autoupdate = false;
-          formatter = {
-            rustfmt = {
-              disabled = false;
-              command = [
-                "rustfmt"
-                "+nightly"
-                "--edition=2024"
-                "\$FILE"
-              ];
-              extensions = [".rs"];
+          plan = {
+            apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
+            mode = "primary";
+            model = "anthropic/claude-haiku-4-20250514";
+            tools = {
+              bash = false;
+              edit = false;
+              write = false;
             };
           };
-          lsp = {
-            nix = {
-              command = [lsp.nix.command];
-              extensions = [".nix"];
-            };
-            python = {
-              command = [lsp.python.command];
-              extensions = [".py"];
-            };
-            rust = {
-              command = [lsp.rust.command] ++ lsp.rust.args;
-              extensions = [".rs"];
-            };
-            typescript = {
-              command = [lsp.typescript.command] ++ lsp.typescript.args;
-              extensions = [".ts" ".tsx" ".js" ".jsx"];
+          review = {
+            apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
+            description = "Reviews code for best practices and potential issues";
+            mode = "subagent";
+            model = "anthropic/claude-sonnet-4-20250514";
+            prompt = "You are a code reviewer. Focus on security, performance, and maintainability.";
+            tools = {
+              edit = false;
+              write = false;
             };
           };
-          mcp = {
-            context7 = {
-              command = [mcp.context7.command];
-              type = "local";
-            };
-            filesystem = {
-              command = [mcp.filesystem.command] ++ mcp.filesystem.args;
-              type = "local";
-            };
-            git = {
-              command = [mcp.git.command];
-              type = "local";
-            };
-            github = {
-              command = [mcp.github.command];
-              type = "local";
-            };
-            memory = {
-              command = [mcp.memory.command];
-              type = "local";
-            };
-            nixos = {
-              command = [mcp.nixos.command];
-              type = "local";
-            };
-            sequential-thinking = {
-              command = [mcp.sequential-thinking.command];
-              type = "local";
-            };
-          };
-          permission = {
-            bash = {
-              "*" = "ask";
-              "git status" = "allow";
-              clippy = "allow";
-              fd = "allow";
-              rg = "allow";
-            };
-            edit = "ask";
-            webfetch = "allow";
-          };
-          theme = "nord";
         };
+        autoupdate = false;
+        formatter = {
+          rustfmt = {
+            disabled = false;
+            command = [
+              "rustfmt"
+              "+nightly"
+              "--edition=2024"
+              "\$FILE"
+            ];
+            extensions = [".rs"];
+          };
+        };
+        lsp = {
+          lua = {
+            command = [lsp.lua.command];
+            extensions = [".lua"];
+          };
+          nix = {
+            command = [lsp.nix.command];
+            extensions = [".nix"];
+          };
+          python = {
+            command = [lsp.python.command];
+            extensions = [".py"];
+          };
+          rust = {
+            command = [lsp.rust.command] ++ lsp.rust.args;
+            extensions = [".rs"];
+          };
+          toml = {
+            command = [lsp.toml.command] ++ lsp.toml.args;
+            extensions = [".toml"];
+          };
+          typescript = {
+            command = [lsp.typescript.command] ++ lsp.typescript.args;
+            extensions = [".ts" ".tsx" ".js" ".jsx"];
+          };
+        };
+        mcp = {
+          context7 = {
+            command = [mcp.context7.command];
+            type = "local";
+          };
+          filesystem = {
+            command = [mcp.filesystem.command] ++ mcp.filesystem.args;
+            type = "local";
+          };
+          git = {
+            command = [mcp.git.command];
+            type = "local";
+          };
+          github = {
+            command = [mcp.github.command];
+            type = "local";
+          };
+          memory = {
+            command = [mcp.memory.command];
+            type = "local";
+          };
+          nixos = {
+            command = [mcp.nixos.command];
+            type = "local";
+          };
+          sequential-thinking = {
+            command = [mcp.sequential-thinking.command];
+            type = "local";
+          };
+        };
+        permission = {
+          bash = {
+            "*" = "ask";
+            "git status" = "allow";
+            clippy = "allow";
+            fd = "allow";
+            rg = "allow";
+          };
+          edit = "ask";
+          webfetch = "allow";
+        };
+        theme = "nord";
       };
     };
   };
