@@ -10,16 +10,16 @@ default:
 
 # Build Darwin or Linux configuration
 [group('desktop')]
-system:
+system *args="":
     #!/usr/bin/env bash
     if [ "{{ os() }}" == "linux" ]; then
 
-        /usr/bin/sudo --preserve-env=PATH $(which system-manager) switch --flake .
+        /usr/bin/sudo --preserve-env=PATH $(which system-manager) switch --flake . {{ args }}
         /bin/rm -f result
 
     elif [ "{{ os() }}" == "macos" ]; then
 
-        nh darwin switch --ask .
+        nh darwin switch --ask . {{ args }}
 
     else
         echo "Unsupported OS: {{ os() }}"
@@ -27,8 +27,8 @@ system:
 
 # Switch Home Manager Configuration
 [group('desktop')]
-switch:
-    @nh home switch --ask -b backup .
+switch *args="":
+    @nh home switch --ask -b backup . {{ args }}
 
 # Update all the flake inputs
 [group('nix')]

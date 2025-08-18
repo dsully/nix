@@ -1,10 +1,6 @@
-{
-  flake,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   home = {
-    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {})); [
+    packages = with pkgs; [
       alejandra
       cachix
       deadnix

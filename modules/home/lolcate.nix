@@ -1,12 +1,9 @@
 {
-  flake,
   pkgs,
   lib,
+  my,
   ...
-}: let
-  local =
-    (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
-in {
+}: {
   config = lib.mkMerge [
     (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       systemd.user.services.lolcate = {
@@ -14,7 +11,7 @@ in {
 
         Service = {
           Type = "oneshot";
-          ExecStart = "${lib.getExe local.lolcate-rs} --all --update";
+          ExecStart = "${lib.getExe my.pkgs.lolcate-rs} --all --update";
           Nice = 19;
           IOSchedulingClass = "idle";
           IOSchedulingPriority = 7;
@@ -40,7 +37,7 @@ in {
           Label = "localhost.lolcate";
 
           ProgramArguments = [
-            "${lib.getExe local.lolcate-rs}"
+            "${lib.getExe my.pkgs.lolcate-rs}"
             "--all"
             "--update"
           ];

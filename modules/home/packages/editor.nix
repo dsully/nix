@@ -1,15 +1,13 @@
 {
-  flake,
   inputs,
+  my,
   pkgs,
   ...
 }: let
-  local = (flake.inputs.upstream or flake).packages.${pkgs.system} or {};
-
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
 in {
   home = {
-    packages = with (pkgs // local);
+    packages = with (pkgs // my.pkgs);
       [
         actionlint
         basedpyright

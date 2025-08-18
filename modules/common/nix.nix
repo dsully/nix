@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  perSystem,
+  pkgs,
+  ...
+}: let
   substituters = [
     "https://cache.nixos.org/"
     "https://nix-community.cachix.org"
@@ -9,6 +13,15 @@ in {
   imports = [
     ../common/options.nix
   ];
+
+  # In this flake: perSystem.self
+  # In consuming flake: perSystem.upstream
+  #
+  # Debug: This will show what packages are available
+  # packages = [
+  #   (builtins.trace "Available packages: ${builtins.toJSON (builtins.attrNames (perSystem.upstream.self or perSystem.self))}")
+  # ];
+  _module.args.my.pkgs = pkgs.extend (_final: _prev: (perSystem.upstream or perSystem.self));
 
   nix = {
     enable = true;
@@ -28,6 +41,7 @@ in {
       experimental-features = [
         "flakes"
         "nix-command"
+        "pipe-operator"
       ];
       extra-nix-path = "nixpkgs=flake:nixpkgs";
 

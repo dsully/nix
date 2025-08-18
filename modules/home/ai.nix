@@ -1,12 +1,11 @@
 {
   config,
-  flake,
   lib,
-  pkgs,
+  my,
   perSystem,
+  pkgs,
   ...
 }: let
-  # mcp-servers-nix = (flake.inputs.upstream or flake).inputs.mcp-servers-nix or {};
   mcp-packages = perSystem.mcp-servers-nix;
 
   lsp = {
@@ -20,7 +19,7 @@
       command = lib.getExe pkgs.ty;
     };
     rust = {
-      command = lib.getExe pkgs.rust-analyzer;
+      command = "rust-analyzer";
       args = [
         "--disable-build-scripts"
       ];
@@ -106,23 +105,22 @@
 in {
   home = {
     packages =
-      (with ((flake.inputs.upstream or flake).inputs.nix-ai-tools.packages.${pkgs.system} or {}); [
+      (with perSystem.nix-ai-tools; [
         claude-code
         crush
         gemini-cli
         goose-cli
         opencode
       ])
-      ++ (with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
-        [
-          aichat
-          github-mcp-server
-          mcp-nixos
-        ]
-        ++ [
-          git-ai-commit
-          turbo-commit
-        ]);
+      ++ (with pkgs; [
+        aichat
+        github-mcp-server
+        mcp-nixos
+      ])
+      ++ (with my.pkgs; [
+        git-ai-commit
+        turbo-commit
+      ]);
   };
 
   # https://mynixos.com/options/xdg.configFile.%3Cname%3E

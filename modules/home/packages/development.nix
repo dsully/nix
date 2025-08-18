@@ -1,10 +1,10 @@
 {
-  flake,
+  my,
   pkgs,
   ...
 }: {
   home = {
-    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
+    packages = with pkgs;
       [
         codebook
         cyme
@@ -45,7 +45,7 @@
         zig
       ]
       ++ [
-        curlconverter
+        my.pkgs.curlconverter
       ];
   };
 }

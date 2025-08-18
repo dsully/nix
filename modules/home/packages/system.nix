@@ -1,10 +1,10 @@
 {
-  flake,
   pkgs,
+  my,
   ...
 }: {
   home = {
-    packages = with (pkgs // ((flake.inputs.upstream or flake).packages.${pkgs.system} or {}));
+    packages = with pkgs;
       [
         # (hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
         _1password-cli
@@ -65,7 +65,7 @@
         zoxide
       ]
       ++ [
-        xdg-open-svc
+        my.pkgs.xdg-open-svc
       ];
   };
 }
