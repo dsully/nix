@@ -4,6 +4,10 @@
   pkgs,
   ...
 }: let
+  # config-lsp = inputs.config-lsp.packages.${pkgs.system}.default;
+  # `perSystem.nixos-anywhere.default` is a shorthand for `inputs.nixos-anywhere.packages.<system>.default`.
+  config-lsp = inputs.config-lsp.packages.${pkgs.system}.default;
+
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
 in {
   home = {
@@ -14,6 +18,7 @@ in {
         bash-language-server
         biome
         commitlint-rs
+        config-lsp
         docker-compose-language-service
         dockerfile-language-server-nodejs
         emmylua-analyzer-rust
