@@ -1,10 +1,10 @@
 {
-  flake,
-  pkgs,
   my,
+  perSystem,
+  pkgs,
   ...
 }: let
-  nix-package-updater = (flake.inputs.upstream or flake).inputs.nix-package-updater.defaultPackage.${pkgs.system};
+  nix-package-updater = (perSystem.upstream or perSystem).nix-package-updater.default;
 in {
   imports = [
     ./development.nix

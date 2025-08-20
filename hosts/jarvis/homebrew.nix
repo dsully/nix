@@ -34,7 +34,7 @@
       "superduper"
       "syncthing"
       "tableplus"
-      "tailscale-app"
+      "tailscale"
       "telegram"
       "whatsapp"
       "zipic"
