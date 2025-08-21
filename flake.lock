@@ -573,11 +573,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1755700302,
-        "narHash": "sha256-i1sWOhuByjrBobyfWPAfRC/VgNNkaWmsWU1ccoOZllM=",
+        "lastModified": 1755746537,
+        "narHash": "sha256-dAxynOVEhER8XUca8jvsUVQZgaLxni0cymYaCj26qcY=",
         "owner": "dsully",
         "repo": "nix-package-updater",
-        "rev": "0cf2504a56029f8b52f453b63eeea1782135d4da",
+        "rev": "b1efc60518ff55195855ff40f0db728e8db7bcea",
         "type": "github"
       },
       "original": {
