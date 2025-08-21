@@ -272,7 +272,7 @@ in {
           };
         };
         autoupdate = false;
-        formatter = {
+        formatter = lib.mkDefault {
           rustfmt = {
             disabled = false;
             command = [
@@ -315,18 +315,18 @@ in {
             command = [mcp.context7.command];
             type = "local";
           };
-          filesystem = {
-            command = [mcp.filesystem.command] ++ mcp.filesystem.args;
-            type = "local";
-          };
+          # filesystem = {
+          #   command = [mcp.filesystem.command] ++ mcp.filesystem.args;
+          #   type = "local";
+          # };
           git = {
             command = [mcp.git.command];
             type = "local";
           };
-          github = {
-            command = [mcp.github.command];
-            type = "local";
-          };
+          # github = {
+          #   command = [mcp.github.command];
+          #   type = "local";
+          # };
           memory = {
             command = [mcp.memory.command];
             type = "local";
@@ -340,15 +340,15 @@ in {
             type = "local";
           };
         };
-        permission = {
+        permission = lib.mkForce {
           bash = {
-            "*" = "ask";
+            "*" = "allow";
             "git status" = "allow";
             clippy = "allow";
             fd = "allow";
             rg = "allow";
           };
-          edit = "ask";
+          edit = "allow";
           webfetch = "allow";
         };
         theme = "nord";
