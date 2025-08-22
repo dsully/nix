@@ -3,7 +3,7 @@ with pkgs;
   rustPlatform.buildRustPackage rec {
     rev = "e4b6e7c9f9806e1405e89a9e7c769fb5b96f76b4";
     pname = "emmylua-analyzer-rust";
-    version = "0.10.0-${rev}";
+    version = "0.12.0-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
