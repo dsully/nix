@@ -116,6 +116,7 @@ in {
     packages =
       (with perSystem.nix-ai-tools; [
         claude-code
+        codex
         crush
         gemini-cli
         goose-cli
