@@ -1,10 +1,10 @@
 {
+  inputs,
   my,
-  perSystem,
   pkgs,
   ...
 }: let
-  nix-package-updater = (perSystem.upstream or perSystem).nix-package-updater.default;
+  nix-package-updater = inputs.nix-package-updater.packages.${pkgs.system}.default;
 in {
   imports = [
     ./development.nix
