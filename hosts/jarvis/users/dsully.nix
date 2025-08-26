@@ -24,7 +24,6 @@
       ++ (with perSystem.self; [
         apple-photos-export
         autorebase
-        reading-list-to-pinboard-rs
       ]);
   };
 }
