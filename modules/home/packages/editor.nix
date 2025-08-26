@@ -41,7 +41,6 @@ in {
         oxlint
         prettierd
         pyrefly
-        python313Packages.jedi-language-server
         revive
         rstcheck
         ruff
