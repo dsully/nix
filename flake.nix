@@ -27,9 +27,6 @@
     system-manager.url = "github:numtide/system-manager";
     system-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    bun2nix.url = "github:baileyluTCD/bun2nix";
-    bun2nix.inputs.nixpkgs.follows = "nixpkgs";
-
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";
 

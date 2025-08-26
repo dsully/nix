@@ -74,7 +74,6 @@ in {
       ]
       ++ [
         codesort
-        gh-actions-language-server
         pkl-lsp
         pyproject-fmt
         sphinx-lint
