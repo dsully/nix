@@ -62,9 +62,9 @@
     memory = {
       command = lib.getExe mcp-packages.mcp-server-memory;
     };
-    nixos = {
-      command = lib.getExe perSystem.nixpkgs.mcp-nixos;
-    };
+    # nixos = {
+    #   command = lib.getExe perSystem.nixpkgs.mcp-nixos;
+    # };
     sequential-thinking = {
       command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
     };
@@ -125,7 +125,7 @@ in {
       ++ (with pkgs; [
         aichat
         github-mcp-server
-        mcp-nixos
+        # mcp-nixos
       ])
       ++ (with my.pkgs; [
         git-ai-commit
@@ -171,10 +171,10 @@ in {
               inherit (mcp.memory) command;
               type = "stdio";
             };
-            nixos = {
-              inherit (mcp.nixos) command;
-              type = "stdio";
-            };
+            # nixos = {
+            #   inherit (mcp.nixos) command;
+            #   type = "stdio";
+            # };
             sequential-thinking = {
               inherit (mcp.sequential-thinking) command;
               type = "stdio";
@@ -332,10 +332,10 @@ in {
             command = [mcp.memory.command];
             type = "local";
           };
-          nixos = {
-            command = [mcp.nixos.command];
-            type = "local";
-          };
+          # nixos = {
+          #   command = [mcp.nixos.command];
+          #   type = "local";
+          # };
           sequential-thinking = {
             command = [mcp.sequential-thinking.command];
             type = "local";

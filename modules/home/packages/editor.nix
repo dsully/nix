@@ -23,7 +23,7 @@ in {
         dockerfile-language-server-nodejs
         emmylua-analyzer-rust
         fish-lsp
-        gitui
+        # gitui
         gofumpt
         gopls
         harper
@@ -50,7 +50,7 @@ in {
         stylua
         superhtml
         systemd-lsp
-        tectonic-unwrapped
+        # tectonic-unwrapped
         tombi
         ts_query_ls
         typescript-go
