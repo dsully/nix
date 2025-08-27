@@ -17,6 +17,7 @@
     packages = with pkgs;
       [
         bacon
+        copilot-language-server
         ghostscript_headless
         nix-output-monitor
         pandoc
