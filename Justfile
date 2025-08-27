@@ -1,33 +1,35 @@
 set shell := ["fish", "-c"]
 
+# set shell := ["nix", "--experimental-features", "nix-command flakes", "develop", "--command", "bash", "-c"]
+NIX_OPTIONS := "nix-command flakes"
+HOSTNAME := `hostname -s`
 export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
-export NIX_CONFIG := "experimental-features = nix-command flakes"
+export NIX_CONFIG := "experimental-features = " + NIX_OPTIONS
+
+# export FLOX_VERSION := shell('cat ./VERSION') + "-g" + shell('git rev-parse --short HEAD')
 
 # This list
 default:
     @just --list
 
+# https://github.com/maximbaz/dotfiles/blob/cafb7a9f773fc8297b97f64fefe1c97b2efb58f0/justfile#L13
+# https://github.com/yonzilch/yonos/blob/5736df79d4f045bc518c99cd4b10fb5cddb264dd/Justfile#L75
+
 # Build Darwin or Linux configuration
 [group('desktop')]
-system *args="":
-    #!/usr/bin/env bash
-    if [ "{{ os() }}" == "linux" ]; then
+[linux]
+system host=HOSTNAME +args="":
+    @/usr/bin/sudo --preserve-env=PATH --preserve-env=NIX_CONFIG $(which system-manager) switch --flake '.#{{ host }}' {{ args }}
+    @/bin/rm -f result
 
-        /usr/bin/sudo --preserve-env=PATH $(which system-manager) switch --flake . {{ args }}
-        /bin/rm -f result
-
-    elif [ "{{ os() }}" == "macos" ]; then
-
-        nh darwin switch --ask . {{ args }}
-
-    else
-        echo "Unsupported OS: {{ os() }}"
-    fi
+[macos]
+system +args="":
+    @nh darwin switch --ask . {{ args }}
 
 # Switch Home Manager Configuration
 [group('desktop')]
-switch *args="":
+switch +args="":
     @nh home switch --ask -b backup . {{ args }}
 
 # Update all the flake inputs
