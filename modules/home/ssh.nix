@@ -28,22 +28,23 @@ in {
   programs.ssh = {
     enable = true;
 
-    # Global options for all hosts
-    addKeysToAgent = "yes";
-    compression = true;
-    controlMaster = "auto";
-    forwardAgent = lib.mkDefault true;
-    serverAliveInterval = 10;
+    enableDefaultConfig = false;
 
     extraConfig = lib.mkIf pkgs.stdenv.isDarwin ''
       SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_OS="Darwin"
       UseKeychain yes
-
-      # ${hostName}
     '';
 
     matchBlocks = lib.mkMerge [
       {
+        "*" = {
+          addKeysToAgent = "yes";
+          compression = true;
+          controlMaster = "auto";
+          forwardAgent = lib.mkDefault true;
+          serverAliveInterval = 10;
+        };
+
         "github.com" = {
           user = "git";
           hostname = "github.com.";
