@@ -8,11 +8,11 @@ in
     src = pkgs.fetchFromGitHub {
       owner = "simonwhitaker";
       repo = pname;
-      rev = "7f070e68b3bdad989f75f9d819cf7af2c1eca5d4";
-      hash = "sha256-+5qPPA1uodKHx7iDmTq0FJ7OP0sw6UD4QxvezUEQzP4=";
+      rev = "e0aceb7d60a3f2dd2151c2ca81bc18531d6f66aa";
+      hash = "sha256-w+vQE97GHeOLJzPWZSJBaFAJvmXU6u3ivpxleV7Eo0I=";
     };
 
-    vendorHash = "sha256-3Y4ZCl4avEM2eqh+3IodAudac6Kny0mD/a4aznrfWRE=";
+    vendorHash = "";
     doCheck = false;
 
     ldflags = [
