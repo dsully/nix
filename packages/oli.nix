@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "oli";
-    version = "61fb4fb2";
+    version = "dd228e90";
 
     src = fetchFromGitHub {
       owner = "amrit110";
       repo = pname;
-      rev = "61fb4fb20e280a3c7742e2a5ff5cd8bb11e52ac2";
-      hash = "sha256-QlLDmed1wg/n96lpjHKq449940OgPspVUqmF1ebglKo=";
+      rev = "dd228e905b8d45812ac9a250dcfdbc34616b1144";
+      hash = "sha256-8tc9yKOZ24v/Qwyap8WxHRPWVpL3kSLSJEftl3Szl88=";
     };
 
-    cargoHash = "sha256-ZakLeH61PTc9lhvbY4uyhrGfEdtjKAs8l4VWVEw/YX4=";
+    cargoHash = "sha256-6jTYD2Bc7q+nrgaS7HXM6gG53hMCYyuzpobWcRCvBgw=";
     doCheck = false;
 
     nativeBuildInputs = [
