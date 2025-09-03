@@ -25,6 +25,7 @@
       ++ (with perSystem.self; [
         apple-photos-export
         autorebase
+        zuban
       ]);
   };
 }

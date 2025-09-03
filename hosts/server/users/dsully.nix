@@ -32,6 +32,7 @@
       ]
       ++ (with perSystem.self; [
         autorebase
+        zuban
       ]);
   };
 }
