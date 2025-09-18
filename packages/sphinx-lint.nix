@@ -8,8 +8,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "sphinx-contrib";
       repo = pname;
-      rev = "78e818a25f417efafeb53a1f16aa9b962fa73e50";
-      hash = "sha256-JZUb8itETMyIv9+3Ulut0oQrveqP0OxI40lByAphpvM=";
+      rev = "f92a0070580547acd115e718c5599def8482da05";
+      hash = "sha256-aYOWvVPbIks6k1gSNcw3YLnDWlNl/y2iIKy7eAJ5hUw=";
     };
 
     build-system = [
