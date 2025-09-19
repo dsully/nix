@@ -129,6 +129,7 @@ in {
         # mcp-nixos
       ])
       ++ (with my.pkgs; [
+        claude-code-acp
         git-ai-commit
         turbo-commit
       ]);
