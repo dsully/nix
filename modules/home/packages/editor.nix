@@ -24,7 +24,7 @@ in {
         emmylua-ls
         emmylua-check
         fish-lsp
-        # gitui
+        gitui
         gofumpt
         gopls
         harper
@@ -51,7 +51,6 @@ in {
         stylua
         superhtml
         systemd-lsp
-        # tectonic-unwrapped
         tombi
         ts_query_ls
         typescript-go

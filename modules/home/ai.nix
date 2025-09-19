@@ -115,6 +115,7 @@ in {
   home = {
     packages =
       (with perSystem.nix-ai-tools; [
+        amp
         claude-code
         codex
         crush
