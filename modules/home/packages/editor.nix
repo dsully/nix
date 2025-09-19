@@ -20,7 +20,7 @@ in {
         commitlint-rs
         config-lsp
         docker-compose-language-service
-        dockerfile-language-server-nodejs
+        dockerfile-language-server
         emmylua-analyzer-rust
         fish-lsp
         # gitui
