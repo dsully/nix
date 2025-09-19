@@ -21,7 +21,8 @@ in {
         config-lsp
         docker-compose-language-service
         dockerfile-language-server
-        emmylua-analyzer-rust
+        emmylua-ls
+        emmylua-check
         fish-lsp
         # gitui
         gofumpt

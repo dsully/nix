@@ -21,6 +21,7 @@
         ghostscript_headless
         nix-output-monitor
         pandoc
+        tectonic-unwrapped
       ]
       ++ (with perSystem.self; [
         apple-photos-export

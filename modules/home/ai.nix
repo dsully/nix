@@ -13,7 +13,7 @@
       command = lib.getExe pkgs.gopls;
     };
     lua = {
-      command = lib.getExe my.pkgs.emmylua-analyzer-rust;
+      command = lib.getExe my.pkgs.emmylua-ls;
     };
     nix = {
       command = lib.getExe pkgs.nil;

@@ -10,7 +10,6 @@
     casks = [
       "android-platform-tools"
       "anylist"
-      "backblaze"
       "chatgpt"
       "discord"
       "downie"
@@ -36,6 +35,7 @@
       "tableplus"
       "tailscale"
       "telegram"
+      "unifi-identity-endpoint"
       "whatsapp"
       "zipic"
     ];
