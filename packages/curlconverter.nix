@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "curlconverter";
       repo = "curlconverter";
-      rev = "73e61e568d85aff311cb30612b3b60af91f5ef8b";
-      hash = "sha256-CEvQyXaG6G/Z95kVlenzvyAoLyKzjb6t/B5Ix6D43Uc=";
+      rev = "e1a0301d4640dd0901ff937ba54157175ec1636a";
+      hash = "sha256-5PULy4Le4fp30vJpT9bUrL/VVntE3YS2g5tIbmUJNX0=";
     };
 
     # Patch package.json to remove tree-sitter-cli and modify prepare script
