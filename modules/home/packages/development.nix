@@ -43,9 +43,6 @@
         yek
         yq
         zig
-      ]
-      ++ [
-        my.pkgs.curlconverter
       ];
   };
 }
