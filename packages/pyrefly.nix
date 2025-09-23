@@ -3,11 +3,11 @@ with pkgs; let
   dists = {
     aarch64-darwin = {
       platform = "macosx_11_0_arm64";
-      hash = "sha256-L1aE2FOFH1Q2CBWTxh6rZUTOln3jD2wpLApNknfx6KY=";
+      hash = "sha256-hxgavnY+0Z/Z4QeprlmC+FLxj5PeKVenMcm0AEgXRVI=";
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-      hash = "sha256-8XKK4k2ppshPPLYdoBH+LocI+KmWIGABhqYfMjfAHmY=";
+      hash = "sha256-H4QK+nM3GqVvjmZm8nM7S4qFYgMpqjhdejm7ImmDtDs=";
     };
   };
 
@@ -15,7 +15,7 @@ with pkgs; let
 in
   python3.pkgs.buildPythonPackage rec {
     pname = "pyrefly";
-    version = "0.33.1";
+    version = "0.34.0";
     format = "wheel";
 
     src = fetchPypi {
