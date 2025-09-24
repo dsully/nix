@@ -3,14 +3,15 @@ with pkgs;
   buildNpmPackage rec {
 
   pname = "claude-code-acp";
-  version = "0.4.3";
+  version = "0.4.4";
 
   src = fetchzip {
     url = "https://registry.npmjs.org/@zed-industries/claude-code-acp/-/claude-code-acp-${version}.tgz";
-    hash = "sha256-/zOy0Xo1fvJrABRRpzMhGD6UdryzlHDNPxQFotdWtL0=";
+    hash = "sha256-Zb4pG0zzWpSj8Dv6Ti1QHl7fOCzxikx8o5KkgoYf9g4=";
   };
 
-  npmDepsHash = "sha256-IIs5zV35DnZQ6vIeg0JxT8YBHCm7E0DJOKebwA1WXqE=";
+  npmDepsHash = "sha256-tfsSjCATaP43dsylWRcy5KOCoO7taS88V49tRwveFjg=";
+  makeCacheWritable = true;
 
   postPatch = ''
     cp ${./package-lock.json} package-lock.json
