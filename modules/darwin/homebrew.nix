@@ -49,6 +49,7 @@
       "rapidapi"
       "raycast"
       "renamer"
+      "retcon"
       "rocket"
       "soulver"
       "stay"
