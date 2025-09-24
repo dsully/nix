@@ -287,7 +287,11 @@ in {
             extensions = [".rs"];
           };
         };
-        lsp = {
+        lsp = lib.mkDefault {
+          helm = {
+            command = ["helm_ls" "serve" "--stdio"];
+            extensions = [".tpl" ".yaml"];
+          };
           lua = {
             command = [lsp.lua.command];
             extensions = [".lua"];
