@@ -7,7 +7,7 @@ with pkgs;
 
   src = fetchzip {
     url = "https://registry.npmjs.org/@zed-industries/claude-code-acp/-/claude-code-acp-${version}.tgz";
-    hash = "sha256-Zb4pG0zzWpSj8Dv6Ti1QHl7fOCzxikx8o5KkgoYf9g4=";
+    hash = "sha256-kkAQuYP2S5EwIGJV8TLrlYzHOC54vmxEHwwuZD5P1hI=";
   };
 
   npmDepsHash = "sha256-tfsSjCATaP43dsylWRcy5KOCoO7taS88V49tRwveFjg=";
