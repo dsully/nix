@@ -15,6 +15,7 @@
       theme = "nord";
 
       command = "${lib.getExe pkgs.fish}";
+      link-url = true;
 
       working-directory = "home";
 
