@@ -31,7 +31,6 @@
         fselect
         fzf
         gnutar
-        gomi
         hexyl
         inetutils
         iperf3
