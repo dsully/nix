@@ -64,6 +64,15 @@ in {
             ControlPersist = "no";
           };
         };
+
+        "tnt" = {
+          hostname = "172.236.14.101";
+
+          extraOptions = {
+            ControlMaster = "no";
+            ControlPersist = "no";
+          };
+        };
       }
 
       (lib.mkIf (hostName != "stelvio") {
