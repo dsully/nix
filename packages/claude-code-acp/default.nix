@@ -2,7 +2,7 @@
 with pkgs;
   buildNpmPackage rec {
     pname = "claude-code-acp";
-    version = "0.4.5-${rev}";
+    version = "0.4.7-${rev}";
     rev = "600a2db82f209eaae02aa92f5044fed675ad53e4";
 
     src = fetchFromGitHub {
@@ -15,7 +15,7 @@ with pkgs;
     doCheck = false;
     dontNpmBuild = true;
     makeCacheWritable = true;
-    npmDepsHash = "sha256-IR88NP1AiR6t/MLDdaZY1Np0AE7wfqEUfmnohaf0ymc=";
+    npmDepsHash = "sha256-j4lcOsvSHr34q9IDefOWASe5RTAtTxoPNLmCDw5ahy8=";
 
     nativeBuildInputs = [
       pkgs.patchelf
