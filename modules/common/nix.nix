@@ -41,7 +41,7 @@ in {
       experimental-features = [
         "flakes"
         "nix-command"
-        "pipe-operator"
+        # "pipe-operator"
       ];
       extra-nix-path = "nixpkgs=flake:nixpkgs";
 
@@ -65,6 +65,7 @@ in {
       trusted-users = [
         "@admin"
         "@wheel"
+        "dsully"
       ];
 
       # Conform to the XDG Base Directory Specification

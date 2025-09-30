@@ -6,6 +6,7 @@
 }: {
   imports = [
     flake.modules.common.options
+    flake.modules.common.nix
     ./options.nix
   ];
 
