@@ -2,13 +2,13 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "oli";
-    version = "dd228e90";
+    version = "c0caefbc";
 
     src = fetchFromGitHub {
       owner = "amrit110";
       repo = pname;
-      rev = "dd228e905b8d45812ac9a250dcfdbc34616b1144";
-      hash = "sha256-8tc9yKOZ24v/Qwyap8WxHRPWVpL3kSLSJEftl3Szl88=";
+      rev = "c0caefbcab65b02992314f9e65bbb976480c1103";
+      hash = "sha256-AquckkIbCX1vhNI7hsUNtQNjY1erfZfsMhKzK/Rb8Kw=";
     };
 
     cargoHash = "sha256-6jTYD2Bc7q+nrgaS7HXM6gG53hMCYyuzpobWcRCvBgw=";
