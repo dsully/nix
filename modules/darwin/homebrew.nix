@@ -76,7 +76,7 @@
       "Kagi Search" = 1622835804;
       "MarkChart" = 6475648822;
       "One Thing" = 1604176982;
-      "Parcel" = 639968404;
+      "Parcel" = 375589283;
       "Patterns" = 429449079;
       "Protego" = 6737959724;
       "Refined GitHub" = 1519867270;
