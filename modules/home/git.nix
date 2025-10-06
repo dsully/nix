@@ -6,6 +6,9 @@
 }: let
   editor = lib.getExe pkgs.neovim;
   inherit (config.system) userName;
+
+  exclude_bots = "--perl-regexp --author='^((?!dependabot|renovate).*)$'";
+  email = "${userName}@users.noreply.github.com";
 in {
   # `programs.git` will generate the config file: ~/.config/git/config
   # to make git use this config file, `~/.gitconfig` should not exist!
@@ -20,7 +23,7 @@ in {
       ".config/git/public.conf" = {
         force = true;
         text = lib.generators.toGitINI {
-          user.email = "${userName}@users.noreply.github.com";
+          user.email = email;
         };
       };
     };
@@ -69,16 +72,12 @@ in {
       recent = "for-each-ref --count=20 --sort=-committerdate refs/heads/ --format=\"%(refname:short)\"";
 
       # Log formatting
-      l = "log --pretty=oneline -n 20 --graph --abbrev-commit";
-      lp = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate --date=short --color --decorate";
-      lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --";
-      overview = "log --all --since='2 weeks' --oneline --no-merges";
-      recap = "!git log --all --oneline --no-merges --author=$(git config user.email)";
-      today = "!git log --since=00:00:00 --all --oneline --no-merges --author=$(git config user.email)";
+      l = "log --pretty=oneline -n 20 --graph --abbrev-commit ${exclude_bots}";
+      lg = "log ${exclude_bots}";
 
-      # Search and find
-      find = "log -G";
-      filter-commits = "!sh -c 'git log --pretty=format:\"%h - %an: %s\" $1 | fzf --no-sort | cut -d \" \" -f1 ' -";
+      overview = "log --all --since='2 weeks' --oneline --no-merges ${exclude_bots}";
+      recap = "log --all --oneline --no-merges --author=${email}";
+      today = "log --since=00:00:00 --all --oneline --no-merges --author=${email}";
 
       # Editor integration
       mc = "!git diff --name-only --diff-filter=U | tr '\\n' '\\0' | xargs -0 $EDITOR -c '/^\\(|||||||\\|=======\\|>>>>>>>\\|<<<<<<<\\)'";
