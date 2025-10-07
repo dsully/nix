@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "feluda";
-    rev = "57aae96dc2249bbe4689ef3877ead211d3395b1e";
+    rev = "f32d72c5868fb496c3f22e46861991dca2acfd5b";
     version = "1.9.8-rc1-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "anistark";
       repo = pname;
-      hash = "sha256-XS9uWZfARgvtus6FPX+ReNf1EC9ME2b9CDaYHisxU9A=";
+      hash = "sha256-/NW6Tz7Rlr9wVYWFkYFHKRnu1Tuum3/rC+OXYqrWRwU=";
     };
 
     cargoHash = "sha256-HoLqbogtlTkvc8KzlY8Ha/8wYIAIhdze7lgECBcEk2U=";
