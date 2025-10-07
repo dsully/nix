@@ -94,3 +94,8 @@ init-from-url URL:
     sed -i '/cargoHash = ".*";/a \    useFetchCargoVendor = true;' "${OUTPUT_FILE}"
 
 # https://github.com/stefanzweifel/git-auto-commit-action
+
+
+[group('git')]
+commit:
+    @git commit -m "chore: update lockfile and versions"
