@@ -10,7 +10,7 @@ with pkgs;
     };
 
     nativeBuildInputs = [makeWrapper];
-    buildInputs = [jdk24_headless];
+    buildInputs = [jdk25_headless];
 
     dontUnpack = true;
 
@@ -19,7 +19,7 @@ with pkgs;
       cp $src $out/share/java/${pname}-${version}.jar
 
       # shellcheck disable=SC1072,SC1073,SC1009
-      makeWrapper ${jdk24_headless}/bin/java $out/bin/${pname} --add-flags "-jar $out/share/java/${pname}-${version}.jar"'';
+      makeWrapper ${jdk25_headless}/bin/java $out/bin/${pname} --add-flags "-jar $out/share/java/${pname}-${version}.jar"'';
 
     meta = {
       description = "Language server for Pkl, implementing the server-side of the Language Server Protocol";
