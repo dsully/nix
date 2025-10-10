@@ -3,7 +3,7 @@ with pkgs; let
   dists = {
     aarch64-darwin = {
       platform = "macosx_11_0_arm64";
-      hash = "sha256-25+6GwsarbgFoT2Ckzfvyu1jIW+Mjyl45jrG26nF2XY=";
+      hash = "sha256-5sgfJbzKpXYr9Feo8SLHLb1nzF6KgzhdzmVbVxzLr5I=";
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
