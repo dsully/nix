@@ -3,13 +3,13 @@ with pkgs;
   buildNpmPackage rec {
     pname = "claude-code-acp";
     version = "0.5.3-${rev}";
-    rev = "c5abff0e436a2ead4c645f568eb9544ce7e9f403";
+    rev = "75b44e945ed091dfe24384a543e706d4e7a1ad35";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "zed-industries";
       repo = "claude-code-acp";
-      hash = "sha256-Hz4Vzhn+z0u+yyK1JJ4WCVCdyqM1Aze7QNKzSZNSlI0=";
+      hash = "sha256-WkDTzA6MepcuuAk8vTRav/ixzxlIBNaYEugyvt/nlIY=";
     };
 
     doCheck = false;

@@ -3,11 +3,11 @@ with pkgs; let
   dists = {
     aarch64-darwin = {
       platform = "macosx_11_0_arm64";
-      hash = "sha256-qzQBXGjcyk1MqPMJ/ntf71SDRNB/MjH6PcrnBuagIdQ=";
+      hash = "sha256-25+6GwsarbgFoT2Ckzfvyu1jIW+Mjyl45jrG26nF2XY=";
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-      hash = "sha256-iRngVSVSl5ccEs8CvOfRK5X9AhUZAQVN9SSy6AutSUg=";
+      hash = "sha256-/w781CpuObmzO4KE3Fp/WTuBb+0AYYU5y2siQTejZXU=";
     };
   };
 
@@ -15,13 +15,13 @@ with pkgs; let
 
   toml-fmt-common = python3.pkgs.buildPythonPackage rec {
     pname = "toml-fmt-common";
-    version = "1.0.1";
+    version = "1.1.0";
     format = "wheel";
 
     src = fetchPypi {
       abi = "none";
       dist = "py3";
-      hash = "sha256-emVC42pxZ/qUuLmX0/jeutu0q3V8fXincwRXm9egzH0=";
+      hash = "sha256-kqlWxKv5wU5y1R5MIxSbJZaoSsDDR0hOfDYAiAfi4KM=";
       inherit format;
       pname = "toml_fmt_common";
       python = "py3";
@@ -31,7 +31,7 @@ with pkgs; let
 in
   python3.pkgs.buildPythonPackage rec {
     pname = "pyproject-fmt";
-    version = "2.6.0";
+    version = "2.10.0";
     format = "wheel";
 
     src = fetchPypi {
