@@ -19,7 +19,6 @@
       cargo-sweep
       cargo-tarpaulin
       cargo-unused-features
-      cargo-update
       cargo-wizard
       rustcat
       rustup

@@ -13,7 +13,7 @@ in {
   home = {
     packages = with (pkgs // my.pkgs);
       [
-        actionlint
+        # actionlint
         basedpyright
         bash-language-server
         biome
@@ -24,7 +24,7 @@ in {
         emmylua-ls
         emmylua-check
         fish-lsp
-        gitui
+        # gitui
         gofumpt
         gopls
         harper
@@ -33,7 +33,6 @@ in {
         just-lsp
         lemminx
         mado
-        marksman
         mbake
         neovim
         nil

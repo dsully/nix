@@ -20,6 +20,9 @@
     };
     python = {
       command = lib.getExe pkgs.ty;
+      args = [
+        "server"
+      ];
     };
     rust = {
       command = "rust-analyzer";
