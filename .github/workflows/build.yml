@@ -53,5 +53,5 @@ jobs:
         with:
           flakes-from-devshell: true
           script: |
-            nix-package-updater -- --build-only --cache
+            nix-package-updater -- --build-only --cache --force
           #script: nix run github:dsully/nix-package-updater -- --build-only --cache
