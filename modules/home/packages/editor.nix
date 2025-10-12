@@ -46,6 +46,7 @@ in {
         ruff
         shellharden
         shfmt
+        sphinx-lint
         stylelint
         stylua
         superhtml
@@ -57,17 +58,18 @@ in {
         vscode-langservers-extracted
         wordnet
         write-good
-        (pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
-          # Apply patch to source before build
-          postPatch =
-            (oldAttrs.postPatch or "")
-            + ''
-              # Patch the TypeScript source
-              substituteInPlace src/languageservice/services/yamlValidation.ts \
-                --replace "if (isKubernetes && err.message === this.MATCHES_MULTIPLE)" \
-                          "if (err.message === this.MATCHES_MULTIPLE)"
-            '';
-        }))
+        yaml-language-server
+        # (pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
+        #   # Apply patch to source before build
+        #   postPatch =
+        #     (oldAttrs.postPatch or "")
+        #     + ''
+        #       # Patch the TypeScript source
+        #       substituteInPlace src/languageservice/services/yamlValidation.ts \
+        #         --replace "if (isKubernetes && err.message === this.MATCHES_MULTIPLE)" \
+        #                   "if (err.message === this.MATCHES_MULTIPLE)"
+        #     '';
+        # }))
         yamllint
         zls
       ]
@@ -75,7 +77,6 @@ in {
         codesort
         pkl-lsp
         pyproject-fmt
-        sphinx-lint
         ty
         xmlformatter
       ];

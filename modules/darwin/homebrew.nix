@@ -32,7 +32,7 @@
 
     casks = [
       "1password"
-      "boltai"
+      # "boltai"
       "cleanshot"
       "daisydisk"
       "dash"
@@ -92,7 +92,7 @@
       "iPreview" = 1519213509;
       "Userscripts" = 1463298887;
       "WordService" = 899972312;
-      "Xcode" = 497799835;
+      # "Xcode" = 497799835;
       "Yoink" = 457622435;
     };
 

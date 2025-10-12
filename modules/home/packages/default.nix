@@ -22,7 +22,6 @@ in {
         dirstat-rs
         feluda
         geil
-        git-trim
         lolcate-rs
         magic-opener
         nix-package-updater

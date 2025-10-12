@@ -31,7 +31,7 @@
       "serverbuddy"
       "signal"
       "superduper"
-      "syncthing"
+      # "syncthing"
       "tableplus"
       "tailscale"
       "telegram"
