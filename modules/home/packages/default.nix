@@ -33,6 +33,7 @@ in {
         safari-rs
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+        syncthing
         xcp
       ];
   };
