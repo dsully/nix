@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "lolcate-rs";
-    version = "0.2.3";
+    version = "a3c71f15";
 
     src = fetchFromGitHub {
       owner = "dsully";
       repo = pname;
-      rev = "aa7325587c3214c17337ab405708c6af2b7f44b8";
-      hash = "sha256-IyGsDvgwzSAYGupdil5RUPDdzG11f/EdtWPa8yyBmHg=";
+      rev = "a3c71f15b28b3201a766f11cb406d2db9ea15de4";
+      hash = "sha256-78OL/C0lG2pt9BddbOUOmM65V7ty/3qxOw/p8+KCSFI=";
     };
 
-    cargoHash = "sha256-ktaf+dkhxojj0xbGij02EN7nb8oTLCcaSpzLcRk4wXE=";
+    cargoHash = "sha256-7BnEw8ikkIqCw7pymT0Yx9wKpsTMNLtUkwosfEfQSIE=";
 
     meta = {
       description = "Lolcate -- A comically fast way of indexing and querying your filesystem. Replaces locate / mlocate / updatedb. Written in Rust";
