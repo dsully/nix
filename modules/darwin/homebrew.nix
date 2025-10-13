@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   environment = {
     variables = {
       HOMEBREW_BAT = "1";
@@ -7,10 +7,6 @@
       HOMEBREW_NO_COMPAT = "1";
       HOMEBREW_NO_ENV_HINTS = "1";
     };
-
-    systemPackages = [
-      pkgs.mas
-    ];
   };
 
   homebrew = {
@@ -36,14 +32,13 @@
       "cleanshot"
       "daisydisk"
       "dash"
-      "fastmate"
       "font-monaspace"
+      "fastmail"
       "ghostty"
       "keka"
       "little-snitch"
       "lunar"
       "monodraw"
-      "powerflow"
       "processspy"
       "raindropio"
       "rapidapi"
@@ -58,6 +53,7 @@
       "tower"
       "transmit"
       "typora"
+      # Can this replace RapidAPI?
       "yaak"
     ];
 
@@ -82,7 +78,6 @@
       "Refined GitHub" = 1519867270;
       "Save to Raindrop.io" = 1549370672;
       "Slack" = 803453959;
-      "Taska" = 6741809383;
       "TestFlight" = 899247664;
       "Text Lens" = 6743369285;
       "TrashMe 3" = 1490879410;
@@ -92,13 +87,7 @@
       "iPreview" = 1519213509;
       "Userscripts" = 1463298887;
       "WordService" = 899972312;
-      # "Xcode" = 497799835;
       "Yoink" = 457622435;
     };
-
-    taps = [
-      "lzt1008/powerflow"
-      "rajiv/fastmate"
-    ];
   };
 }

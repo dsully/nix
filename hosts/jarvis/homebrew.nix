@@ -8,7 +8,6 @@
     };
 
     casks = [
-      "android-platform-tools"
       "anylist"
       "chatgpt"
       "discord"
@@ -17,7 +16,6 @@
       "google-chrome"
       "iina"
       "insta360-studio"
-      "jordanbaird-ice"
       "latest"
       "lm-studio"
       "macdive"
