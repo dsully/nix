@@ -2,7 +2,7 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "lolcate-rs";
-    version = "a3c71f15";
+    version = "0.2.4";
 
     src = fetchFromGitHub {
       owner = "dsully";

@@ -99,17 +99,17 @@
 
   models = {
     large = {
-      model = "claude-opus-4-20250514";
+      model = "claude-opus-opus-4-1-20250805";
       provider = "anthropic";
       max_tokens = 32000;
     };
     medium = {
-      model = "claude-sonnet-4-20250514";
+      model = "claude-sonnet-4-5-20250929";
       provider = "anthropic";
       max_tokens = 32000;
     };
     small = {
-      model = "claude-3-5-haiku-20241022";
+      model = "claude-sonnet-4-20250514";
       provider = "anthropic";
       max_tokens = 5000;
     };
@@ -117,19 +117,15 @@
 in {
   home = {
     packages =
-      (with perSystem.nix-ai-tools; [
-        amp
+      (with pkgs; [
+        aichat
         claude-code
         codex
         crush
         gemini-cli
-        goose-cli
-        opencode
-      ])
-      ++ (with pkgs; [
-        aichat
         github-mcp-server
-        # mcp-nixos
+        mcp-nixos
+        opencode
       ])
       ++ (with my.pkgs; [
         claude-code-acp
@@ -200,38 +196,6 @@ in {
         };
       };
 
-      "goose/config.yaml" = {
-        force = true;
-        source = (pkgs.formats.yaml {}).generate ".config/goose/config.yaml" {
-          GOOSE_PROVIDER = "anthropic";
-          GOOSE_MODEL = models.small;
-          GOOSE_MODE = "smart_approve";
-          extensions = {
-            computercontroller = {
-              display_name = "Computer Controller";
-              enabled = true;
-              name = "computercontroller";
-              timeout = 300;
-              type = "builtin";
-            };
-            developer = {
-              display_name = "Developer Tools";
-              enabled = true;
-              name = "developer";
-              timeout = 300;
-              type = "builtin";
-            };
-            memory = {
-              display_name = "Memory";
-              enabled = true;
-              name = "memory";
-              timeout = 300;
-              type = "builtin";
-            };
-          };
-        };
-      };
-
       # "mcp/mcp.json".source = mcp-servers;
       # mcp-servers-nix.lib.mkConfig {};
     };
@@ -241,13 +205,13 @@ in {
   programs = {
     opencode = {
       enable = true;
-      package = perSystem.nix-ai-tools.opencode;
+      package = pkgs.opencode;
       settings = {
         agent = {
           build = {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             mode = "primary";
-            model = "anthropic/claude-sonnet-4-20250514";
+            model = "anthropic/claude-sonnet-4-5-20250929";
             # prompt = "{file:./prompts/build.txt}";
             tools = {
               bash = true;
@@ -258,7 +222,7 @@ in {
           plan = {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             mode = "primary";
-            model = "anthropic/claude-haiku-4-20250514";
+            model = "anthropic/claude-sonnet-4-5-20250929";
             tools = {
               bash = false;
               edit = false;
@@ -269,7 +233,7 @@ in {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             description = "Reviews code for best practices and potential issues";
             mode = "subagent";
-            model = "anthropic/claude-sonnet-4-20250514";
+            model = "anthropic/claude-sonnet-4-5-20250929";
             prompt = "You are a code reviewer. Focus on security, performance, and maintainability.";
             tools = {
               edit = false;
