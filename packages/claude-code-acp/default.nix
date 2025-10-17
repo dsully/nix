@@ -3,19 +3,19 @@ with pkgs;
   buildNpmPackage rec {
     pname = "claude-code-acp";
     version = "0.5.5-${rev}";
-    rev = "2c16a41fa4b9be7f93ceb4899f33461cb1e3a88e";
+    rev = "8aea8fd0e120b6ae752adc66cd05cc5ff669c1ce";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "zed-industries";
       repo = "claude-code-acp";
-      hash = "sha256-KVpY2ADJA0kreL2uLO2XcJqcEDr9RrUgS+I4UtN/9wc=";
+      hash = "sha256-v32Q02ALWw6Upd4rrHGZH7Vt25+xSnKJCNGJob/irgM=";
     };
 
     doCheck = false;
     dontNpmBuild = true;
     makeCacheWritable = true;
-    npmDepsHash = "sha256-6U62xC30c1BwTWcfh2Sw5AfHY7nj+VdC84Joa8x2p3A=";
+    npmDepsHash = "sha256-oUAHkB4EPuo8YCxi9Y/Lc8cipjJQ05o51MpdUsCjiiQ=";
 
     nativeBuildInputs = [
       pkgs.patchelf
