@@ -28,6 +28,9 @@
       window-save-state = "always";
       window-new-tab-position = "end";
 
+      # https://www.reddit.com/r/Ghostty/comments/1o9nzga/how_can_i_remove_the_paddinggap_along_the_borders/
+      window-padding-color = "extend-always";
+
       # Shell integration
       shell-integration-features = "no-cursor,sudo,title,ssh-env,ssh-terminfo";
       macos-titlebar-proxy-icon = "hidden";
