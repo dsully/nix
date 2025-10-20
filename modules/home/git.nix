@@ -142,7 +142,7 @@ in {
     ];
 
     settings = {
-      aliases = {
+      alias = {
         # Basic shortcuts
         a = "commit --amend";
         aa = "add --all";
