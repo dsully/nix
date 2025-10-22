@@ -3,11 +3,11 @@ with pkgs; let
   dists = {
     aarch64-darwin = {
       platform = "macosx_11_0_arm64";
-      hash = "sha256-BkmglaZedwuxVFVZwt5CmnQJLt8u+2VqMERwhlaQ2iM=";
+      hash = "sha256-ITQfA5J+vFbRzMf+z/5lKEE9d9+qmEqtu5UKfuy3dMo=";
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-      hash = "sha256-cNC8emjQLnEmEIoZPIPXXUKS1OEy92I7oCXIGxuPrTo=";
+      hash = "sha256-I/srt/PPbruAvAkuC+mReMMlcHd0LLSEpibW4vTaEk4=";
     };
   };
 
@@ -15,7 +15,7 @@ with pkgs; let
 in
   python3.pkgs.buildPythonPackage rec {
     pname = "zuban";
-    version = "0.1.1";
+    version = "0.1.2";
     format = "wheel";
 
     src = fetchPypi {
