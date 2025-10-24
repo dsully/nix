@@ -39,7 +39,7 @@
         kondo
         lsd
         macchina
-        moar
+        moor
         mtr
         p7zip
         procs
