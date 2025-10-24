@@ -13,7 +13,7 @@ in {
   home = {
     packages = with (pkgs // my.pkgs);
       [
-        # actionlint
+        actionlint
         basedpyright
         bash-language-server
         biome
