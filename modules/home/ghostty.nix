@@ -44,6 +44,9 @@
         "super+alt+shift+j=write_scrollback_file:open"
         "super+shift+j=write_scrollback_file:paste"
 
+        # Shift-Enter for Claude Code
+        "shift+enter=text:\x1b\r"
+
         # Distinguish <C-i> from <Tab>
         "ctrl+i=text:\\x1b[105;5u"
 
