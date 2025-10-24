@@ -20,7 +20,6 @@ in {
       [
         devmoji-log
         dirstat-rs
-        feluda
         geil
         lolcate-rs
         magic-opener
