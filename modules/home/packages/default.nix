@@ -4,6 +4,7 @@
   pkgs,
   ...
 }: let
+  anthropic-api-key = inputs.anthropic-api-key.packages.${pkgs.system}.default;
   nix-package-updater = inputs.nix-package-updater.packages.${pkgs.system}.default;
 in {
   imports = [
@@ -18,6 +19,7 @@ in {
     # Handle merging nixpkgs, the packages in this flake and allowing dependent to use the packages from this flake.
     packages = with (pkgs // my.pkgs);
       [
+        anthropic-api-key
         devmoji-log
         dirstat-rs
         geil
