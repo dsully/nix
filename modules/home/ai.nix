@@ -117,18 +117,20 @@
 in {
   home = {
     packages =
-      (with pkgs; [
+      (with perSystem.nix-ai-tools; [
+        claude-code-acp
+        crush
+      ])
+      ++ (with pkgs; [
         aichat
         claude-code
         codex
-        crush
         gemini-cli
         github-mcp-server
         mcp-nixos
         opencode
       ])
       ++ (with my.pkgs; [
-        claude-code-acp
         git-ai-commit
         turbo-commit
       ]);

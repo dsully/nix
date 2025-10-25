@@ -39,6 +39,9 @@
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
     mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
+    nix-ai-tools.inputs.nixpkgs.follows = "nixpkgs";
+
     config-lsp.url = "github:Myzel394/config-lsp";
     config-lsp.inputs.nixpkgs.follows = "nixpkgs";
   };
