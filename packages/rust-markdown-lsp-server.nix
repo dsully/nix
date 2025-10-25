@@ -14,10 +14,6 @@ with pkgs;
 
     cargoHash = "sha256-TEizH+2Y7dGgtBqHc293y1sFirLG2hdf+27TGlsxuyo=";
 
-    # nativeBuildInputs = [
-    #   pkg-config
-    # ];
-
     meta = {
       description = "A markdown LSP server for my notes";
       homepage = "https://github.com/dougrocha/rust_markdown_lsp_server";
