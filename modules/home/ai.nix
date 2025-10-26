@@ -195,6 +195,17 @@ in {
               "mcp_context7_get-library-doc"
             ];
           };
+
+          providers = {
+            anthropic = {
+              api_key = "Bearer $(anthropic-api-key)";
+              extra_headers = {
+                anthropic-version = "2023-06-01";
+                anthropic-beta = "oauth-2025-04-20";
+              };
+              system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
+            };
+          };
         };
       };
 
