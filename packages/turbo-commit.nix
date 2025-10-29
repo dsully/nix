@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage {
     pname = "turbo-commit";
-    version = "cc762126";
+    version = "e94cf45f";
 
     src = fetchFromGitHub {
       owner = "dikkadev";
       repo = "turboCommit";
-      rev = "cc7621269a8aa0ef0af18c99e1541859fd0ca256";
-      hash = "sha256-PSSi+h4KoUxHKSuKZkjvH14k8DaWpAVyUJ+jqoDwC3g=";
+      rev = "e94cf45fff05fc805d1fd1d1d0f2512336b357c7";
+      hash = "sha256-jvu4FDRW4cYlIcr8mR6aj4cPBQQIMnAwsrtIgzNJqpA=";
     };
 
-    cargoHash = "sha256-0jYPfaFrvrAAfulRoi4GOypvOw9i0ZGJi8UhLnY0jrQ=";
+    cargoHash = "sha256-nfyEZo/wXf6wK5slIvNpNDUL7OqzEgeCY3eXdGyiHoQ=";
     doCheck = false;
 
     nativeBuildInputs = [
