@@ -13,7 +13,7 @@
       cargo-insta
       cargo-llvm-lines
       cargo-msrv
-      cargo-nextest
+      # cargo-nextest
       cargo-run-bin
       cargo-shear
       cargo-sweep
