@@ -214,8 +214,116 @@ in {
     };
   };
 
-  # https://opencode.ai/docs/
   programs = {
+    claude-code = {
+      enable = true;
+      package = pkgs.claude-code;
+
+      settings = {
+        inherit (models.medium) model;
+        enableAllProjectMcpServers = true;
+        includeCoAuthoredBy = false;
+
+        statusLine = {
+          command = "input=$(cat); echo \"[$(echo \"$input\" | jq -r '.model.display_name')]  $(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"";
+          padding = 0;
+          type = "command";
+        };
+
+        permissions = {
+          allow =
+            [
+              "Bash(cargo :*)"
+              "Bash(fd:*)"
+              "Bash(find:*)"
+              "Bash(git add:*)"
+              "Bash(git bisect:*)"
+              "Bash(git blame:*)"
+              "Bash(git diff:*)"
+              "Bash(git fetch:*)"
+              "Bash(git grep:*)"
+              "Bash(git log:*)"
+              "Bash(git ls-remote:*)"
+              "Bash(git remote show:*)"
+              "Bash(git restore:*)"
+              "Bash(git show:*)"
+              "Bash(git status:*)"
+              "Bash(ls:*)"
+              "Bash(mkdir:*)"
+              "Bash(nix :*)"
+              "Bash(pwd:*)"
+              "Bash(rg:*)"
+              "Bash(statix check:*)"
+              "Bash(uv:*)"
+              "Bash(xh:*)"
+              "Edit(**/*.md)"
+              "Glob"
+              "Grep"
+              "Read(~/.claude/plugins/cache/superpowers/skills/*)"
+              "Task"
+              "WebFetch"
+              "WebSearch"
+            ]
+            ++ [
+              "mcp__context7__get-library-docs"
+              "mcp__context7__resolve-library-id"
+              "mcp__sequential-thinking"
+            ];
+
+          ask = [];
+
+          deny = [
+            "Bash(rm -rf :*)"
+            "Bash(su:*)"
+            "Bash(sudo:*)"
+            "Read(./.direnv)"
+            "Read(./.env.*)"
+            "Read(./.env)"
+            "Read(./.envrc)"
+            "Read(./build)"
+            "Read(./config/credentials.json)"
+            "Read(./secrets/**)"
+            "Read(./targets)"
+            "Read(~/.aws)"
+            "Read(~/.cache)"
+            "Read(~/.cargo)"
+            "Read(~/.ssh)"
+          ];
+
+          defaultMode = "plan";
+          disableBypassPermissionsMode = "disable";
+        };
+
+        env = {
+          CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = 1;
+          DISABLE_AUTOUPDATER = 1;
+          DISABLE_BUG_COMMAND = 1;
+          DISABLE_ERROR_REPORTING = 1;
+          DISABLE_TELEMETRY = 1;
+        };
+
+        mcpServers = {
+          github = {
+            type = "http";
+            url = "https://api.githubcopilot.com/mcp/";
+            headers = {
+              Authorization = "Bearer \${GITHUB_API_TOKEN}";
+            };
+          };
+          context7 = {
+            type = "http";
+            url = "https://mcp.context7.com/mcp";
+          };
+
+          sequential-thinking = {
+            type = "http";
+            url = "https://remote.mcpservers.org/sequentialthinking/mcp";
+          };
+        };
+      };
+    };
+
+    # https://opencode.ai/docs/
     opencode = {
       enable = true;
       package = pkgs.opencode;
