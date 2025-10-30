@@ -5,6 +5,7 @@
 }: {
   imports = [
     flake.homeModules.dsully
+    flake.homeModules.copypaste
     ../options.nix
   ];
 
