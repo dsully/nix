@@ -18,6 +18,7 @@ in {
     ./git.nix
     ./lolcate.nix
     ./ssh.nix
+    ./vivid.nix
   ];
 
   home = {
