@@ -53,12 +53,7 @@ alias clean := gc
 
 [group('nix')]
 gc:
-    #!/usr/bin/env bash
-    if [ "{{ os() }}" == "linux" ]; then
-        /usr/bin/sudo --preserve-env=PATH $(which nh) clean all
-    else
-        nh clean all
-    fi
+    /usr/bin/sudo --preserve-env=PATH $(which nh) clean all
 
 # Format the nix files in this repo
 
