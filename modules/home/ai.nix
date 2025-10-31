@@ -121,15 +121,21 @@ in {
         claude-code-acp
         crush
       ])
-      ++ (with pkgs; [
-        aichat
-        claude-code
-        codex
-        gemini-cli
-        github-mcp-server
-        mcp-nixos
-        opencode
-      ])
+      ++ (
+        with pkgs;
+          [
+            aichat
+            codex
+            gemini-cli
+            github-mcp-server
+            mcp-nixos
+            opencode
+          ]
+          ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+            # Use claude-code from Homebrew on macOS as it is a single binary.
+            claude-code
+          ]
+      )
       ++ (with my.pkgs; [
         git-ai-commit
         turbo-commit
@@ -217,7 +223,8 @@ in {
   programs = {
     claude-code = {
       enable = true;
-      package = pkgs.claude-code;
+      # Use claude-code from Homebrew on macOS as it is a single binary.
+      package = null;
 
       settings = {
         inherit (models.medium) model;
