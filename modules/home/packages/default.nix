@@ -4,8 +4,8 @@
   pkgs,
   ...
 }: let
-  anthropic-api-key = inputs.anthropic-api-key.packages.${pkgs.system}.default;
-  nix-package-updater = inputs.nix-package-updater.packages.${pkgs.system}.default;
+  anthropic-api-key = inputs.anthropic-api-key.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  nix-package-updater = inputs.nix-package-updater.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   imports = [
     ./development.nix

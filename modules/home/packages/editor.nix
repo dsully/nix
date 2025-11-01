@@ -6,9 +6,9 @@
 }: let
   # config-lsp = inputs.config-lsp.packages.${pkgs.system}.default;
   # `perSystem.nixos-anywhere.default` is a shorthand for `inputs.nixos-anywhere.packages.<system>.default`.
-  config-lsp = inputs.config-lsp.packages.${pkgs.system}.default;
+  config-lsp = inputs.config-lsp.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  inherit (inputs.neovim-nightly-overlay.packages.${pkgs.system}) neovim;
+  inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
 in {
   home = {
     packages = with (pkgs // my.pkgs);
