@@ -24,12 +24,12 @@
       "protonvpn"
       "proxyman"
       "quicken"
-      "quickrecorder"
       "retrobatch"
       "serverbuddy"
       "signal"
       "superduper"
-      # "syncthing"
+      # Uncomment when 2.x is released
+      # "syncthing-app"
       "tableplus"
       "tailscale"
       "telegram"
@@ -40,7 +40,6 @@
 
     masApps = {
       "AVR Control" = 1059512196;
-      "Acidity" = 6472630023;
       "AirPlayable" = 6475483628;
       "AutoMounter" = 1160435653;
       "Black Out" = 1319884285;
@@ -78,16 +77,9 @@
       "Sogni" = 6450021857;
       "Sortio" = 6737292062;
       "Starship" = 1530665887;
-      # "StopTheMadness Pro" = 6471380298;
-      "Subscriptions" = 1577082754;
       "Tripsy" = 1429967544;
-      "Tuneful" = 6739804295;
       "UnTrap" = 1637438059;
       "Zero Loss Compress" = 6738362427;
     };
-
-    taps = [
-      "lihaoyun6/tap" # quickrecorder
-    ];
   };
 }

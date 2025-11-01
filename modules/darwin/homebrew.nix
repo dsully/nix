@@ -24,6 +24,7 @@
     };
 
     brews = [
+      "mas"
     ];
 
     casks = [
@@ -69,6 +70,7 @@
       "DevCleaner" = 1388020431;
       "File Icons for GitHub and GitLab" = 1631366167;
       "Hyperspace" = 6739505345;
+      "iPreview" = 1519213509;
       "JSONPeep" = 1458969831;
       "Kagi Search" = 1622835804;
       "MarkChart" = 6475648822;
@@ -77,15 +79,15 @@
       "Patterns" = 429449079;
       "Protego" = 6737959724;
       "Refined GitHub" = 1519867270;
+      "Save to Raindrop.io" = 1549370672;
       "Slack" = 803453959;
       "TestFlight" = 899247664;
       "Text Lens" = 6743369285;
       "TrashMe 3" = 1490879410;
       "Tuneful" = 6739804295;
+      "Userscripts" = 1463298887;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
-      "iPreview" = 1519213509;
-      "Userscripts" = 1463298887;
       "WordService" = 899972312;
       "Yoink" = 457622435;
     };
