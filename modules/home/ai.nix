@@ -231,6 +231,8 @@ in {
         enableAllProjectMcpServers = true;
         includeCoAuthoredBy = false;
 
+        autoUpdates = false;
+
         statusLine = {
           command = "input=$(cat); echo \"[$(echo \"$input\" | jq -r '.model.display_name')]  $(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"";
           padding = 0;
