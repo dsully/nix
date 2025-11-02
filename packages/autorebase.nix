@@ -1,6 +1,6 @@
 {pkgs, ...}:
 with pkgs;
-  rustPlatform.buildRustPackage {
+  rustPlatform.buildRustPackage rec {
     pname = "autorebase";
     version = "0.6.0";
 
@@ -17,7 +17,6 @@ with pkgs;
     meta = {
       description = "Automatically rebase all your branches onto master";
       homepage = "https://github.com/Timmmm/autorebase";
-      # license = lib.licenses.unfree;
-      mainProgram = "autorebase";
+      mainProgram = pname;
     };
   }

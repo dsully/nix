@@ -33,12 +33,6 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-package-updater.url = "github:dsully/nix-package-updater";
-    nix-package-updater.inputs.nixpkgs.follows = "nixpkgs";
-
-    anthropic-api-key.url = "github:dsully/anthropic-api-key";
-    anthropic-api-key.inputs.nixpkgs.follows = "nixpkgs";
-
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
     mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
 

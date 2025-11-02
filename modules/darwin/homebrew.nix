@@ -25,6 +25,7 @@
 
     brews = [
       "mas"
+      "rust-mcp-filesystem"
     ];
 
     casks = [
@@ -91,5 +92,9 @@
       "WordService" = 899972312;
       "Yoink" = 457622435;
     };
+
+    taps = [
+      "rust-mcp-stack/tap"
+    ];
   };
 }

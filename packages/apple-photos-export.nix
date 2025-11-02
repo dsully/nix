@@ -4,16 +4,16 @@ then
   with pkgs;
     rustPlatform.buildRustPackage rec {
       pname = "apple-photos-export";
-      version = "ae62de52";
+      version = "1.1.0-snapshot";
 
       src = fetchFromGitHub {
         owner = "haukesomm";
         repo = "apple-photos-export";
-        rev = "ae62de52731b57b57ab20dd3a9ef361bce78b07f";
-        hash = "sha256-6p0NkaGDdIXoEWR1tia7hiPewmnJsFCFLehscO0fQNI=";
+        rev = "786bf6a1d6a870d81cb710cc7eafbe1c1bbe3be9";
+        hash = "sha256-H79YWs1M2aHrdgocvCOHhFcRjQ/ms4YLk2GiLr7f04Y=";
       };
 
-      cargoHash = "sha256-1oqtnfqMSYTjCuAF/PNJ6I4LbfxzksGoSVmnCWNcMiQ=";
+      cargoHash = "sha256-omnfofmWqrU4E/szNJ6s52t0R3bl9/ZR2UNrp49qqdY=";
       doCheck = false;
 
       nativeBuildInputs = [
@@ -29,7 +29,7 @@ then
         homepage = "https://github.com/haukesomm/apple-photos-export";
         changelog = "https://github.com/haukesomm/apple-photos-export/blob/${src.rev}/CHANGELOG.md";
         license = lib.licenses.mit;
-        mainProgram = "apple-photos-export";
+        mainProgram = pname;
         platforms = lib.platforms.darwin;
       };
     }

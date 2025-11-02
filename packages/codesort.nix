@@ -18,6 +18,6 @@ with pkgs;
       description = "Codesort sorts code";
       homepage = "https://github.com/Canop/codesort";
       changelog = "https://github.com/Canop/codesort/blob/${src.rev}/CHANGELOG.md";
-      mainProgram = "codesort";
+      mainProgram = pname;
     };
   }
