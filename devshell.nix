@@ -19,6 +19,6 @@ perSystem.devshell.mkShell {
       statix
     ]
     ++ [
-      perSystem.nix-package-updater.default
+      perSystem.self.nix-package-updater
     ];
 }
