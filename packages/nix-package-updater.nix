@@ -13,6 +13,16 @@ with pkgs;
 
     cargoHash = "sha256-lnSBU83VZ2dO1EkOgS1UsypLr4tazy4a+nHGAKAfLxs=";
 
+    nativeBuildInputs = [
+      pkg-config
+    ];
+
+    buildInputs = [
+      libgit2
+      openssl
+      zlib
+    ];
+
     meta = {
       description = "Update Nix Packages";
       homepage = "https://github.com/dsully/nix-package-updater";
