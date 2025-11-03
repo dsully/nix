@@ -5,7 +5,7 @@ with pkgs;
     version = "0.1.1";
 
     src = builtins.fetchGit {
-      url = "https://github.com/dsully/anthropic-api-key";
+      url = "git@github.com:dsully/anthropic-api-key.git";
       rev = "832230dfff0f46cd39e3166b516c3868c40a9bf5";
     };
 
