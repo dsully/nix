@@ -6,6 +6,8 @@ with pkgs;
 
     src = pkgs.fetchgit {
       url = "git+ssh://git@github.com/dsully/anthropic-api-key.git";
+
+      # nix run nixpkgs#nix-prefetch-git https://github.com/dsully/anthropic-api-key
       hash = "sha256-ib0RK0JkaUKPo0LU1+8XbO36kSEqGFMK+T2yPUcJg+0=";
     };
 
