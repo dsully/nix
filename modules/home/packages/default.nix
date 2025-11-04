@@ -15,7 +15,7 @@
     # Handle merging nixpkgs, the packages in this flake and allowing dependent to use the packages from this flake.
     packages = with (pkgs // my.pkgs);
       [
-        anthropic-api-key
+        # anthropic-api-key
         devmoji-log
         dirstat-rs
         geil
