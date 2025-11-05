@@ -51,19 +51,6 @@
     };
   };
 
-  # MCP server commands
-  mcp = {
-    context7.command = lib.getExe mcp-packages.context7-mcp;
-    filesystem = {
-      command = "rust-mcp-filesystem";
-      args = [config.xdg.configHome];
-    };
-    git.command = lib.getExe mcp-packages.mcp-server-git;
-    nixos.command = lib.getExe pkgs.mcp-nixos;
-    memory.command = lib.getExe mcp-packages.mcp-server-memory;
-    sequential-thinking.command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
-  };
-
   # https://github.com/natsukium/mcp-servers-nix
   # mcp-servers-config = mcp-lib.mkConfig pkgs {
   mcp-servers-config = mcp-lib.evalModule pkgs {
@@ -151,12 +138,6 @@ in {
             # Use claude-code from Homebrew on macOS as it is a single binary.
             claude-code
           ]
-      )
-      ++ (
-        with pkgs; [
-          github-mcp-server
-          mcp-nixos
-        ]
       )
       ++ (with my.pkgs; [
         crates-mcp
@@ -256,13 +237,57 @@ in {
           };
 
           providers = {
-            anthropic = {
-              api_key = "Bearer $(anthropic-api-key)";
-              extra_headers = {
-                anthropic-version = "2023-06-01";
-                anthropic-beta = "oauth-2025-04-20";
-              };
+            claude-pro = {
+              name = "Claude Pro";
+              type = "anthropic";
+              base_url = "https://api.anthropic.com";
+              api_key = "Bearer $(echo $CLAUDE_CODE_OAUTH_TOKEN)";
               system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
+              extra_headers = {
+                "anthropic-version" = "2023-06-01";
+                "anthropic-beta" = "oauth-2025-04-20";
+              };
+              models = [
+                {
+                  id = "claude-sonnet-4-5-20250929";
+                  name = "Claude Sonnet 4.5";
+                  cost_per_1m_in = 3.0;
+                  cost_per_1m_out = 15.0;
+                  cost_per_1m_in_cached = 0.225;
+                  cost_per_1m_out_cached = 15.0;
+                  context_window = 200000;
+                  default_max_tokens = 64000;
+                  can_reason = true;
+                  has_reasoning_efforts = false;
+                  supports_attachments = true;
+                }
+                {
+                  id = "claude-opus-4-1-20250805";
+                  name = "Claude Opus 4.1";
+                  cost_per_1m_in = 15.0;
+                  cost_per_1m_out = 75.0;
+                  cost_per_1m_in_cached = 1.5;
+                  cost_per_1m_out_cached = 75.0;
+                  context_window = 200000;
+                  default_max_tokens = 32000;
+                  can_reason = true;
+                  has_reasoning_efforts = true;
+                  supports_attachments = true;
+                }
+                {
+                  id = "claude-opus-4-20250514";
+                  name = "Claude Opus 4";
+                  cost_per_1m_in = 15.0;
+                  cost_per_1m_out = 75.0;
+                  cost_per_1m_in_cached = 1.5;
+                  cost_per_1m_out_cached = 75.0;
+                  context_window = 200000;
+                  default_max_tokens = 32000;
+                  can_reason = true;
+                  has_reasoning_efforts = true;
+                  supports_attachments = true;
+                }
+              ];
             };
           };
         };
@@ -462,10 +487,42 @@ in {
       };
     };
 
+    mcp = {
+      enable = true;
+      servers = {
+        context7 = {
+          command = lib.getExe mcp-packages.context7-mcp;
+        };
+        filesystem = {
+          command = "rust-mcp-filesystem";
+          args = [config.xdg.configHome];
+        };
+        git = {
+          command = lib.getExe mcp-packages.mcp-server-git;
+        };
+        github = {
+          command = lib.getExe pkgs.github-mcp-server;
+          env = {
+            GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
+          };
+        };
+        nixos = {
+          command = lib.getExe pkgs.mcp-nixos;
+        };
+        memory = {
+          command = lib.getExe mcp-packages.mcp-server-memory;
+        };
+        sequential-thinking = {
+          command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
+        };
+      };
+    };
+
     # https://opencode.ai/docs/
     opencode = {
       enable = true;
       package = perSystem.nix-ai-tools.opencode;
+      enableMcpIntegration = true;
       settings = {
         agent = {
           build = {
@@ -542,36 +599,6 @@ in {
           typescript = {
             command = [lsp.typescript.command] ++ lsp.typescript.args;
             extensions = [".ts" ".tsx" ".js" ".jsx"];
-          };
-        };
-        mcp = {
-          context7 = {
-            command = [mcp.context7.command];
-            type = "local";
-          };
-          filesystem = {
-            command = [mcp.filesystem.command] ++ mcp.filesystem.args;
-            type = "local";
-          };
-          git = {
-            command = [mcp.git.command];
-            type = "local";
-          };
-          # github = {
-          #   command = [mcp.github.command];
-          #   type = "local";
-          # };
-          memory = {
-            command = [mcp.memory.command];
-            type = "local";
-          };
-          nixos = {
-            command = [mcp.nixos.command];
-            type = "local";
-          };
-          sequential-thinking = {
-            command = [mcp.sequential-thinking.command];
-            type = "local";
           };
         };
         permission = lib.mkForce {
