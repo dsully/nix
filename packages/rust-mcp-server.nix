@@ -14,6 +14,15 @@ with pkgs;
     cargoHash = "sha256-s5xOEZftiBt1bo3rMo8HnP1kV2wy8fxfltQEE+5jX4c=";
     doCheck = false;
 
+    nativeBuildInputs = [
+      pkg-config
+    ];
+
+    buildInputs = [
+      openssl
+      zlib
+    ];
+
     meta = {
       description = "MCP server for development in Rust";
       homepage = "https://github.com/Vaiz/rust-mcp-server";

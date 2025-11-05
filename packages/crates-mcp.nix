@@ -14,6 +14,15 @@ with pkgs;
     cargoHash = "sha256-NV8ewbAqMerH+AMU5IBR+OINaZ0oyxgE2wxQXbhI7j4=";
     doCheck = false;
 
+    nativeBuildInputs = [
+      pkg-config
+    ];
+
+    buildInputs = [
+      openssl
+      zlib
+    ];
+
     meta = {
       description = "A local MCP server used to fetch Rust crate information and docs from crates.io and docs.rs";
       homepage = "https://github.com/pato/crates-mcp";
