@@ -2,12 +2,13 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "rust-mcp-server";
+    rev = "6d39ee74ca0429bb652e28638e0e56dd2f9b24c0";
     version = "0.2.7";
 
     src = fetchFromGitHub {
+      inherit rev;
       owner = "Vaiz";
       repo = pname;
-      rev = "v${version}";
       hash = "sha256-8L4VCSonzw+ONVvEdNfS8PYyzSfDsp9AditGWfz9xow=";
     };
 
