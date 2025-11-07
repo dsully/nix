@@ -52,7 +52,6 @@
   };
 
   # https://github.com/natsukium/mcp-servers-nix
-  # mcp-servers-config = mcp-lib.mkConfig pkgs {
   mcp-servers-config = mcp-lib.evalModule pkgs {
     programs = {
       context7 = {
@@ -68,16 +67,6 @@
         env = {
           GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
         };
-        # headers = {
-        #   Authorization = "$(echo Bearer $GITHUB_API_TOKEN)";
-        # };
-        # passwordCommand = {
-        #   GITHUB_PERSONAL_ACCESS_TOKEN = [
-        #     (pkgs.lib.getExe config.programs.gh.package)
-        #     "auth"
-        #     "token"
-        #   ];
-        # };
         type = "stdio";
       };
       memory = {
@@ -123,6 +112,9 @@
     };
   };
 in {
+  # Hardcode until https://github.com/charmbracelet/nur/pull/33 is merged.
+  imports = [inputs.charmbracelet-nur.legacyPackages.aarch64-darwin.modules.homeModules.crush];
+
   home = {
     packages =
       (
@@ -130,11 +122,10 @@ in {
           [
             claude-code-acp
             codex
-            crush
             gemini-cli
             opencode
           ]
-          ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+          ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
             # Use claude-code from Homebrew on macOS as it is a single binary.
             claude-code
           ]
@@ -147,251 +138,75 @@ in {
       ]);
   };
 
-  # https://mynixos.com/options/xdg.configFile.%3Cname%3E
-  xdg = {
-    configFile = {
-      "crush/crush.json" = {
-        force = true;
-        source = (pkgs.formats.json {}).generate ".config/crush/crush.json" {
-          "$schema" = "https://charm.land/crush.json";
-          lsp = {
-            inherit (lsp) bash;
-            go.command = lsp.go.command;
-            lua.command = lsp.lua.command;
-            nix.command = lsp.nix.command;
-            python.command = lsp.python.command;
-            inherit (lsp) rust;
-            inherit (lsp) toml;
-            inherit (lsp) typescript;
+  programs = {
+    crush = {
+      enable = true;
+
+      settings = {
+        lsp = {
+          go = {
+            inherit (lsp.go) command;
+            enabled = true;
           };
+          lua = {
+            inherit (lsp.lua) command;
+            enabled = true;
+          };
+          nix = {
+            inherit (lsp.nix) command;
+            enabled = true;
+          };
+          python = {
+            inherit (lsp.python) command;
+            inherit (lsp.python) args;
+            enabled = true;
+          };
+          rust = {
+            inherit (lsp.rust) command;
+            inherit (lsp.rust) args;
+            enabled = true;
+          };
+          toml = {
+            inherit (lsp.toml) command;
+            inherit (lsp.toml) args;
+            enabled = true;
+          };
+          typescript = {
+            inherit (lsp.typescript) command;
+            inherit (lsp.typescript) args;
+            enabled = true;
+          };
+        };
 
-          mcp = mcp-servers-config.config.settings.servers;
+        mcp = mcp-servers-config.config.settings.servers;
 
-          inherit models;
+        inherit models;
 
-          options = {
-            tui = {
-              compact_mode = true;
-              diff_mode = "unified";
+        permissions = {
+          allowed_tools = [
+            "edit"
+            "grep"
+            "ls"
+            "view"
+            "mcp_context7_get-library-doc"
+          ];
+        };
+
+        providers = {
+          anthropic = {
+            id = "anthropic";
+            name = "Anthropic";
+            type = "anthropic";
+            api_key = "Bearer $(anthropic-api-key)";
+            extra_headers = {
+              anthropic-version = "2023-06-01";
+              anthropic-beta = "oauth-2025-04-20";
             };
-          };
-
-          permissions = {
-            allowed_tools = [
-              "agent"
-              "edit"
-              "fetch"
-              "glob"
-              "grep"
-              "ls"
-              "multiedit"
-              "sourcegraph"
-              "view"
-              "write"
-
-              "mcp_context7_get-library-doc"
-              "mcp_context7_get-library-docs"
-              "mcp_context7_resolve-library-id"
-
-              "mcp_github_get_commit"
-              "mcp_github_get_discussion_comments"
-              "mcp_github_get_discussion"
-              "mcp_github_get_file_contents"
-              "mcp_github_get_issue_comments"
-              "mcp_github_get_issue"
-              "mcp_github_get_job_logs"
-              "mcp_github_get_latest_release"
-              "mcp_github_get_me"
-              "mcp_github_get_pull_request_comments"
-              "mcp_github_get_pull_request_diff"
-              "mcp_github_get_pull_request_files"
-              "mcp_github_get_pull_request_reviews"
-              "mcp_github_get_pull_request_status"
-              "mcp_github_get_pull_request"
-              "mcp_github_get_release_by_tag"
-              "mcp_github_get_tag"
-              "mcp_github_get_workflow_run_logs"
-              "mcp_github_get_workflow_run_usage"
-              "mcp_github_get_workflow_run"
-              "mcp_github_list_branches"
-              "mcp_github_list_commits"
-              "mcp_github_list_discussion_categories"
-              "mcp_github_list_discussions"
-              "mcp_github_list_issue_types"
-              "mcp_github_list_issues"
-              "mcp_github_list_pull_requests"
-              "mcp_github_list_releases"
-              "mcp_github_list_sub_issues"
-              "mcp_github_list_tags"
-              "mcp_github_list_workflow_jobs"
-              "mcp_github_list_workflow_run_artifacts"
-              "mcp_github_list_workflow_runs"
-              "mcp_github_list_workflows"
-              "mcp_github_search_code"
-              "mcp_github_search_issues"
-              "mcp_github_search_orgs"
-              "mcp_github_search_pull_requests"
-              "mcp_github_search_repositories"
-              "mcp_github_search_users"
-            ];
-          };
-
-          providers = {
-            claude-pro = {
-              name = "Claude Pro";
-              type = "anthropic";
-              base_url = "https://api.anthropic.com";
-              api_key = "Bearer $(echo $CLAUDE_CODE_OAUTH_TOKEN)";
-              system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
-              extra_headers = {
-                "anthropic-version" = "2023-06-01";
-                "anthropic-beta" = "oauth-2025-04-20";
-              };
-              models = [
-                {
-                  id = "claude-sonnet-4-5-20250929";
-                  name = "Claude Sonnet 4.5";
-                  cost_per_1m_in = 3.0;
-                  cost_per_1m_out = 15.0;
-                  cost_per_1m_in_cached = 0.225;
-                  cost_per_1m_out_cached = 15.0;
-                  context_window = 200000;
-                  default_max_tokens = 64000;
-                  can_reason = true;
-                  has_reasoning_efforts = false;
-                  supports_attachments = true;
-                }
-                {
-                  id = "claude-opus-4-1-20250805";
-                  name = "Claude Opus 4.1";
-                  cost_per_1m_in = 15.0;
-                  cost_per_1m_out = 75.0;
-                  cost_per_1m_in_cached = 1.5;
-                  cost_per_1m_out_cached = 75.0;
-                  context_window = 200000;
-                  default_max_tokens = 32000;
-                  can_reason = true;
-                  has_reasoning_efforts = true;
-                  supports_attachments = true;
-                }
-                {
-                  id = "claude-opus-4-20250514";
-                  name = "Claude Opus 4";
-                  cost_per_1m_in = 15.0;
-                  cost_per_1m_out = 75.0;
-                  cost_per_1m_in_cached = 1.5;
-                  cost_per_1m_out_cached = 75.0;
-                  context_window = 200000;
-                  default_max_tokens = 32000;
-                  can_reason = true;
-                  has_reasoning_efforts = true;
-                  supports_attachments = true;
-                }
-              ];
-            };
+            system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
           };
         };
       };
-
-      # "mcp/mcp.json".source = mcp-servers;
-      # mcp-servers-nix.lib.mkConfig {};
     };
-  };
-
-  programs = {
-    # crush = {
-    #   enable = true;
-    #
-    #   settings = {
-    #     lsp = {
-    #       go = {
-    #         inherit (lsp.go) command;
-    #         enabled = true;
-    #       };
-    #       lua = {
-    #         inherit (lsp.lua) command;
-    #         enabled = true;
-    #       };
-    #       nix = {
-    #         inherit (lsp.nix) command;
-    #         enabled = true;
-    #       };
-    #       python = {
-    #         inherit (lsp.python) command;
-    #         inherit (lsp.python) args;
-    #         enabled = true;
-    #       };
-    #       rust = {
-    #         inherit (lsp.rust) command;
-    #         inherit (lsp.rust) args;
-    #         enabled = true;
-    #       };
-    #       toml = {
-    #         inherit (lsp.toml) command;
-    #         inherit (lsp.toml) args;
-    #         enabled = true;
-    #       };
-    #       typescript = {
-    #         inherit (lsp.typescript) command;
-    #         inherit (lsp.typescript) args;
-    #         enabled = true;
-    #       };
-    #     };
-    #
-    #     mcp = {
-    #       context7 = {
-    #         inherit (mcp.context7) command;
-    #         type = "stdio";
-    #       };
-    #       filesystem = {
-    #         inherit (mcp.filesystem) command args;
-    #         type = "stdio";
-    #       };
-    #       git = {
-    #         inherit (mcp.git) command;
-    #         type = "stdio";
-    #       };
-    #       memory = {
-    #         inherit (mcp.memory) command;
-    #         type = "stdio";
-    #       };
-    #       # nixos = {
-    #       #   inherit (mcp.nixos) command;
-    #       #   type = "stdio";
-    #       # };
-    #       sequential-thinking = {
-    #         inherit (mcp.sequential-thinking) command;
-    #         type = "stdio";
-    #       };
-    #     };
-    #
-    #     inherit models;
-    #
-    #     permissions = {
-    #       allowed_tools = [
-    #         "edit"
-    #         "grep"
-    #         "ls"
-    #         "view"
-    #         "mcp_context7_get-library-doc"
-    #       ];
-    #     };
-    #
-    #     providers = {
-    #       anthropic = {
-    #         id = "anthropic";
-    #         name = "Anthropic";
-    #         type = "anthropic";
-    #         api_key = "Bearer $(anthropic-api-key)";
-    #         extra_headers = {
-    #           anthropic-version = "2023-06-01";
-    #           anthropic-beta = "oauth-2025-04-20";
-    #         };
-    #         system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
-    #       };
-    #     };
-    #   };
-    # };
 
     claude-code = {
       enable = true;

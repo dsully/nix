@@ -41,6 +41,9 @@
 
     config-lsp.url = "github:Myzel394/config-lsp";
     config-lsp.inputs.nixpkgs.follows = "nixpkgs";
+
+    charmbracelet-nur.url = "github:charmbracelet/nur";
+    charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs:

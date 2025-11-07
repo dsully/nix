@@ -43,6 +43,26 @@
         "type": "github"
       }
     },
+    "charmbracelet-nur": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762519342,
+        "narHash": "sha256-G90duuXYpjGjSlPLBOeo2XfGsdfjnbqm7Y0gKI4Enss=",
+        "owner": "charmbracelet",
+        "repo": "nur",
+        "rev": "26f6683370e44b229d4c0a4ccfe5e85c2d3ee7c6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "charmbracelet",
+        "repo": "nur",
+        "type": "github"
+      }
+    },
     "config-lsp": {
       "inputs": {
         "gomod2nix": "gomod2nix",
@@ -72,11 +92,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1741473158,
-        "narHash": "sha256-kWNaq6wQUbUMlPgw8Y+9/9wP0F8SHkjy24/mN3UAppg=",
+        "lastModified": 1762521437,
+        "narHash": "sha256-RXN+lcx4DEn3ZS+LqEJSUu/HH+dwGvy0syN7hTo/Chg=",
         "owner": "numtide",
         "repo": "devshell",
-        "rev": "7c9e793ebe66bcba8292989a68c0419b737a22a0",
+        "rev": "07bacc9531f5f4df6657c0a02a806443685f384a",
         "type": "github"
       },
       "original": {
@@ -249,11 +269,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1762483602,
-        "narHash": "sha256-7KP742oqv9hCbg1cwJUnpsxFMiFSXns7q3cEhSOzOaw=",
+        "lastModified": 1762525580,
+        "narHash": "sha256-NTMiZmO+vzr7vAR1IbiZkrBnx1Hh7e+LVe7LgDXm9G8=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "205e4b7ebaa46e69ee3e74cdfaccbfcc9b8103fd",
+        "rev": "22fada63edc8936c2332c3524d41dda3c1985e69",
         "type": "github"
       },
       "original": {
@@ -269,11 +289,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1762304480,
-        "narHash": "sha256-ikVIPB/ea/BAODk6aksgkup9k2jQdrwr4+ZRXtBgmSs=",
+        "lastModified": 1762501326,
+        "narHash": "sha256-QbhsksHaIN6qU3oXhwUFbYycKX1GRxObpQSWAM5fhRY=",
         "owner": "nix-darwin",
         "repo": "nix-darwin",
-        "rev": "b8c7ac030211f18bd1f41eae0b815571853db7a2",
+        "rev": "e2b82ebd0f990a5d1b68fcc761b3d6383c86ccfd",
         "type": "github"
       },
       "original": {
@@ -343,6 +363,7 @@
     "root": {
       "inputs": {
         "blueprint": "blueprint",
+        "charmbracelet-nur": "charmbracelet-nur",
         "config-lsp": "config-lsp",
         "devshell": "devshell",
         "home-manager": "home-manager",
