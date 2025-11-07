@@ -42,6 +42,7 @@
       "little-snitch"
       "lunar"
       "monodraw"
+      "osaurus"
       "processspy"
       "raindropio"
       "rapidapi"

@@ -19,6 +19,7 @@ in {
         biome
         commitlint-rs
         config-lsp
+        crates-lsp
         docker-compose-language-service
         dockerfile-language-server
         emmylua-ls
