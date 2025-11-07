@@ -1,5 +1,5 @@
 {pkgs, ...}:
-if pkgs.stdenv.isDarwin
+if pkgs.stdenv.hostPlatform.isDarwin
 then
   with pkgs;
     rustPlatform.buildRustPackage rec {

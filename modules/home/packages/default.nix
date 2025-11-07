@@ -23,12 +23,12 @@
         magic-opener
         nix-package-updater
       ]
-      ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
         fishPlugins.macos
         iproute2mac
         safari-rs
       ]
-      ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         syncthing
         xcp
       ];

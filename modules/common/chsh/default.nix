@@ -39,7 +39,7 @@ in {
   config = mkIf (shell != null) {
     home.activation = {
       chsh =
-        if types.shellPackage.check shell && pkgs.stdenv.isDarwin
+        if types.shellPackage.check shell && pkgs.stdenv.hostPlatform.isDarwin
         then
           lib.hm.dag.entryAfter ["writeBoundary"]
           ''
@@ -68,7 +68,7 @@ in {
             }"
 
             ${
-              if pkgs.stdenv.isDarwin
+              if pkgs.stdenv.hostPlatform.isDarwin
               then ''
                 #!/bin/bash
                 if [ "$(/usr/bin/dscl . -read /Users/${username} UserShell | /usr/bin/sed 's/UserShell: //')" != "$SHELL_PATH" ]; then

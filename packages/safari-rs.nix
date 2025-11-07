@@ -2,7 +2,7 @@
   rev = "9f70ad53f7c6b27c3fb8ec9e19ce96c1c8754bb6";
 in
   with pkgs;
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then
       rustPlatform.buildRustPackage rec {
         pname = "safari-rs";

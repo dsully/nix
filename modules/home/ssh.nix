@@ -30,7 +30,7 @@ in {
 
     enableDefaultConfig = false;
 
-    extraConfig = lib.mkIf pkgs.stdenv.isDarwin ''
+    extraConfig = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
       SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_OS="Darwin"
       UseKeychain yes
     '';
