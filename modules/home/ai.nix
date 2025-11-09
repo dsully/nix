@@ -131,6 +131,7 @@ in {
           ]
       )
       ++ (with my.pkgs; [
+        beads
         crates-mcp
         git-ai-commit
         rust-mcp-server
