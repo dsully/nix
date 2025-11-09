@@ -45,6 +45,7 @@ in {
         revive
         rstcheck
         ruff
+        rumdl
         shellharden
         shfmt
         sphinx-lint
