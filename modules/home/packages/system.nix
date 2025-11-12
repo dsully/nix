@@ -64,6 +64,7 @@
         zoxide
       ]
       ++ [
+        my.pkgs.clean-dev-dirs
         my.pkgs.prmt
         my.pkgs.xdg-open-svc
       ];
