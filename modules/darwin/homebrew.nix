@@ -47,7 +47,7 @@
       "raindropio"
       "rapidapi"
       "raycast"
-      "renamer"
+      # "renamer"
       "retcon"
       "rocket"
       "soulver"

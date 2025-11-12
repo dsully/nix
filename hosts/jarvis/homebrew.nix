@@ -56,7 +56,6 @@
       "Globetrotter" = 6469319235;
       "GoPro Quik" = 561350520;
       "Homie" = 1533590432;
-      "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
       "Infuse" = 1136220934;
       "Ivory" = 6444602274;
