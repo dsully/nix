@@ -209,11 +209,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1762909285,
-        "narHash": "sha256-Gti/uayz99SGuiXrXkckd+o+3f6IkdXKoCdSB3+md3w=",
+        "lastModified": 1763037034,
+        "narHash": "sha256-h/eDkJyi7IBdy2EqgDpFEdvywYqi7xQ8VNW7u9UJ9II=",
         "owner": "natsukium",
         "repo": "mcp-servers-nix",
-        "rev": "abad9db6b218faa90dc5b46a7443b8653238fa59",
+        "rev": "4098f028f797d879abdc38c8f1e897a5621873d0",
         "type": "github"
       },
       "original": {
@@ -269,11 +269,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1763001850,
-        "narHash": "sha256-Do4zU4BaZ8kOYaLeqCRLA83cjQ3ALBiLc7JoRbLRV6o=",
+        "lastModified": 1763038994,
+        "narHash": "sha256-q/oVBilzLlvAVjCKRbCXX7t1/if3xJTlRSdfoLnYn10=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "d7269cfab1e6c450641f725d1e00e7a992d13190",
+        "rev": "60bda941a806f85c126918500f52e7c0a595a144",
         "type": "github"
       },
       "original": {
