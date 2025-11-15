@@ -1,5 +1,7 @@
 {
+  config,
   flake,
+  lib,
   perSystem,
   pkgs,
   ...
@@ -28,5 +30,27 @@
         autorebase
         zuban
       ]);
+  };
+
+  programs = {
+    topgrade = {
+      settings = lib.mkMerge [
+        {
+          git = {
+            repos = [
+              "${config.home.homeDirectory}/src/*/"
+              "${config.home.homeDirectory}/src/neovim/*/"
+              "${config.home.homeDirectory}/src/neovim/dots/*/"
+              "${config.home.homeDirectory}/src/nix/*/"
+              "${config.home.homeDirectory}/src/rust/*/"
+            ];
+          };
+
+          misc = {
+            only = ["brew_formula" "brew_cask" "git_repos"];
+          };
+        }
+      ];
+    };
   };
 }

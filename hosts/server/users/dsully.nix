@@ -1,5 +1,6 @@
 {
   flake,
+  lib,
   perSystem,
   pkgs,
   ...
@@ -37,6 +38,25 @@
         autorebase
         zuban
       ]);
+  };
+
+  programs = {
+    topgrade = {
+      settings = lib.mkMerge [
+        {
+          git = {
+            repos = [
+              "/ai/apps/automatic/extensions/*"
+              "/ai/apps/stable-diffusion-webui/extensions/*"
+            ];
+          };
+
+          misc = {
+            only = ["deb_get" "system" "git_repos"];
+          };
+        }
+      ];
+    };
   };
 
   services = {

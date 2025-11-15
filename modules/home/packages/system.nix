@@ -38,7 +38,6 @@
         just
         kondo
         lsd
-        macchina
         moor
         mtr
         p7zip
