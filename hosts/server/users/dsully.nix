@@ -19,6 +19,7 @@
         ghostscript_headless
         nix-output-monitor
         pandoc
+        pnpm
         tectonic-unwrapped
 
         (caddy.withPlugins
