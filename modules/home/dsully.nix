@@ -12,13 +12,11 @@ in {
     ../common/chsh
     ../common/nix.nix
 
+    ./configs
     ./packages
-    ./bat.nix
-    ./gh.nix
     ./git.nix
     ./lolcate.nix
     ./ssh.nix
-    ./vivid.nix
   ];
 
   home = {
