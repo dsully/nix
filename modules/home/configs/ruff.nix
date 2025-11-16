@@ -1,0 +1,57 @@
+{
+  programs.ruff = {
+    enable = true;
+
+    settings = {
+      line-length = 160;
+      unsafe-fixes = true;
+      fix = true;
+
+      lint = {
+        extend-select = [
+          "A"
+          "B"
+          "E"
+          "F"
+          "W"
+          "C4"
+          "FA"
+          "PT"
+          "UP"
+          "ARG"
+          "DTZ"
+          "EXE"
+          "FLY"
+          "ICN"
+          "INP"
+          "ISC"
+          "PIE"
+          "PYI"
+          "RET"
+          "RSE"
+          "RUF"
+          "SIM"
+          "SLF"
+          "TRY"
+          "YTT"
+          "G003"
+          "G201"
+          "G202"
+          "ASYNC"
+        ];
+        ignore = ["B904" "E501" "ISC001" "RET501" "TRY003"];
+        fixable = ["ALL"];
+        unfixable = [];
+
+        isort = {
+          case-sensitive = true;
+          combine-as-imports = true;
+          detect-same-package = true;
+          force-wrap-aliases = true;
+          lines-between-types = 1;
+          required-imports = ["from __future__ import annotations"];
+        };
+      };
+    };
+  };
+}
