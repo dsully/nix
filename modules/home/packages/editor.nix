@@ -33,7 +33,6 @@ in {
         jinja-lsp
         just-lsp
         lemminx
-        mado
         mbake
         neovim
         nil
