@@ -50,8 +50,7 @@ When, and only when writing Rust code, use the following rules:
 
 * Always use clap derive if using clap.
 
-* To check code, always use:
-    "cargo clippy -- --no-deps -Wclippy::complexity -Wclippy::correctness -Wclippy::pedantic -Wclippy::perf -Wclippy::style -Wclippy::suspicious -Aclippy::doc_markdown -Aclippy::missing_errors_doc -Aclippy::missing_panics_doc"
+* To check code, always use: "cargo clippy -- --no-deps"
 
 * Never suppress or allow clippy issues. Fix the core problem instead.
 

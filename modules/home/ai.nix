@@ -85,7 +85,11 @@
     settings.servers = {
       filesystem = {
         command = "rust-mcp-filesystem";
-        args = [config.xdg.configHome];
+        args = [config.home.homeDirectory];
+        type = "stdio";
+      };
+      rust-analyzer = {
+        command = lib.getExe my.pkgs.mcp-rust-analyzer;
         type = "stdio";
       };
     };
@@ -128,6 +132,7 @@ in {
         beads
         crates-mcp
         git-ai-commit
+        mcp-rust-analyzer
         rust-mcp-server
         turbo-commit
       ]);
@@ -318,7 +323,7 @@ in {
         };
         filesystem = {
           command = "rust-mcp-filesystem";
-          args = [config.xdg.configHome];
+          args = [config.home.homeDirectory];
         };
         git = {
           command = lib.getExe mcp-packages.mcp-server-git;
