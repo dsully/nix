@@ -118,17 +118,11 @@ in {
   home = {
     packages =
       (
-        with perSystem.nix-ai-tools;
-          [
-            claude-code-acp
-            codex
-            gemini-cli
-            opencode
-          ]
-          ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-            # Use claude-code from Homebrew on macOS as it is a single binary.
-            claude-code
-          ]
+        with perSystem.nix-ai-tools; [
+          claude-code-acp
+          # codex
+          # gemini-cli
+        ]
       )
       ++ (with my.pkgs; [
         beads
@@ -211,8 +205,16 @@ in {
 
     claude-code = {
       enable = true;
-      # Use claude-code from Homebrew on macOS as it is a single binary.
-      package = null;
+      package = perSystem.nix-ai-tools.claude-code;
+
+      agents = {
+        code-debugger = ./configs/ai/agents/code-debugger.md;
+        code-reviewer = ./configs/ai/agents/code-reviewer.md;
+        performance-optimizer = ./configs/ai/agents/performance-optimizer.md;
+        systems-architect = ./configs/ai/agents/systems-architect.md;
+      };
+
+      memory.source = ./configs/ai/AGENTS.md;
 
       settings = {
         inherit (models.medium) model;
@@ -230,7 +232,9 @@ in {
         permissions = {
           allow =
             [
-              "Bash(cargo :*)"
+              "Bash(cargo:*)"
+              "Bash(clippy:*)"
+              "Bash(curl:*)"
               "Bash(fd:*)"
               "Bash(find:*)"
               "Bash(git add:*)"
@@ -247,7 +251,10 @@ in {
               "Bash(git status:*)"
               "Bash(ls:*)"
               "Bash(mkdir:*)"
-              "Bash(nix :*)"
+              "Bash(python:*)"
+              "Bash(python3:*)"
+              "Bash(pytest:*)"
+              "Bash(nix:*)"
               "Bash(pwd:*)"
               "Bash(rg:*)"
               "Bash(statix check:*)"
@@ -298,9 +305,9 @@ in {
           DISABLE_ERROR_REPORTING = "1";
           DISABLE_TELEMETRY = "1";
         };
-
-        mcpServers = mcp-servers-config.config.settings.servers;
       };
+
+      mcpServers = mcp-servers-config.config.settings.servers;
     };
 
     mcp = {
@@ -339,6 +346,7 @@ in {
       enable = true;
       package = perSystem.nix-ai-tools.opencode;
       enableMcpIntegration = true;
+      rules = ./configs/ai/AGENTS.md;
       settings = {
         agent = {
           build = {

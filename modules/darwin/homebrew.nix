@@ -31,7 +31,6 @@
     casks = [
       "1password"
       # "boltai"
-      "claude-code"
       "cleanshot"
       "daisydisk"
       "dash"
@@ -47,7 +46,6 @@
       "raindropio"
       "rapidapi"
       "raycast"
-      # "renamer"
       "retcon"
       "rocket"
       "soulver"
