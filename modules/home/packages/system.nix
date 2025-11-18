@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   my,
   ...
@@ -6,7 +7,7 @@
   home = {
     packages = with pkgs;
       [
-        # (hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
+        (lib.hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
         _1password-cli
         act
         age
