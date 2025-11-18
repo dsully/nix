@@ -73,10 +73,10 @@
         enable = true;
         type = "stdio";
       };
-      nixos = {
-        enable = true;
-        type = "stdio";
-      };
+      # nixos = {
+      #   enable = true;
+      #   type = "stdio";
+      # };
       sequential-thinking = {
         enable = true;
         type = "stdio";
@@ -334,9 +334,9 @@ in {
             GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
           };
         };
-        nixos = {
-          command = lib.getExe pkgs.mcp-nixos;
-        };
+        # nixos = {
+        #   command = lib.getExe pkgs.mcp-nixos;
+        # };
         memory = {
           command = lib.getExe mcp-packages.mcp-server-memory;
         };
