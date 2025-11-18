@@ -64,6 +64,7 @@
       ]
       ++ [
         my.pkgs.clean-dev-dirs
+        my.pkgs.leadr
         my.pkgs.prmt
         my.pkgs.xdg-open-svc
       ];
