@@ -32,14 +32,12 @@ in {
         imagemagick
         jinja-lsp
         just-lsp
-        lemminx
         mbake
         neovim
         nil
         nixd
         nixpkgs-fmt
         oxlint
-        prettierd
         pyrefly
         revive
         rstcheck
@@ -75,12 +73,15 @@ in {
       ]
       ++ [
         codesort
-        pkl-lsp
         pyproject-fmt
         pytest-language-server
         rumdl
         ty
         xmlformatter
+      ]
+      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+        lemminx
+        pkl-lsp
       ];
   };
 }
