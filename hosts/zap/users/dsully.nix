@@ -22,7 +22,7 @@
             "github.com/abiosoft/caddy-inspect@v0.0.0-20250214103948-96cdb1dfb122"
             "github.com/abiosoft/caddy-json-schema@v0.0.0-20220621031927-c4d6e132f3af"
           ];
-          hash = "sha256-IKvwsyF5ts/BtKAaBN7ItaTqsZ2gBngJHS1mYKgg2jY=";
+          hash = "sha256-yt6Qax92TIfHBWjiHD+c6gdhZDAOgGkoeIjRVr8KuG8=";
         })
     ];
   };

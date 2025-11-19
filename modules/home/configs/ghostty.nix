@@ -7,6 +7,8 @@
     enable = true;
     package = null;
 
+    systemd.enable = false;
+
     settings = {
       # Default config: ghostty +show-config --default --docs
       # vim: ft=ghostty
