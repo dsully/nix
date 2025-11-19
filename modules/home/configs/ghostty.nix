@@ -27,6 +27,7 @@
       window-width = 172;
       window-save-state = "always";
       window-new-tab-position = "end";
+      window-colorspace = "display-p3";
 
       # https://www.reddit.com/r/Ghostty/comments/1o9nzga/how_can_i_remove_the_paddinggap_along_the_borders/
       # window-padding-color = "extend-always";
