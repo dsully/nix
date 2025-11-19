@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "leadr";
-    version = "2.8.3";
+    version = "2.8.4";
 
     src = fetchCrate {
       inherit pname version;
-      hash = "sha256-3DYhtWUogQi4e06SMmXTFemI5ws3AYxFGjAfNIzs/nE=";
+      hash = "sha256-IOJ2B0+XzuUZCIRe+MDSNofFRWV/+tLOW29H4TDZ29s=";
     };
 
-    cargoHash = "sha256-T43EZbS9jmSrgbpjbzAuej93Y5g0qJpEyCcRnWge4w0=";
+    cargoHash = "sha256-+R2g2AkILPjAHD8WqcKyNm7KN9XBjvjk0LasPpqsbbY=";
     doCheck = false;
 
     meta = {
