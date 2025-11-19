@@ -3,7 +3,7 @@ with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "ty";
     rev = "18a14bfaf114460e77b0792d49e0824e5c8a43d5";
-    version = "0.0.1a26-${rev}";
+    version = "0.0.1a27-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
