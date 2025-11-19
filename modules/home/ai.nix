@@ -268,21 +268,25 @@ in {
               "Edit(**/*.md)"
               "Glob"
               "Grep"
-              "Read(~/.claude/plugins/cache/superpowers/skills/*)"
+              "Read(~/dev/**)"
               "Task"
               "WebFetch"
               "WebSearch"
             ]
             ++ [
-              "mcp__context7__get-library-docs"
-              "mcp__context7__resolve-library-id"
+              "mcp__context7"
+              "mcp__filesystem"
+              "mcp__git"
+              "mcp__github"
+              "mcp__nixos"
+              "mcp__rust-analyzer"
               "mcp__sequential-thinking"
             ];
 
           ask = [];
 
           deny = [
-            "Bash(rm -rf :*)"
+            "Bash(rm:*)"
             "Bash(su:*)"
             "Bash(sudo:*)"
             "Read(./.direnv)"
