@@ -129,9 +129,6 @@ in {
   };
 
   programs = {
-    # https://github.com/me-and/nixcfg/blob/689c91c8f5bdd7bed0d95ba2c85f6466d8b7452f/nixos/common/nix-index.nix#L11
-    command-not-found.enable = false;
-
     direnv = {
       nix-direnv.enable = true;
     };
@@ -140,7 +137,11 @@ in {
 
     nh = {
       enable = true;
-      clean.enable = true;
+      clean = {
+        enable = true;
+        extraArgs = "-d";
+      };
+
       flake = "${config.xdg.configHome}/nix";
     };
 
@@ -150,7 +151,10 @@ in {
       enableBashIntegration = false;
       enableZshIntegration = false;
       enableFishIntegration = true;
+      symlinkToCacheHome = true;
     };
+
+    nix-index-database.comma.enable = false;
   };
 
   targets.darwin.linkApps.enable = false;

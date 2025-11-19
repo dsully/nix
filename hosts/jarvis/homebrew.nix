@@ -31,7 +31,7 @@
       # Uncomment when 2.x is released
       # "syncthing-app"
       "tableplus"
-      "tailscale"
+      "tailscale-app"
       "telegram"
       "unifi-identity-endpoint"
       "whatsapp"
