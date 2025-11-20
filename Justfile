@@ -1,6 +1,7 @@
 set shell := ["fish", "-c"]
 
 # set shell := ["nix", "--experimental-features", "nix-command flakes", "develop", "--command", "bash", "-c"]
+
 NIX_OPTIONS := "nix-command flakes"
 HOSTNAME := `hostname -s`
 export NIXPKGS_ALLOW_UNFREE := "1"
@@ -54,6 +55,8 @@ alias clean := gc
 [group('nix')]
 gc:
     /usr/bin/sudo --preserve-env=PATH $(which nh) clean all
+    nix store gc
+    nix store optimise
 
 # Format the nix files in this repo
 
@@ -89,7 +92,6 @@ init-from-url URL:
     sed -i '/cargoHash = ".*";/a \    useFetchCargoVendor = true;' "${OUTPUT_FILE}"
 
 # https://github.com/stefanzweifel/git-auto-commit-action
-
 
 [group('git')]
 commit:

@@ -36,6 +36,7 @@ in {
       allow-import-from-derivation = true;
       allow-symlinked-store = true;
       allow-unsafe-native-code-during-evaluation = true;
+      auto-optimise-store = true;
       always-allow-substitutes = true;
       builders-use-substitutes = true;
 
