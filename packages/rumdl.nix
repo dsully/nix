@@ -3,11 +3,11 @@ with pkgs; let
   dists = {
     aarch64-darwin = {
       platform = "macosx_11_0_arm64";
-      hash = "sha256-5yH2ruBWGQ/V9GYtj/SGGTJeCEB2ZfISO4me2s8+rho=";
+      hash = "sha256-AkShcqLemZsxA3UjskrOmRejGNrWwkC1ZdyB3HKCyDk=";
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-      hash = "sha256-wmBCoYuFselVxzto7gKmXhHAtuCX/hLTYbc+NlJdii0=";
+      hash = "sha256-FjE2TOsRXMzU4VL3c9+V33dcOrULICJ95ynm/o7VlHk=";
     };
   };
 
@@ -15,7 +15,7 @@ with pkgs; let
 in
   python3.pkgs.buildPythonPackage rec {
     pname = "rumdl";
-    version = "0.0.179";
+    version = "0.0.180";
     format = "wheel";
 
     src = fetchPypi {

@@ -3,11 +3,11 @@ with pkgs; let
   dists = {
     aarch64-darwin = {
       platform = "macosx_11_0_arm64";
-      hash = "sha256-k0jiCAgeyorb/Mv6+ecUv1yn3xecQ2P2sjVMQbn6ndE=";
+      hash = "sha256-IvO2ZxnRCGTS3PPd8x1ZTVl7DkjZhjs1OhtKVVvepgw=";
     };
     x86_64-linux = {
       platform = "manylinux_2_17_x86_64.manylinux2014_x86_64";
-      hash = "sha256-8wU78BvRtIUto9YvOSKmBSw/3Srw7YZD/ZDthh1ZEos=";
+      hash = "sha256-AqPrGtWrrElJZ2x+vZg6DzYtvLRBF1t9103M0Y1M2+I=";
     };
   };
 
@@ -15,7 +15,7 @@ with pkgs; let
 in
   python3.pkgs.buildPythonPackage rec {
     pname = "pytest-language-server";
-    version = "0.7.2";
+    version = "0.9.0";
     format = "wheel";
 
     src = fetchPypi {
