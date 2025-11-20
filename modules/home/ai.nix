@@ -116,8 +116,9 @@
     };
   };
 in {
-  # Hardcode until https://github.com/charmbracelet/nur/pull/33 is merged.
-  imports = [inputs.charmbracelet-nur.legacyPackages.aarch64-darwin.modules.homeModules.crush];
+  imports = [
+    inputs.charmbracelet-nur.homeModules.crush
+  ];
 
   home = {
     packages =
