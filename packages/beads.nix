@@ -3,13 +3,13 @@ with pkgs;
   buildGoModule rec {
     pname = "beads";
     version = "0.23.0";
-    rev = "4560f55795563991aeff693acdc48cd0bb1ddd2b";
+    rev = "ff3ccdd26e5ed4680d96e0356f7051f00241b261";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "steveyegge";
       repo = "beads";
-      hash = "sha256-g75tPVnf2gdZaD10FaFCRlZdq5oT6lKJmAbJJ60WhFI=";
+      hash = "sha256-V29wHVM4ULExmUo6MzSs0U/wSTFU4GyoPS1cBVmiu4Q=";
     };
 
     vendorHash = "sha256-oXPlcLVLoB3odBZzvS5FN8uL2Z9h8UMIbBKs/vZq03I=";
