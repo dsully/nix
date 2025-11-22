@@ -1,7 +1,7 @@
 General
 =======
 
-* Do not add useless or obvious comments.
+* Only add USEFUL comments in code. Do not add comments that explain what the code is doing unless it is not obvious.
 * When writing tests, use minimal mocking and only test things that add value.
 * Do not write extraneous tests.
 * Do not write summaries unless I ask.
