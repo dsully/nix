@@ -41,6 +41,8 @@
 
     charmbracelet-nur.url = "github:charmbracelet/nur";
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
+
+    opnix.url = "github:brizzbuzz/opnix";
   };
 
   outputs = inputs:

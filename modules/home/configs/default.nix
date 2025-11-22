@@ -2,6 +2,7 @@
   imports = [
     ./bat.nix
     ./emmylua.nix
+    ./fish.nix
     ./gh.nix
     ./ghostty.nix
     ./git.nix

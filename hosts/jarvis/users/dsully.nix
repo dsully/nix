@@ -32,6 +32,22 @@
   };
 
   programs = {
+    onepassword-secrets = {
+      enable = true;
+      secrets = {
+        sshPrivateKey = {
+          reference = "op://Services/jarvis/private key";
+          path = ".ssh/id_ed25519";
+          mode = "0600";
+        };
+        sshRSAPrivateKey = {
+          reference = "op://Services/gateway/private key";
+          path = ".ssh/id_rsa";
+          mode = "0600";
+        };
+      };
+    };
+
     topgrade = {
       settings = lib.mkMerge [
         {

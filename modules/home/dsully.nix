@@ -9,6 +9,7 @@
 in {
   imports = [
     inputs.nix-index-database.homeModules.nix-index
+    inputs.opnix.homeManagerModules.default
     ../common/nix.nix
 
     ./configs
@@ -163,7 +164,7 @@ in {
       enable = true;
       enableBashIntegration = false;
       enableZshIntegration = false;
-      enableFishIntegration = true;
+      enableFishIntegration = false;
       symlinkToCacheHome = true;
     };
 
