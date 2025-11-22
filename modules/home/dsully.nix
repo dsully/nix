@@ -14,9 +14,6 @@ in {
 
     ./configs
     ./packages
-    ./git.nix
-    ./lolcate.nix
-    ./ssh.nix
   ];
 
   editorconfig = {
