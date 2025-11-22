@@ -3,7 +3,7 @@ with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "magic-opener";
     rev = "06e1901b906b41c224bcb004784dfd22a884a73d";
-    version = "06e1901b";
+    version = "0.3.2";
 
     src = fetchFromGitHub {
       inherit rev;
