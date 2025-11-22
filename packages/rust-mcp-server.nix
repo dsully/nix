@@ -2,32 +2,21 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "rust-mcp-server";
-    rev = "6d39ee74ca0429bb652e28638e0e56dd2f9b24c0";
     version = "0.2.7";
 
-    src = fetchFromGitHub {
-      inherit rev;
-      owner = "Vaiz";
-      repo = pname;
-      hash = "sha256-8L4VCSonzw+ONVvEdNfS8PYyzSfDsp9AditGWfz9xow=";
+    src = fetchCrate {
+      inherit pname version;
+      hash = "sha256-iPzG6yoxM+GxB6l27OrgAOlBxwDWhtNrlA/9GieU8rs=";
     };
 
     cargoHash = "sha256-s5xOEZftiBt1bo3rMo8HnP1kV2wy8fxfltQEE+5jX4c=";
     doCheck = false;
 
-    nativeBuildInputs = [
-      pkg-config
-    ];
-
-    buildInputs = [
-      openssl
-      zlib
-    ];
-
     meta = {
       description = "MCP server for development in Rust";
-      homepage = "https://github.com/Vaiz/rust-mcp-server";
+      homepage = "https://crates.io/crates/rust-mcp-server";
       changelog = "https://github.com/Vaiz/rust-mcp-server/blob/${src.rev}/CHANGELOG.md";
+      license = lib.licenses.unlicense;
       mainProgram = pname;
     };
   }
