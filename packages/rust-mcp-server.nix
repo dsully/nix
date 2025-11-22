@@ -12,6 +12,15 @@ with pkgs;
     cargoHash = "sha256-s5xOEZftiBt1bo3rMo8HnP1kV2wy8fxfltQEE+5jX4c=";
     doCheck = false;
 
+    nativeBuildInputs = lib.optionals stdenv.isLinux [
+      pkg-config
+    ];
+
+    buildInputs = lib.optionals stdenv.isLinux [
+      openssl
+      zlib
+    ];
+
     meta = {
       description = "MCP server for development in Rust";
       homepage = "https://crates.io/crates/rust-mcp-server";
