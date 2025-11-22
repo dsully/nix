@@ -9,7 +9,6 @@
 in {
   imports = [
     inputs.nix-index-database.homeModules.nix-index
-    ../common/chsh
     ../common/nix.nix
 
     ./configs
@@ -90,10 +89,12 @@ in {
         if ! [ -L "$HOME"/src ]; then
             ln -sf "$HOME"/dev/src "$HOME"/src
         fi
+
+        if ! [ -L "$HOME"/.huggingface ]; then
+            ln -sf "$HOME"/.config/huggingface "$HOME"/huggingface
+        fi
       '';
     };
-
-    defaultShell = pkgs.fish;
 
     file = {
       ".ignore" = {
@@ -128,6 +129,21 @@ in {
   programs = {
     direnv = {
       nix-direnv.enable = true;
+    };
+
+    fish = {
+      enable = true;
+      plugins = [
+        {
+          name = "opah";
+          src = pkgs.fetchFromGitHub {
+            owner = "tbcrawford";
+            repo = "opah.fish";
+            rev = "fe12435c8ed1b39f4d667aec142a35bb5fbd4df7";
+            hash = "sha256-SLtg5HA/ZSBhzbCEqmsMvvLrjk6FE1YbsDGeRVBuwag=";
+          };
+        }
+      ];
     };
 
     home-manager.enable = true;

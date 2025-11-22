@@ -27,13 +27,7 @@ in rec {
   ];
 
   environment = {
-    # Avoid using programs.fish.enable = true, as that forces either
-    # babelFish or foreign-env, both of which have significant startup cost.
     shells = [pkgs.fish];
-
-    systemPackages = [
-      pkgs.fish
-    ];
   };
 
   networking = {
@@ -42,6 +36,7 @@ in rec {
   };
 
   nixpkgs.hostPlatform = "aarch64-darwin";
+  programs.fish.enable = true;
 
   services.openssh = {
     enable = true;
