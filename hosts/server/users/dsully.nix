@@ -37,11 +37,13 @@
           reference = "op://Services/HuggingFace/credential";
           path = ".config/huggingface/token";
           mode = "0600";
+          group = "dsully";
         };
         sshPrivateKey = {
           reference = "op://Services/server/private key";
           path = ".ssh/id_ed25519";
           mode = "0600";
+          group = "dsully";
         };
       };
     };
