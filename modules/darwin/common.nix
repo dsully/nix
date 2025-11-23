@@ -36,7 +36,13 @@ in rec {
   };
 
   nixpkgs.hostPlatform = "aarch64-darwin";
-  programs.fish.enable = true;
+
+  programs = {
+    fish = {
+      enable = true;
+      useBabelfish = true;
+    };
+  };
 
   services.openssh = {
     enable = true;
