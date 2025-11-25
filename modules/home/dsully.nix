@@ -6,6 +6,8 @@
   ...
 }: let
   inherit (config.system) userName;
+
+  homeDir = config.home.homeDirectory;
 in {
   imports = [
     inputs.nix-index-database.homeModules.nix-index
@@ -70,34 +72,20 @@ in {
             ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
         fi
       '';
-
-      symlinks = ''
-        #!/bin/bash
-
-        if [ "$(uname -s)" == "Darwin" ]; then
-            if ! [ -d "$HOME"/Downloads ] && ! [ -L "$HOME"/Downloads ]; then
-                echo "Moving ~/Downloads to symlink into iCloud."
-
-                /usr/bin/sudo rm -rf "$HOME"/Downloads
-                ln -sf "$HOME"/iCloud/Downloads "$HOME"/Downloads
-            fi
-
-            if ! [ -L "$HOME"/iCloud ]; then
-                ln -s "$HOME"/Library/Mobile\ Documents/com~apple~CloudDocs "$HOME"/iCloud
-            fi
-        fi
-
-        if ! [ -L "$HOME"/src ]; then
-            ln -sf "$HOME"/dev/src "$HOME"/src
-        fi
-
-        if ! [ -L "$HOME"/.huggingface ]; then
-            ln -sf "$HOME"/.config/huggingface "$HOME"/huggingface
-        fi
-      '';
     };
 
     file = {
+      "iCloud" = lib.mkIf pkgs.stdenv.isDarwin {
+        source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/Library/Mobile Documents/com~apple~CloudDocs";
+      };
+
+      "Downloads" = lib.mkIf pkgs.stdenv.isDarwin {
+        source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/iCloud/Downloads";
+      };
+
+      "src".source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/dev/src";
+
+      ".huggingface".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/huggingface";
       ".ignore" = {
         force = true;
         text =
