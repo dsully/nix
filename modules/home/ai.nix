@@ -255,6 +255,7 @@ in {
               "Bash(git restore:*)"
               "Bash(git show:*)"
               "Bash(git status:*)"
+              "Bash(jq:*)"
               "Bash(ls:*)"
               "Bash(mkdir:*)"
               "Bash(python:*)"
