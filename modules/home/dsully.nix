@@ -113,12 +113,34 @@ in {
         '';
       };
     };
+
+    sessionVariables = {
+      # Silence direnv logging. Hook is invoked via vendor_conf.d/
+      DIRENV_LOG_FORMAT = "";
+    };
   };
 
   nix.settings.auto-optimise-store = true;
 
   programs = {
     direnv = {
+      enable = true;
+
+      config = {
+        global = {
+          hide_env_diff = true;
+          load_dotenv = true;
+          strict_env = true;
+          warn_timeout = "10s";
+        };
+        whitelist = {
+          prefix = [
+            "${homeDir}/dev/home"
+            "${homeDir}/dev/work"
+          ];
+        };
+      };
+
       nix-direnv.enable = true;
     };
 
@@ -168,6 +190,13 @@ in {
     };
 
     nix-index-database.comma.enable = false;
+
+    zoxide = {
+      enable = true;
+      options = [
+        "--cmd j"
+      ];
+    };
   };
 
   targets.darwin.linkApps.enable = false;
