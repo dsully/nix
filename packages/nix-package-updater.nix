@@ -14,6 +14,7 @@ with pkgs;
     cargoHash = "sha256-NjTfVP+dEMws3I8ZgiALP54XKR7ruVifpCMBsNpA4y0=";
 
     nativeBuildInputs = [
+      installShellFiles
       pkg-config
     ];
 
@@ -22,6 +23,17 @@ with pkgs;
       openssl
       zlib
     ];
+
+    postInstall = lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) (
+      let
+        emulator = stdenv.hostPlatform.emulator buildPackages;
+      in ''
+        installShellCompletion --cmd ${pname} \
+          --bash <(${emulator} $out/bin/${pname} --completions bash) \
+          --fish <(${emulator} $out/bin/${pname} --completions fish) \
+          --zsh <(${emulator} $out/bin/${pname} --completions zsh)
+      ''
+    );
 
     meta = {
       description = "Update Nix Packages";

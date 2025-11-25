@@ -2,18 +2,18 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "ty";
-    rev = "adf095e889c358768ecde469b3da026d8b9debcc";
+    rev = "4628180facec1efe1b73027403423dac317a1b89";
     version = "0.0.1a27-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "astral-sh";
       repo = "ruff";
-      hash = "sha256-AD1D45fH/hDCD8CXQdvi3lemWL/B8QNjtHzk3kIgQwQ=";
+      hash = "sha256-vkXhAQ/wKj4Vo9BL9mXg2zMGOP/4yOE3RIDvczDEGfQ=";
     };
 
     cargoBuildFlags = ["--package=ty"];
-    cargoHash = "sha256-dOxIPAAE3z1GqLTsRqqS5IN50esbtwbz7kQhbX1y25Y=";
+    cargoHash = "sha256-KW8GYxSOVqInQ8hJNyu4RpU/c/mERl7zrnLLjnhYvYo=";
     doCheck = false;
     nativeBuildInputs = [installShellFiles];
 
@@ -23,10 +23,10 @@ with pkgs;
       let
         emulator = stdenv.hostPlatform.emulator buildPackages;
       in ''
-        installShellCompletion --cmd ty \
-          --bash <(${emulator} $out/bin/ty generate-shell-completion bash) \
-          --fish <(${emulator} $out/bin/ty generate-shell-completion fish) \
-          --zsh <(${emulator} $out/bin/ty generate-shell-completion zsh)
+        installShellCompletion --cmd ${pname} \
+          --bash <(${emulator} $out/bin/${pname} generate-shell-completion bash) \
+          --fish <(${emulator} $out/bin/${pname} generate-shell-completion fish) \
+          --zsh <(${emulator} $out/bin/${pname} generate-shell-completion zsh)
       ''
     );
 
