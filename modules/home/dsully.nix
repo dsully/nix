@@ -117,6 +117,18 @@ in {
     sessionVariables = {
       # Silence direnv logging. Hook is invoked via vendor_conf.d/
       DIRENV_LOG_FORMAT = "";
+
+      # Python
+      PIP_CACHE_DIR = "${config.xdg.cacheHome}/pip";
+      PIP_CONFIG_FILE = "${config.xdg.configHome}/pip/pip.conf";
+      PIP_DISABLE_PIP_VERSION_CHECK = "1";
+      PIP_REQUIRE_VIRTUALENV = "1";
+      POETRY_CACHE_DIR = "${config.xdg.cacheHome}/poetry";
+      POETRY_CONFIG_DIR = "${config.xdg.configHome}/poetry";
+      POETRY_DATA_DIR = "${config.xdg.dataHome}/poetry";
+      PYTHONDONTWRITEBYTECODE = "1";
+      PTPYTHON_CONFIG_HOME = "${config.xdg.configHome}/ptpython";
+      VIRTUAL_ENV_DISABLE_PROMPT = "1";
     };
   };
 

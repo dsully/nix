@@ -7,7 +7,6 @@
       fork-cleaner
       fx
       gh
-      ghq
       gibo
       git
       git-dive

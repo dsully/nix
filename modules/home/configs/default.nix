@@ -1,12 +1,12 @@
 {...}: {
   imports = [
-    ./bat.nix
     ./emmylua.nix
     ./fish.nix
     ./gh.nix
     ./ghostty.nix
     ./git.nix
     ./lolcate.nix
+    ./pager.nix
     ./ripgrep.nix
     ./ruff.nix
     ./rumdl.nix

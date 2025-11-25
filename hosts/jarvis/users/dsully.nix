@@ -21,7 +21,6 @@
         copilot-language-server
         ghostscript_headless
         nix-output-monitor
-        pandoc
         tectonic-unwrapped
       ]
       ++ (with perSystem.self; [
