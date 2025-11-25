@@ -35,6 +35,10 @@ in rec {
     inherit hostName;
   };
 
+  nix = {
+    optimise.automatic = true;
+  };
+
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   programs = {

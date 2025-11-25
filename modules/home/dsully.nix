@@ -127,6 +127,8 @@ in {
     };
   };
 
+  nix.settings.auto-optimise-store = true;
+
   programs = {
     direnv = {
       nix-direnv.enable = true;

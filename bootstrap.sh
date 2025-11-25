@@ -46,7 +46,7 @@ mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
 if ! command -v nix > /dev/null; then
     echo "Installing lix:"
 
-    curl -sSf -L https://install.lix.systems/lix | sh -s -- install
+    /usr/bin/curl -sSf -L https://nixos.org/nix/install | sh
 
     # shellcheck disable=SC1091
     . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -66,8 +66,8 @@ fi
 
 cd "$XDG_CONFIG_HOME"/nix
 
-nix shell nixpkgs#just --command just -f $XDG_CONFIG_HOME/nix/Justfile system
-nix shell nixpkgs#just --command just -f $XDG_CONFIG_HOME/nix/Justfile switch
+nix run nixpkgs#nh -- darwin switch .
+nix run nixpkgs#nh -- home switch .
 
 # Attach to a TTY for input prompting.
 stdin='/dev/null'

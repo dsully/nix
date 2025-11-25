@@ -6,7 +6,6 @@
   substituters = [
     "https://cache.nixos.org/"
     "https://nix-community.cachix.org"
-    "https://cache.lix.systems"
     "https://charmbracelet.cachix.org"
     "https://numtide.cachix.org"
     "https://dsully.cachix.org"
@@ -29,14 +28,13 @@ in {
     enable = true;
 
     # Auto upgrade nix package
-    package = pkgs.lixPackageSets.latest.lix;
+    package = pkgs.nix;
 
     settings = {
       allow-dirty = true;
       allow-import-from-derivation = true;
       allow-symlinked-store = true;
       allow-unsafe-native-code-during-evaluation = true;
-      auto-optimise-store = true;
       always-allow-substitutes = true;
       builders-use-substitutes = true;
 
@@ -59,7 +57,6 @@ in {
       trusted-substituters = substituters;
 
       trusted-public-keys = [
-        "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "charmbracelet.cachix.org-1:iA+l3/8TVJsKR9h28f7f0C0CYA9JjI24yJ8YlGabbkg="
         "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo="
