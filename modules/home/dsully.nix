@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  perSystem,
   ...
 }: let
   inherit (config.system) userName;
@@ -184,6 +185,7 @@ in {
 
     nh = {
       enable = true;
+      package = perSystem.nh.nh;
       clean = {
         enable = true;
         extraArgs = "-d";

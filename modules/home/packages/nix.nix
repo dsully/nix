@@ -5,7 +5,6 @@
       cachix
       deadnix
       flake-checker
-      nh
       nix-converter
       nix-direnv
       nix-init
