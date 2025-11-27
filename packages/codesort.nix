@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "codesort";
-    version = "unstable-2025-02-02";
+    version = "737e325f";
 
     src = fetchFromGitHub {
       owner = "Canop";
       repo = "codesort";
-      rev = "b71c3e05459f20b38019c089c97822da9c2a0cf4";
-      hash = "sha256-yi5BjlmRHL3J18dP6le08FYesPalZIzIeMV6znHpafo=";
+      rev = "737e325f8732730221d2322ee9557807585f1726";
+      hash = "sha256-sBq/78DvGv0B+7EZ23CnYdaPMX8Om/cfy19cU20STp8=";
     };
 
-    cargoHash = "sha256-0EY5e5wu9J2zK3S200DbCv6mOj/7iMJ6aw45e5Fg+go=";
+    cargoHash = "sha256-OB0JgkzviBqAkXdeiP6lYhiQxPSx3BcFFKBVvgTxWKk=";
     doCheck = false;
 
     meta = {
