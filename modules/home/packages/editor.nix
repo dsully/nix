@@ -73,6 +73,7 @@ in {
       ]
       ++ [
         codesort
+        pyproject
         pyproject-fmt
         pytest-language-server
         rumdl
