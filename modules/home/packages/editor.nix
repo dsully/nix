@@ -42,6 +42,7 @@ in {
         revive
         rstcheck
         ruff
+        rumdl
         shellharden
         shfmt
         sphinx-lint
@@ -76,7 +77,6 @@ in {
         pyproject
         pyproject-fmt
         pytest-language-server
-        rumdl
         ty
         xmlformatter
       ]
