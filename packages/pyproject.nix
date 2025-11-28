@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "pyproject";
-    version = "0.1.1";
+    version = "0.1.2";
 
     src = fetchCrate {
       inherit pname version;
-      hash = "sha256-+wdA13/wMErVl1u8r3YNtTPbXokFYC5qoVx3lmLXaNI=";
+      hash = "sha256-9i+XhEr+1aMdd4jCejNskXp5muopXG7rqzz1TeYRdqw=";
     };
 
-    cargoHash = "sha256-Rcq6MsfnpcRYVrZnFKY543dXDN/zWMcEqFA8zH3zsSw=";
+    cargoHash = "sha256-WYTCybjRHG37afDPgboqRX5KNIIRuXzPNVO8RA+TIOw=";
     doCheck = false;
 
     meta = {
