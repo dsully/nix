@@ -81,8 +81,8 @@ in {
         xmlformatter
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-        lemminx
-        pkl-lsp
+        # lemminx
+        # pkl-lsp
       ];
   };
 }
