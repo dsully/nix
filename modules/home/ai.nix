@@ -131,6 +131,7 @@ in {
       )
       ++ (with my.pkgs; [
         beads
+        ccline
         crates-mcp
         git-ai-commit
         mcp-rust-analyzer
@@ -230,7 +231,7 @@ in {
         autoUpdates = false;
 
         statusLine = {
-          command = "input=$(cat); echo \"[$(echo \"$input\" | jq -r '.model.display_name')]  $(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"";
+          command = "${lib.getExe my.pkgs.ccline} --theme nord";
           padding = 0;
           type = "command";
         };

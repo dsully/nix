@@ -38,6 +38,8 @@
       yek
       yq
       zig
+
+      my.pkgs.worktrunk
     ];
   };
 }
