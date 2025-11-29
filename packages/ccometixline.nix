@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    pname = "ccline";
+    pname = "ccometixline";
     version = "1.0.8";
     rev = "e826bef808af86496eda8840156c71e3ef8d0ca6";
 

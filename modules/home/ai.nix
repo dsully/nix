@@ -131,7 +131,7 @@ in {
       )
       ++ (with my.pkgs; [
         beads
-        ccline
+        ccometixline
         crates-mcp
         git-ai-commit
         mcp-rust-analyzer
@@ -231,7 +231,7 @@ in {
         autoUpdates = false;
 
         statusLine = {
-          command = "${lib.getExe my.pkgs.ccline} --theme nord";
+          command = "${lib.getExe my.pkgs.ccometixline} --theme nord";
           padding = 0;
           type = "command";
         };
