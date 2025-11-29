@@ -239,7 +239,10 @@ in {
         permissions = {
           allow =
             [
+              "Bash(awk:*)"
               "Bash(cargo:*)"
+              "Bash(cat:*)"
+              "Bash(chmod:*)"
               "Bash(clippy:*)"
               "Bash(curl:*)"
               "Bash(fd:*)"
@@ -256,25 +259,36 @@ in {
               "Bash(git restore:*)"
               "Bash(git show:*)"
               "Bash(git status:*)"
+              "Bash(grep:*)"
               "Bash(jq:*)"
+              "Bash(just:*)"
               "Bash(ls:*)"
+              "Bash(make:*)"
               "Bash(mkdir:*)"
-              "Bash(python:*)"
-              "Bash(python3:*)"
-              "Bash(pytest:*)"
               "Bash(nix:*)"
               "Bash(pwd:*)"
+              "Bash(pytest:*)"
+              "Bash(python3:*)"
+              "Bash(python:*)"
               "Bash(rg:*)"
+              "Bash(sed:*)"
               "Bash(statix check:*)"
               "Bash(uv:*)"
+              "Bash(xargs:*)"
               "Bash(xh:*)"
-              "Edit(**/*.md)"
+              "Bash(yq:*)"
+
               "Glob"
               "Grep"
-              "Read(~/dev/**)"
               "Task"
               "WebFetch"
               "WebSearch"
+
+              "Edit(**/*.md)"
+              "Edit(//tmp/**)"
+              "Read(//tmp/**)"
+              "Read(~/dev/**)"
+              "Write(//tmp/**)"
             ]
             ++ [
               "mcp__context7"
@@ -304,6 +318,11 @@ in {
             "Read(~/.cache)"
             "Read(~/.cargo)"
             "Read(~/.ssh)"
+          ];
+
+          additionalDirectories = [
+            "/tmp"
+            "/var/folders/"
           ];
 
           defaultMode = "plan";
