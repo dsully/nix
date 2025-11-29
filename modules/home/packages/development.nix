@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  my,
+  pkgs,
+  ...
+}: {
   home = {
     packages = with pkgs; [
       codebook
