@@ -149,9 +149,9 @@ in {
             "-C"
             "link-arg=-undefined"
             "-C"
-            "link-arg=-fuse-ld=lld"
-            "-C"
             "link-arg=dynamic_lookup"
+            "-C"
+            "link-arg=-fuse-ld=lld"
           ];
         };
       };
