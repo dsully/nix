@@ -10,6 +10,7 @@
       cargo-duplicates
       cargo-edit
       cargo-features-manager
+      cargo-flamegraph
       cargo-insta
       cargo-llvm-lines
       cargo-msrv
@@ -22,6 +23,7 @@
       cargo-wizard
       rustcat
       rustup
+      samply
       sccache
     ];
   };
