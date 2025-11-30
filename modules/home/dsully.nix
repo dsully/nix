@@ -136,6 +136,27 @@ in {
   nix.settings.auto-optimise-store = true;
 
   programs = {
+    cargo = {
+      enable = true;
+
+      settings = {
+        build = {
+          rustc-wrapper = "sccache";
+        };
+
+        target.aarch64-apple-darwin = {
+          rustflags = [
+            "-C"
+            "link-arg=-undefined"
+            "-C"
+            "link-arg=-fuse-ld=lld"
+            "-C"
+            "link-arg=dynamic_lookup"
+          ];
+        };
+      };
+    };
+
     direnv = {
       enable = true;
 

@@ -28,6 +28,7 @@
       hyperfine
       jq
       kickstart
+      lld
       nodejs
       ruff
       scc
