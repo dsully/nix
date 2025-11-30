@@ -30,6 +30,7 @@ When, and only when writing Python code, use the following rules:
 * Always use pytest and function based testing. Use "uv run pytest" for running tests.
 * Always use "uv" for dependency management. Never use pip.
 * Always use "click" for command line parsing. Never use argparse.
+* Always use "orjson" instead of "json" for JSON parsing.
 * For toml, always use tomllib.
 * Use itertools or more-itertools if appropriate.
 * Always use httpx and never requests.
