@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "ccometixline";
-    version = "1.0.8";
-    rev = "e826bef808af86496eda8840156c71e3ef8d0ca6";
+    version = "664c6dbf";
+    rev = "664c6dbf4075a8f03b5ba218b82921028c23f674";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "Haleclipse";
       repo = "CCometixLine";
-      hash = "sha256-OcK0UZDHAJTQOVqBUZbI9g7Q/ChYJ5Ukc+hdDUi6tPM=";
+      hash = "sha256-ygkUH3CAdlpL76f8/Q3vFC+lRc0bDlE8qSxXOUoAtEA=";
     };
 
     cargoHash = "sha256-PMmyJhbeXgxncXZh/RV0uyuWl9TmCeJAICxWXn0uB0o=";

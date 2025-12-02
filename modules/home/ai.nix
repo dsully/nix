@@ -97,7 +97,7 @@
 
   models = {
     large = {
-      model = "anthropic.claude-opus-4-5-20251101";
+      model = "claude-opus-4-5-20251101";
       provider = "anthropic";
       max_tokens = 200000;
       reasoning_effort = "medium";
