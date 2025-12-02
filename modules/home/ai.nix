@@ -97,15 +97,15 @@
 
   models = {
     large = {
-      model = "claude-opus-opus-4-1-20250805";
+      model = "anthropic.claude-opus-4-5-20251101";
       provider = "anthropic";
-      max_tokens = 32000;
+      max_tokens = 200000;
       reasoning_effort = "medium";
     };
     medium = {
       model = "claude-sonnet-4-5-20250929";
       provider = "anthropic";
-      max_tokens = 32000;
+      max_tokens = 200000;
       reasoning_effort = "medium";
     };
     small = {
@@ -224,7 +224,7 @@ in {
       memory.source = ./configs/ai/AGENTS.md;
 
       settings = {
-        inherit (models.medium) model;
+        inherit (models.large) model;
         enableAllProjectMcpServers = true;
         includeCoAuthoredBy = false;
 
