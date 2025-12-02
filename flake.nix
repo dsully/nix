@@ -43,6 +43,8 @@
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 
     opnix.url = "github:brizzbuzz/opnix";
+
+    crane.url = "github:ipetkov/crane";
   };
 
   outputs = inputs:

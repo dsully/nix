@@ -1,45 +1,54 @@
-{pkgs, ...}:
-with pkgs;
-  rustPlatform.buildRustPackage rec {
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+  craneLib = inputs.crane.mkLib pkgs;
+
+  rev = "72304b01ebaff3c6bec7daa28b4c6032a92127a7";
+  version = "0.0.1a28-${rev}";
+
+  src = pkgs.fetchFromGitHub {
+    inherit rev;
+    owner = "astral-sh";
+    repo = "ruff";
+    hash = "sha256-6pyPUKLV1GfoXV/BYhMjUJ0+9C0T81gRgFol+3T70lU=";
+  };
+
+  commonArgs = {
+    inherit src version;
     pname = "ty";
-    rev = "72304b01ebaff3c6bec7daa28b4c6032a92127a7";
-    version = "0.0.1a28-${rev}";
-
-    src = fetchFromGitHub {
-      inherit rev;
-      owner = "astral-sh";
-      repo = "ruff";
-      hash = "sha256-6pyPUKLV1GfoXV/BYhMjUJ0+9C0T81gRgFol+3T70lU=";
-    };
-
-    cargoBuildFlags = ["--package=ty"];
-    cargoHash = "sha256-NlmGs2Cpa/tGg9C9EqKXCWQGQkvbab7mjY2fO0JUFhE=";
-    doCheck = false;
-    nativeBuildInputs = [installShellFiles];
-
+    strictDeps = true;
+    cargoExtraArgs = "--package=ty";
+    nativeBuildInputs = with pkgs; [installShellFiles];
     env.TY_VERSION = version;
+  };
 
-    postInstall = lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) (
-      let
-        emulator = stdenv.hostPlatform.emulator buildPackages;
-      in ''
-        installShellCompletion --cmd ${pname} \
-          --bash <(${emulator} $out/bin/${pname} generate-shell-completion bash) \
-          --fish <(${emulator} $out/bin/${pname} generate-shell-completion fish) \
-          --zsh <(${emulator} $out/bin/${pname} generate-shell-completion zsh)
-      ''
-    );
+  cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+in
+  craneLib.buildPackage (commonArgs
+    // {
+      inherit cargoArtifacts;
+      doCheck = false;
 
-    passthru = {
-      updateScript = nix-update-script {extraArgs = ["--version=unstable"];};
-    };
+      postInstall = pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.emulatorAvailable pkgs.buildPackages) (
+        let
+          emulator = pkgs.stdenv.hostPlatform.emulator pkgs.buildPackages;
+        in ''
+          installShellCompletion --cmd ty \
+            --bash <(${emulator} $out/bin/ty generate-shell-completion bash) \
+            --fish <(${emulator} $out/bin/ty generate-shell-completion fish) \
+            --zsh <(${emulator} $out/bin/ty generate-shell-completion zsh)
+        ''
+      );
 
-    meta = {
-      description = "Extremely fast Python type checker and language server, written in Rust";
-      homepage = "https://github.com/astral-sh/ruff";
-      changelog = "https://github.com/astral-sh/ty/blob/${version}/CHANGELOG.md";
-      license = lib.licenses.mit;
-      inherit version;
-      mainProgram = pname;
-    };
-  }
+      passthru.updateScript = pkgs.nix-update-script {extraArgs = ["--version=unstable"];};
+
+      meta = {
+        description = "Extremely fast Python type checker and language server, written in Rust";
+        homepage = "https://github.com/astral-sh/ruff";
+        changelog = "https://github.com/astral-sh/ty/blob/${version}/CHANGELOG.md";
+        license = pkgs.lib.licenses.mit;
+        mainProgram = "ty";
+      };
+    })
