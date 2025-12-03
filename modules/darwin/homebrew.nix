@@ -37,7 +37,7 @@
       "dash"
       "font-monaspace"
       "fastmail"
-      "ghostty"
+      "ghostty@tip"
       "keka"
       "little-snitch"
       "lunar"
