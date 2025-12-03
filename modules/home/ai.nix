@@ -300,10 +300,14 @@ in {
               "mcp__sequential-thinking"
             ];
 
-          ask = [];
+          ask = [
+            "Bash(git rm:*)"
+            "Bash(rm:*)"
+            "Bash(rmdir:*)"
+            "Read(./secrets/**)"
+          ];
 
           deny = [
-            "Bash(rm:*)"
             "Bash(su:*)"
             "Bash(sudo:*)"
             "Read(./.direnv)"
@@ -312,7 +316,6 @@ in {
             "Read(./.envrc)"
             "Read(./build)"
             "Read(./config/credentials.json)"
-            "Read(./secrets/**)"
             "Read(./targets)"
             "Read(~/.aws)"
             "Read(~/.cache)"
