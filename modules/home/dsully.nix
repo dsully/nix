@@ -143,19 +143,6 @@ in {
         build = {
           rustc-wrapper = "sccache";
         };
-
-        target.aarch64-apple-darwin = {
-          rustflags = [
-            "-C"
-            "target-cpu=native"
-            "-C"
-            "link-arg=-undefined"
-            "-C"
-            "link-arg=dynamic_lookup"
-            "-C"
-            "link-arg=-fuse-ld=lld"
-          ];
-        };
       };
     };
 
