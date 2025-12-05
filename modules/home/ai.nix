@@ -271,6 +271,7 @@ in {
               "Bash(python3:*)"
               "Bash(python:*)"
               "Bash(rg:*)"
+              "Bash(rustfmt:*)"
               "Bash(sed:*)"
               "Bash(statix check:*)"
               "Bash(uv:*)"
@@ -287,15 +288,13 @@ in {
               "Edit(**/*.md)"
               "Edit(//tmp/**)"
               "Read(//tmp/**)"
+              "Read(~/claude/skills/**)"
               "Read(~/dev/**)"
               "Write(//tmp/**)"
             ]
             ++ [
-              "mcp__context7"
               "mcp__filesystem"
               "mcp__git"
-              "mcp__github"
-              "mcp__nixos"
               "mcp__rust-analyzer"
               "mcp__sequential-thinking"
             ];
@@ -305,6 +304,9 @@ in {
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
+            "mcp__context7"
+            "mcp__github"
+            "mcp__nixos"
           ];
 
           deny = [
@@ -316,7 +318,7 @@ in {
             "Read(./.envrc)"
             "Read(./build)"
             "Read(./config/credentials.json)"
-            "Read(./targets)"
+            "Read(./target)"
             "Read(~/.aws)"
             "Read(~/.cache)"
             "Read(~/.cargo)"

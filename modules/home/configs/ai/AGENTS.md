@@ -45,6 +45,8 @@ When, and only when writing Rust code, use the following rules:
 
 * Always use the 2024 edition of Rust.
 
+* Use --debug builds unless explicitly needing release builds.
+
 * Always use the latest version of crates. Use "cargo upgrade" if needed.
 
 * Always use "jiff" instead of "chrono" for date and time needs.
