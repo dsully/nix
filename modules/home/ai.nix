@@ -239,6 +239,7 @@ in {
         permissions = {
           allow =
             [
+              "Bash(ast-grep:*)"
               "Bash(awk:*)"
               "Bash(cargo:*)"
               "Bash(cat:*)"
@@ -293,6 +294,7 @@ in {
               "Write(//tmp/**)"
             ]
             ++ [
+              "mcp__context7"
               "mcp__filesystem"
               "mcp__git"
               "mcp__rust-analyzer"
@@ -304,7 +306,6 @@ in {
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
-            "mcp__context7"
             "mcp__github"
             "mcp__nixos"
           ];
