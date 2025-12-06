@@ -4,16 +4,16 @@ then
   with pkgs;
     rustPlatform.buildRustPackage rec {
       pname = "apple-photos-export";
-      version = "1.1.0-snapshot";
+      version = "d47c6c8e";
 
       src = fetchFromGitHub {
         owner = "haukesomm";
         repo = "apple-photos-export";
-        rev = "786bf6a1d6a870d81cb710cc7eafbe1c1bbe3be9";
-        hash = "sha256-H79YWs1M2aHrdgocvCOHhFcRjQ/ms4YLk2GiLr7f04Y=";
+        rev = "d47c6c8e18e657ba083df26512849ebdde8fc380";
+        hash = "sha256-8YIilPgSP7XABqkBR+mUl+URGzj1RvaT9o7dxd1IJ+E=";
       };
 
-      cargoHash = "sha256-omnfofmWqrU4E/szNJ6s52t0R3bl9/ZR2UNrp49qqdY=";
+      cargoHash = "sha256-RGiBiON/ODN4yQIZchZUlCYm1WYH7CUo12qO3nz7ryA=";
       doCheck = false;
 
       nativeBuildInputs = [
