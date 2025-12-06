@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "ai-skills-ast-grep": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1763947069,
+        "narHash": "sha256-LCI06qz9skVqSsXc88djK6YixABB+GnvoZcSce1m5Aw=",
+        "owner": "ast-grep",
+        "repo": "claude-skill",
+        "rev": "d46b7d0cd238000e35bfcd57aa95edb3ed6a573c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ast-grep",
+        "repo": "claude-skill",
+        "type": "github"
+      }
+    },
     "blueprint": {
       "inputs": {
         "nixpkgs": [
@@ -286,11 +302,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1765033916,
-        "narHash": "sha256-zPHxVOUs9FB7Qgun6ru2uluYdqPIg45JGKXEUhO/w7A=",
+        "lastModified": 1765034113,
+        "narHash": "sha256-i+4lUGCZyqXx70xUoM4iqbCAcSk69zz8czZNweCOGg0=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "c474a15fc6ae9d18e8c3437f5138bfa6ff6ec616",
+        "rev": "e39a9719bdc5b495aadf894a9b7321cf27e9ecf7",
         "type": "github"
       },
       "original": {
@@ -393,6 +409,7 @@
     },
     "root": {
       "inputs": {
+        "ai-skills-ast-grep": "ai-skills-ast-grep",
         "blueprint": "blueprint",
         "charmbracelet-nur": "charmbracelet-nur",
         "config-lsp": "config-lsp",
