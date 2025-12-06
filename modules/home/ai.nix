@@ -121,6 +121,11 @@ in {
   ];
 
   home = {
+    # FIXME: Figure out why skils isn't working in programs.claude-code
+    file = {
+      ".claude/skills/ast-grep".source = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
+    };
+
     packages =
       (
         with perSystem.nix-ai-tools; [
@@ -237,69 +242,70 @@ in {
         };
 
         permissions = {
-          allow =
-            [
-              "Bash(ast-grep:*)"
-              "Bash(awk:*)"
-              "Bash(cargo:*)"
-              "Bash(cat:*)"
-              "Bash(chmod:*)"
-              "Bash(clippy:*)"
-              "Bash(curl:*)"
-              "Bash(fd:*)"
-              "Bash(find:*)"
-              "Bash(git add:*)"
-              "Bash(git bisect:*)"
-              "Bash(git blame:*)"
-              "Bash(git diff:*)"
-              "Bash(git fetch:*)"
-              "Bash(git grep:*)"
-              "Bash(git log:*)"
-              "Bash(git ls-remote:*)"
-              "Bash(git remote show:*)"
-              "Bash(git restore:*)"
-              "Bash(git show:*)"
-              "Bash(git status:*)"
-              "Bash(grep:*)"
-              "Bash(jq:*)"
-              "Bash(just:*)"
-              "Bash(ls:*)"
-              "Bash(make:*)"
-              "Bash(mkdir:*)"
-              "Bash(nix:*)"
-              "Bash(pwd:*)"
-              "Bash(pytest:*)"
-              "Bash(python3:*)"
-              "Bash(python:*)"
-              "Bash(rg:*)"
-              "Bash(rustfmt:*)"
-              "Bash(sed:*)"
-              "Bash(statix check:*)"
-              "Bash(uv:*)"
-              "Bash(xargs:*)"
-              "Bash(xh:*)"
-              "Bash(yq:*)"
+          allow = [
+            "Bash(ast-grep:*)"
+            "Bash(awk:*)"
+            "Bash(cargo:*)"
+            "Bash(cat:*)"
+            "Bash(chmod:*)"
+            "Bash(clippy:*)"
+            "Bash(curl:*)"
+            "Bash(fd:*)"
+            "Bash(find:*)"
+            "Bash(git add:*)"
+            "Bash(git bisect:*)"
+            "Bash(git blame:*)"
+            "Bash(git diff:*)"
+            "Bash(git fetch:*)"
+            "Bash(git grep:*)"
+            "Bash(git log:*)"
+            "Bash(git ls-remote:*)"
+            "Bash(git remote show:*)"
+            "Bash(git restore:*)"
+            "Bash(git show:*)"
+            "Bash(git status:*)"
+            "Bash(grep:*)"
+            "Bash(jq:*)"
+            "Bash(just:*)"
+            "Bash(ls:*)"
+            "Bash(make:*)"
+            "Bash(mkdir:*)"
+            "Bash(nix:*)"
+            "Bash(pwd:*)"
+            "Bash(pytest:*)"
+            "Bash(python3:*)"
+            "Bash(python:*)"
+            "Bash(rg:*)"
+            "Bash(rustfmt:*)"
+            "Bash(sed:*)"
+            "Bash(statix check:*)"
+            "Bash(uv:*)"
+            "Bash(xargs:*)"
+            "Bash(xh:*)"
+            "Bash(yq:*)"
 
-              "Glob"
-              "Grep"
-              "Task"
-              "WebFetch"
-              "WebSearch"
+            "Glob"
+            "Grep"
+            "Task"
+            "WebFetch"
+            "WebSearch"
 
-              "Edit(**/*.md)"
-              "Edit(//tmp/**)"
-              "Read(//tmp/**)"
-              "Read(~/claude/skills/**)"
-              "Read(~/dev/**)"
-              "Write(//tmp/**)"
-            ]
-            ++ [
-              "mcp__context7"
-              "mcp__filesystem"
-              "mcp__git"
-              "mcp__rust-analyzer"
-              "mcp__sequential-thinking"
-            ];
+            "Edit(**/*.md)"
+            "Edit(//tmp/**)"
+            "Read(//tmp/**)"
+            "Read(~/claude/skills/**)"
+            "Read(~/dev/**)"
+            "Write(//tmp/**)"
+
+            "mcp__context7"
+            "mcp__filesystem"
+            "mcp__git"
+            "mcp__rust-analyzer"
+            "mcp__sequential-thinking"
+
+            "Skill(ast-grep)"
+            "Skill(bd-issue-tracking)"
+          ];
 
           ask = [
             "Bash(git rm:*)"
@@ -342,6 +348,10 @@ in {
           DISABLE_ERROR_REPORTING = "1";
           DISABLE_TELEMETRY = "1";
         };
+
+        # skills = {
+        #   ast-grep = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
+        # };
       };
 
       mcpServers = mcp-servers-config.config.settings.servers;

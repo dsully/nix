@@ -45,6 +45,9 @@
     opnix.url = "github:brizzbuzz/opnix";
 
     crane.url = "github:ipetkov/crane";
+
+    ai-skills-ast-grep.url = "github:ast-grep/claude-skill";
+    ai-skills-ast-grep.flake = false;
   };
 
   outputs = inputs:
