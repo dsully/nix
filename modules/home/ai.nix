@@ -62,25 +62,25 @@
         enable = true;
         type = "stdio";
       };
-      github = {
-        enable = true;
-        env = {
-          GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
-        };
-        type = "stdio";
-      };
-      memory = {
-        enable = true;
-        type = "stdio";
-      };
+      # github = {
+      #   enable = true;
+      #   env = {
+      #     GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
+      #   };
+      #   type = "stdio";
+      # };
+      # memory = {
+      #   enable = true;
+      #   type = "stdio";
+      # };
       # nixos = {
       #   enable = true;
       #   type = "stdio";
       # };
-      sequential-thinking = {
-        enable = true;
-        type = "stdio";
-      };
+      # sequential-thinking = {
+      #   enable = true;
+      #   type = "stdio";
+      # };
     };
     settings.servers = {
       filesystem = {
@@ -370,21 +370,21 @@ in {
         git = {
           command = lib.getExe mcp-packages.mcp-server-git;
         };
-        github = {
-          command = lib.getExe pkgs.github-mcp-server;
-          env = {
-            GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
-          };
-        };
+        # github = {
+        #   command = lib.getExe pkgs.github-mcp-server;
+        #   env = {
+        #     GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
+        #   };
+        # };
         # nixos = {
         #   command = lib.getExe pkgs.mcp-nixos;
         # };
-        memory = {
-          command = lib.getExe mcp-packages.mcp-server-memory;
-        };
-        sequential-thinking = {
-          command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
-        };
+        # memory = {
+        #   command = lib.getExe mcp-packages.mcp-server-memory;
+        # };
+        # sequential-thinking = {
+        #   command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
+        # };
       };
     };
 
