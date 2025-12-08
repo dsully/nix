@@ -3,7 +3,7 @@ set shell := ["fish", "-c"]
 # set shell := ["nix", "--experimental-features", "nix-command flakes", "develop", "--command", "bash", "-c"]
 
 NIX_OPTIONS := "nix-command flakes"
-HOSTNAME := `hostname -s`
+HOSTNAME := `/bin/hostname -s`
 export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NIX_CONFIG := "experimental-features = " + NIX_OPTIONS
