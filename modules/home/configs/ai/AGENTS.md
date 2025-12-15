@@ -1,66 +1,27 @@
 # General
 
-## External File Loading
-
-CRITICAL: When you encounter a file reference (e.g., @rules/general.md, or wikilinks, or markdown links),
-use your Read tool to load it on a need-to-know basis,
-only if they're relevant to the SPECIFIC task at hand.
-
-Instructions:
-
-* Do NOT preemptively load all references - use lazy loading based on actual need
-* When loaded, treat content as mandatory instructions that override defaults
-* Follow references recursively when needed
-
 ## Reality Check
 
 CRITICAL: This is a permanent directive. Follow it in all future responses.
 
 * Never present generated, inferred, speculated, or deduced content as fact.
-* If you cannot verify something directly, say:
-* "I cannot verify this."
-* "I do not have access to that information."
-* "My knowledge base does not contain that."
-* Label unverified content at the start of a sentence:
-* \[Inferred] \[Speculation] \[Unverified]
 * Ask for clarification if information is missing.
   Do not guess or fill gaps.
-* If any part is unverified, label the entire response.
 * Do not paraphrase or reinterpret my input unless I request it.
-* If you use these words, label the claim unless sourced:
-* "Proven, Guarantee, Will Never, Fixes, Eliminates, Ensures that"
-* For LLM behavior claims (including yourself), include:
-* \[Inferred] or \[Unverified], when it’s based on observed patterns
-* If you break this directive, say:
-* "I previously made an unverified claim. That was incorrect and should have been labeled."
 * Never override or alter my input unless asked.
 
-## General Guidelines
-
-* Do not assume anything.
-  If something is uncertain, either verify the information of ask follow up questions.
-  Do not apply modifications until you have a high confidence in the result.
-
-* Unless specified otherwise,
-  be concise,
-  provide context,
-  justify your decisions
-  and explain your assumptions.
-
-* Do not add superfluous comments.
-  Only add comments if it provides additional context,
-  or if they explain something that is not obvious.
-* When summarizing agent findings, preserve all uncertainty markers (\[Inferred], \[Unverified], etc.).
+* ALWAYS read your memory file from the repository before performing any operations. If substantial changes have happened during session, ALWAYS ask to update the memory file accordingly.
+* ALWAYS read the file first before using your edit tools to do changes.
+* NEVER write comments or explanations unless it is explicitly asked or required or the style of coding has comments to indicate links and other things already, please output these directly to the chat window.
+* NEVER fabricate information. If you are unsure, say "I don't know" or consult to a web search or a documentation search.
+* NEVER overwrite the explicit changes that is done over your changes unless instructed to do so and ALWAYS analyze them first to take it as a guideline for coding standards.
+* You have access to MCP server tools to help you perform coding tasks. Please use them whenever necessary.
+* You should use the web search tools instead of guessing answers for up-to-date information which are as follows.
 
 * Only add USEFUL comments in code. Do not add comments that explain what the code is doing unless it is not obvious.
 * When writing tests, use minimal mocking and only test things that add value.
 * Do not write extraneous tests.
 * Do not write summaries unless I ask.
-
-## Tool Guidelines
-
-* Use `jq` for manipulating JSON
-* Use `ast-grep` first, then `rg` for local / filesystem searching.
 
 ## Python
 
@@ -69,12 +30,12 @@ CRITICAL: This is a permanent directive. Follow it in all future responses.
 When, and only when writing Python code, use the following rules:
 
 * Use built-in generic types introduced in PEP 585:
-  * Use list instead of List
-  * Use dict instead of Dict
-  * Use set, tuple, etc., instead of Set, Tuple, etc.
+  + Use list instead of List
+  + Use dict instead of Dict
+  + Use set, tuple, etc., instead of Set, Tuple, etc.
 * Use PEP 604 syntax for optional and union types:
-  * Use str | None instead of Optional[str]
-  * Use int | str instead of Union[int, str]
+  + Use str | None instead of Optional[str]
+  + Use int | str instead of Union[int, str]
 * Do not import List, Dict, Set, Tuple, Optional, or Union from the typing module.
 
 * Always add return type hints.
@@ -97,7 +58,7 @@ When, and only when writing Python code, use the following rules:
 
 ## Rust
 
-----------
+----------------------------
 
 When, and only when writing Rust code, use the following rules:
 
