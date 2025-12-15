@@ -3,7 +3,6 @@
   inputs,
   lib,
   pkgs,
-  perSystem,
   ...
 }: let
   inherit (config.system) userName;

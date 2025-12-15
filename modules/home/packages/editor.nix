@@ -25,11 +25,9 @@ in {
         emmylua-ls
         emmylua-check
         fish-lsp
-        gitui
         gofumpt
         gopls
         harper
-        imagemagick
         jinja-lsp
         just-lsp
         mbake
