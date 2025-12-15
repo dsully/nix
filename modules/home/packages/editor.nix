@@ -25,7 +25,7 @@ in {
         emmylua-ls
         emmylua-check
         fish-lsp
-        # gitui
+        gitui
         gofumpt
         gopls
         harper
