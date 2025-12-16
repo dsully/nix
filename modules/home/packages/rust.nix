@@ -4,6 +4,7 @@
       cargo-autoinherit
       cargo-binstall
       cargo-bloat
+      cargo-bump
       cargo-cache
       cargo-clone
       cargo-dist

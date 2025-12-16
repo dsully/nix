@@ -285,7 +285,7 @@ in {
             "WebFetch"
             "WebSearch"
             "Write(//tmp/**)"
-            "Write(~/.claude/plans/**)"
+            "Write(**/plans/**)"
             "mcp__context7"
             "mcp__filesystem"
             "mcp__git"
