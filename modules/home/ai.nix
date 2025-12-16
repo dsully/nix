@@ -129,13 +129,13 @@ in {
     packages =
       (
         with perSystem.nix-ai-tools; [
+          beads
           claude-code-acp
           # codex
           # gemini-cli
         ]
       )
       ++ (with my.pkgs; [
-        beads
         ccometixline
         crates-mcp
         git-ai-commit
