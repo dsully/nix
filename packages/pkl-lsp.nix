@@ -6,7 +6,7 @@ with pkgs;
 
     src = fetchurl {
       url = "https://github.com/apple/pkl-lsp/releases/download/${version}/${pname}-${version}.jar";
-      hash = "sha256-mkOE1AqBADn9FBnBw1fWAPafNPKAIMMhzr2BCzZZf0E=";
+      hash = "sha256-oswF10l3ql60GHV7OiHOjhV/7c9ZxZmJ4Xt/3dLlgUs=";
     };
 
     nativeBuildInputs = [makeWrapper];
