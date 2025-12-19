@@ -21,7 +21,7 @@ default:
 [group('desktop')]
 [linux]
 system host=HOSTNAME +args="":
-    @/usr/bin/sudo --preserve-env=PATH --preserve-env=NIX_CONFIG $(which system-manager) switch --flake '.#{{ host }}' {{ args }}
+    @system-manager switch --flake '.#{{ host }}' --sudo {{ args }}
     @/bin/rm -f result
 
 [macos]
