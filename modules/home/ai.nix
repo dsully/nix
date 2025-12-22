@@ -128,11 +128,16 @@ in {
 
     packages =
       (
-        with perSystem.nix-ai-tools; [
+        with perSystem.llm-agents; [
           beads
           claude-code-acp
           # codex
           # gemini-cli
+        ]
+      )
+      ++ (
+        with perSystem.mcp-servers-nix; [
+          serena
         ]
       )
       ++ (with my.pkgs; [
@@ -217,7 +222,7 @@ in {
 
     claude-code = {
       enable = true;
-      package = perSystem.nix-ai-tools.claude-code;
+      package = perSystem.llm-agents.claude-code;
 
       agents = {
         code-debugger = ./configs/ai/agents/code-debugger.md;
@@ -286,11 +291,9 @@ in {
             "WebSearch"
             "Write(//tmp/**)"
             "Write(**/plans/**)"
-            "mcp__context7"
+
             "mcp__filesystem"
-            "mcp__git"
-            "mcp__rust-analyzer"
-            "mcp__sequential-thinking"
+            "mcp__serena"
           ];
 
           ask = [
@@ -298,8 +301,13 @@ in {
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
+            "Read(~/.cargo)"
+            "mcp__context7"
+            "mcp__git"
             "mcp__github"
             "mcp__nixos"
+            "mcp__rust-analyzer"
+            "mcp__sequential-thinking"
           ];
 
           deny = [
@@ -314,7 +322,6 @@ in {
             "Read(./target)"
             "Read(~/.aws)"
             "Read(~/.cache)"
-            "Read(~/.cargo)"
             "Read(~/.ssh)"
           ];
 
@@ -371,13 +378,16 @@ in {
         # sequential-thinking = {
         #   command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
         # };
+        serena = {
+          command = lib.getExe mcp-packages.serena;
+        };
       };
     };
 
     # https://opencode.ai/docs/
     opencode = {
       enable = true;
-      package = perSystem.nix-ai-tools.opencode;
+      package = perSystem.llm-agents.opencode;
       enableMcpIntegration = true;
       rules = ./configs/ai/AGENTS.md;
       settings = {
