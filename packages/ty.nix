@@ -5,14 +5,14 @@
 }: let
   craneLib = inputs.crane.mkLib pkgs;
 
-  rev = "f9afcc400ce56b1cc0dd1f20f3910afb0bb37d44";
+  rev = "9693375e101ffb7749c160230ca90d820161a5da";
   version = "0.0.7-${rev}";
 
   src = pkgs.fetchFromGitHub {
     inherit rev;
     owner = "astral-sh";
     repo = "ruff";
-    hash = "sha256-jDD0jPm0cQm7jyozmLlQmsVTJZO2BqHIolwIS/aApqU=";
+    hash = "sha256-cD1PiyZBPWDpb1I2dSyap5+QAFkqgPvfVT118CxaM9U=";
   };
 
   commonArgs = {
