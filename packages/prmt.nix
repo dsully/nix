@@ -2,17 +2,17 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "prmt";
-    rev = "c0ac77562b4d44023e04534d8e521c998356e18a";
+    rev = "09518171e738eb72fa4971f9f1108beddf47cfbb";
     version = "0.1.7-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "3axap4eHko";
       repo = "prmt";
-      hash = "sha256-S2avJH49BJF2A7FiPSVX6S2ZU7vpSMGuG8oVD3c+6jQ=";
+      hash = "sha256-iHRAIOm5wks/Go5Pfa77oQe2UVAYzJV3XGf36VbELsQ=";
     };
 
-    cargoHash = "sha256-5UoT8SVfgK34YKPL9bZ47GPPmerAbOXXtc84uiyPP6Y=";
+    cargoHash = "sha256-onCRbPBX5ELXV51P5qXQfkV3uGSXtR232sXMWa6WqVI=";
     doCheck = false;
 
     meta = {
