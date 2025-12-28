@@ -144,6 +144,7 @@ in {
         ccometixline
         crates-mcp
         git-ai-commit
+        infiniloom
         mcp-rust-analyzer
         rust-mcp-server
         turbo-commit
