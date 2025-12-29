@@ -35,8 +35,23 @@ in rec {
     inherit hostName;
   };
 
-  nix = {
-    optimise.automatic = true;
+  nixoptimise.automatic = true lib.mkIf config.system.nixFlavor != "determinate";
+
+  determinate-nix.customSettings = lib.mkIf (config.system.nixFlavor == "determinate") {
+    allow-dirty = true;
+    allow-import-from-derivation = true;
+    allow-symlinked-store = true;
+    allow-unsafe-native-code-during-evaluation = true;
+    builders-use-substitutes = true;
+    eval-cores = 0;
+    http-connections = 0;
+    keep-going = true;
+    use-xdg-base-directories = true;
+    warn-dirty = false;
+
+    extra-substituters = map (x: x.url) config.system.substituters;
+    extra-trusted-public-keys = map (x: x.key) config.system.substituters;
+    extra-trusted-users = config.system.trusted_users;
   };
 
   nixpkgs.hostPlatform = "aarch64-darwin";

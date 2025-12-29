@@ -1,5 +1,6 @@
 {
   config,
+  flake,
   inputs,
   lib,
   pkgs,
@@ -12,8 +13,10 @@ in {
   imports = [
     inputs.nix-index-database.homeModules.nix-index
     inputs.opnix.homeManagerModules.default
-    ../common/nix.nix
 
+    flake.modules.common.nix
+
+    ./chsh
     ./configs
     ./packages
   ];
