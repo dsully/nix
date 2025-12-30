@@ -73,13 +73,9 @@ in {
       default = "determinate";
     };
 
-    substituters = lib.mkOption {
-      default = substituters;
-    };
-
-    trusted_users = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = trusted_users;
+    nixSettings = lib.mkOption {
+      type = lib.types.attrs;
+      description = "Common nix settings shared across flavors";
     };
   };
 
@@ -93,39 +89,36 @@ in {
     # ];
     _module.args.my.pkgs = pkgs.extend (_final: _prev: (perSystem.upstream or perSystem.self));
 
+    system.nixSettings = {
+      allow-dirty = true;
+      builders-use-substitutes = true;
+      http-connections = 0;
+      keep-going = true;
+      use-xdg-base-directories = true;
+      warn-dirty = false;
+
+      substituters = map (x: x.url) substituters;
+      trusted-public-keys = map (x: x.key) substituters;
+      trusted-users = trusted_users;
+    };
+
     nix = lib.mkMerge [
       {
         enable = config.system.nixFlavor != "determinate";
 
         settings =
-          {
+          config.system.nixSettings
+          // {
             experimental-features = [
               "flakes"
               "nix-command"
             ];
 
-            allow-dirty = true;
             auto-allocate-uids = true;
             auto-optimise-store = true;
-            builders-use-substitutes = true;
-
             extra-nix-path = "nixpkgs=flake:nixpkgs";
-
-            # Don't limit the number of http connections.
-            http-connections = 0;
-
-            # Whether to keep building derivations when another build fails.
-            keep-going = true;
             max-jobs = "auto";
-
-            substituters = map (x: x.url) config.system.substituters;
-            trusted-public-keys = map (x: x.key) config.system.substituters;
-            trusted-users = config.system.trusted_users;
-
             narinfo-cache-negative-ttl = 0;
-            warn-dirty = false;
-
-            use-xdg-base-directories = true;
           }
           // (lib.mkIf (config.system.nixFlavor != "lix") {download-buffer-size = 268435456;});
       }

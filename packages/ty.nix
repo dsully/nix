@@ -6,7 +6,7 @@
   craneLib = inputs.crane.mkLib pkgs;
 
   rev = "8716b4e230bbf3700336c4f14ef6f8101f2de797";
-  version = "0.0.7-${rev}";
+  version = "0.0.8-${rev}";
 
   src = pkgs.fetchFromGitHub {
     inherit rev;

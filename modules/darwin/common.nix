@@ -7,6 +7,7 @@
   inherit (config.system) hostName;
 in rec {
   imports = [
+    ../common/nix.nix
     ./homebrew.nix
 
     ./defaults/activity-monitor.nix
@@ -35,24 +36,21 @@ in rec {
     inherit hostName;
   };
 
-  nixoptimise.automatic = true lib.mkIf config.system.nixFlavor != "determinate";
+  nix.optimise.automatic = lib.mkIf (config.system.nixFlavor != "determinate") true;
 
-  determinate-nix.customSettings = lib.mkIf (config.system.nixFlavor == "determinate") {
-    allow-dirty = true;
-    allow-import-from-derivation = true;
-    allow-symlinked-store = true;
-    allow-unsafe-native-code-during-evaluation = true;
-    builders-use-substitutes = true;
-    eval-cores = 0;
-    http-connections = 0;
-    keep-going = true;
-    use-xdg-base-directories = true;
-    warn-dirty = false;
+  determinate-nix.customSettings = lib.mkIf (config.system.nixFlavor == "determinate") (
+    config.system.nixSettings
+    // {
+      allow-import-from-derivation = true;
+      allow-symlinked-store = true;
+      allow-unsafe-native-code-during-evaluation = true;
+      eval-cores = 0;
 
-    extra-substituters = map (x: x.url) config.system.substituters;
-    extra-trusted-public-keys = map (x: x.key) config.system.substituters;
-    extra-trusted-users = config.system.trusted_users;
-  };
+      # extra-substituters = config.system.nixSettings.substituters;
+      # extra-trusted-public-keys = config.system.nixSettings.trusted-public-keys;
+      # extra-trusted-users = config.system.nixSettings.trusted-users;
+    }
+  );
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 
@@ -61,6 +59,8 @@ in rec {
       enable = true;
       useBabelfish = true;
     };
+
+    info.enable = lib.mkForce false;
   };
 
   services.openssh = {

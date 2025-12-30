@@ -9,7 +9,6 @@
   home-manager.users = lib.mkForce {};
 
   imports = [
-    flake.modules.common.nix
     flake.inputs.determinate.darwinModules.default
     flake.modules.darwin.common
     flake.modules.darwin.homebrew
