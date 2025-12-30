@@ -241,6 +241,38 @@ in {
 
         autoUpdates = false;
 
+        hooks = {
+          PreToolUse = [
+            {
+              matcher = "Bash";
+              hooks = [
+                {
+                  type = "command";
+                  command = ./configs/ai/hooks/enforce-uv.fish;
+                }
+              ];
+            }
+          ];
+          PostToolUse = [
+            {
+              matcher = "Edit|Write|MultiEdit";
+              hooks = [
+                {
+                  command = ''
+                    file_path="$1"
+                    case "$file_path" in
+                      *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
+                      *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
+                      *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
+                    esac
+                  '';
+                  timeout = 10;
+                }
+              ];
+            }
+          ];
+        };
+
         statusLine = {
           command = "${lib.getExe my.pkgs.ccometixline} --theme nord";
           padding = 0;
