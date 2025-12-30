@@ -1,6 +1,8 @@
 {
   config,
+  inputs,
   lib,
+  perSystem,
   pkgs,
   ...
 }: let
@@ -36,21 +38,45 @@ in rec {
     inherit hostName;
   };
 
-  nix.optimise.automatic = lib.mkIf (config.system.nixFlavor != "determinate") true;
+  nix = lib.mkMerge [
+    {
+      nixPath = lib.mapAttrsToList (name: _: "${name}=flake:${name}") (
+        lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
+      );
 
-  determinate-nix.customSettings = lib.mkIf (config.system.nixFlavor == "determinate") (
-    config.system.nixSettings
-    // {
-      allow-import-from-derivation = true;
-      allow-symlinked-store = true;
-      allow-unsafe-native-code-during-evaluation = true;
-      eval-cores = 0;
+      optimise.automatic = lib.mkIf (config.system.nixFlavor != "determinate") true;
 
-      # extra-substituters = config.system.nixSettings.substituters;
-      # extra-trusted-public-keys = config.system.nixSettings.trusted-public-keys;
-      # extra-trusted-users = config.system.nixSettings.trusted-users;
+      registry = lib.mapAttrs (_: value: {flake = value;}) (
+        lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
+      );
+
+      settings = config.system.nixSettings;
     }
-  );
+
+    (lib.mkIf (config.system.nixFlavor == "cppnix") {
+      enable = true;
+      package = pkgs.nixVersions.latest;
+      settings.download-buffer-size = 268435456;
+    })
+
+    # https://lix.systems/add-to-config/
+    (lib.mkIf (config.system.nixFlavor == "lix") {
+      enable = true;
+      package = pkgs.lixPackageSets.latest.lix;
+    })
+
+    (lib.mkIf (config.system.nixFlavor == "determinate") {
+      package = perSystem.determinate.packages.${config.nixpkgs.system}.default;
+
+      settings = {
+        allowed-users = ["*"];
+        cores = 0;
+        experimental-features = ["build-time-fetch-tree"];
+        eval-cores = 0;
+        lazy-trees = true;
+      };
+    })
+  ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 

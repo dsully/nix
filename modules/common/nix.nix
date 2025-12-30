@@ -1,53 +1,51 @@
 {
   config,
   lib,
-  perSystem,
   pkgs,
   ...
 }: let
-  substituters =
-    [
-      {
-        url = "https://dsully.cachix.org";
-        key = "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo=";
-      }
-      {
-        url = "https://charmbracelet.cachix.org";
-        key = "charmbracelet.cachix.org-1:iA+l3/8TVJsKR9h28f7f0C0CYA9JjI24yJ8YlGabbkg=";
-      }
-      {
-        url = "https://nix-community.cachix.org";
-        key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
-      }
-      {
-        url = "https://cache.nixos.org";
-        key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
-      }
-      {
-        url = "https://numtide.cachix.org";
-        key = "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=";
-      }
-      {
-        url = "https://install.determinate.systems";
-        key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
-      }
-      {
-        url = "https://cache.flakehub.com";
-        key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
-      }
-    ]
-    ++ (lib.optionals pkgs.stdenv.isDarwin [
-      {
-        url = "https://nix-darwin.cachix.org";
-        key = "nix-darwin.cachix.org-1:G6r3FhSkSwRCZz2d8VdAibhqhqxQYBQsY3mW6qLo5pA=";
-      }
-    ]);
+  commonSubstituters = [
+    {
+      url = "https://dsully.cachix.org?priority=30";
+      key = "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo=";
+    }
+    {
+      url = "https://charmbracelet.cachix.org?priority=38";
+      key = "charmbracelet.cachix.org-1:iA+l3/8TVJsKR9h28f7f0C0CYA9JjI24yJ8YlGabbkg=";
+    }
+    {
+      url = "https://nix-darwin.cachix.org?priority=38";
+      key = "nix-darwin.cachix.org-1:G6r3FhSkSwRCZz2d8VdAibhqhqxQYBQsY3mW6qLo5pA=";
+    }
+    {
+      url = "https://numtide.cachix.org?priority=38";
+      key = "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=";
+    }
+    {
+      url = "https://cache.nixos.org?priority=40";
+      key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
+    }
+  ];
+
+  determinateSubstituters = [
+    {
+      url = "https://cache.flakehub.com?priority=35";
+      key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
+    }
+    {
+      url = "https://install.determinate.systems?priority=35";
+      key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
+    }
+  ];
 
   # Platform-specific trusted users
   trusted_users =
-    if pkgs.stdenv.isDarwin
-    then ["@admin"]
-    else ["@wheel"];
+    ["dsully"]
+    ++ (
+      if pkgs.stdenv.isDarwin
+      then ["@admin"]
+      else ["@wheel"]
+    );
 in {
   options.system = {
     fullName = lib.mkOption {
@@ -80,63 +78,40 @@ in {
   };
 
   config = {
-    # In this flake: perSystem.self
-    # In consuming flake: perSystem.upstream
-    #
-    # Debug: This will show what packages are available
-    # packages = [
-    #   (builtins.trace "Available packages: ${builtins.toJSON (builtins.attrNames (perSystem.upstream.self or perSystem.self))}")
-    # ];
-    _module.args.my.pkgs = pkgs.extend (_final: _prev: (perSystem.upstream or perSystem.self));
-
     system.nixSettings = {
       allow-dirty = true;
+      allowed-users = ["*"];
       builders-use-substitutes = true;
+      connect-timeout = 5;
+      cores = 0;
+      experimental-features = [
+        "blake3-hashes"
+        "daemon-trust-override"
+        "dynamic-derivations"
+        "flakes"
+        "git-hashing"
+        "nix-command"
+        "pipe-operators"
+      ];
       http-connections = 0;
+      keep-derivations = true;
       keep-going = true;
+      keep-outputs = true;
+      max-jobs = "auto";
+      narinfo-cache-negative-ttl = 0;
+      stalled-download-timeout = 20;
+      substituters = map (x: x.url) (
+        commonSubstituters
+        ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
+      );
+      trusted-public-keys = map (x: x.key) (
+        commonSubstituters
+        ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
+      );
+      trusted-users = trusted_users;
       use-xdg-base-directories = true;
       warn-dirty = false;
-
-      substituters = map (x: x.url) substituters;
-      trusted-public-keys = map (x: x.key) substituters;
-      trusted-users = trusted_users;
     };
-
-    nix = lib.mkMerge [
-      {
-        enable = config.system.nixFlavor != "determinate";
-
-        settings =
-          config.system.nixSettings
-          // {
-            experimental-features = [
-              "flakes"
-              "nix-command"
-            ];
-
-            auto-allocate-uids = true;
-            auto-optimise-store = true;
-            extra-nix-path = "nixpkgs=flake:nixpkgs";
-            max-jobs = "auto";
-            narinfo-cache-negative-ttl = 0;
-          }
-          // (lib.mkIf (config.system.nixFlavor != "lix") {download-buffer-size = 268435456;});
-      }
-
-      (lib.mkIf (config.system.nixFlavor == "cppnix") {
-        package = pkgs.nixVersions.latest;
-      })
-
-      # https://lix.systems/add-to-config/
-      (lib.mkIf (config.system.nixFlavor == "lix") {
-        package = pkgs.lixPackageSets.latest.lix;
-      })
-
-      (lib.mkIf (config.system.nixFlavor == "determinate") {
-        package = perSystem.determinate.packages.${config.nixpkgs.system}.default;
-        settings.lazy-trees = true;
-      })
-    ];
 
     nixpkgs = {
       config.allowUnfree = true;

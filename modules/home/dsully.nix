@@ -1,8 +1,8 @@
 {
   config,
-  flake,
   inputs,
   lib,
+  perSystem,
   pkgs,
   ...
 }: let
@@ -13,13 +13,20 @@ in {
   imports = [
     inputs.nix-index-database.homeModules.nix-index
     inputs.opnix.homeManagerModules.default
-
-    flake.modules.common.nix
-
+    ../common/nix.nix
     ./chsh
     ./configs
     ./packages
   ];
+
+  # In this flake: perSystem.self
+  # In consuming flake: perSystem.upstream
+  #
+  # Debug: This will show what packages are available
+  # packages = [
+  #   (builtins.trace "Available packages: ${builtins.toJSON (builtins.attrNames (perSystem.upstream.self or perSystem.self))}")
+  # ];
+  _module.args.my.pkgs = pkgs.extend (_final: _prev: (perSystem.upstream or perSystem.self));
 
   editorconfig = {
     enable = true;
@@ -135,19 +142,7 @@ in {
     };
   };
 
-  nix.settings.auto-optimise-store = true;
-
   programs = {
-    cargo = {
-      enable = true;
-
-      settings = {
-        build = {
-          rustc-wrapper = "sccache";
-        };
-      };
-    };
-
     direnv = {
       enable = true;
 

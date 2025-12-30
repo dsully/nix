@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    flake.modules.common.nix
+    flake.modules.system-manager.common
     ./options.nix
   ];
 

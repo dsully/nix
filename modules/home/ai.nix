@@ -121,7 +121,7 @@ in {
   ];
 
   home = {
-    # FIXME: Figure out why skils isn't working in programs.claude-code
+    # FIXME: Figure out why skills isn't working in programs.claude-code
     file = {
       ".claude/skills/ast-grep".source = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
     };
