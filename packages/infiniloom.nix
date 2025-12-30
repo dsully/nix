@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "infiniloom";
-    version = "0.4.11";
+    version = "0.5.3";
 
     src = fetchCrate {
       inherit pname version;
-      hash = "sha256-USmZPNT3DnaEmwsX2KZ1y1qzijNb1xidKFfSA2h5tYg=";
+      hash = "sha256-KMJZyeJhpLb+0pPYOCA+ygslnKO7vaCKEpBFR+G/L0g=";
     };
 
-    cargoHash = "sha256-qtwVQICqmcHwf+DftSQcnu8UHcgcps7DPVnrgmeHQ64=";
+    cargoHash = "sha256-jUUhYjyVdY4BTbpe0zTbLJwmV4SoyXi3L1o4ZLgmqYc=";
     doCheck = false;
 
     meta = {
