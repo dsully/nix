@@ -241,6 +241,11 @@ in {
 
         autoUpdates = false;
 
+        enabledPlugins = {
+          "ralph-wiggum@claude-plugins-official" = lib.mkDefault true;
+          "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+        };
+
         hooks = {
           PreToolUse = [
             {
@@ -267,6 +272,7 @@ in {
                     esac
                   '';
                   timeout = 10;
+                  type = "command";
                 }
               ];
             }
