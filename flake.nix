@@ -7,14 +7,15 @@
   ##################################################################################################################
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # https://docs.determinate.systems/flakehub/concepts/semver/
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
 
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.url = "https://flakehub.com/f/nix-darwin/nix-darwin/0.1";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-index-database.url = "github:nix-community/nix-index-database";

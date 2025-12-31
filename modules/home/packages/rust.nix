@@ -23,7 +23,7 @@
       cargo-unused-features
       cargo-wizard
       rustcat
-      # rustup
+      rustup
       samply
       sccache
     ];

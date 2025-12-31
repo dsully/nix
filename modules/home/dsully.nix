@@ -142,6 +142,8 @@ in {
     };
   };
 
+  manual.manpages.enable = false;
+
   programs = {
     direnv = {
       enable = true;

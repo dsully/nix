@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  commonSubstituters = [
+  substituters = [
     {
       url = "https://dsully.cachix.org?priority=30";
       key = "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo=";
@@ -18,23 +18,16 @@
       key = "nix-darwin.cachix.org-1:G6r3FhSkSwRCZz2d8VdAibhqhqxQYBQsY3mW6qLo5pA=";
     }
     {
-      url = "https://numtide.cachix.org?priority=38";
-      key = "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=";
+      url = "https://nix-community.cachix.org?priority=40";
+      key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
+    }
+    {
+      url = "https://cache.numtide.com?priority=35";
+      key = "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=";
     }
     {
       url = "https://cache.nixos.org?priority=40";
       key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
-    }
-  ];
-
-  determinateSubstituters = [
-    {
-      url = "https://cache.flakehub.com?priority=35";
-      key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
-    }
-    {
-      url = "https://install.determinate.systems?priority=35";
-      key = "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM=";
     }
   ];
 
@@ -80,6 +73,7 @@ in {
   config = {
     system.nixSettings =
       {
+        accept-flake-config = true;
         allow-dirty = true;
         allowed-users = ["*"];
         builders-use-substitutes = true;
@@ -94,6 +88,8 @@ in {
           "nix-command"
           "pipe-operators"
         ];
+        extra-substituters = map (x: x.url) substituters;
+        extra-trusted-public-keys = map (x: x.key) substituters;
         http-connections = 0;
         keep-derivations = true;
         keep-going = true;
@@ -101,14 +97,6 @@ in {
         max-jobs = "auto";
         narinfo-cache-negative-ttl = 0;
         stalled-download-timeout = 20;
-        substituters = map (x: x.url) (
-          commonSubstituters
-          ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
-        );
-        trusted-public-keys = map (x: x.key) (
-          commonSubstituters
-          ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
-        );
         trusted-users = trusted_users;
         use-xdg-base-directories = true;
         warn-dirty = false;

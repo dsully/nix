@@ -42,7 +42,7 @@ system +args="":
 # Switch Home Manager Configuration
 [group('desktop')]
 switch +args="":
-    {{ NH }} home switch --ask -b backup . {{ args }}
+    @{{ NH }} home switch --ask -b backup . {{ args }}
 
 # Update all the flake inputs
 [group('nix')]
