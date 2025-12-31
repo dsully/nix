@@ -14,6 +14,16 @@ export NIX_CONFIG := "experimental-features = " + NIX_OPTIONS
 default:
     @just --list
 
+# Install Nix using the Determinate Systems installer
+[group('nix')]
+install-determinate:
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Install Lix (Nix fork)
+[group('nix')]
+install-lix:
+    curl -sSf -L https://install.lix.systems/lix | sh -s -- install
+
 # https://github.com/maximbaz/dotfiles/blob/cafb7a9f773fc8297b97f64fefe1c97b2efb58f0/justfile#L13
 # https://github.com/yonzilch/yonos/blob/5736df79d4f045bc518c99cd4b10fb5cddb264dd/Justfile#L75
 
