@@ -11,7 +11,7 @@ with pkgs; let
     };
   };
 
-  d = dists.${system} or (throw "Unsupported system: ${system}");
+  d = dists.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 in
   python3.pkgs.buildPythonPackage rec {
     pname = "pytest-language-server";
