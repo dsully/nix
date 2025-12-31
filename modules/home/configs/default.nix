@@ -9,7 +9,6 @@
     ./pager.nix
     ./ripgrep.nix
     ./ruff.nix
-    ./rumdl.nix
     ./ssh.nix
     ./topgrade.nix
     ./turbocommit.nix
