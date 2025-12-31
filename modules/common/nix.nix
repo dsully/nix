@@ -78,40 +78,49 @@ in {
   };
 
   config = {
-    system.nixSettings = {
-      allow-dirty = true;
-      allowed-users = ["*"];
-      builders-use-substitutes = true;
-      connect-timeout = 5;
-      cores = 0;
-      experimental-features = [
-        "blake3-hashes"
-        "daemon-trust-override"
-        "dynamic-derivations"
-        "flakes"
-        "git-hashing"
-        "nix-command"
-        "pipe-operators"
-      ];
-      http-connections = 0;
-      keep-derivations = true;
-      keep-going = true;
-      keep-outputs = true;
-      max-jobs = "auto";
-      narinfo-cache-negative-ttl = 0;
-      stalled-download-timeout = 20;
-      substituters = map (x: x.url) (
-        commonSubstituters
-        ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
-      );
-      trusted-public-keys = map (x: x.key) (
-        commonSubstituters
-        ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
-      );
-      trusted-users = trusted_users;
-      use-xdg-base-directories = true;
-      warn-dirty = false;
-    };
+    system.nixSettings =
+      {
+        allow-dirty = true;
+        allowed-users = ["*"];
+        builders-use-substitutes = true;
+        connect-timeout = 5;
+        cores = 0;
+        experimental-features = [
+          "blake3-hashes"
+          "daemon-trust-override"
+          "dynamic-derivations"
+          "flakes"
+          "git-hashing"
+          "nix-command"
+          "pipe-operators"
+        ];
+        http-connections = 0;
+        keep-derivations = true;
+        keep-going = true;
+        keep-outputs = true;
+        max-jobs = "auto";
+        narinfo-cache-negative-ttl = 0;
+        stalled-download-timeout = 20;
+        substituters = map (x: x.url) (
+          commonSubstituters
+          ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
+        );
+        trusted-public-keys = map (x: x.key) (
+          commonSubstituters
+          ++ lib.optionals (config.system.nixFlavor == "determinate") determinateSubstituters
+        );
+        trusted-users = trusted_users;
+        use-xdg-base-directories = true;
+        warn-dirty = false;
+      }
+      // lib.optionals (config.system.nixFlavor == "determinate") {
+        allow-import-from-derivation = true;
+        allow-symlinked-store = true;
+        allow-unsafe-native-code-during-evaluation = true;
+        eval-cores = 0;
+        experimental-features = ["build-time-fetch-tree"];
+        lazy-trees = true;
+      };
 
     nixpkgs = {
       config.allowUnfree = true;

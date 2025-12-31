@@ -17,12 +17,5 @@
     ./options.nix
   ];
 
-  determinate-nix.customSettings =
-    config.system.nixSettings
-    // {
-      allow-import-from-derivation = true;
-      allow-symlinked-store = true;
-      allow-unsafe-native-code-during-evaluation = true;
-      eval-cores = 0;
-    };
+  determinate-nix.customSettings = config.system.nixSettings;
 }

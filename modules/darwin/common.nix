@@ -2,7 +2,6 @@
   config,
   inputs,
   lib,
-  perSystem,
   pkgs,
   ...
 }: let
@@ -66,15 +65,7 @@ in rec {
     })
 
     (lib.mkIf (config.system.nixFlavor == "determinate") {
-      package = perSystem.determinate.packages.${config.nixpkgs.system}.default;
-
-      settings = {
-        allowed-users = ["*"];
-        cores = 0;
-        experimental-features = ["build-time-fetch-tree"];
-        eval-cores = 0;
-        lazy-trees = true;
-      };
+      enable = false;
     })
   ];
 
