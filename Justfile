@@ -1,14 +1,15 @@
-set shell := ["fish", "-c"]
+# nix shell nixpkgs#just nixpkgs#nh
+# just switch
 
-# set shell := ["nix", "--experimental-features", "nix-command flakes", "develop", "--command", "bash", "-c"]
-
-NIX_OPTIONS := "nix-command flakes"
-HOSTNAME := `/bin/hostname -s`
+export NIX_OPTIONS := "nix-command flakes"
 export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NIX_CONFIG := "experimental-features = " + NIX_OPTIONS
 
-# export FLOX_VERSION := shell('cat ./VERSION') + "-g" + shell('git rev-parse --short HEAD')
+#
+
+NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
+SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run github:numtide/system-manager --" }
 
 # This list
 default:
@@ -30,18 +31,18 @@ install-lix:
 # Build Darwin or Linux configuration
 [group('desktop')]
 [linux]
-system host=HOSTNAME +args="":
-    @system-manager switch --flake '.#{{ host }}' --sudo {{ args }}
+system +args="":
+    @{{ SM }} switch --flake '.#$HOSTNAME' --sudo {{ args }}
     @/bin/rm -f result
 
 [macos]
 system +args="":
-    @nh darwin switch --ask . {{ args }}
+    @{{ NH }} darwin switch --ask . {{ args }}
 
 # Switch Home Manager Configuration
 [group('desktop')]
 switch +args="":
-    @nh home switch --ask -b backup . {{ args }}
+    {{ NH }} home switch --ask -b backup . {{ args }}
 
 # Update all the flake inputs
 [group('nix')]
