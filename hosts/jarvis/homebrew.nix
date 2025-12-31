@@ -72,7 +72,7 @@
       "SD Gallery" = 6445901857;
       "Screens 5" = 1663047912;
       "Secret Inbox" = 6462335670;
-      "SmugMug" = 1115348888;
+      # "SmugMug" = 1115348888;
       "Sogni" = 6450021857;
       "Sortio" = 6737292062;
       "Starship" = 1530665887;
