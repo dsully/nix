@@ -23,5 +23,5 @@ in {
     ../common/nix.nix
   ];
 
-  environment.etc."nix/nix.conf".text = nixConfContent;
+  environment.etc."nix/nix.custom.conf".text = nixConfContent;
 }

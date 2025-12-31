@@ -64,9 +64,7 @@ alias clean := gc
 
 [group('nix')]
 gc:
-    /usr/bin/sudo --preserve-env=PATH $(which nh) clean all
-    nix store gc
-    nix store optimise
+    /usr/bin/sudo --preserve-env=PATH $(which nh) clean all --no-gcroots --optimise
 
 # Format the nix files in this repo
 
