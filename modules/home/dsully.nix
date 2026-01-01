@@ -124,6 +124,8 @@ in {
       };
     };
 
+    sessionPath = ["${config.home.homeDirectory}/.local/bin" "${config.home.homeDirectory}/.cargo/bin"];
+
     sessionVariables = {
       # Silence direnv logging. Hook is invoked via vendor_conf.d/
       DIRENV_LOG_FORMAT = "";
@@ -222,5 +224,8 @@ in {
   };
 
   targets.darwin.linkApps.enable = false;
-  xdg.mime.enable = false;
+  xdg = {
+    enable = true;
+    mime.enable = false;
+  };
 }

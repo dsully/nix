@@ -28,8 +28,21 @@ in rec {
     ./defaults/trackpad.nix
   ];
 
+  documentation = {
+     doc.enable = false;
+     info.enable = false;
+  };
+
   environment = {
+    profiles = lib.mkOrder 700 [ "\$HOME/.local/state/nix/profile" ];
     shells = [pkgs.fish];
+
+    systemPackages = [
+        pkgs.cachix
+        pkgs.fish
+        pkgs.just
+        pkgs.nh
+    ];
   };
 
   networking = {
