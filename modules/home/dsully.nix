@@ -82,6 +82,10 @@ in {
             ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
         fi
       '';
+
+      uv = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
+        ${lib.getExe pkgs.uv} tool install ptpython vectorcode --quiet --upgrade
+      '';
     };
 
     file = {
