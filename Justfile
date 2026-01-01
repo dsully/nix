@@ -5,11 +5,13 @@ export NIX_OPTIONS := "nix-command flakes"
 export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NIX_CONFIG := "experimental-features = " + NIX_OPTIONS
+export NH_PRESERVE_ENV := "1"
 
 #
 
 NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
 SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run github:numtide/system-manager --" }
+NH_ARGS := "--ask --keep-failed --keep-going"
 
 # This list
 default:
@@ -32,17 +34,17 @@ install-lix:
 [group('desktop')]
 [linux]
 system +args="":
-    @{{ SM }} switch --flake '.#$HOSTNAME' --sudo {{ args }}
+    @{{ SM }} switch --flake '.#$HOSTNAME' --sudo {{ args }} -- --no-warn-dirty
     @/bin/rm -f result
 
 [macos]
 system +args="":
-    @{{ NH }} darwin switch --ask . {{ args }}
+    @{{ NH }} darwin switch {{ NH_ARGS }} . {{ args }} -- --no-warn-dirty
 
 # Switch Home Manager Configuration
 [group('desktop')]
 switch +args="":
-    @{{ NH }} home switch --ask -b backup . {{ args }}
+    @{{ NH }} home switch {{ NH_ARGS }} -b backup . {{ args }} -- --substitute --no-warn-dirty
 
 # Update all the flake inputs
 [group('nix')]
@@ -65,7 +67,7 @@ alias clean := gc
 
 [group('nix')]
 gc:
-    /usr/bin/sudo --preserve-env=PATH $(which nh) clean all --no-gcroots --optimise
+    nh clean all --no-gcroots --optimise
 
 # Format the nix files in this repo
 
