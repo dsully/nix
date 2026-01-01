@@ -27,6 +27,7 @@
     brews = [
       "gitui"
       "mas"
+      "rust-analyzer"
       "rust-mcp-filesystem"
     ];
 
