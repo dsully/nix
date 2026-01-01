@@ -1,10 +1,8 @@
 # nix shell nixpkgs#just nixpkgs#nh
 # just switch
 
-export NIX_OPTIONS := "nix-command flakes"
 export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
-export NIX_CONFIG := "experimental-features = " + NIX_OPTIONS
 export NH_PRESERVE_ENV := "1"
 
 #

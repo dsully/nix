@@ -34,12 +34,23 @@
     mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     rime.url = "github:lukasl-dev/rime";
+    rime.inputs.crane.follows = "crane";
+
+    crane.url = "github:ipetkov/crane";
+
+    mcps.url = "github:roman/mcps.nix";
 
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
-    config-lsp.url = "github:Myzel394/config-lsp";
-    config-lsp.inputs.nixpkgs.follows = "nixpkgs";
+    config-lsp = {
+      url = "github:Myzel394/config-lsp";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.gomod2nix.follows = "gomod2nix";
+    };
+
+    gomod2nix.url = "github:tweag/gomod2nix";
+    gomod2nix.inputs.nixpkgs.follows = "nixpkgs";
 
     charmbracelet-nur.url = "github:charmbracelet/nur";
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
