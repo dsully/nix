@@ -10,6 +10,8 @@
   mcp-packages = perSystem.mcp-servers-nix;
   mcp-lib = inputs.mcp-servers-nix.lib;
 
+  rime = perSystem.rime.default;
+
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
@@ -58,34 +60,15 @@
         enable = true;
         type = "stdio";
       };
-      git = {
-        enable = true;
-        type = "stdio";
-      };
-      # github = {
-      #   enable = true;
-      #   env = {
-      #     GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
-      #   };
-      #   type = "stdio";
-      # };
-      # memory = {
-      #   enable = true;
-      #   type = "stdio";
-      # };
-      nixos = {
-        enable = true;
-        type = "stdio";
-      };
-      # sequential-thinking = {
-      #   enable = true;
-      #   type = "stdio";
-      # };
     };
     settings.servers = {
       filesystem = {
         command = "rust-mcp-filesystem";
         args = [config.home.homeDirectory];
+        type = "stdio";
+      };
+      rime = {
+        command = lib.getExe' rime "rime";
         type = "stdio";
       };
       rust-analyzer = {
@@ -134,11 +117,6 @@ in {
           # codex
           # gemini-cli
           goose-cli
-        ]
-      )
-      ++ (
-        with perSystem.mcp-servers-nix; [
-          serena
         ]
       )
       ++ (with my.pkgs; [
@@ -335,9 +313,10 @@ in {
             "WebSearch"
             "Write(//tmp/**)"
             "Write(**/plans/**)"
-
+            "mcp__context7"
             "mcp__filesystem"
-            "mcp__serena"
+            # "mcp__git"
+            "mcp__rust-analyzer"
           ];
 
           ask = [
@@ -345,13 +324,8 @@ in {
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
-            "Read(~/.cargo)"
-            "mcp__context7"
-            "mcp__git"
-            "mcp__github"
-            "mcp__nixos"
-            "mcp__rust-analyzer"
-            "mcp__sequential-thinking"
+            # "mcp__github"
+            "mcp__rime"
           ];
 
           deny = [
@@ -366,6 +340,7 @@ in {
             "Read(./target)"
             "Read(~/.aws)"
             "Read(~/.cache)"
+            "Read(~/.cargo)"
             "Read(~/.ssh)"
           ];
 
@@ -404,26 +379,8 @@ in {
           command = "rust-mcp-filesystem";
           args = [config.home.homeDirectory];
         };
-        git = {
-          command = lib.getExe mcp-packages.mcp-server-git;
-        };
-        # github = {
-        #   command = lib.getExe pkgs.github-mcp-server;
-        #   env = {
-        #     GITHUB_PERSONAL_ACCESS_TOKEN = "$(gh auth token)";
-        #   };
-        # };
-        nixos = {
-          command = lib.getExe pkgs.mcp-nixos;
-        };
-        # memory = {
-        #   command = lib.getExe mcp-packages.mcp-server-memory;
-        # };
-        # sequential-thinking = {
-        #   command = lib.getExe mcp-packages.mcp-server-sequential-thinking;
-        # };
-        serena = {
-          command = lib.getExe mcp-packages.serena;
+        rime = {
+          command = lib.getExe' rime "rime";
         };
       };
     };
