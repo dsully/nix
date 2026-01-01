@@ -84,7 +84,8 @@ in {
       '';
 
       uv = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        ${lib.getExe pkgs.uv} tool install ptpython vectorcode --quiet --upgrade
+        ${lib.getExe pkgs.uv} tool install ptpython --quiet --upgrade
+        ${lib.getExe pkgs.uv} tool install vectorcode --quiet --upgrade
       '';
     };
 
