@@ -10,12 +10,12 @@
   home-manager.users = lib.mkForce {};
 
   imports = [
-    flake.inputs.determinate.darwinModules.default
     flake.modules.darwin.common
     flake.modules.darwin.homebrew
     ./homebrew.nix
     ./options.nix
   ];
 
-  determinate-nix.customSettings = config.system.nixSettings;
+  # determinate-nix.customSettings = config.system.nixSettings;
+  nix.settings = config.system.nixSettings;
 }

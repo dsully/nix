@@ -14,10 +14,6 @@
       key = "charmbracelet.cachix.org-1:iA+l3/8TVJsKR9h28f7f0C0CYA9JjI24yJ8YlGabbkg=";
     }
     {
-      url = "https://nix-darwin.cachix.org?priority=38";
-      key = "nix-darwin.cachix.org-1:G6r3FhSkSwRCZz2d8VdAibhqhqxQYBQsY3mW6qLo5pA=";
-    }
-    {
       url = "https://nix-community.cachix.org?priority=40";
       key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
     }
@@ -61,7 +57,7 @@ in {
         "determinate"
         "lix"
       ];
-      default = "determinate";
+      default = "lix";
     };
 
     nixSettings = lib.mkOption {
@@ -75,21 +71,17 @@ in {
       {
         accept-flake-config = true;
         allow-dirty = true;
+        allow-symlinked-store = true;
         allowed-users = ["*"];
         builders-use-substitutes = true;
         connect-timeout = 5;
         cores = 0;
         experimental-features = [
-          "blake3-hashes"
           "daemon-trust-override"
-          "dynamic-derivations"
           "flakes"
-          "git-hashing"
           "nix-command"
-          "pipe-operators"
+          "pipe-operator"
         ];
-        extra-substituters = map (x: x.url) substituters;
-        extra-trusted-public-keys = map (x: x.key) substituters;
         http-connections = 0;
         keep-derivations = true;
         keep-going = true;
@@ -97,16 +89,20 @@ in {
         max-jobs = "auto";
         narinfo-cache-negative-ttl = 0;
         stalled-download-timeout = 20;
+        substituters = map (x: x.url) substituters;
+        trusted-public-keys = map (x: x.key) substituters;
         trusted-users = trusted_users;
         use-xdg-base-directories = true;
         warn-dirty = false;
       }
-      // lib.optionals (config.system.nixFlavor == "determinate") {
-        allow-import-from-derivation = true;
-        allow-symlinked-store = true;
-        allow-unsafe-native-code-during-evaluation = true;
+      // lib.optionalAttrs (config.system.nixFlavor == "determinate") {
         eval-cores = 0;
-        experimental-features = ["build-time-fetch-tree"];
+        experimental-features = [
+          "blake3-hashes"
+          "build-time-fetch-tree"
+          "dynamic-derivations"
+          "git-hashing"
+        ];
         lazy-trees = true;
       };
 

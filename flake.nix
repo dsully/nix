@@ -7,15 +7,12 @@
   ##################################################################################################################
 
   inputs = {
-    # https://docs.determinate.systems/flakehub/concepts/semver/
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
-
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-darwin.url = "https://flakehub.com/f/nix-darwin/nix-darwin/0.1";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -46,8 +43,6 @@
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 
     opnix.url = "github:brizzbuzz/opnix";
-
-    crane.url = "github:ipetkov/crane";
 
     ai-skills-ast-grep.url = "github:ast-grep/claude-skill";
     ai-skills-ast-grep.flake = false;
