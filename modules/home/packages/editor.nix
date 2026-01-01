@@ -50,6 +50,7 @@ in {
         systemd-lsp
         tombi
         ts_query_ls
+        ty
         typescript-go
         typos
         vscode-langservers-extracted
@@ -70,17 +71,16 @@ in {
         yamllint
         zls
       ]
-      ++ [
+      ++ (with my.pkgs; [
         codesort
         pyproject
         pyproject-fmt
         pytest-language-server
-        ty
         xmlformatter
-      ]
-      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+      ])
+      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with my.pkgs; [
         # lemminx
         # pkl-lsp
-      ];
+      ]);
   };
 }
