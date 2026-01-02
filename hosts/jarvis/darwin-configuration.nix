@@ -1,5 +1,4 @@
 {
-  config,
   flake,
   lib,
   ...
@@ -15,7 +14,4 @@
     ./homebrew.nix
     ./options.nix
   ];
-
-  # determinate-nix.customSettings = config.system.nixSettings;
-  nix.settings = config.system.nixSettings;
 }

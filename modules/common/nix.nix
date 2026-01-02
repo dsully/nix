@@ -73,6 +73,7 @@ in {
         allow-dirty = true;
         allow-symlinked-store = true;
         allowed-users = ["*"];
+        always-allow-substitutes = true;
         builders-use-substitutes = true;
         connect-timeout = 5;
         cores = 0;

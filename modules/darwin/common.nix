@@ -29,19 +29,19 @@ in rec {
   ];
 
   documentation = {
-     doc.enable = false;
-     info.enable = false;
+    doc.enable = false;
+    info.enable = false;
   };
 
   environment = {
-    profiles = lib.mkOrder 700 [ "\$HOME/.local/state/nix/profile" ];
+    profiles = lib.mkOrder 700 ["\$HOME/.local/state/nix/profile"];
     shells = [pkgs.fish];
 
     systemPackages = [
-        pkgs.cachix
-        pkgs.fish
-        pkgs.just
-        pkgs.nh
+      pkgs.cachix
+      pkgs.fish
+      pkgs.just
+      pkgs.nh
     ];
   };
 
@@ -68,7 +68,11 @@ in rec {
     (lib.mkIf (config.system.nixFlavor == "cppnix") {
       enable = true;
       package = pkgs.nixVersions.latest;
-      settings.download-buffer-size = 268435456;
+      # Workaround for https://github.com/NixOS/nix/issues/11728
+      settings.download-buffer-size = let
+        GiB = 1024 * 1024 * 1024;
+      in
+        1 * GiB;
     })
 
     # https://lix.systems/add-to-config/
