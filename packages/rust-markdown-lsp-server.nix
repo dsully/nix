@@ -6,9 +6,9 @@ with pkgs;
     version = "0.1.0-${rev}";
 
     src = fetchFromGitHub {
+      inherit rev;
       owner = "dougrocha";
       repo = "rust_markdown_lsp_server";
-      rev = "c4131b5b8289411985eefe84b160df30d4e31437";
       hash = "sha256-MZlaxx9G5viHkFsOOXbV3CLcIr+e+sibplLw7WEYkhg=";
     };
 

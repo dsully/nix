@@ -23,7 +23,7 @@ with pkgs;
 
     meta = {
       description = "MCP server for development in Rust";
-      homepage = "https://crates.io/crates/rust-mcp-server";
+      homepage = "https://github.com/Vaiz/rust-mcp-server";
       changelog = "https://github.com/Vaiz/rust-mcp-server/blob/${src.rev}/CHANGELOG.md";
       license = lib.licenses.unlicense;
       mainProgram = pname;
