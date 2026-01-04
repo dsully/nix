@@ -64,7 +64,7 @@
     settings.servers = {
       filesystem = {
         command = "rust-mcp-filesystem";
-        args = [config.home.homeDirectory];
+        args = [config.home.homeDirectory "--allow-write"];
         type = "stdio";
       };
       rime = {
@@ -279,7 +279,6 @@ in {
             "Bash(curl:*)"
             "Bash(fd:*)"
             "Bash(find:*)"
-            "Bash(git:*)"
             "Bash(grep:*)"
             "Bash(jq:*)"
             "Bash(just:*)"
@@ -320,6 +319,7 @@ in {
           ];
 
           ask = [
+            "Bash(git:*)"
             "Bash(git rm:*)"
             "Bash(rm:*)"
             "Bash(rmdir:*)"
@@ -377,7 +377,7 @@ in {
         };
         filesystem = {
           command = "rust-mcp-filesystem";
-          args = [config.home.homeDirectory];
+          args = [config.home.homeDirectory "--allow-write"];
         };
         rime = {
           command = lib.getExe' rime "rime";

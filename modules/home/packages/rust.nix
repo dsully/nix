@@ -12,14 +12,17 @@
       cargo-edit
       cargo-features-manager
       cargo-flamegraph
+      cargo-hakari
       cargo-insta
       cargo-llvm-lines
       cargo-msrv
       cargo-nextest
       cargo-run-bin
       cargo-shear
+      cargo-sort
       cargo-sweep
       cargo-tarpaulin
+      cargo-udeps
       cargo-unused-features
       cargo-wizard
       rustcat
