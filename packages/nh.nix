@@ -9,10 +9,10 @@ with pkgs;
       inherit rev;
       owner = "nix-community";
       repo = "nh";
-      hash = "sha256-DvonqSRDrGDZmsRCCBegFWtGvb+7SktKn5Rzxgngw+4=";
+      hash = "sha256-BA0U9M5279iigdVrFrf9GnmC3LpXr0nShIuzFd3SBXE=";
     };
 
-    cargoHash = "sha256-cQlOOZwqaKae16EWOykftioNVn5zwCAG6fwX+Bg/8rA=";
+    cargoHash = "sha256-V+Udw9u8PRl3fE/ZFO0zVlrtHC+vXHNAp5pt4QbFVKA=";
     doCheck = false;
 
     meta = {
