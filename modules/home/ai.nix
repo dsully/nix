@@ -112,7 +112,6 @@ in {
     packages =
       (
         with perSystem.llm-agents; [
-          beads
           claude-code-acp
           # codex
           # gemini-cli
