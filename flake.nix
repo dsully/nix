@@ -33,11 +33,6 @@
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
     mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    rime.url = "github:lukasl-dev/rime";
-    rime.inputs.crane.follows = "crane";
-
-    crane.url = "github:ipetkov/crane";
-
     mcps.url = "github:roman/mcps.nix";
 
     llm-agents.url = "github:numtide/llm-agents.nix";

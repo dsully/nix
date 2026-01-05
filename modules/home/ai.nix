@@ -10,8 +10,6 @@
   mcp-packages = perSystem.mcp-servers-nix;
   mcp-lib = inputs.mcp-servers-nix.lib;
 
-  rime = perSystem.rime.default;
-
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
@@ -68,7 +66,7 @@
         type = "stdio";
       };
       rime = {
-        command = lib.getExe' rime "rime";
+        command = lib.getExe my.pkgs.rime;
         type = "stdio";
       };
       rust-analyzer = {
@@ -379,7 +377,7 @@ in {
           args = [config.home.homeDirectory "--allow-write"];
         };
         rime = {
-          command = lib.getExe' rime "rime";
+          command = lib.getExe my.pkgs.rime;
         };
       };
     };
