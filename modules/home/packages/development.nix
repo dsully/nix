@@ -42,7 +42,6 @@
       yarn
       yek
       yq
-      zig
 
       my.pkgs.worktrunk
     ];
