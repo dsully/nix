@@ -32,7 +32,12 @@ install-lix:
 [group('desktop')]
 [linux]
 system +args="":
-    @{{ SM }} switch --flake '.#$HOSTNAME' --sudo {{ args }} -- --no-warn-dirty
+    @{{ SM }} \
+        --nix-option "extra-experimental-features" "nix-command flakes" \
+        --nix-option "accept-flake-config" "true" \
+        --nix-option "trusted-users" "dsully" \
+        --nix-option "warn-dirty" "false" \
+        switch --flake . --sudo {{ args }}
     @/bin/rm -f result
 
 [macos]
