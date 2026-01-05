@@ -106,21 +106,6 @@ in {
         lazy-trees = true;
       };
 
-    nixpkgs = {
-      config.allowUnfree = true;
-
-      overlays = [
-        (_final: prev: {
-          python313Packages = prev.python313Packages.override {
-            overrides = _pyFinal: pyPrev: {
-              mcp = pyPrev.mcp.overrideAttrs (_old: {
-                doCheck = false;
-                postPatch = "";
-              });
-            };
-          };
-        })
-      ];
-    };
+    nixpkgs.config.allowUnfree = true;
   };
 }

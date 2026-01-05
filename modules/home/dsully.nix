@@ -151,6 +151,19 @@ in {
 
   manual.manpages.enable = false;
 
+  nixpkgs.overlays = [
+    (_final: prev: {
+      python313Packages = prev.python313Packages.override {
+        overrides = _pyFinal: pyPrev: {
+          mcp = pyPrev.mcp.overrideAttrs (_old: {
+            doCheck = false;
+            postPatch = "";
+          });
+        };
+      };
+    })
+  ];
+
   programs = {
     direnv = {
       enable = true;
