@@ -1,27 +1,24 @@
 {
   config,
   lib,
+  pkgs,
   ...
-}: let
-  formatValue = v:
-    if builtins.isList v
-    then lib.concatStringsSep " " v
-    else if builtins.isBool v
-    then
-      (
-        if v
-        then "true"
-        else "false"
-      )
-    else toString v;
-
-  nixConfContent = lib.concatStringsSep "\n" (
-    lib.mapAttrsToList (k: v: "${k} = ${formatValue v}") config.system.nixSettings
-  );
-in {
+}: {
   imports = [
     ../common/nix.nix
   ];
 
-  environment.etc."nix/nix.custom.conf".text = nixConfContent;
+  nix = lib.mkMerge [
+    {
+      settings = config.system.nixSettings;
+    }
+
+    # https://lix.systems/add-to-config/
+    (lib.mkIf (config.system.nixFlavor == "lix") {
+      enable = true;
+      package = pkgs.lixPackageSets.latest.lix;
+    })
+  ];
+
+  nixpkgs.hostPlatform = "x86_64-linux";
 }
