@@ -81,7 +81,6 @@ in {
           "daemon-trust-override"
           "flakes"
           "nix-command"
-          "pipe-operator"
         ];
         http-connections = 0;
         keep-derivations = true;

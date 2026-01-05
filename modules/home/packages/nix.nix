@@ -17,6 +17,7 @@
         statix
       ]
       ++ [
+        my.pkgs.nh
         my.pkgs.nurl
       ];
   };

@@ -41,7 +41,6 @@ in rec {
       pkgs.cachix
       pkgs.fish
       pkgs.just
-      pkgs.nh
     ];
   };
 
