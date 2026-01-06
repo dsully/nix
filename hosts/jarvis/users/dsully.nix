@@ -17,14 +17,10 @@
   home = {
     packages = with pkgs;
       [
-        bacon
         copilot-language-server
-        ghostscript_headless
         nix-output-monitor
-        tectonic-unwrapped
       ]
       ++ (with perSystem.self; [
-        apple-photos-export
         autorebase
         zuban
       ]);
