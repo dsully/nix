@@ -8,12 +8,14 @@
   ...
 }: let
   mcp-packages = perSystem.mcp-servers-nix;
-  mcp-lib = inputs.mcp-servers-nix.lib;
-
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
       args = ["start"];
+    };
+    helm = {
+      command = lib.getExe pkgs.helm-ls;
+      args = ["serve" "--stdio"];
     };
     go = {
       command = lib.getExe pkgs.gopls;
@@ -51,34 +53,26 @@
     };
   };
 
-  # https://github.com/natsukium/mcp-servers-nix
-  mcp-servers-config = mcp-lib.evalModule pkgs {
-    programs = {
-      context7 = {
-        enable = true;
-        type = "stdio";
-      };
-    };
-    settings.servers = {
-      filesystem = {
-        command = "rust-mcp-filesystem";
-        args = [config.home.homeDirectory "--allow-write"];
-        type = "stdio";
-      };
-      rime = {
-        command = lib.getExe my.pkgs.rime;
-        args = ["stdio"];
-        type = "stdio";
-      };
-      rust-analyzer = {
-        command = lib.getExe my.pkgs.mcp-rust-analyzer;
-        type = "stdio";
-      };
-    };
+  # For crush: add enabled = true to each LSP config
+  lspWithEnabled = lib.mapAttrs (_: v: v // {enabled = true;}) (removeAttrs lsp ["bash"]);
+
+  # For opencode: transform to { command = [...], extensions = [...] }
+  lspExtensions = {
+    helm = [".tpl" ".yaml"];
+    lua = [".lua"];
+    nix = [".nix"];
+    python = [".py"];
+    rust = [".rs"];
+    toml = [".toml"];
+    typescript = [".ts" ".tsx" ".js" ".jsx"];
   };
 
-  # Shared MCP servers for programs.mcp (used by other tools like opencode)
-  sharedMcpServers = {
+  opencodeLsp = lib.mapAttrs (name: v: {
+    command = [v.command] ++ (v.args or []);
+    extensions = lspExtensions.${name};
+  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) lsp);
+
+  mcpServers = {
     context7 = {
       command = lib.getExe mcp-packages.context7-mcp;
     };
@@ -94,6 +88,8 @@
       command = lib.getExe my.pkgs.mcp-rust-analyzer;
     };
   };
+
+  mcpServersWithType = lib.mapAttrs (_: v: v // {type = "stdio";}) mcpServers;
 
   models = {
     large = {
@@ -115,6 +111,9 @@
       reasoning_effort = "low";
     };
   };
+
+  # For opencode: prefix with provider
+  opencodeModel = m: "${m.provider}/${m.model}";
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
@@ -146,42 +145,8 @@ in {
       enable = true;
 
       settings = {
-        lsp = {
-          go = {
-            inherit (lsp.go) command;
-            enabled = true;
-          };
-          lua = {
-            inherit (lsp.lua) command;
-            enabled = true;
-          };
-          nix = {
-            inherit (lsp.nix) command;
-            enabled = true;
-          };
-          python = {
-            inherit (lsp.python) command;
-            inherit (lsp.python) args;
-            enabled = true;
-          };
-          rust = {
-            inherit (lsp.rust) command;
-            inherit (lsp.rust) args;
-            enabled = true;
-          };
-          toml = {
-            inherit (lsp.toml) command;
-            inherit (lsp.toml) args;
-            enabled = true;
-          };
-          typescript = {
-            inherit (lsp.typescript) command;
-            inherit (lsp.typescript) args;
-            enabled = true;
-          };
-        };
-
-        mcp = mcp-servers-config.config.settings.servers;
+        lsp = lspWithEnabled;
+        mcp = mcpServersWithType;
 
         inherit models;
 
@@ -374,12 +339,12 @@ in {
         ast-grep = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
       };
 
-      mcpServers = mcp-servers-config.config.settings.servers;
+      mcpServers = mcpServersWithType;
     };
 
     mcp = {
       enable = true;
-      servers = sharedMcpServers;
+      servers = mcpServers;
     };
 
     # https://opencode.ai/docs/
@@ -393,8 +358,7 @@ in {
           build = {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             mode = "primary";
-            model = "anthropic/claude-sonnet-4-5-20250929";
-            # prompt = "{file:./prompts/build.txt}";
+            model = opencodeModel models.medium;
             tools = {
               bash = true;
               edit = true;
@@ -404,7 +368,7 @@ in {
           plan = {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             mode = "primary";
-            model = "anthropic/claude-opus-4-5";
+            model = opencodeModel models.large;
             tools = {
               bash = false;
               edit = false;
@@ -415,7 +379,7 @@ in {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             description = "Reviews code for best practices and potential issues";
             mode = "subagent";
-            model = "anthropic/claude-opus-4-5";
+            model = opencodeModel models.large;
             prompt = "You are a code reviewer. Focus on security, performance, and maintainability.";
             tools = {
               edit = false;
@@ -436,36 +400,7 @@ in {
             extensions = [".rs"];
           };
         };
-        lsp = lib.mkDefault {
-          helm = {
-            command = ["helm_ls" "serve" "--stdio"];
-            extensions = [".tpl" ".yaml"];
-          };
-          lua = {
-            command = [lsp.lua.command];
-            extensions = [".lua"];
-          };
-          nix = {
-            command = [lsp.nix.command];
-            extensions = [".nix"];
-          };
-          python = {
-            command = [lsp.python.command];
-            extensions = [".py"];
-          };
-          rust = {
-            command = [lsp.rust.command] ++ lsp.rust.args;
-            extensions = [".rs"];
-          };
-          toml = {
-            command = [lsp.toml.command] ++ lsp.toml.args;
-            extensions = [".toml"];
-          };
-          typescript = {
-            command = [lsp.typescript.command] ++ lsp.typescript.args;
-            extensions = [".ts" ".tsx" ".js" ".jsx"];
-          };
-        };
+        lsp = lib.mkDefault opencodeLsp;
         permission = lib.mkForce {
           bash = {
             "*" = "allow";
