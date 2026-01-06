@@ -67,12 +67,28 @@
       };
       rime = {
         command = lib.getExe my.pkgs.rime;
+        args = ["stdio"];
         type = "stdio";
       };
       rust-analyzer = {
         command = lib.getExe my.pkgs.mcp-rust-analyzer;
         type = "stdio";
       };
+    };
+  };
+
+  # Shared MCP servers for programs.mcp (used by other tools like opencode)
+  sharedMcpServers = {
+    context7 = {
+      command = lib.getExe mcp-packages.context7-mcp;
+    };
+    filesystem = {
+      command = "rust-mcp-filesystem";
+      args = [config.home.homeDirectory "--allow-write"];
+    };
+    rime = {
+      command = lib.getExe my.pkgs.rime;
+      args = ["stdio"];
     };
   };
 
@@ -102,11 +118,6 @@ in {
   ];
 
   home = {
-    # FIXME: Figure out why skills isn't working in programs.claude-code
-    file = {
-      ".claude/skills/ast-grep".source = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
-    };
-
     packages =
       (
         with perSystem.llm-agents; [
@@ -212,7 +223,7 @@ in {
 
       settings = {
         inherit (models.large) model;
-        enableAllProjectMcpServers = true;
+        enableAllProjectMcpServers = false;
         includeCoAuthoredBy = false;
 
         autoUpdates = false;
@@ -276,6 +287,7 @@ in {
             "Bash(curl:*)"
             "Bash(fd:*)"
             "Bash(find:*)"
+            "Bash(git diff)"
             "Bash(grep:*)"
             "Bash(jq:*)"
             "Bash(just:*)"
@@ -311,17 +323,14 @@ in {
             "Write(**/plans/**)"
             "mcp__context7"
             "mcp__filesystem"
-            # "mcp__git"
             "mcp__rust-analyzer"
           ];
 
           ask = [
             "Bash(git:*)"
-            "Bash(git rm:*)"
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
-            # "mcp__github"
             "mcp__rime"
           ];
 
@@ -357,10 +366,10 @@ in {
           DISABLE_ERROR_REPORTING = "1";
           DISABLE_TELEMETRY = "1";
         };
+      };
 
-        # skills = {
-        #   ast-grep = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
-        # };
+      skills = {
+        ast-grep = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
       };
 
       mcpServers = mcp-servers-config.config.settings.servers;
@@ -368,18 +377,7 @@ in {
 
     mcp = {
       enable = true;
-      servers = {
-        context7 = {
-          command = lib.getExe mcp-packages.context7-mcp;
-        };
-        filesystem = {
-          command = "rust-mcp-filesystem";
-          args = [config.home.homeDirectory "--allow-write"];
-        };
-        rime = {
-          command = lib.getExe my.pkgs.rime;
-        };
-      };
+      servers = sharedMcpServers;
     };
 
     # https://opencode.ai/docs/
