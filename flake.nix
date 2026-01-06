@@ -45,6 +45,9 @@
 
     ai-skills-ast-grep.url = "github:ast-grep/claude-skill";
     ai-skills-ast-grep.flake = false;
+
+    wshobson-agents.url = "github:wshobson/agents";
+    wshobson-agents.flake = false;
   };
 
   outputs = inputs:

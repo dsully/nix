@@ -114,6 +114,42 @@
 
   # For opencode: prefix with provider
   opencodeModel = m: "${m.provider}/${m.model}";
+
+  # Shared agents for claude-code and opencode
+  ws = "${inputs.wshobson-agents}/plugins";
+  agents = {
+    app-observability-engineer = "${ws}/application-performance/agents/observability-engineer.md";
+    app-performance-engineer = "${ws}/application-performance/agents/performance-engineer.md";
+    architect-review = "${ws}/code-review-ai/agents/architect-review.md";
+    backend-architect = "${ws}/backend-development/agents/backend-architect.md";
+    cleanup-test-automator = "${ws}/codebase-cleanup/agents/test-automator.md";
+    cloud-architect = "${ws}/cloud-infrastructure/agents/cloud-architect.md";
+    data-engineer = "${ws}/data-engineering/agents/data-engineer.md";
+    database-optimizer = "${ws}/observability-monitoring/agents/database-optimizer.md";
+    debugger = "${ws}/debugging-toolkit/agents/debugger.md";
+    deployment-engineer = "${ws}/cloud-infrastructure/agents/deployment-engineer.md";
+    devops-troubleshooter = "${ws}/incident-response/agents/devops-troubleshooter.md";
+    docs-architect = "${ws}/code-documentation/agents/docs-architect.md";
+    dx-optimizer = "${ws}/debugging-toolkit/agents/dx-optimizer.md";
+    error-detective = "${ws}/error-diagnostics/agents/error-detective.md";
+    event-sourcing-architect = "${ws}/backend-development/agents/event-sourcing-architect.md";
+    fastapi-pro = "${ws}/python-development/agents/fastapi-pro.md";
+    golang-pro = "${ws}/systems-programming/agents/golang-pro.md";
+    hybrid-cloud-architect = "${ws}/cloud-infrastructure/agents/hybrid-cloud-architect.md";
+    incident-responder = "${ws}/incident-response/agents/incident-responder.md";
+    legacy-modernizer = "${ws}/code-refactoring/agents/legacy-modernizer.md";
+    network-engineer = "${ws}/observability-monitoring/agents/network-engineer.md";
+    obs-performance-engineer = "${ws}/observability-monitoring/agents/performance-engineer.md";
+    observability-engineer = "${ws}/observability-monitoring/agents/observability-engineer.md";
+    perf-performance-engineer = "${ws}/performance-testing-review/agents/performance-engineer.md";
+    perf-test-automator = "${ws}/performance-testing-review/agents/test-automator.md";
+    python-pro = "${ws}/python-development/agents/python-pro.md";
+    refactoring-reviewer = "${ws}/code-refactoring/agents/code-reviewer.md";
+    rust-pro = "${ws}/systems-programming/agents/rust-pro.md";
+    service-mesh-expert = "${ws}/cloud-infrastructure/agents/service-mesh-expert.md";
+    test-automator = "${ws}/unit-testing/agents/test-automator.md";
+    tutorial-engineer = "${ws}/code-documentation/agents/tutorial-engineer.md";
+  };
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
@@ -180,12 +216,7 @@ in {
       enable = true;
       package = perSystem.llm-agents.claude-code;
 
-      agents = {
-        code-debugger = ./configs/ai/agents/code-debugger.md;
-        code-reviewer = ./configs/ai/agents/code-reviewer.md;
-        performance-optimizer = ./configs/ai/agents/performance-optimizer.md;
-        systems-architect = ./configs/ai/agents/systems-architect.md;
-      };
+      inherit agents;
 
       memory.source = ./configs/ai/AGENTS.md;
 
@@ -196,13 +227,41 @@ in {
 
         autoUpdates = false;
 
+        extraKnownMarketplaces = {
+          wshobson-agents = {
+            source = {
+              source = "github";
+              repo = "wshobson/agents";
+            };
+          };
+        };
+
         enabledPlugins = {
+          # Official plugins
           "code-review@claude-plugins-official" = lib.mkDefault true;
           "commit-commands@claude-plugins-official" = lib.mkDefault true;
           "feature-dev@claude-plugins-official" = lib.mkDefault true;
           "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
           "ralph-wiggum@claude-plugins-official" = lib.mkDefault true;
           "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+          # wshobson/agents marketplace
+          "application-performance@wshobson-agents" = lib.mkDefault true;
+          "backend-development@wshobson-agents" = lib.mkDefault true;
+          "cloud-infrastructure@wshobson-agents" = lib.mkDefault true;
+          "code-documentation@wshobson-agents" = lib.mkDefault true;
+          "code-refactoring@wshobson-agents" = lib.mkDefault true;
+          "code-review-ai@wshobson-agents" = lib.mkDefault true;
+          "codebase-cleanup@wshobson-agents" = lib.mkDefault true;
+          "data-engineering@wshobson-agents" = lib.mkDefault true;
+          "debugging-toolkit@wshobson-agents" = lib.mkDefault true;
+          "error-diagnostics@wshobson-agents" = lib.mkDefault true;
+          "incident-response@wshobson-agents" = lib.mkDefault true;
+          "observability-monitoring@wshobson-agents" = lib.mkDefault true;
+          "performance-testing-review@wshobson-agents" = lib.mkDefault true;
+          "python-development@wshobson-agents" = lib.mkDefault true;
+          "systems-programming@wshobson-agents" = lib.mkDefault true;
+          "tdd-workflows@wshobson-agents" = lib.mkDefault true;
+          "unit-testing@wshobson-agents" = lib.mkDefault true;
         };
 
         hooks = {
@@ -353,6 +412,7 @@ in {
       package = perSystem.llm-agents.opencode;
       enableMcpIntegration = true;
       rules = ./configs/ai/AGENTS.md;
+      inherit agents;
       settings = {
         agent = {
           build = {

@@ -1200,7 +1200,8 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_6",
         "opnix": "opnix",
-        "system-manager": "system-manager"
+        "system-manager": "system-manager",
+        "wshobson-agents": "wshobson-agents"
       }
     },
     "system-manager": {
@@ -1373,6 +1374,22 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "uv2nix",
+        "type": "github"
+      }
+    },
+    "wshobson-agents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767303037,
+        "narHash": "sha256-OkwqSbO74kherqbEN5LeF/YlFqnPm+1mLEyxJOsfn10=",
+        "owner": "wshobson",
+        "repo": "agents",
+        "rev": "158dafddcb0125a67fd3f0598375deb6caee13f9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wshobson",
+        "repo": "agents",
         "type": "github"
       }
     }
