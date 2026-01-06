@@ -90,6 +90,9 @@
       command = lib.getExe my.pkgs.rime;
       args = ["stdio"];
     };
+    rust-analyzer = {
+      command = lib.getExe my.pkgs.mcp-rust-analyzer;
+    };
   };
 
   models = {
@@ -315,7 +318,6 @@ in {
             "Read(~/.claude/skills/**)"
             "Read(~/dev/**)"
             "Skill(ast-grep)"
-            "Skill(bd-issue-tracking)"
             "Task"
             "WebFetch"
             "WebSearch"
@@ -402,7 +404,7 @@ in {
           plan = {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             mode = "primary";
-            model = "anthropic/claude-sonnet-4-5-20250929";
+            model = "anthropic/claude-opus-4-5";
             tools = {
               bash = false;
               edit = false;
@@ -413,7 +415,7 @@ in {
             apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
             description = "Reviews code for best practices and potential issues";
             mode = "subagent";
-            model = "anthropic/claude-sonnet-4-5-20250929";
+            model = "anthropic/claude-opus-4-5";
             prompt = "You are a code reviewer. Focus on security, performance, and maintainability.";
             tools = {
               edit = false;
