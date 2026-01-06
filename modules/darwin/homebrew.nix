@@ -29,6 +29,7 @@
       "mas"
       "rust-analyzer"
       "rust-mcp-filesystem"
+      "xz"
     ];
 
     casks = [
