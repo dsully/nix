@@ -80,6 +80,10 @@
       command = "rust-mcp-filesystem";
       args = [config.home.homeDirectory "--allow-write"];
     };
+    git = {
+      command = "${pkgs.uv}/bin/uvx";
+      args = ["git-mcp"];
+    };
     rime = {
       command = lib.getExe my.pkgs.rime;
       args = ["stdio"];
