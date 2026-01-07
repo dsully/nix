@@ -7,7 +7,85 @@
   pkgs,
   ...
 }: let
-  mcp-packages = perSystem.mcp-servers-nix;
+  ws = "${inputs.wshobson-agents}/plugins";
+
+  # Map of plugin directory -> { agentName = "filename.md"; }
+  wsPluginAgents = {
+    application-performance = {
+      app-observability-engineer = "observability-engineer.md";
+      app-performance-engineer = "performance-engineer.md";
+    };
+    backend-development = {
+      backend-architect = "backend-architect.md";
+      event-sourcing-architect = "event-sourcing-architect.md";
+    };
+    cloud-infrastructure = {
+      cloud-architect = "cloud-architect.md";
+      deployment-engineer = "deployment-engineer.md";
+      hybrid-cloud-architect = "hybrid-cloud-architect.md";
+      service-mesh-expert = "service-mesh-expert.md";
+    };
+    code-documentation = {
+      docs-architect = "docs-architect.md";
+      tutorial-engineer = "tutorial-engineer.md";
+    };
+    code-refactoring = {
+      legacy-modernizer = "legacy-modernizer.md";
+      refactoring-reviewer = "code-reviewer.md";
+    };
+    code-review-ai.architect-review = "architect-review.md";
+    codebase-cleanup.cleanup-test-automator = "test-automator.md";
+    data-engineering.data-engineer = "data-engineer.md";
+    debugging-toolkit = {
+      debugger = "debugger.md";
+      dx-optimizer = "dx-optimizer.md";
+    };
+    error-diagnostics.error-detective = "error-detective.md";
+    incident-response = {
+      devops-troubleshooter = "devops-troubleshooter.md";
+      incident-responder = "incident-responder.md";
+    };
+    observability-monitoring = {
+      database-optimizer = "database-optimizer.md";
+      network-engineer = "network-engineer.md";
+      obs-performance-engineer = "performance-engineer.md";
+      observability-engineer = "observability-engineer.md";
+    };
+    performance-testing-review = {
+      perf-performance-engineer = "performance-engineer.md";
+      perf-test-automator = "test-automator.md";
+    };
+    python-development = {
+      fastapi-pro = "fastapi-pro.md";
+      python-pro = "python-pro.md";
+    };
+    systems-programming = {
+      golang-pro = "golang-pro.md";
+      rust-pro = "rust-pro.md";
+    };
+    tdd-workflows = {
+      tdd-code-reviewer = "code-reviewer.md";
+      tdd-orchestrator = "tdd-orchestrator.md";
+    };
+    unit-testing.test-automator = "test-automator.md";
+  };
+
+  # Generate agents attrset from wsPluginAgents
+  agents =
+    lib.foldlAttrs (
+      acc: plugin: agentAttrs:
+        acc
+        // lib.mapAttrs (_: file: "${ws}/${plugin}/agents/${file}") agentAttrs
+    ) {}
+    wsPluginAgents;
+
+  # Generate wshobson enabledPlugins from wsPluginAgents keys
+  wsEnabledPlugins =
+    lib.mapAttrs' (
+      p: _: lib.nameValuePair "${p}@wshobson-agents" (lib.mkDefault true)
+    )
+    wsPluginAgents;
+
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
@@ -67,11 +145,7 @@
     typescript = [".ts" ".tsx" ".js" ".jsx"];
   };
 
-  opencodeLsp = lib.mapAttrs (name: v: {
-    command = [v.command] ++ (v.args or []);
-    extensions = lspExtensions.${name};
-  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) lsp);
-
+  mcp-packages = perSystem.mcp-servers-nix;
   mcpServers = {
     context7 = {
       command = lib.getExe mcp-packages.context7-mcp;
@@ -116,44 +190,13 @@
     };
   };
 
+  opencodeLsp = lib.mapAttrs (name: v: {
+    command = [v.command] ++ (v.args or []);
+    extensions = lspExtensions.${name};
+  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) lsp);
+
   # For opencode: prefix with provider
   opencodeModel = m: "${m.provider}/${m.model}";
-
-  # Shared agents for claude-code and opencode
-  ws = "${inputs.wshobson-agents}/plugins";
-  agents = {
-    app-observability-engineer = "${ws}/application-performance/agents/observability-engineer.md";
-    app-performance-engineer = "${ws}/application-performance/agents/performance-engineer.md";
-    architect-review = "${ws}/code-review-ai/agents/architect-review.md";
-    backend-architect = "${ws}/backend-development/agents/backend-architect.md";
-    cleanup-test-automator = "${ws}/codebase-cleanup/agents/test-automator.md";
-    cloud-architect = "${ws}/cloud-infrastructure/agents/cloud-architect.md";
-    data-engineer = "${ws}/data-engineering/agents/data-engineer.md";
-    database-optimizer = "${ws}/observability-monitoring/agents/database-optimizer.md";
-    debugger = "${ws}/debugging-toolkit/agents/debugger.md";
-    deployment-engineer = "${ws}/cloud-infrastructure/agents/deployment-engineer.md";
-    devops-troubleshooter = "${ws}/incident-response/agents/devops-troubleshooter.md";
-    docs-architect = "${ws}/code-documentation/agents/docs-architect.md";
-    dx-optimizer = "${ws}/debugging-toolkit/agents/dx-optimizer.md";
-    error-detective = "${ws}/error-diagnostics/agents/error-detective.md";
-    event-sourcing-architect = "${ws}/backend-development/agents/event-sourcing-architect.md";
-    fastapi-pro = "${ws}/python-development/agents/fastapi-pro.md";
-    golang-pro = "${ws}/systems-programming/agents/golang-pro.md";
-    hybrid-cloud-architect = "${ws}/cloud-infrastructure/agents/hybrid-cloud-architect.md";
-    incident-responder = "${ws}/incident-response/agents/incident-responder.md";
-    legacy-modernizer = "${ws}/code-refactoring/agents/legacy-modernizer.md";
-    network-engineer = "${ws}/observability-monitoring/agents/network-engineer.md";
-    obs-performance-engineer = "${ws}/observability-monitoring/agents/performance-engineer.md";
-    observability-engineer = "${ws}/observability-monitoring/agents/observability-engineer.md";
-    perf-performance-engineer = "${ws}/performance-testing-review/agents/performance-engineer.md";
-    perf-test-automator = "${ws}/performance-testing-review/agents/test-automator.md";
-    python-pro = "${ws}/python-development/agents/python-pro.md";
-    refactoring-reviewer = "${ws}/code-refactoring/agents/code-reviewer.md";
-    rust-pro = "${ws}/systems-programming/agents/rust-pro.md";
-    service-mesh-expert = "${ws}/cloud-infrastructure/agents/service-mesh-expert.md";
-    test-automator = "${ws}/unit-testing/agents/test-automator.md";
-    tutorial-engineer = "${ws}/code-documentation/agents/tutorial-engineer.md";
-  };
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
@@ -234,39 +277,22 @@ in {
         extraKnownMarketplaces = {
           wshobson-agents = {
             source = {
-              source = "github";
-              repo = "wshobson/agents";
+              source = "local";
+              directory = "${inputs.wshobson-agents}";
             };
           };
         };
 
-        enabledPlugins = {
-          # Official plugins
-          "code-review@claude-plugins-official" = lib.mkDefault true;
-          "commit-commands@claude-plugins-official" = lib.mkDefault true;
-          "feature-dev@claude-plugins-official" = lib.mkDefault true;
-          "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-          "ralph-wiggum@claude-plugins-official" = lib.mkDefault true;
-          "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
-          # wshobson/agents marketplace
-          "application-performance@wshobson-agents" = lib.mkDefault true;
-          "backend-development@wshobson-agents" = lib.mkDefault true;
-          "cloud-infrastructure@wshobson-agents" = lib.mkDefault true;
-          "code-documentation@wshobson-agents" = lib.mkDefault true;
-          "code-refactoring@wshobson-agents" = lib.mkDefault true;
-          "code-review-ai@wshobson-agents" = lib.mkDefault true;
-          "codebase-cleanup@wshobson-agents" = lib.mkDefault true;
-          "data-engineering@wshobson-agents" = lib.mkDefault true;
-          "debugging-toolkit@wshobson-agents" = lib.mkDefault true;
-          "error-diagnostics@wshobson-agents" = lib.mkDefault true;
-          "incident-response@wshobson-agents" = lib.mkDefault true;
-          "observability-monitoring@wshobson-agents" = lib.mkDefault true;
-          "performance-testing-review@wshobson-agents" = lib.mkDefault true;
-          "python-development@wshobson-agents" = lib.mkDefault true;
-          "systems-programming@wshobson-agents" = lib.mkDefault true;
-          "tdd-workflows@wshobson-agents" = lib.mkDefault true;
-          "unit-testing@wshobson-agents" = lib.mkDefault true;
-        };
+        enabledPlugins =
+          {
+            "code-review@claude-plugins-official" = lib.mkDefault true;
+            "commit-commands@claude-plugins-official" = lib.mkDefault true;
+            "feature-dev@claude-plugins-official" = lib.mkDefault true;
+            "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
+            "ralph-wiggum@claude-plugins-official" = lib.mkDefault true;
+            "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+          }
+          // wsEnabledPlugins;
 
         hooks = {
           PreToolUse = [
