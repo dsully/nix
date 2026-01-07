@@ -277,8 +277,8 @@ in {
         extraKnownMarketplaces = {
           wshobson-agents = {
             source = {
-              source = "local";
-              directory = "${inputs.wshobson-agents}";
+              source = "directory";
+              path = "${inputs.wshobson-agents}";
             };
           };
         };
