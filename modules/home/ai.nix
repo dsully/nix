@@ -82,7 +82,7 @@
   # Generate wshobson enabledPlugins from wsPluginAgents keys
   wsEnabledPlugins =
     lib.mapAttrs' (
-      p: _: lib.nameValuePair "${p}@wshobson-agents" (lib.mkDefault true)
+      p: _: lib.nameValuePair "${p}@claude-code-workflows" (lib.mkDefault true)
     )
     wsPluginAgents;
 
@@ -275,7 +275,7 @@ in {
         autoUpdates = false;
 
         extraKnownMarketplaces = {
-          wshobson-agents = {
+          claude-code-workflows = {
             source = {
               source = "directory";
               path = "${inputs.wshobson-agents}";
