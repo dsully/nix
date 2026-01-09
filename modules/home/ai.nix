@@ -286,10 +286,11 @@ in {
         enabledPlugins =
           {
             "code-review@claude-plugins-official" = lib.mkDefault true;
+            "code-simplifier@claude-plugins-official" = lib.mkDefault true;
             "commit-commands@claude-plugins-official" = lib.mkDefault true;
             "feature-dev@claude-plugins-official" = lib.mkDefault true;
             "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-            "ralph-wiggum@claude-plugins-official" = lib.mkDefault true;
+            "ralph-loop@claude-plugins-official" = lib.mkDefault true;
             "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
           }
           // wsEnabledPlugins;
