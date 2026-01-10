@@ -6,6 +6,7 @@
     ./ghostty.nix
     ./git.nix
     ./lolcate.nix
+    ./nix-init.nix
     ./pager.nix
     ./ripgrep.nix
     ./ruff.nix
