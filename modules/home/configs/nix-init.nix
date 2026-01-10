@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   gitHubToken = "${config.xdg.cacheHome}/tokens/github-home.txt";
@@ -8,6 +9,7 @@ in {
   programs = {
     nix-init = {
       enable = true;
+      package = pkgs.lixPackageSets.latest.nix-init;
 
       settings = {
         maintainers = [config.system.userName];

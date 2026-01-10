@@ -10,11 +10,13 @@
         cachix
         deadnix
         flake-checker
-        nix-direnv
-        nix-init
         nix-tree
         statix
       ]
+      ++ (with lixPackageSets.latest; [
+        nix-direnv
+        nix-init
+      ])
       ++ [
         my.pkgs.nh
         my.pkgs.nurl

@@ -161,17 +161,8 @@ in {
   manual.manpages.enable = false;
 
   nixpkgs.overlays = [
-    (final: prev: {
-      nix = final.lixPackageSets.latest.lix;
-
-      # Override nix-direnv and nix-init to use Lix instead of Nix
-      nix-direnv = prev.nix-direnv.override {
-        nix = final.lixPackageSets.latest.lix;
-      };
-
-      nix-init = prev.nix-init.override {
-        nix = final.lixPackageSets.latest.lix;
-      };
+    (_final: prev: {
+      nix = prev.lixPackageSets.latest.lix;
 
       python313Packages = prev.python313Packages.override {
         overrides = _pyFinal: pyPrev: {
@@ -207,6 +198,11 @@ in {
     };
 
     home-manager.enable = true;
+
+    man = {
+      enable = true;
+      generateCaches = false;
+    };
 
     nh = {
       enable = true;
