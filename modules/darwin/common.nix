@@ -8,8 +8,10 @@
   inherit (config.system) hostName;
 in rec {
   imports = [
+    inputs.opnix.darwinModules.default
     ../common/nix.nix
     ./homebrew.nix
+    ./services/cachix-agent.nix
 
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix

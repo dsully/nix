@@ -4,7 +4,9 @@
   perSystem,
   pkgs,
   ...
-}: {
+}: let
+  cachixAuthTokenPath = ".config/cachix/auth-token";
+in {
   imports = [
     flake.homeModules.dsully
     flake.homeModules.ai
@@ -32,7 +34,7 @@
       secrets = {
         cachixAuthToken = {
           reference = "op://Services/Cachix/token";
-          path = ".config/cachix/auth-token";
+          path = cachixAuthTokenPath;
           mode = "0600";
           group = "dsully";
         };
@@ -82,9 +84,8 @@
       After = ["network.target"];
     };
     Service = {
-      Environment = "XDG_CACHE_HOME=%h/.cache";
       ExecStart = "${pkgs.writeShellScript "cachix-watch" ''
-        export CACHIX_AUTH_TOKEN=$(cat ~/.config/cachix/auth-token)
+        export CACHIX_AUTH_TOKEN=$(cat ~/${cachixAuthTokenPath})
         exec ${pkgs.cachix}/bin/cachix watch-store dsully
       ''}";
       Restart = "always";
