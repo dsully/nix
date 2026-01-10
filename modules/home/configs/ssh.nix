@@ -42,6 +42,8 @@ in {
           addKeysToAgent = "yes";
           compression = true;
           controlMaster = "auto";
+          controlPath = "~/.ssh/sockets/%r@%h-%p";
+          controlPersist = "10m";
           forwardAgent = lib.mkDefault true;
           serverAliveInterval = 10;
         };
