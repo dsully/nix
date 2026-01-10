@@ -28,6 +28,7 @@ in {
           reference = "op://Services/GitHub Home/token";
           path = gitHubToken;
           mode = "0600";
+          group = "dsully";
         };
       };
     };

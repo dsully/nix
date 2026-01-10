@@ -9,7 +9,7 @@ with pkgs;
       inherit rev;
       owner = "roniel-rhack";
       repo = "rip-go";
-      hash = "sha256-qrscIT5eTRNnB3o6RNc7CNZhjiym/PwFJ+jYRx5c8pM=";
+      hash = "sha256-2tyqbEue4wqgK12Ydy5DhTTHOwJpkqXtW7/3ccvFiw4=";
     };
 
     vendorHash = "sha256-Q6AstIIHJwmi6JHNQEAr2c5dZSXbDQSbqIvCxgyXuJ8=";

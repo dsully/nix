@@ -15,12 +15,10 @@
   home = {
     packages = with pkgs;
       [
-        bacon
         copilot-language-server
-        ghostscript_headless
         nix-output-monitor
         pnpm
-        tectonic-unwrapped
+        vopono
       ]
       ++ (with perSystem.self; [
         autorebase
@@ -32,6 +30,12 @@
     onepassword-secrets = {
       enable = true;
       secrets = {
+        cachixAuthToken = {
+          reference = "op://Services/Cachix/token";
+          path = ".config/cachix/auth-token";
+          mode = "0600";
+          group = "dsully";
+        };
         huggingFace = {
           reference = "op://Services/HuggingFace/credential";
           path = ".config/huggingface/token";
@@ -69,6 +73,25 @@
     syncthing = {
       enable = true;
       guiAddress = "0.0.0.0:8384";
+    };
+  };
+
+  systemd.user.services.cachix-watch-store = {
+    Unit = {
+      Description = "Cachix Store Watcher";
+      After = ["network.target"];
+    };
+    Service = {
+      Environment = "XDG_CACHE_HOME=%h/.cache";
+      ExecStart = "${pkgs.writeShellScript "cachix-watch" ''
+        export CACHIX_AUTH_TOKEN=$(cat ~/.config/cachix/auth-token)
+        exec ${pkgs.cachix}/bin/cachix watch-store dsully
+      ''}";
+      Restart = "always";
+      RestartSec = 10;
+    };
+    Install = {
+      WantedBy = ["default.target"];
     };
   };
 }
