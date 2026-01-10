@@ -12,13 +12,13 @@ perSystem.devshell.mkShell {
       fish
       jq
       just
-      nh
-      nurl
       ripgrep
       sd
       statix
     ]
     ++ [
+      perSystem.self.nh
       perSystem.self.nix-package-updater
+      perSystem.self.nurl
     ];
 }
