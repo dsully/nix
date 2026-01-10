@@ -16,8 +16,12 @@
       font-size = 16;
       theme = "nord";
 
+      auto-update = "off";
       command = "${lib.getExe pkgs.fish}";
+      link-previews = "osc8";
       link-url = true;
+      right-click-action = "ignore";
+      scrollback-limit = 20000000;
 
       working-directory = "home";
 
@@ -43,19 +47,8 @@
       clipboard-read = "allow";
 
       keybind = [
-        # Remove once there is scroll back search.
-        "super+alt+shift+j=write_scrollback_file:open"
-        "super+shift+j=write_scrollback_file:paste"
-
-        # Shift-Enter for Claude Code
-        "shift+enter=text:\x1b\r"
-
         # Distinguish <C-i> from <Tab>
         "ctrl+i=text:\\x1b[105;5u"
-
-        # "cmd+right=text:\\x05"
-        # "cmd+left=text:\\x01"
-        # "cmd+backspace=text:\\x15"
 
         # Restore <C-[> as being alias for ESC
         # "ctrl+left_bracket=text:\\x1b"
