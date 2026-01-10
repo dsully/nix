@@ -10,6 +10,15 @@
 
   homeDir = config.home.homeDirectory;
 in {
+  # Don't bother building fonts that I don't use.
+  disabledModules = [
+    "targets/darwin/copyapps.nix"
+    "targets/darwin/default.nix"
+    "targets/darwin/fonts.nix"
+    "targets/darwin/keybindings.nix"
+    "targets/darwin/search.nix"
+  ];
+
   imports = [
     inputs.nix-index-database.homeModules.nix-index
     inputs.opnix.homeManagerModules.default
@@ -152,7 +161,17 @@ in {
   manual.manpages.enable = false;
 
   nixpkgs.overlays = [
-    (_final: prev: {
+    (final: prev: {
+      nix = final.lixPackageSets.latest.lix;
+
+      # Override nix-direnv and nix-init to use Lix instead of Nix
+      nix-direnv = prev.nix-direnv.override {
+        nix = final.lixPackageSets.latest.lix;
+      };
+      nix-init = prev.nix-init.override {
+        nix = final.lixPackageSets.latest.lix;
+      };
+
       python313Packages = prev.python313Packages.override {
         overrides = _pyFinal: pyPrev: {
           mcp = pyPrev.mcp.overrideAttrs (_old: {

@@ -33,8 +33,6 @@
     mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
     mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    mcps.url = "github:roman/mcps.nix";
-
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -42,6 +40,7 @@
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 
     opnix.url = "github:brizzbuzz/opnix";
+    opnix.inputs.nixpkgs.follows = "nixpkgs";
 
     ai-skills-ast-grep.url = "github:ast-grep/claude-skill";
     ai-skills-ast-grep.flake = false;

@@ -12,7 +12,6 @@
         flake-checker
         nix-direnv
         nix-init
-        nix-inspect
         nix-tree
         statix
       ]
