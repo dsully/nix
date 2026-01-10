@@ -8,10 +8,8 @@
   inherit (config.system) hostName;
 in rec {
   imports = [
-    inputs.opnix.darwinModules.default
     ../common/nix.nix
     ./homebrew.nix
-    ./services/cachix-agent.nix
 
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix
@@ -270,7 +268,13 @@ in rec {
   };
 
   users = {
+    knownGroups = ["onepassword-secrets"];
     knownUsers = [system.primaryUser];
+
+    groups.onepassword-secrets = {
+      gid = 600;
+      members = [system.primaryUser];
+    };
 
     users.${system.primaryUser} = {
       ignoreShellProgramCheck = true;

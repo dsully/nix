@@ -5,6 +5,10 @@
   ...
 }: let
   gitHubToken = "${config.xdg.cacheHome}/tokens/github-home.txt";
+  group =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then "staff"
+    else "dsully";
 in {
   programs = {
     nix-init = {
@@ -13,7 +17,6 @@ in {
 
       settings = {
         maintainers = [config.system.userName];
-        # nixpkgs = builtins.getFlake "nixpkgs";
         commit = false;
         access-tokens = lib.mkDefault {
           "github.com".file = gitHubToken;
@@ -28,7 +31,7 @@ in {
           reference = "op://Services/GitHub Home/token";
           path = gitHubToken;
           mode = "0600";
-          group = "dsully";
+          inherit group;
         };
       };
     };
