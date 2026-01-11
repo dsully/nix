@@ -47,7 +47,15 @@ system +args="":
 # Switch Home Manager Configuration
 [group('desktop')]
 switch +args="":
-    @{{ NH }} home switch {{ NH_ARGS }} -b backup . {{ args }} -- --substitute --no-warn-dirty
+    #!/usr/bin/env bash
+    set -euo pipefail
+    extra_args=""
+    nix_args=""
+    if [[ "$(hostname)" == "server" ]]; then
+        extra_args="--impure"
+        nix_args="--refresh"
+    fi
+    {{ NH }} home switch {{ NH_ARGS }} -b backup . $extra_args {{ args }} -- --substitute --no-warn-dirty $nix_args
 
 # Update all the flake inputs
 [group('nix')]
