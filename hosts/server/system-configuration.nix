@@ -43,7 +43,6 @@
       after = ["network-online.target"];
       serviceConfig = {
         Type = "simple";
-        ExecStartPre = "-/bin/sh -c '/sbin/ip link delete vpn_s 2>/dev/null; /sbin/ip netns delete vpn 2>/dev/null; true'";
         ExecStart = "${lib.getExe pkgs.vopono} daemon";
         ExecStopPost = "-/bin/sh -c '/sbin/ip link delete vpn_s 2>/dev/null; /sbin/ip netns delete vpn 2>/dev/null; true'";
         Restart = "on-failure";

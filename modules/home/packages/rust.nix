@@ -10,6 +10,7 @@
       cargo-dist
       cargo-duplicates
       cargo-edit
+      cargo-expand
       cargo-features-manager
       cargo-flamegraph
       cargo-hakari

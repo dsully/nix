@@ -12,7 +12,6 @@
   qbit-tools-pkg = qbit-tools.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   vopono-config = "${config.home.homeDirectory}/.cache/vopono/wg.conf";
-  qbit-wrapper = "${config.home.homeDirectory}/.local/bin/qbit-wrapper";
 in {
   imports = [
     flake.homeModules.dsully
@@ -29,6 +28,7 @@ in {
         iproute2
         nix-output-monitor
         pnpm
+        qbittorrent-nox
         socat
         vopono
       ]
@@ -61,12 +61,6 @@ in {
           reference = "op://Services/server/private key";
           path = ".ssh/id_ed25519";
           mode = "0600";
-          group = "dsully";
-        };
-        qBitWrapper = {
-          reference = "op://Services/ProtonVPN Tunnel/wrapper";
-          path = qbit-wrapper;
-          mode = "0755";
           group = "dsully";
         };
         voponoConfig = {
@@ -128,7 +122,7 @@ in {
       Unit = {
         Description = "Vopono qBittorrent";
         Wants = ["network-online.target"];
-        After = ["local-fs.target" "network-online.target" "nss-lookup.target" "vopono.service"];
+        After = ["local-fs.target" "network-online.target" "nss-lookup.target" "vopono-daemon.service"];
       };
       Service = {
         WorkingDirectory = "%h/.config/vopono";
@@ -138,6 +132,7 @@ in {
           "exec"
           "--interface=eth0"
           "--provider=custom"
+          "--forward=9091"
           "--protocol=Wireguard"
           "--custom-netns-name=vpn"
           "--custom=${vopono-config}"
@@ -145,10 +140,11 @@ in {
           "--allow-host-access"
           "--custom-port-forwarding=protonvpn"
           "--port-forwarding-callback=${qbit-tools-pkg}/bin/qbit-port-update"
-          qbit-wrapper
+          "'${lib.getExe pkgs.qbittorrent-nox} --webui-port=9091 --profile=/bits/media/torrents'"
         ];
-        Type = "simple";
+        PrivateTmp = false;
         Restart = "on-failure";
+        Type = "simple";
       };
       Install = {
         WantedBy = ["default.target"];
@@ -158,7 +154,7 @@ in {
     vopono-qbit-forward = {
       Unit = {
         Description = "qBittorrent port forwarder";
-        After = ["vopono-qbit.service"];
+        After = ["vopono.service"];
       };
       Service = {
         ExecStart = "${lib.getExe pkgs.socat} TCP-LISTEN:9091,fork,reuseaddr TCP:10.200.1.2:9091";
