@@ -409,7 +409,7 @@ in {
 
           additionalDirectories = [
             "/tmp"
-            "/var/folders/"
+            "/var"
           ];
 
           defaultMode = "plan";
