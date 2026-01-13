@@ -422,6 +422,8 @@ in {
           DISABLE_BUG_COMMAND = "1";
           DISABLE_ERROR_REPORTING = "1";
           DISABLE_TELEMETRY = "1";
+          # Dynamically load MCPs
+          ENABLE_TOOL_SEARCH = "1";
         };
       };
 
