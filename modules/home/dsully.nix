@@ -128,14 +128,6 @@ in {
           ]
           + "\n";
       };
-
-      ".npmrc" = {
-        force = true;
-        text = ''
-          fund=false
-          audit=false
-        '';
-      };
     };
 
     sessionPath = ["${config.home.homeDirectory}/.local/bin" "${config.home.homeDirectory}/.cargo/bin"];
@@ -226,6 +218,16 @@ in {
     };
 
     nix-index-database.comma.enable = false;
+
+    npm = {
+      enable = true;
+
+      settings = {
+        audit = false;
+        fund = false;
+        prefix = "\${HOME}/.npm";
+      };
+    };
 
     zoxide = {
       enable = true;
