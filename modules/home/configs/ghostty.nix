@@ -45,14 +45,6 @@
       # Allow for Option-P, etc.
       clipboard-paste-protection = false;
       clipboard-read = "allow";
-
-      keybind = [
-        # Distinguish <C-i> from <Tab>
-        "ctrl+i=text:\\x1b[105;5u"
-
-        # Restore <C-[> as being alias for ESC
-        # "ctrl+left_bracket=text:\\x1b"
-      ];
     };
   };
 }

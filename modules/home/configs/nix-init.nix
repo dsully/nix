@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }: let
@@ -18,7 +17,7 @@ in {
       settings = {
         maintainers = [config.system.userName];
         commit = false;
-        access-tokens = lib.mkDefault {
+        access-tokens = {
           "github.com".file = gitHubToken;
         };
       };
