@@ -12,6 +12,21 @@ with pkgs;
     cargoHash = "sha256-FqE9s+e1PLRKLDeJqxTgvLDfEP/7oP64mBYsuxNWsJE=";
     doCheck = false;
 
+    nativeBuildInputs = [
+      installShellFiles
+    ];
+
+    postInstall = lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) (
+      let
+        emulator = stdenv.hostPlatform.emulator buildPackages;
+      in ''
+        installShellCompletion --cmd ${pname} \
+          --bash <(${emulator} $out/bin/${pname} completions bash) \
+          --fish <(${emulator} $out/bin/${pname} completions fish) \
+          --zsh <(${emulator} $out/bin/${pname} completions zsh)
+      ''
+    );
+
     meta = {
       description = "";
       homepage = "https://crates.io/crates/infiniloom";
