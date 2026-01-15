@@ -31,10 +31,10 @@ in {
         qbittorrent-nox
         socat
         vopono
+        zuban
       ]
       ++ (with perSystem.self; [
         autorebase
-        zuban
       ])
       ++ [
         qbit-tools.packages.${stdenv.hostPlatform.system}.default

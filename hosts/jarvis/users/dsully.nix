@@ -20,10 +20,10 @@
       [
         copilot-language-server
         nix-output-monitor
+        zuban
       ]
       ++ (with perSystem.self; [
         autorebase
-        zuban
       ]);
   };
 
