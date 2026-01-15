@@ -42,6 +42,7 @@
         moor
         mtr
         p7zip
+        prmt
         procs
         q
         rip2
@@ -66,12 +67,11 @@
       ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         my.pkgs.caddy-custom
       ]
-      ++ [
-        my.pkgs.clean-dev-dirs
-        my.pkgs.leadr
-        my.pkgs.prmt
-        my.pkgs.rip-go
-        my.pkgs.xdg-open-svc
-      ];
+      ++ (with my.pkgs; [
+        clean-dev-dirs
+        leadr
+        rip-go
+        xdg-open-svc
+      ]);
   };
 }
