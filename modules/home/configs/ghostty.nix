@@ -23,10 +23,12 @@
       right-click-action = "ignore";
       scrollback-limit = 20000000;
 
+      split-inherit-working-directory = false;
+      tab-inherit-working-directory = false;
+      window-inherit-working-directory = false;
       working-directory = "home";
 
       # Window configuration
-      window-inherit-working-directory = false;
       window-inherit-font-size = false;
       window-title-font-family = "Monaspace Neon";
       window-height = 50;
