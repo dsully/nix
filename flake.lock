@@ -401,11 +401,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768509800,
-        "narHash": "sha256-fDEs7DdTkU3OAcuHUgoMfew3zPAkxnJ215VJMmtEqc4=",
+        "lastModified": 1768674993,
+        "narHash": "sha256-rD0LUIiPuVX4d44vhkCS8hggT9+LUOL0QFlsvM9Yc54=",
         "owner": "dsully",
         "repo": "qbit-tools",
-        "rev": "a17c09071ae679f553b88bb9555934b3d8192bf5",
+        "rev": "7b55b6c5773edaf787b733d3b5353149d9e4c839",
         "type": "github"
       },
       "original": {
@@ -431,7 +431,6 @@
         "opnix": "opnix",
         "qbit-tools": "qbit-tools",
         "system-manager": "system-manager",
-        "wild": "wild",
         "wshobson-agents": "wshobson-agents"
       }
     },
@@ -554,22 +553,6 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "wild": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1768601911,
-        "narHash": "sha256-uThkgRj5vVvUEG7Dv8edIr6uA0LDOjQgSeFPGQdQC5c=",
-        "owner": "davidlattimore",
-        "repo": "wild",
-        "rev": "c908c6324fbee5ddd3dadfccc6e2d1edea02e02b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "davidlattimore",
-        "repo": "wild",
         "type": "github"
       }
     },
