@@ -7,17 +7,13 @@
   ...
 }: let
   cachixAuthTokenPath = ".config/cachix/auth-token";
-
-  qbit-tools = builtins.getFlake "github:dsully/qbit-tools";
-  qbit-tools-pkg = qbit-tools.packages.${pkgs.stdenv.hostPlatform.system}.default;
-
   vopono-config = "${config.home.homeDirectory}/.cache/vopono/wg.conf";
 in {
   imports = [
     flake.homeModules.dsully
     flake.homeModules.ai
     flake.homeModules.copypaste
-    qbit-tools.homeManagerModules.default
+    flake.inputs.qbit-tools.homeManagerModules.default
     ../options.nix
   ];
 
@@ -35,10 +31,8 @@ in {
       ]
       ++ (with perSystem.self; [
         autorebase
-      ])
-      ++ [
-        qbit-tools.packages.${stdenv.hostPlatform.system}.default
-      ];
+        qbit-port-update
+      ]);
   };
 
   programs = {
@@ -139,7 +133,7 @@ in {
           "--no-killswitch"
           "--allow-host-access"
           "--custom-port-forwarding=protonvpn"
-          "--port-forwarding-callback=${qbit-tools-pkg}/bin/qbit-port-update"
+          "--port-forwarding-callback=${lib.getExe perSystem.self.qbit-port-update}"
           "'${lib.getExe pkgs.qbittorrent-nox} --webui-port=9091 --profile=/bits/media/torrents'"
         ];
         PrivateTmp = false;

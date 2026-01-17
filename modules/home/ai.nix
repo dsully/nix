@@ -151,7 +151,7 @@
       command = lib.getExe mcp-packages.context7-mcp;
     };
     filesystem = {
-      command = "rust-mcp-filesystem";
+      command = lib.getExe my.pkgs.rust-mcp-filesystem;
       args = [config.home.homeDirectory "--allow-write"];
     };
     git = {
@@ -218,6 +218,7 @@ in {
         git-ai-commit
         infiniloom
         mcp-rust-analyzer
+        rust-mcp-filesystem
         rust-mcp-server
         turbo-commit
       ]);

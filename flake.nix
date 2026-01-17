@@ -50,6 +50,9 @@
 
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
+
+    qbit-tools.url = "github:dsully/qbit-tools";
+    qbit-tools.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs:
