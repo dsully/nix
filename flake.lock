@@ -79,6 +79,22 @@
         "type": "github"
       }
     },
+    "claude-plugins-official": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768504790,
+        "narHash": "sha256-wUkJGdnU9T1ktJOQAK2iavdJm7aLU8b1H6B4kfiqKiM=",
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "96276205880a60fd66bbae981f5ab568e70c4cbf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "type": "github"
+      }
+    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -108,11 +124,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1768103295,
-        "narHash": "sha256-Whv+VRIz35Iz4S8pODb2OopRfsDogV086GO1rL/93FM=",
+        "lastModified": 1768657403,
+        "narHash": "sha256-YkbdCu2ZInQj72rQQLgVP2x1m8il8+DtwzypBiYrrfE=",
         "owner": "Mic92",
         "repo": "direnv-instant",
-        "rev": "d4fa2c67d518665027ad8b4ad5cf23be54226be3",
+        "rev": "ab8c70c557f610e20008eb407d17cfd78b44ea1c",
         "type": "github"
       },
       "original": {
@@ -210,11 +226,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1768620317,
-        "narHash": "sha256-KMk3ftg4zCSvVQMipbdH2r4Pmr6gEgG0+o+UjAejtu4=",
+        "lastModified": 1768660452,
+        "narHash": "sha256-LBKFr/cgRUQQxsFr6lRmjKTAXNaoDuj2Ld9WjLL0WqQ=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "f779abc9c9ff63a2fb2b82037857f8878eb5b116",
+        "rev": "232bc4a5961140dee1a7a2440756839a8551c8f4",
         "type": "github"
       },
       "original": {
@@ -364,6 +380,7 @@
         "ai-skills-ast-grep": "ai-skills-ast-grep",
         "blueprint": "blueprint",
         "charmbracelet-nur": "charmbracelet-nur",
+        "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "direnv-instant": "direnv-instant",
         "home-manager": "home-manager",
