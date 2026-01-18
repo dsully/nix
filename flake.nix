@@ -30,9 +30,6 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
 
-    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
-    mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
-
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -53,6 +50,9 @@
 
     qbit-tools.url = "github:dsully/qbit-tools";
     qbit-tools.inputs.nixpkgs.follows = "nixpkgs";
+
+    claude-code.url = "github:sadjow/claude-code-nix";
+    claude-code.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs:

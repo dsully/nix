@@ -262,7 +262,7 @@ in {
 
     claude-code = {
       enable = true;
-      package = perSystem.llm-agents.claude-code;
+      package = perSystem.claude-code.claude-code-bun;
 
       inherit agents;
 
