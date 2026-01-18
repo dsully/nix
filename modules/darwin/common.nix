@@ -10,6 +10,7 @@ in rec {
   imports = [
     ../common/nix.nix
     ./homebrew.nix
+    ./system.nix
 
     ./defaults/activity-monitor.nix
     ./defaults/apps.nix
