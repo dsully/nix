@@ -7,7 +7,7 @@
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
 in {
   home = {
-    packages = with (pkgs // my.pkgs);
+    packages = with pkgs;
       [
         actionlint
         basedpyright
@@ -72,6 +72,7 @@ in {
         pyproject-fmt
         pytest-language-server
         xmlformatter
+        version-lsp
       ])
       ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with my.pkgs; [
         # lemminx
