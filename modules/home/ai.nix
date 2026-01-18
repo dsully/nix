@@ -258,7 +258,7 @@ in {
 
     claude-code = {
       enable = true;
-      package = perSystem.claude-code.claude-code-bun;
+      package = perSystem.claude-code.claude-code-bun.override { bunBinName = "claude"; };
 
       inherit agents;
 
