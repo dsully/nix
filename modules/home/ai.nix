@@ -80,11 +80,11 @@
     wsPluginAgents;
 
   # Generate wshobson enabledPlugins from wsPluginAgents keys
-  wsEnabledPlugins =
-    lib.mapAttrs' (
-      p: _: lib.nameValuePair "${p}@claude-code-workflows" (lib.mkDefault true)
-    )
-    wsPluginAgents;
+  # wsEnabledPlugins =
+  #   lib.mapAttrs' (
+  #     p: _: lib.nameValuePair "${p}@claude-code-workflows" (lib.mkDefault true)
+  #   )
+  #   wsPluginAgents;
 
   lsp = {
     bash = {
@@ -145,11 +145,7 @@
     typescript = [".ts" ".tsx" ".js" ".jsx"];
   };
 
-  mcp-packages = perSystem.mcp-servers-nix;
   mcpServers = {
-    context7 = {
-      command = lib.getExe mcp-packages.context7-mcp;
-    };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
       args = [config.home.homeDirectory "--allow-write"];
@@ -270,44 +266,45 @@ in {
 
       settings = {
         inherit (models.large) model;
-        enableAllProjectMcpServers = false;
-        includeCoAuthoredBy = false;
 
         autoUpdates = false;
+        enableAllProjectMcpServers = false;
+        enableMcpIntegration = true;
+        includeCoAuthoredBy = false;
 
-        extraKnownMarketplaces = {
-          claude-code-workflows = {
-            source = {
-              source = "directory";
-              path = "${inputs.wshobson-agents}";
-            };
-          };
-        };
+        # extraKnownMarketplaces = {
+        #   claude-code-workflows = {
+        #     source = {
+        #       source = "directory";
+        #       path = "${inputs.wshobson-agents}";
+        #     };
+        #   };
+        # };
 
-        enabledPlugins =
-          {
-            "code-review@claude-plugins-official" = lib.mkDefault true;
-            "code-simplifier@claude-plugins-official" = lib.mkDefault true;
-            "commit-commands@claude-plugins-official" = lib.mkDefault true;
-            "feature-dev@claude-plugins-official" = lib.mkDefault true;
-            "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-            "ralph-loop@claude-plugins-official" = lib.mkDefault true;
-            "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
-          }
-          // wsEnabledPlugins;
+        # enabledPlugins =
+        #   {
+        #     "code-review@claude-plugins-official" = lib.mkDefault true;
+        #     "code-simplifier@claude-plugins-official" = lib.mkDefault true;
+        #     "commit-commands@claude-plugins-official" = lib.mkDefault true;
+        #     "feature-dev@claude-plugins-official" = lib.mkDefault true;
+        #     "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
+        #     "ralph-loop@claude-plugins-official" = lib.mkDefault true;
+        #     "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+        #   }
+        #   // wsEnabledPlugins;
 
         hooks = {
-          PreToolUse = [
-            {
-              matcher = "Bash";
-              hooks = [
-                {
-                  type = "command";
-                  command = ./configs/ai/hooks/enforce-uv.fish;
-                }
-              ];
-            }
-          ];
+          # PreToolUse = [
+          #   {
+          #     matcher = "Bash";
+          #     hooks = [
+          #       {
+          #         type = "command";
+          #         command = ./configs/ai/hooks/enforce-uv.fish;
+          #       }
+          #     ];
+          #   }
+          # ];
           PostToolUse = [
             {
               matcher = "Edit|Write|MultiEdit";
@@ -340,32 +337,12 @@ in {
             "Bash(ast-grep:*)"
             "Bash(awk:*)"
             "Bash(cargo:*)"
-            "Bash(cat:*)"
-            "Bash(chmod:*)"
-            "Bash(clippy:*)"
             "Bash(curl:*)"
             "Bash(fd:*)"
-            "Bash(find:*)"
-            "Bash(git diff)"
-            "Bash(grep:*)"
             "Bash(jq:*)"
             "Bash(just:*)"
-            "Bash(ls:*)"
-            "Bash(make:*)"
-            "Bash(mkdir:*)"
             "Bash(nix:*)"
-            "Bash(pwd:*)"
-            "Bash(pytest:*)"
-            "Bash(python3:*)"
-            "Bash(python:*)"
             "Bash(rg:*)"
-            "Bash(rustfmt:*)"
-            "Bash(sed:*)"
-            "Bash(statix check:*)"
-            "Bash(uv:*)"
-            "Bash(xargs:*)"
-            "Bash(xh:*)"
-            "Bash(yq:*)"
             "Edit(**/*.md)"
             "Edit(//tmp/**)"
             "Glob"
@@ -379,9 +356,6 @@ in {
             "WebSearch"
             "Write(//tmp/**)"
             "Write(**/plans/**)"
-            "mcp__context7"
-            "mcp__filesystem"
-            "mcp__rust-analyzer"
           ];
 
           ask = [
@@ -389,7 +363,6 @@ in {
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
-            "mcp__rime"
           ];
 
           deny = [
@@ -431,8 +404,6 @@ in {
       skills = {
         ast-grep = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
       };
-
-      mcpServers = mcpServersWithType;
     };
 
     mcp = {
