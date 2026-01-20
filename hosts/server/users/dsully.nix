@@ -32,6 +32,7 @@ in {
       ++ (with perSystem.self; [
         autorebase
         qbit-port-update
+        qbit-tools
       ]);
   };
 

@@ -14,13 +14,29 @@ with pkgs;
     cargoHash = "sha256-xux2ciJKntJW31SNB7Kg9aMTnNx+1IP1hl8lIoa8fDY=";
     doCheck = false;
 
-    nativeBuildInputs = lib.optionals stdenv.isLinux [
-      pkg-config
-    ];
+    nativeBuildInputs =
+      [
+        installShellFiles
+      ]
+      ++ lib.optionals stdenv.isLinux [
+        pkg-config
+      ];
 
     buildInputs = lib.optionals stdenv.isLinux [
       openssl
     ];
+
+    postInstall = lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) (
+      let
+        emulator = stdenv.hostPlatform.emulator buildPackages;
+        tool = "stash-tool";
+      in ''
+        installShellCompletion --cmd ${tool} \
+          --bash <(${emulator} $out/bin/${tool} completions bash) \
+          --fish <(${emulator} $out/bin/${tool} completions fish) \
+          --zsh <(${emulator} $out/bin/${tool} completions zsh)
+      ''
+    );
 
     meta = {
       description = "QB Tools";
