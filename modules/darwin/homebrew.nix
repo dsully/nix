@@ -33,7 +33,7 @@
 
     casks = [
       "1password"
-      # "boltai"
+      "boltai"
       "cleanshot"
       "daisydisk"
       "dash"
