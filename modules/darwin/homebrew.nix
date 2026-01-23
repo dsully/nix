@@ -49,6 +49,7 @@
       "raindropio"
       "rapidapi"
       "raycast"
+      "repobar"
       "retcon"
       "rocket"
       "soulver"
@@ -97,6 +98,7 @@
 
     taps = [
       "rust-mcp-stack/tap"
+      "steipete/tap"
     ];
   };
 }
