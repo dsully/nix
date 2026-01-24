@@ -202,6 +202,7 @@ in {
     packages =
       (
         with perSystem.llm-agents; [
+          claude-code
           claude-code-acp
           # codex
           # gemini-cli
@@ -258,7 +259,7 @@ in {
 
     claude-code = {
       enable = true;
-      package = perSystem.claude-code.claude-code-bun.override {bunBinName = "claude";};
+      package = perSystem.llm-agents.claude-code;
 
       inherit agents;
 

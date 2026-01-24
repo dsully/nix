@@ -50,9 +50,6 @@
 
     qbit-tools.url = "github:dsully/qbit-tools";
     qbit-tools.inputs.nixpkgs.follows = "nixpkgs";
-
-    claude-code.url = "github:sadjow/claude-code-nix";
-    claude-code.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs:
