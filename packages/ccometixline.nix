@@ -2,17 +2,17 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "ccometixline";
-    version = "e1192c72";
-    rev = "e1192c7282c475744b0fc6221c10149f41667d80";
+    version = "1.0.9";
+    rev = "f10d9a682b1354104553c4cdaeda25b5700d4360";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "Haleclipse";
       repo = "CCometixLine";
-      hash = "sha256-afXdP8TSXBVb3J3eYqz+CIpomRNUza2jQtA96Wu6Rkk=";
+      hash = "sha256-so/I8+3E1EkLFebIH+0OJeYQRIa9WLFOVhQNEP7IIEw=";
     };
 
-    cargoHash = "sha256-hWsxdl6qabU9x8oMW8f1sH6B2KHeU8ZNxm2wPUpERxc=";
+    cargoHash = "sha256-4xGyrWnxKE4++Dj3CqPnqfH5uZrXKT0/rwEgshpO3jw=";
     doCheck = false;
 
     # buildInputs = lib.optionals stdenv.isDarwin [
