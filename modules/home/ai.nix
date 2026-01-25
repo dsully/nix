@@ -146,6 +146,10 @@
   };
 
   mcpServers = {
+    ast-grep = {
+      command = "${pkgs.uv}/bin/uvx";
+      args = ["--from" "git+https://github.com/ast-grep/ast-grep-mcp" "ast-grep-server"];
+    };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
       args = [config.home.homeDirectory "--allow-write"];
@@ -202,7 +206,6 @@ in {
     packages =
       (
         with perSystem.llm-agents; [
-          claude-code
           claude-code-acp
           # codex
           # gemini-cli
@@ -294,7 +297,7 @@ in {
         #   }
         #   // wsEnabledPlugins;
 
-        hooks = {
+        hooks = lib.mkDefault {
           # PreToolUse = [
           #   {
           #     matcher = "Bash";
@@ -402,9 +405,7 @@ in {
         };
       };
 
-      skills = {
-        ast-grep = "${inputs.ai-skills-ast-grep}/ast-grep/skills/ast-grep";
-      };
+      mcpServers = mcpServersWithType;
     };
 
     mcp = {
