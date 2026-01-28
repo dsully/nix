@@ -132,7 +132,7 @@
   };
 
   # For crush: add enabled = true to each LSP config
-  lspWithEnabled = lib.mapAttrs (_: v: v // {enabled = true;}) (removeAttrs lsp ["bash"]);
+  # lspWithEnabled = lib.mapAttrs (_: v: v // {enabled = true;}) (removeAttrs lsp ["bash"]);
 
   # For opencode: transform to { command = [...], extensions = [...] }
   lspExtensions = {
@@ -225,40 +225,40 @@ in {
   };
 
   programs = {
-    crush = {
-      enable = true;
-
-      settings = {
-        lsp = lspWithEnabled;
-        mcp = mcpServersWithType;
-
-        inherit models;
-
-        permissions = {
-          allowed_tools = [
-            "edit"
-            "grep"
-            "ls"
-            "view"
-            "mcp_context7_get-library-doc"
-          ];
-        };
-
-        providers = {
-          anthropic = {
-            id = "anthropic";
-            name = "Anthropic";
-            type = "anthropic";
-            api_key = "Bearer $(anthropic-api-key)";
-            extra_headers = {
-              anthropic-version = "2023-06-01";
-              anthropic-beta = "oauth-2025-04-20";
-            };
-            system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
-          };
-        };
-      };
-    };
+    # crush = {
+    #   enable = true;
+    #
+    #   settings = {
+    #     lsp = lspWithEnabled;
+    #     mcp = mcpServersWithType;
+    #
+    #     inherit models;
+    #
+    #     permissions = {
+    #       allowed_tools = [
+    #         "edit"
+    #         "grep"
+    #         "ls"
+    #         "view"
+    #         "mcp_context7_get-library-doc"
+    #       ];
+    #     };
+    #
+    #     providers = {
+    #       anthropic = {
+    #         id = "anthropic";
+    #         name = "Anthropic";
+    #         type = "anthropic";
+    #         api_key = "Bearer $(anthropic-api-key)";
+    #         extra_headers = {
+    #           anthropic-version = "2023-06-01";
+    #           anthropic-beta = "oauth-2025-04-20";
+    #         };
+    #         system_prompt_prefix = "You are Claude Code, Anthropic's official CLI for Claude.";
+    #       };
+    #     };
+    #   };
+    # };
 
     claude-code = {
       enable = true;
