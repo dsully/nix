@@ -409,28 +409,7 @@
         "nixpkgs": "nixpkgs",
         "opnix": "opnix",
         "qbit-tools": "qbit-tools",
-        "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
-      }
-    },
-    "system-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1769631264,
-        "narHash": "sha256-7gRziTbOlLouotHGryUvQ8ek0gAPJVvp9cuCPyUIHrY=",
-        "owner": "numtide",
-        "repo": "system-manager",
-        "rev": "396a4fe4638011e42b9c73ded910fcc0ea54fc63",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "system-manager",
-        "type": "github"
       }
     },
     "systems": {

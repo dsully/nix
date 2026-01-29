@@ -8,7 +8,7 @@ export NH_PRESERVE_ENV := "1"
 #
 
 NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
-SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run github:numtide/system-manager --" }
+SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run nixpkgs#system-manager --" }
 NH_ARGS := "--ask --keep-failed --keep-going"
 
 # This list
