@@ -18,10 +18,12 @@
     casks = [
       "anylist"
       "chatgpt"
+      "claude"
       "discord"
       "downie"
       "fission"
       "google-chrome"
+      "granola"
       "iina"
       "insta360-studio"
       "latest"

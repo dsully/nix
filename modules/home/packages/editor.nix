@@ -30,6 +30,7 @@ in {
         nil
         nixd
         nixpkgs-fmt
+        oxfmt
         oxlint
         pyrefly
         revive
