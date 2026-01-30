@@ -31,6 +31,9 @@ in {
       version = "LuaJIT";
     };
     workspace = {
+      ignoreGlobs = [
+        "**/*_spec.lua"
+      ];
       library = [
         "$VIMRUNTIME"
         "$XDG_DATA_HOME/nvim/lazy/"

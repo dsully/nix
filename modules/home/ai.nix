@@ -206,6 +206,7 @@ in {
     packages =
       (
         with perSystem.llm-agents; [
+          ccstatusline
           claude-code-acp
           # codex
           # gemini-cli
@@ -332,7 +333,8 @@ in {
         };
 
         statusLine = {
-          command = "${lib.getExe my.pkgs.ccometixline} --theme nord";
+          # command = "${lib.getExe my.pkgs.ccometixline} --theme nord";
+          command = lib.getExe perSystem.llm-agents.ccstatusline;
           padding = 0;
           type = "command";
         };
@@ -364,13 +366,13 @@ in {
           ];
 
           ask = [
-            "Bash(git:*)"
             "Bash(rm:*)"
             "Bash(rmdir:*)"
             "Read(./secrets/**)"
           ];
 
           deny = [
+            "Bash(git:*)"
             "Bash(su:*)"
             "Bash(sudo:*)"
             "Read(./.direnv)"

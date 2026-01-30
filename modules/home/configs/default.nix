@@ -1,5 +1,6 @@
 {...}: {
   imports = [
+    ./ai/ccstatusline.nix
     ./emmylua.nix
     ./fish.nix
     ./gh.nix
