@@ -213,6 +213,7 @@ in {
         ]
       )
       ++ (with my.pkgs; [
+        cai
         ccometixline
         crates-mcp
         git-ai-commit
