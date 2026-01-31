@@ -15,13 +15,13 @@ with pkgs; let
 
   toml-fmt-common = python3.pkgs.buildPythonPackage rec {
     pname = "toml-fmt-common";
-    version = "1.1.0";
+    version = "1.2.0";
     format = "wheel";
 
     src = fetchPypi {
       abi = "none";
       dist = "py3";
-      hash = "sha256-kqlWxKv5wU5y1R5MIxSbJZaoSsDDR0hOfDYAiAfi4KM=";
+      hash = "sha256-8nug9KNZQDXzOFIx0j1Dekm9b/Z+xiRCSmd8KzBAdtM=";
       inherit format;
       pname = "toml_fmt_common";
       python = "py3";
