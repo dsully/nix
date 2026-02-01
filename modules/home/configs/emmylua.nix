@@ -36,7 +36,7 @@ in {
       ];
       library = [
         "$VIMRUNTIME"
-        "$XDG_DATA_HOME/nvim/lazy/"
+        # "$XDG_DATA_HOME/nvim/lazy/"
       ];
       workspaceRoots = [
         "lua"
