@@ -2,14 +2,14 @@
 with pkgs;
   buildGoModule rec {
     pname = "rip-go";
-    rev = "a8b499dc8e4063132e34423c1deedeb8fdbe763f";
+    rev = "ae27d2d0855e02ce05ff63d9baedd054c4e658e2";
     version = "0.2.2";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "roniel-rhack";
       repo = "rip-go";
-      hash = "sha256-2tyqbEue4wqgK12Ydy5DhTTHOwJpkqXtW7/3ccvFiw4=";
+      hash = "sha256-c0G6hkMLkFBetP75YKrh/c/5USR6Vc4TPSVZJTSXDkU=";
     };
 
     vendorHash = "sha256-Q6AstIIHJwmi6JHNQEAr2c5dZSXbDQSbqIvCxgyXuJ8=";
