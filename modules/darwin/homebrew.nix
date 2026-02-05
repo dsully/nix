@@ -26,6 +26,7 @@
 
     brews = [
       "gitui"
+      "mactop"
       "mas"
       "rust-analyzer"
       "xz"
