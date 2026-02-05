@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "devmoji-log";
-    version = "0.0.1";
+    version = "0.0.2";
 
     src = fetchFromGitHub {
       owner = "dsully";
       repo = pname;
-      rev = "59f0b367e424c8aa0a7cb7bea94a46ecf0cfca03";
-      hash = "sha256-SwytrsHxowB/DJ1gY257rqILsRrC1iM9FGOwJWA5Nsk=";
+      rev = "beba18c74e5f5449d387a248f5ed4abd8c28192f";
+      hash = "sha256-2JDhMIyCRZSyk6UhpmeN8lF2pOS/FhbULFQT9z/nlF4=";
     };
 
-    cargoHash = "sha256-f4SCbXOc4F154NvPZB/6SSsUcLeIixLcyNFrO9RVNCs=";
+    cargoHash = "sha256-Yz1GW0h3Q+8loqV06xKYRkB3uXWUTPWuRCS5PZ0UH+I=";
 
     nativeBuildInputs = [
       pkg-config

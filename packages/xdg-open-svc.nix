@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "caarlos0";
       repo = pname;
-      rev = "40f0746c5ecb3fa7e0615c0905044d488373cbbf";
-      hash = "sha256-Agxqgwjbh6E3xpyWXytjZJBjQFc3NyTzByvOY3eJi+g=";
+      rev = "639c1dacd375ea30d6dd0ba98e80cea05abce5c0";
+      hash = "sha256-T87O8Ln8W1hfgTlKswBlT3D2hOdQ4T5vpgdiYr8NEJ4=";
     };
 
     vendorHash = "sha256-scg1vorrJ4a6pblnhEWJeLJjh60uv+PItVU7lCpLGxM=";
