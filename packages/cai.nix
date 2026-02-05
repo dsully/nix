@@ -24,9 +24,9 @@ with pkgs;
       zlib
     ];
 
-    # env = {
-    #   RUSTONIG_SYSTEM_LIBONIG = true;
-    # };
+    env = {
+      RUSTONIG_SYSTEM_LIBONIG = true;
+    };
 
     meta = {
       description = "User friendly CLI tool for AI tasks";
