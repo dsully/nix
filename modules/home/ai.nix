@@ -341,15 +341,15 @@ in {
 
         permissions = {
           allow = [
-            "Bash(ast-grep:*)"
-            "Bash(awk:*)"
-            "Bash(cargo:*)"
-            "Bash(curl:*)"
-            "Bash(fd:*)"
-            "Bash(jq:*)"
-            "Bash(just:*)"
-            "Bash(nix:*)"
-            "Bash(rg:*)"
+            "Bash(ast-grep *)"
+            "Bash(awk *)"
+            "Bash(cargo *)"
+            "Bash(curl *)"
+            "Bash(fd *)"
+            "Bash(jq *)"
+            "Bash(just *)"
+            "Bash(nix *)"
+            "Bash(rg *)"
             "Edit(**/*.md)"
             "Edit(//tmp/**)"
             "Glob"
@@ -366,15 +366,15 @@ in {
           ];
 
           ask = [
-            "Bash(rm:*)"
-            "Bash(rmdir:*)"
+            "Bash(rm)"
+            "Bash(rmdir)"
             "Read(./secrets/**)"
           ];
 
           deny = [
-            "Bash(git:*)"
-            "Bash(su:*)"
-            "Bash(sudo:*)"
+            "Bash(git)"
+            "Bash(su)"
+            "Bash(sudo)"
             "Read(./.direnv)"
             "Read(./.env)"
             "Read(./.env.*)"
@@ -458,6 +458,10 @@ in {
           };
         };
         autoupdate = false;
+        compaction = {
+          auto = true;
+          prune = true;
+        };
         formatter = lib.mkDefault {
           rustfmt = {
             disabled = false;
