@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "nh";
-    rev = "8c5e29cdc321714d518c7d0c057b8d912c30448e";
+    rev = "347c71b43705a2efcc6e4ebb94e14894bb5d3147";
     version = "4.3.0-beta1-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "nix-community";
       repo = "nh";
-      hash = "sha256-aLWuo5CR5Mw20krNR0/JhZ1fC35PgJFAVWwtqIkkJAk=";
+      hash = "sha256-sLRCTKKt7FsxR/rKrJp5BN++3p8tfuShzIKLMNTh7DA=";
     };
 
     cargoHash = "sha256-1ewOocVkr/uTow3rymzsDKwEYGxg3s9uBrZm6hwUQLg=";
