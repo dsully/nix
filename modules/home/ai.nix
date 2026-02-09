@@ -571,8 +571,33 @@ in {
           prune = true;
         };
         formatter = lib.mkDefault {
+          alejandra = {
+            command = [
+              "${lib.getExe pkgs.alejandra}"
+              "\$FILE"
+            ];
+            extensions = [".nix"];
+          };
+          gofmt = {disabled = true;};
+          gofumpt = {
+            command = [
+              "${lib.getExe pkgs.gofumpt}"
+              "-w"
+              "\$FILE"
+            ];
+            extensions = [".go"];
+          };
+          nixfmt = {disabled = true;};
+          ruff-check = {
+            command = [
+              "${lib.getExe pkgs.ruff}"
+              "check"
+              "--fix"
+              "\$FILE"
+            ];
+            extensions = [".py" ".pyi"];
+          };
           rustfmt = {
-            disabled = false;
             command = [
               "rustfmt"
               "+nightly"
@@ -580,6 +605,27 @@ in {
               "\$FILE"
             ];
             extensions = [".rs"];
+          };
+          shfmt = {
+            command = [
+              "${lib.getExe pkgs.shfmt}"
+              "-i"
+              "4"
+              "-ci"
+              "-sr"
+              "-s"
+              "-bn"
+              "-w"
+              "\$FILE"
+            ];
+            extensions = [".sh" ".bash"];
+          };
+          stylua = {
+            command = [
+              "${lib.getExe pkgs.stylua}"
+              "\$FILE"
+            ];
+            extensions = [".lua"];
           };
         };
         lsp = lib.mkDefault (opencodeLsp
