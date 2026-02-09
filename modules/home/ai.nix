@@ -7,7 +7,33 @@
   pkgs,
   ...
 }: let
+  cpo = "${inputs.claude-plugins-official}/plugins";
   ws = "${inputs.wshobson-agents}/plugins";
+
+  # Strip YAML frontmatter from a markdown file, returning only the body.
+  stripFrontmatter = file: let
+    raw = builtins.readFile file;
+    parts = lib.splitString "---\n" raw;
+  in
+    if builtins.length parts >= 3
+    then lib.concatStringsSep "" (lib.drop 2 parts)
+    else raw;
+
+  # Build an opencode agent markdown string with new frontmatter + original body.
+  mkAgent = {
+    file,
+    description,
+    model ? null,
+    color ? null,
+  }: let
+    modelLine = lib.optionalString (model != null) "model: ${model}\n";
+    colorLine = lib.optionalString (color != null) "color: ${color}\n";
+  in ''
+    ---
+    description: ${description}
+    mode: all
+    ${modelLine}${colorLine}---
+    ${stripFrontmatter file}'';
 
   # Map of plugin directory -> { agentName = "filename.md"; }
   wsPluginAgents = {
@@ -70,21 +96,95 @@
     unit-testing.test-automator = "test-automator.md";
   };
 
-  # Generate agents attrset from wsPluginAgents
-  agents =
+  # Generate wshobson agents with proper opencode frontmatter
+  wsAgents =
     lib.foldlAttrs (
       acc: plugin: agentAttrs:
         acc
-        // lib.mapAttrs (_: file: "${ws}/${plugin}/agents/${file}") agentAttrs
+        // lib.mapAttrs (
+          _name: file:
+            mkAgent {
+              file = "${ws}/${plugin}/agents/${file}";
+              description = let
+                raw = builtins.readFile "${ws}/${plugin}/agents/${file}";
+                parts = lib.splitString "description: " raw;
+                desc =
+                  if builtins.length parts >= 2
+                  then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
+                  else "Specialized development agent";
+              in
+                desc;
+            }
+        )
+        agentAttrs
     ) {}
     wsPluginAgents;
 
+  # Anthropic claude-plugins-official agents
+  cpoAgents = {
+    anthropic-code-simplifier = mkAgent {
+      file = "${cpo}/code-simplifier/agents/code-simplifier.md";
+      description = "Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality";
+    };
+    anthropic-code-architect = mkAgent {
+      file = "${cpo}/feature-dev/agents/code-architect.md";
+      description = "Designs feature architectures by analyzing codebase patterns, providing implementation blueprints with files to create/modify, component designs, and data flows";
+      color = "success";
+    };
+    anthropic-code-explorer = mkAgent {
+      file = "${cpo}/feature-dev/agents/code-explorer.md";
+      description = "Deeply analyzes codebase features by tracing execution paths, mapping architecture layers, understanding patterns, and documenting dependencies";
+      color = "warning";
+    };
+    anthropic-code-reviewer = mkAgent {
+      file = "${cpo}/feature-dev/agents/code-reviewer.md";
+      description = "Reviews code for bugs, logic errors, security vulnerabilities, and adherence to project conventions using confidence-based filtering";
+      color = "error";
+    };
+    anthropic-pr-code-reviewer = mkAgent {
+      file = "${cpo}/pr-review-toolkit/agents/code-reviewer.md";
+      description = "Reviews pull request code for adherence to project guidelines, style guides, and best practices before committing or creating PRs";
+      color = "success";
+    };
+    anthropic-pr-code-simplifier = mkAgent {
+      file = "${cpo}/pr-review-toolkit/agents/code-simplifier.md";
+      description = "Automatically simplifies code after writing or modifying, following project best practices while retaining all functionality";
+    };
+    anthropic-comment-analyzer = mkAgent {
+      file = "${cpo}/pr-review-toolkit/agents/comment-analyzer.md";
+      description = "Analyzes code comments for accuracy, completeness, and long-term maintainability to prevent comment rot and technical debt";
+      color = "success";
+    };
+    anthropic-pr-test-analyzer = mkAgent {
+      file = "${cpo}/pr-review-toolkit/agents/pr-test-analyzer.md";
+      description = "Reviews pull requests for test coverage quality and completeness, identifying critical gaps in test scenarios";
+      color = "info";
+    };
+    anthropic-silent-failure-hunter = mkAgent {
+      file = "${cpo}/pr-review-toolkit/agents/silent-failure-hunter.md";
+      description = "Identifies silent failures, inadequate error handling, and inappropriate fallback behavior in code changes";
+      color = "warning";
+    };
+    anthropic-type-design-analyzer = mkAgent {
+      file = "${cpo}/pr-review-toolkit/agents/type-design-analyzer.md";
+      description = "Analyzes type design for encapsulation quality, invariant expression, usefulness, and enforcement with quantitative ratings";
+      color = "accent";
+    };
+    anthropic-conversation-analyzer = mkAgent {
+      file = "${cpo}/hookify/agents/conversation-analyzer.md";
+      description = "Analyzes conversation transcripts to find problematic behaviors and suggest preventive hooks";
+      color = "warning";
+    };
+  };
+
+  agents = wsAgents // cpoAgents;
+
   # Generate wshobson enabledPlugins from wsPluginAgents keys
-  # wsEnabledPlugins =
-  #   lib.mapAttrs' (
-  #     p: _: lib.nameValuePair "${p}@claude-code-workflows" (lib.mkDefault true)
-  #   )
-  #   wsPluginAgents;
+  wsEnabledPlugins =
+    lib.mapAttrs' (
+      p: _: lib.nameValuePair "${p}@claude-code-workflows" (lib.mkDefault true)
+    )
+    wsPluginAgents;
 
   lsp = {
     bash = {
@@ -103,12 +203,6 @@
     };
     nix = {
       command = lib.getExe pkgs.nil;
-    };
-    python = {
-      command = lib.getExe pkgs.ty;
-      args = [
-        "server"
-      ];
     };
     rust = {
       command = "rust-analyzer";
@@ -139,7 +233,6 @@
     helm = [".tpl" ".yaml"];
     lua = [".lua"];
     nix = [".nix"];
-    python = [".py"];
     rust = [".rs"];
     toml = [".toml"];
     typescript = [".ts" ".tsx" ".js" ".jsx"];
@@ -171,9 +264,9 @@
 
   models = {
     large = {
-      model = "claude-opus-4-5-20251101";
+      model = "claude-opus-4-6";
       provider = "anthropic";
-      max_tokens = 200000;
+      max_tokens = 1000000;
       reasoning_effort = "medium";
     };
     medium = {
@@ -203,10 +296,15 @@ in {
   ];
 
   home = {
+    sessionVariables = {
+      OPENCODE_EXPERIMENTAL_LSP_TY = "1";
+    };
+
     packages =
       (
         with perSystem.llm-agents; [
           ccstatusline
+          ccusage-opencode
           claude-code-acp
           # codex
           # gemini-cli
@@ -287,17 +385,17 @@ in {
         #   };
         # };
 
-        # enabledPlugins =
-        #   {
-        #     "code-review@claude-plugins-official" = lib.mkDefault true;
-        #     "code-simplifier@claude-plugins-official" = lib.mkDefault true;
-        #     "commit-commands@claude-plugins-official" = lib.mkDefault true;
-        #     "feature-dev@claude-plugins-official" = lib.mkDefault true;
-        #     "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-        #     "ralph-loop@claude-plugins-official" = lib.mkDefault true;
-        #     "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
-        #   }
-        #   // wsEnabledPlugins;
+        enabledPlugins =
+          {
+            "code-review@claude-plugins-official" = lib.mkDefault true;
+            "code-simplifier@claude-plugins-official" = lib.mkDefault true;
+            "commit-commands@claude-plugins-official" = lib.mkDefault true;
+            "feature-dev@claude-plugins-official" = lib.mkDefault true;
+            "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
+            "ralph-loop@claude-plugins-official" = lib.mkDefault true;
+            "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+          }
+          // wsEnabledPlugins;
 
         hooks = lib.mkDefault {
           # PreToolUse = [
@@ -457,7 +555,17 @@ in {
             };
           };
         };
+        model = opencodeModel models.large;
         autoupdate = false;
+        # provider = {
+        #   anthropic = {
+        #     options = {
+        #       headers = {
+        #         anthropic-beta = "context-1m-2025-08-07";
+        #       };
+        #     };
+        #   };
+        # };
         compaction = {
           auto = true;
           prune = true;
@@ -474,7 +582,10 @@ in {
             extensions = [".rs"];
           };
         };
-        lsp = lib.mkDefault opencodeLsp;
+        lsp = lib.mkDefault (opencodeLsp
+          // {
+            pyright = {disabled = true;};
+          });
         permission = lib.mkForce {
           bash = {
             "*" = "allow";

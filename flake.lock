@@ -79,6 +79,22 @@
         "type": "github"
       }
     },
+    "claude-plugins-official": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770421243,
+        "narHash": "sha256-BcErQpkDLWetv/Tdi12zlHibHg2VsuCbnIlfrqBhpkY=",
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "rev": "2cd88e7947b7382e045666abee790c7f55f669f3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "claude-plugins-official",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1767744144,
@@ -399,6 +415,7 @@
         "ai-skills-ast-grep": "ai-skills-ast-grep",
         "blueprint": "blueprint",
         "charmbracelet-nur": "charmbracelet-nur",
+        "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "direnv-instant": "direnv-instant",
         "home-manager": "home-manager",
