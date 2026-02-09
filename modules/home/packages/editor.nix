@@ -42,7 +42,7 @@ in {
         sphinx-lint
         stylelint
         stylua
-        superhtml
+        # superhtml
         systemd-lsp
         tombi
         ts_query_ls
@@ -65,7 +65,7 @@ in {
         #     '';
         # }))
         yamllint
-        zls
+        # zls
       ]
       ++ (with my.pkgs; [
         codesort
