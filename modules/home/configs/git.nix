@@ -368,16 +368,6 @@ in {
         update = true;
       };
 
-      url = {
-        "git@github.com:" = {
-          insteadOf = "gh:";
-          pushInsteadOf = "git://github.com/";
-        };
-        "git://github.com/" = {
-          insteadOf = "github:";
-        };
-      };
-
       user = {
         name = config.system.fullName;
         useConfigOnly = true;
