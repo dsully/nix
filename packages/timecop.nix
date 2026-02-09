@@ -8,10 +8,10 @@ with pkgs;
       owner = "kamilmac";
       repo = "timecop";
       rev = "651d67fb45aa4b9436e20490f68b2fc2d38edb76";
-      hash = "sha256-R7e4X9JLNUqg+CvSKB+Xcf37nvKdPZbai4KWIjOK9NY=";
+      hash = "sha256-+mghcFYTEI+rvbWotC2qW1R5FDQ3Swb1ggn4BfGsuvQ=";
     };
 
-    cargoHash = "sha256-HmMk93Gh/WtG+xSA0Qcsm6o6d5ROH8m/kEXeyJIHDq0=";
+    cargoHash = "sha256-kY3sNLlLqqgFsfngAaLEev1b0GPCAPU/mGkCTyUMu8A=";
     doCheck = false;
 
     nativeBuildInputs = [
