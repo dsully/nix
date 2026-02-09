@@ -71,6 +71,7 @@
         clean-dev-dirs
         leadr
         rip-go
+        timecop
         xdg-open-svc
       ]);
   };
