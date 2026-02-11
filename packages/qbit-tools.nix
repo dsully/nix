@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage {
     pname = "qbit-tools";
-    version = "0.3.8";
+    version = "0.3.10";
 
     src = fetchFromGitHub {
       owner = "dsully";
       repo = "qbit-tools";
-      rev = "8e7cd2191d8577c25ad47a90ad4ccd94ce6f07e9";
-      hash = "sha256-d0H/kcJ7n9QL3GDW9HMxA1aNMbp7K/sVwPvGp3FcL+I=";
+      rev = "673b9344759cba8f1e474d31df302a2903c6becd";
+      hash = "sha256-cx6YFDO1YsnNHnqHt+qagLt40dFW3EDpG7w0fF+Cp2g=";
     };
 
-    cargoHash = "sha256-xux2ciJKntJW31SNB7Kg9aMTnNx+1IP1hl8lIoa8fDY=";
+    cargoHash = "sha256-NbZu74lo+qQFIXSldLmGQJzG8B4DZw9/L4oPsW70Vq8=";
     doCheck = false;
 
     nativeBuildInputs =
