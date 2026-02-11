@@ -522,41 +522,8 @@ in {
       rules = ./configs/ai/AGENTS.md;
       inherit agents;
       settings = {
-        agent = {
-          build = {
-            apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
-            mode = "primary";
-            model = opencodeModel models.medium;
-            tools = {
-              bash = true;
-              edit = true;
-              write = true;
-            };
-          };
-          plan = {
-            apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
-            mode = "primary";
-            model = opencodeModel models.large;
-            tools = {
-              bash = false;
-              edit = false;
-              write = false;
-            };
-          };
-          review = {
-            apiKey = lib.mkDefault "$ANTHROPIC_API_KEY";
-            description = "Reviews code for best practices and potential issues";
-            mode = "subagent";
-            model = opencodeModel models.large;
-            prompt = "You are a code reviewer. Focus on security, performance, and maintainability.";
-            tools = {
-              edit = false;
-              write = false;
-            };
-          };
-        };
-        model = opencodeModel models.large;
-        autoupdate = false;
+        # model = opencodeModel models.large;
+        autoupdate = lib.mkDefault true;
         # provider = {
         #   anthropic = {
         #     options = {
