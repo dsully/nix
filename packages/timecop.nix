@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "kamilmac";
       repo = "timecop";
-      rev = "5dfec6ebe17206fb8b8d45f1dbc74aca795d002d";
-      hash = "sha256-gBAfV079rHNnlR9O4XXwWO1TQivAFjkdcmn2FoyiPe4=";
+      rev = "d1399e2cf3ac5e8c8bef5f41b97df792f67e0329";
+      hash = "sha256-tZh7qLAPPnUGzD4aJ2sdrNAd2DQhoFNk4+9KIn3r0r8=";
     };
 
     cargoHash = "sha256-kY3sNLlLqqgFsfngAaLEev1b0GPCAPU/mGkCTyUMu8A=";
