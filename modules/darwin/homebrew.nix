@@ -1,12 +1,12 @@
 {config, ...}: {
   environment = {
-    systemPath = [config.homebrew.brewPrefix];
+    systemPath = ["${config.homebrew.prefix}/bin"];
     variables = {
       HOMEBREW_BAT = "1";
       HOMEBREW_NO_ANALYTICS = "1";
       HOMEBREW_NO_COMPAT = "1";
       HOMEBREW_NO_ENV_HINTS = "1";
-      HOMEBREW_PREFIX = config.homebrew.brewPrefix;
+      HOMEBREW_PREFIX = config.homebrew.prefix;
     };
   };
 
