@@ -48,6 +48,9 @@
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 
+    astral-claude-plugins.url = "github:astral-sh/claude-code-plugins";
+    astral-claude-plugins.flake = false;
+
     qbit-tools.url = "github:dsully/qbit-tools";
     qbit-tools.inputs.nixpkgs.follows = "nixpkgs";
   };

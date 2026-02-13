@@ -7,6 +7,7 @@
   pkgs,
   ...
 }: let
+  acp = "${inputs.astral-claude-plugins}";
   cpo = "${inputs.claude-plugins-official}/plugins";
   ws = "${inputs.wshobson-agents}/plugins";
 
@@ -376,17 +377,24 @@ in {
         enableMcpIntegration = true;
         includeCoAuthoredBy = false;
 
-        # extraKnownMarketplaces = {
-        #   claude-code-workflows = {
-        #     source = {
-        #       source = "directory";
-        #       path = "${inputs.wshobson-agents}";
-        #     };
-        #   };
-        # };
+        extraKnownMarketplaces = {
+          "astral-sh" = {
+            source = {
+              source = "directory";
+              path = "${acp}";
+            };
+          };
+          claude-code-workflows = {
+            source = {
+              source = "directory";
+              path = "${inputs.wshobson-agents}";
+            };
+          };
+        };
 
         enabledPlugins =
           {
+            "astral@astral-sh" = lib.mkDefault true;
             "code-review@claude-plugins-official" = lib.mkDefault true;
             "code-simplifier@claude-plugins-official" = lib.mkDefault true;
             "commit-commands@claude-plugins-official" = lib.mkDefault true;
@@ -521,6 +529,11 @@ in {
       enableMcpIntegration = true;
       rules = ./configs/ai/AGENTS.md;
       inherit agents;
+      skills = {
+        astral-uv = "${acp}/plugins/astral/skills/uv";
+        astral-ruff = "${acp}/plugins/astral/skills/ruff";
+        astral-ty = "${acp}/plugins/astral/skills/ty";
+      };
       settings = {
         # model = opencodeModel models.large;
         autoupdate = lib.mkDefault true;

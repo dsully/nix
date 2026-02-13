@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "astral-claude-plugins": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1767964245,
+        "narHash": "sha256-huyQOHqWFNIT0xsBdp4ZwApOa/mVX2eX1CA4/JDd1d4=",
+        "owner": "astral-sh",
+        "repo": "claude-code-plugins",
+        "rev": "f8034678a15ad751aae6a2b684daebac416267a1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "astral-sh",
+        "repo": "claude-code-plugins",
+        "type": "github"
+      }
+    },
     "blueprint": {
       "inputs": {
         "nixpkgs": [
@@ -413,6 +429,7 @@
     "root": {
       "inputs": {
         "ai-skills-ast-grep": "ai-skills-ast-grep",
+        "astral-claude-plugins": "astral-claude-plugins",
         "blueprint": "blueprint",
         "charmbracelet-nur": "charmbracelet-nur",
         "claude-plugins-official": "claude-plugins-official",
