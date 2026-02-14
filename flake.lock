@@ -253,11 +253,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771018093,
-        "narHash": "sha256-STUF5x1eQNKrhGn53WH1GpzBCsG719yl5rYnm7+1c4I=",
+        "lastModified": 1771037579,
+        "narHash": "sha256-NX5XuhGcsmk0oEII2PEtMRgvh2KaAv3/WWQsOpxAgR4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "26dfad95d92c50a56ce708f4256bf720bb30a630",
+        "rev": "05e6dc0f6ed936f918cb6f0f21f1dad1e4c53150",
         "type": "github"
       },
       "original": {
@@ -275,11 +275,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1771010908,
-        "narHash": "sha256-y24I29wBO7ebeHudyQZ6XVfrc5/Zp8StIfB0Yyz1JZQ=",
+        "lastModified": 1771079235,
+        "narHash": "sha256-VmxSTiYKy/xPyb4De7FGcOEyNyAH6jrqJoHFEgyny9s=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "f6067fcd6fae6d73a932e49f319fcaa1459fa960",
+        "rev": "2fda7188089599a51b4938b284d231d6cd83bcbd",
         "type": "github"
       },
       "original": {
@@ -297,11 +297,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770941087,
-        "narHash": "sha256-LERqMOoFmStaguCYZSV1kSRvHWZihJRttYkqzEh1WX4=",
+        "lastModified": 1771027491,
+        "narHash": "sha256-T53LDMjB9CmtBC4FJNAgcmJowiR8cbn6WVhIzYtfoVk=",
         "owner": "nix-community",
         "repo": "neovim-nightly-overlay",
-        "rev": "6afe464c62eee957282721751d60f9d44651bf97",
+        "rev": "0774707cd1c97e3cf721f40dd3eaa5a5a2c1872e",
         "type": "github"
       },
       "original": {
@@ -313,11 +313,11 @@
     "neovim-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1770935891,
-        "narHash": "sha256-XFde0vvpTf0JBTCfPj7SzLyPOerfeKZV4FVSBoPqkjo=",
+        "lastModified": 1771027191,
+        "narHash": "sha256-dIVrDC/L5LQC13FzJv1ezacGj5QwrWA3nIFUTRzS/FY=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "fa24df32641c850283ec7f8a35e8ad505d3866e1",
+        "rev": "289695c14efcb2cb61ea70a0dbaf0025f869b21c",
         "type": "github"
       },
       "original": {
@@ -413,11 +413,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770742669,
-        "narHash": "sha256-cx6YFDO1YsnNHnqHt+qagLt40dFW3EDpG7w0fF+Cp2g=",
+        "lastModified": 1771079000,
+        "narHash": "sha256-5LxXt3gxemtnaHscuYgKdic0tMWyDZ2E7lVjxeXsv/U=",
         "owner": "dsully",
         "repo": "qbit-tools",
-        "rev": "673b9344759cba8f1e474d31df302a2903c6becd",
+        "rev": "5ea3f6fc7cd615ba1714640ef55416e06cc05396",
         "type": "github"
       },
       "original": {
