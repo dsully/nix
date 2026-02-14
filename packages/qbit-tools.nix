@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "dsully";
       repo = "qbit-tools";
-      rev = "673b9344759cba8f1e474d31df302a2903c6becd";
-      hash = "sha256-cx6YFDO1YsnNHnqHt+qagLt40dFW3EDpG7w0fF+Cp2g=";
+      rev = "3d7df9ca71a4e9780dec0d4388c48d13783acbf1";
+      hash = "sha256-0/WeLQYNm6Cgz8ZTHNeGooMUmxMdAhwFUcQQYCWowMI=";
     };
 
     cargoHash = "sha256-NbZu74lo+qQFIXSldLmGQJzG8B4DZw9/L4oPsW70Vq8=";
