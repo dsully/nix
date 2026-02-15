@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "rust-mcp-server";
-    version = "0.3.3";
+    version = "0.3.4";
 
     src = fetchCrate {
       inherit pname version;
-      hash = "sha256-+pXqK2fv2b3MNBuu1GgXAZuirSaO1ala1BXZSvYJNy0=";
+      hash = "sha256-uD9v4VhQ7i3EB6Wdwj2+mOri7fuGDMN+aMc2rS3Llf8=";
     };
 
-    cargoHash = "sha256-9o6dyOR+R6Pz7v1tsq3vP5KjCu2wT/ALnNFjuhuETdY=";
+    cargoHash = "sha256-2c7icCuy21874wKWUf1JHyom94Vmnr+U2pDm03GuJjY=";
     doCheck = false;
 
     nativeBuildInputs = lib.optionals stdenv.isLinux [
