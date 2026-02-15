@@ -9,6 +9,15 @@
   inherit (config.colors) noHash;
 in {
   home = {
+    activation.opahRefresh = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      config_file="${config.xdg.configHome}/fish/secrets.yaml"
+      cache_file="${config.xdg.cacheHome}/fish/opah/secrets.fish"
+
+      if [ ! -f "$cache_file" ] || [ "$config_file" -nt "$cache_file" ]; then
+        ${lib.getExe pkgs.fish} -c "_opah_load --force" || true
+      fi
+    '';
+
     packages = with pkgs; [
       fishPlugins.plugin-git
     ];
