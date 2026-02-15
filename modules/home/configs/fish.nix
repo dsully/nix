@@ -66,6 +66,7 @@ in {
     "fish/secrets.yaml".source = yamlFormat.generate "fish-secrets-yaml" {
       secrets = {
         CACHIX_AUTH_TOKEN = "op://Services/Cachix/token";
+        GEMINI_API_KEY = "op://Services/Google Gemini/token";
         GITHUB_TOKEN = "op://Services/GitHub Home/token";
         OPENAI_API_KEY = "op://Services/OpenAI/token";
       };
