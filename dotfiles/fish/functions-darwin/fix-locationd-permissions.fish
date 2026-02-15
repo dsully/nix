@@ -1,0 +1,15 @@
+# vim:ft=fish
+function fix-locationd-permissions
+    # https://superuser.com/questions/526183/remove-applications-from-location-services-in-security-privacy-on-mac-os-x-10
+
+    if test -d /var/db/locationd/clients.plist
+        return
+    end
+
+    echo "Fixing location services permissions."
+    sudo -v
+
+    sudo chown -R _locationd:_locationd /var/db/locationd/
+    sudo chmod 755 /var/db/locationd/
+    sudo chmod 644 /var/db/locationd/clients.plist
+end

@@ -12,6 +12,7 @@
 
   homebrew = {
     enable = true;
+    enableFishIntegration = true;
 
     # Don't quarantine apps installed by homebrew with gatekeeper
     caskArgs.no_quarantine = true;
@@ -25,7 +26,6 @@
     };
 
     brews = [
-      "gitui"
       "mactop"
       "mas"
       "rust-analyzer"

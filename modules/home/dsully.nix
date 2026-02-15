@@ -26,6 +26,7 @@ in {
     ../common/nix.nix
     ./chsh
     ./configs
+    ./dotfiles.nix
     ./packages
   ];
 
@@ -73,18 +74,6 @@ in {
     stateVersion = "25.05";
 
     activation = {
-      chezmoi = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        #!/bin/bash
-        mkdir -p ~/.local/share
-
-        if ! [ -d "$HOME/.local/share/chezmoi" ]; then
-          ${lib.getExe pkgs.git} clone git@github.com:${userName}/dotfiles.git ~/.local/share/chezmoi
-
-          ${lib.getExe pkgs.chezmoi} init --apply --exclude encrypted ${userName} < /dev/null
-          ${lib.getExe pkgs.chezmoi} apply || true
-        fi
-      '';
-
       neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
         #!/bin/bash
 
@@ -96,6 +85,35 @@ in {
       uv = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
         ${lib.getExe pkgs.uv} tool install ptpython --quiet --upgrade
         # ${lib.getExe pkgs.uv} tool upgrade --all
+      '';
+
+      checkipConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
+        maxmind_key="${homeDir}/.config/checkip/maxmind-key"
+        urlscan_key="${homeDir}/.config/checkip/urlscan-key"
+
+        if [ -f "$maxmind_key" ] && [ -f "$urlscan_key" ]; then
+          cat > "${homeDir}/.checkip.yaml" <<YAML
+        ---
+        MAXMIND_LICENSE_KEY: $(cat "$maxmind_key")
+        URLSCAN_API_KEY: $(cat "$urlscan_key")
+        YAML
+          chmod 600 "${homeDir}/.checkip.yaml"
+        fi
+      '';
+
+      zonedConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
+        token_file="${homeDir}/.config/zoned/cloudflare-token"
+        zone_file="${homeDir}/.config/zoned/cloudflare-zone-id"
+
+        if [ -f "$token_file" ] && [ -f "$zone_file" ]; then
+          cat > "${homeDir}/.config/zoned/config.toml" <<TOML
+        hostname = "${config.system.hostName}.sully.org"
+        ${lib.optionalString pkgs.stdenv.isDarwin ''ssid = "sully"''}
+        token = "$(cat "$token_file")"
+        zoneid = "$(cat "$zone_file")"
+        TOML
+          chmod 600 "${homeDir}/.config/zoned/config.toml"
+        fi
       '';
     };
 
@@ -169,6 +187,32 @@ in {
   ];
 
   programs = {
+    onepassword-secrets = {
+      enable = true;
+      secrets = {
+        checkipMaxmind = {
+          reference = "op://Services/MaxMind API/credential";
+          path = ".config/checkip/maxmind-key";
+          mode = "0600";
+        };
+        checkipUrlscan = {
+          reference = "op://Services/URLScan API/credential";
+          path = ".config/checkip/urlscan-key";
+          mode = "0600";
+        };
+        zonedCloudflareToken = {
+          reference = "op://Services/Cloudflare DNS Token/credential";
+          path = ".config/zoned/cloudflare-token";
+          mode = "0600";
+        };
+        zonedCloudflareZoneId = {
+          reference = "op://Services/Cloudflare DNS Token/zoneid";
+          path = ".config/zoned/cloudflare-zone-id";
+          mode = "0600";
+        };
+      };
+    };
+
     direnv = {
       enable = true;
 

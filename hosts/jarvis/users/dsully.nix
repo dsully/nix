@@ -15,32 +15,27 @@
     ../options.nix
   ];
 
-  home = {
-    packages = with pkgs;
-      [
-        copilot-language-server
-        nix-output-monitor
-        zuban
-      ]
-      ++ (with perSystem.self; [
-        autorebase
-      ]);
-  };
+  home.packages = with pkgs;
+    [
+      copilot-language-server
+      nix-output-monitor
+      zuban
+    ]
+    ++ (with perSystem.self; [
+      autorebase
+    ]);
 
   programs = {
-    onepassword-secrets = {
-      enable = true;
-      secrets = {
-        sshPrivateKey = {
-          reference = "op://Services/jarvis/private key";
-          path = ".ssh/id_ed25519";
-          mode = "0600";
-        };
-        sshRSAPrivateKey = {
-          reference = "op://Services/gateway/private key";
-          path = ".ssh/id_rsa";
-          mode = "0600";
-        };
+    onepassword-secrets.secrets = {
+      sshPrivateKey = {
+        reference = "op://Services/jarvis/private key";
+        path = ".ssh/id_ed25519";
+        mode = "0600";
+      };
+      sshRSAPrivateKey = {
+        reference = "op://Services/gateway/private key";
+        path = ".ssh/id_rsa";
+        mode = "0600";
       };
     };
 

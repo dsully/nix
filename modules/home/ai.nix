@@ -288,9 +288,8 @@
     command = [v.command] ++ (v.args or []);
     extensions = lspExtensions.${name};
   }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) lsp);
-
   # For opencode: prefix with provider
-  opencodeModel = m: "${m.provider}/${m.model}";
+  # opencodeModel = m: "${m.provider}/${m.model}";
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush

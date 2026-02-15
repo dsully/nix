@@ -1,0 +1,5 @@
+# vim:ft=fish
+function disks -d "Wraps lsblk"
+
+    command lsblk -d -o PATH,SIZE,MODEL | command grep -v /dev/loop
+end

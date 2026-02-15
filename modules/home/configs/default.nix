@@ -1,12 +1,19 @@
 {...}: {
   imports = [
     ./ai/ccstatusline.nix
+    ./bacon.nix
+    ./btop.nix
     ./emmylua.nix
+    ./fastfetch.nix
+    ./fd.nix
     ./fish.nix
     ./gh.nix
     ./ghostty.nix
     ./git.nix
+    ./gitui.nix
     ./lolcate.nix
+    ./lsd.nix
+    ./misc.nix
     ./nix-init.nix
     ./pager.nix
     ./ripgrep.nix
@@ -16,5 +23,7 @@
     ./turbocommit.nix
     ./vivid.nix
     ./yamllint.nix
+    ./zed.nix
+    ./zellij.nix
   ];
 }

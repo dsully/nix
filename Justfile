@@ -83,6 +83,7 @@ gc:
 # Format the nix files in this repo
 
 alias format := fmt
+alias lint := fmt
 
 [group('nix')]
 fmt:

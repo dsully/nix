@@ -6,8 +6,11 @@
   pkgs,
   ...
 }: let
+  inherit (flake.inputs.home-manager.lib.hm.dag) entryAfter;
+
   cachixAuthTokenPath = ".config/cachix/auth-token";
-  vopono-config = "${config.home.homeDirectory}/.cache/vopono/wg.conf";
+  homeDir = config.home.homeDirectory;
+  vopono-config = "${homeDir}/.cache/vopono/wg.conf";
 in {
   imports = [
     flake.homeModules.dsully
@@ -18,6 +21,16 @@ in {
   ];
 
   home = {
+    activation.caddyEnv = entryAfter ["writeBoundary" "onepassword-secrets"] ''
+      token_file="${homeDir}/.config/caddy/cloudflare-token"
+
+      if [ -f "$token_file" ]; then
+        sudo mkdir -p /etc/caddy
+        echo "CLOUDFLARE_API_TOKEN=$(cat "$token_file")" | sudo tee /etc/caddy/env > /dev/null
+        sudo chmod 600 /etc/caddy/env
+      fi
+    '';
+
     packages = with pkgs;
       [
         copilot-language-server
@@ -37,33 +50,51 @@ in {
   };
 
   programs = {
-    onepassword-secrets = {
-      enable = true;
-      secrets = {
-        cachixAuthToken = {
-          reference = "op://Services/Cachix/token";
-          path = cachixAuthTokenPath;
-          mode = "0600";
-          group = "dsully";
-        };
-        huggingFace = {
-          reference = "op://Services/HuggingFace/credential";
-          path = ".config/huggingface/token";
-          mode = "0600";
-          group = "dsully";
-        };
-        sshPrivateKey = {
-          reference = "op://Services/server/private key";
-          path = ".ssh/id_ed25519";
-          mode = "0600";
-          group = "dsully";
-        };
-        voponoConfig = {
-          reference = "op://Services/ProtonVPN Tunnel/config";
-          path = vopono-config;
-          mode = "0640";
-          group = "dsully";
-        };
+    fish = {
+      interactiveShellInit = ''
+        if test -d /usr/local/cuda
+            set -gx CUDA_HOME /usr/local/cuda
+            fish_add_path --append "$CUDA_HOME/bin"
+        end
+      '';
+    };
+
+    onepassword-secrets.secrets = {
+      cachixAuthToken = {
+        reference = "op://Services/Cachix/token";
+        path = cachixAuthTokenPath;
+        mode = "0600";
+        group = "dsully";
+      };
+      huggingFace = {
+        reference = "op://Services/HuggingFace/credential";
+        path = ".config/huggingface/token";
+        mode = "0600";
+        group = "dsully";
+      };
+      sshPrivateKey = {
+        reference = "op://Services/server/private key";
+        path = ".ssh/id_ed25519";
+        mode = "0600";
+        group = "dsully";
+      };
+      voponoConfig = {
+        reference = "op://Services/ProtonVPN Tunnel/config";
+        path = vopono-config;
+        mode = "0640";
+        group = "dsully";
+      };
+      mullvadAccount = {
+        reference = "op://Services/Mullvad/account";
+        path = ".mullvad-account";
+        mode = "0600";
+        group = "dsully";
+      };
+      cloudflareApiToken = {
+        reference = "op://Services/Cloudflare/api token";
+        path = ".config/caddy/cloudflare-token";
+        mode = "0600";
+        group = "dsully";
       };
     };
 

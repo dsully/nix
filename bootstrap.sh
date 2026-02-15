@@ -69,21 +69,5 @@ cd "$XDG_CONFIG_HOME"/nix
 nix run nixpkgs#nh -- darwin switch .
 nix run nixpkgs#nh -- home switch .
 
-# Attach to a TTY for input prompting.
-stdin='/dev/null'
-
-if [ "$(ps otty= $$)" != '?' ]; then
-    stdin='/dev/tty'
-fi
-
-# Set the path for everything else.
-export PATH="/run/current-system/sw/bin:/opt/homebrew/bin:$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
-
-# Re-run to generate data.toml.
-if chezmoi init --apply --exclude encrypted "$@" "$HOME/dotfiles" < "$stdin"; then
-
-    chezmoi apply --force
-
-    echo ""
-    echo "Bootstrap complete! Restart your terminal to load your new environment!"
-fi
+echo ""
+echo "Bootstrap complete! Restart your terminal to load your new environment!"
