@@ -54,6 +54,42 @@ in {
       }
     ];
 
+    # Magic enter functions: https://kau.sh/blog/magic-enter-shell/
+    interactiveShellInit = ''
+      function __magic_enter
+          set -l cmd (commandline)
+          commandline -f repaint
+
+          if test -z "$cmd"
+              commandline -r ($argv[1])
+              commandline -f suppress-autosuggestion
+          end
+
+          commandline -f execute
+      end
+
+      set -l magic_bindings \
+          'comma,f,e' ',fe' \
+          'comma,f,f' ',ff' \
+          'comma,f,g' ',fg' \
+          'comma,f,i' ',fi' \
+          'comma,f,j' ',fj' \
+          'comma,f,k' ',fk' \
+          'comma,f,p' ',fp' \
+          'comma,f,r' ',fr'
+
+      for i in (seq 1 2 (count $magic_bindings))
+          set -l key $magic_bindings[$i]
+          set -l command $magic_bindings[(math $i + 1)]
+
+          set -l func_name "__magic_enter_"(string replace -a ',' '_' $key)
+
+          eval "function $func_name; __magic_enter '$command'; end"
+
+          bind $key $func_name
+      end
+    '';
+
     shellAbbrs = lib.mkIf pkgs.stdenv.isLinux {
       sc = "sudo systemctl";
       uc = "systemctl --user";
@@ -71,46 +107,6 @@ in {
         OPENAI_API_KEY = "op://Services/OpenAI/token";
       };
     };
-
-    "fish/conf.d/fzf.fish".text = ''
-      # Set up magic enter functions: https://kau.sh/blog/magic-enter-shell/
-      function __magic_enter
-          set -l cmd (commandline)
-          commandline -f repaint
-
-          if test -z "$cmd"
-              commandline -r ($argv[1])
-              commandline -f suppress-autosuggestion
-          end
-
-          commandline -f execute
-      end
-
-      if status is-interactive
-          # Define magic enter bindings as key-command pairs
-          set -l magic_bindings \
-              'comma,f,e' ',fe' \
-              'comma,f,f' ',ff' \
-              'comma,f,g' ',fg' \
-              'comma,f,i' ',fi' \
-              'comma,f,j' ',fj' \
-              'comma,f,k' ',fk' \
-              'comma,f,p' ',fp' \
-              'comma,f,r' ',fr'
-
-          # Create bindings dynamically
-          for i in (seq 1 2 (count $magic_bindings))
-              set -l key $magic_bindings[$i]
-              set -l command $magic_bindings[(math $i + 1)]
-
-              set -l func_name "__magic_enter_"(string replace -a ',' '_' $key)
-
-              eval "function $func_name; __magic_enter '$command'; end"
-
-              bind $key $func_name
-          end
-      end
-    '';
 
     "fish/themes/Nordish.theme".text = ''
       # Nord Colors / Theme

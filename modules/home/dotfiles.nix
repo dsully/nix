@@ -5,7 +5,13 @@
   ...
 }: let
   dotfileDir = "${config.xdg.configHome}/nix/dotfiles";
-  mkLink = path: config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/${path}";
+
+  # mkOutOfStoreSymlink creates a nix store symlink pointing outside the store.
+  # This breaks with `recursive = true` in sandbox builds because the target
+  # doesn't exist in the sandbox, so the directory is created as a dangling
+  # symlink instead of being expanded by lndir. Use the flake-relative path
+  # (which copies into the store) for recursive directories instead.
+  flakeDotfiles = ../../dotfiles;
 
   platformFunctions =
     if pkgs.stdenv.isDarwin
@@ -28,17 +34,17 @@ in {
   xdg.configFile =
     {
       "fish/conf.d" = {
-        source = mkLink "fish/conf.d";
+        source = "${flakeDotfiles}/fish/conf.d";
         recursive = true;
       };
 
       "fish/functions" = {
-        source = mkLink "fish/functions";
+        source = "${flakeDotfiles}/fish/functions";
         recursive = true;
       };
 
       "fish/completions" = {
-        source = mkLink "fish/completions";
+        source = "${flakeDotfiles}/fish/completions";
         recursive = true;
       };
     }

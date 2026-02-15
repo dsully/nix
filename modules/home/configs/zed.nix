@@ -5,7 +5,7 @@
 }: {
   programs.zed-editor = {
     enable = true;
-    package = lib.mkIf pkgs.stdenv.isDarwin (lib.mkDefault null);
+    package = lib.mkDefault null;
 
     userSettings = {
       telemetry.metrics = false;
