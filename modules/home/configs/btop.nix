@@ -1,4 +1,6 @@
-{
+{config, ...}: let
+  c = config.colors;
+in {
   programs.btop = {
     enable = true;
 
@@ -73,6 +75,44 @@
       log_level = "WARNING";
     };
 
-    themes.nord = builtins.readFile ../../../dotfiles/btop/nord.theme;
+    themes.nord = ''
+      theme[main_bg]="${c.black.dim}"
+      theme[main_fg]="${c.white.dim}"
+      theme[title]="${c.cyan.base}"
+      theme[hi_fg]="${c.blue.bright}"
+      theme[selected_bg]="${c.gray.base}"
+      theme[selected_fg]="${c.white.bright}"
+      theme[inactive_fg]="${c.gray.base}"
+      theme[proc_misc]="${c.blue.bright}"
+      theme[cpu_box]="${c.gray.base}"
+      theme[mem_box]="${c.gray.base}"
+      theme[net_box]="${c.gray.base}"
+      theme[proc_box]="${c.gray.base}"
+      theme[div_line]="${c.gray.base}"
+      theme[temp_start]="${c.blue.base}"
+      theme[temp_mid]="${c.cyan.bright}"
+      theme[temp_end]="${c.white.bright}"
+      theme[cpu_start]="${c.blue.base}"
+      theme[cpu_mid]="${c.cyan.bright}"
+      theme[cpu_end]="${c.white.bright}"
+      theme[free_start]="${c.blue.base}"
+      theme[free_mid]="${c.cyan.bright}"
+      theme[free_end]="${c.white.bright}"
+      theme[cached_start]="${c.blue.base}"
+      theme[cached_mid]="${c.cyan.bright}"
+      theme[cached_end]="${c.white.bright}"
+      theme[available_start]="${c.blue.base}"
+      theme[available_mid]="${c.cyan.bright}"
+      theme[available_end]="${c.white.bright}"
+      theme[used_start]="${c.blue.base}"
+      theme[used_mid]="${c.cyan.bright}"
+      theme[used_end]="${c.white.bright}"
+      theme[download_start]="${c.blue.base}"
+      theme[download_mid]="${c.cyan.bright}"
+      theme[download_end]="${c.white.bright}"
+      theme[upload_start]="${c.blue.base}"
+      theme[upload_mid]="${c.cyan.bright}"
+      theme[upload_end]="${c.white.bright}"
+    '';
   };
 }

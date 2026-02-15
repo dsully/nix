@@ -7,6 +7,7 @@
     ./fastfetch.nix
     ./fd.nix
     ./fish.nix
+    ./fselect.nix
     ./gh.nix
     ./ghostty.nix
     ./git.nix
@@ -25,5 +26,6 @@
     ./yamllint.nix
     ./zed.nix
     ./zellij.nix
+    ./zoxide.nix
   ];
 }

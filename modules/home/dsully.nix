@@ -25,6 +25,7 @@ in {
     inputs.opnix.homeManagerModules.default
     ../common/nix.nix
     ./chsh
+    ./colors.nix
     ./configs
     ./dotfiles.nix
     ./packages
@@ -231,7 +232,10 @@ in {
         };
       };
 
-      nix-direnv.enable = true;
+      nix-direnv = {
+        enable = true;
+        package = pkgs.lixPackageSets.latest.nix-direnv;
+      };
     };
 
     direnv-instant.enable = true;
@@ -274,13 +278,6 @@ in {
         fund = false;
         prefix = "\${HOME}/.npm";
       };
-    };
-
-    zoxide = {
-      enable = true;
-      options = [
-        "--cmd j"
-      ];
     };
   };
 

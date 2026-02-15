@@ -13,9 +13,7 @@
         age
         b3sum
         bandwhich
-        bat
         bombardier
-        btop
         checkip
         chezmoi
         choose
@@ -23,14 +21,10 @@
         curl
         dasel
         delta
-        direnv
         dua
         dust
         fclones
-        fd
-        fishPlugins.plugin-git
         fselect
-        fzf
         gnutar
         hexyl
         inetutils
@@ -38,7 +32,6 @@
         ipmitool
         just
         kondo
-        lsd
         moor
         mtr
         p7zip
@@ -53,7 +46,6 @@
         sd
         see-cat
         sniffnet
-        topgrade
         tree
         unar
         unzip
@@ -61,8 +53,6 @@
         wget
         xh
         xz
-        zellij
-        zoxide
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         my.pkgs.caddy-custom

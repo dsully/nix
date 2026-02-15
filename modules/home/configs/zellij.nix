@@ -1,29 +1,65 @@
-{lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
+  c = config.colors;
+
+  # KDL DSL helpers — zellij's config uses KDL, and home-manager's toKDL generator
+  # uses _args for positional arguments and _children for nested nodes.
+
+  # bind ["key1" "key2"] [action1 action2] → bind "key1" "key2" { action1; action2; }
   bind = keys: actions: {
     bind = {
       _args = keys;
       _children = actions;
     };
   };
-  mode = m: {SwitchToMode = {_args = [m];};};
+
+  # mode "Foo" → SwitchToMode "Foo"
+  mode = m: {
+    SwitchToMode = {
+      _args = [m];
+    };
+  };
+
+  # act "Quit" → Quit { }  (action with no arguments)
   act = name: {${name} = {};};
-  act1 = name: arg: {${name} = {_args = [arg];};};
+
+  # act1 "MoveFocus" "Left" → MoveFocus "Left"  (action with one argument)
+  act1 = name: arg: {
+    ${name} = {
+      _args = [arg];
+    };
+  };
+
   normal = mode "Normal";
+
+  # modeBinds "tab" [...] → tab { ... }  (keybind block for a mode)
   modeBinds = name: binds: {${name}._children = binds;};
+
+  # goTab 3 → bind "3" { GoToTab 3; SwitchToMode "Normal"; }
   goTab = n: bind ["${toString n}"] [(act1 "GoToTab" n) normal];
+
+  # sharedExcept ["locked" "normal"] → shared_except "locked" "normal"
   sharedExcept = modes: let
     quoted = lib.concatMapStringsSep " " (m: ''"${m}"'') modes;
   in "shared_except ${quoted}";
 in {
   programs.zellij = {
     enable = true;
-    enableFishIntegration = true;
+    enableFishIntegration = false;
 
     settings = {
       keybinds = {
         _props.clear-defaults = true;
         _children = [
-          {unbind = ["Ctrl b" "Ctrl g"];}
+          {
+            unbind = [
+              "Ctrl b"
+              "Ctrl g"
+            ];
+          }
 
           (modeBinds "normal" [
             (bind ["Super c"] [(act "Copy")])
@@ -117,16 +153,20 @@ in {
             (bind ["Ctrl S"] [normal])
             (bind ["Ctrl s"] [(mode "Scroll")])
             (bind ["d"] [(act "Detach")])
-            (bind ["w"] [
-              {
-                LaunchOrFocusPlugin = {
-                  _args = ["zellij:session-manager"];
-                  floating = true;
-                  move_to_focused_tab = true;
-                };
-              }
-              normal
-            ])
+            (
+              bind
+              ["w"]
+              [
+                {
+                  LaunchOrFocusPlugin = {
+                    _args = ["zellij:session-manager"];
+                    floating = true;
+                    move_to_focused_tab = true;
+                  };
+                }
+                normal
+              ]
+            )
           ])
 
           (modeBinds (sharedExcept ["locked"]) [
@@ -134,25 +174,60 @@ in {
             (bind ["Alt n"] [(act "NewPane")])
           ])
 
-          (modeBinds (sharedExcept ["normal" "locked"]) [
-            (bind ["Enter" "Esc"] [normal])
-          ])
+          (
+            modeBinds
+            (sharedExcept [
+              "normal"
+              "locked"
+            ])
+            [
+              (bind ["Enter" "Esc"] [normal])
+            ]
+          )
 
-          (modeBinds (sharedExcept ["pane" "locked"]) [
-            (bind ["Ctrl p"] [(mode "Pane")])
-          ])
+          (
+            modeBinds
+            (sharedExcept [
+              "pane"
+              "locked"
+            ])
+            [
+              (bind ["Ctrl p"] [(mode "Pane")])
+            ]
+          )
 
-          (modeBinds (sharedExcept ["scroll" "locked"]) [
-            (bind ["Ctrl s"] [(mode "Scroll")])
-          ])
+          (
+            modeBinds
+            (sharedExcept [
+              "scroll"
+              "locked"
+            ])
+            [
+              (bind ["Ctrl s"] [(mode "Scroll")])
+            ]
+          )
 
-          (modeBinds (sharedExcept ["session" "locked"]) [
-            (bind ["Ctrl S"] [(mode "Session")])
-          ])
+          (
+            modeBinds
+            (sharedExcept [
+              "session"
+              "locked"
+            ])
+            [
+              (bind ["Ctrl S"] [(mode "Session")])
+            ]
+          )
 
-          (modeBinds (sharedExcept ["tab" "locked"]) [
-            (bind ["Ctrl t"] [(mode "Tab")])
-          ])
+          (
+            modeBinds
+            (sharedExcept [
+              "tab"
+              "locked"
+            ])
+            [
+              (bind ["Ctrl t"] [(mode "Tab")])
+            ]
+          )
         ];
       };
 
@@ -176,18 +251,20 @@ in {
     };
 
     themes.dsully = ''
-      theme {
-          fg "#D8DEE9"
-          bg "#2E3440"
-          black "#3B4252"
-          red "#BF616A"
-          green "#81A1C1"
-          yellow "#EBCB8B"
-          blue "#81A1C1"
-          magenta "#B48EAD"
-          cyan "#88C0D0"
-          white "#E5E9F0"
-          orange "#D08770"
+      themes {
+          dsully {
+              fg "${c.white.dim}"
+              bg "${c.black.dim}"
+              black "${c.black.base}"
+              red "${c.red.base}"
+              green "${c.blue.base}"
+              yellow "${c.yellow.base}"
+              blue "${c.blue.base}"
+              magenta "${c.magenta.base}"
+              cyan "${c.cyan.bright}"
+              white "${c.white.base}"
+              orange "${c.orange.base}"
+          }
       }
     '';
 

@@ -5,6 +5,7 @@
   ...
 }: let
   editor = lib.getExe pkgs.neovim;
+  c = config.colors;
   inherit (config.system) userName;
 
   exclude_bots = "--perl-regexp --author='^((?!dependabot|renovate).*)$'";
@@ -236,6 +237,7 @@ in {
 
       delta = {
         enable = true;
+        enableGitIntegration = true;
 
         options = {
           # Basic options
@@ -248,13 +250,13 @@ in {
           true-color = "always";
 
           # Color definitions
-          bg-green = "#8aa872";
-          bg-red = "#a54e56";
+          bg-green = c.green.dim;
+          bg-red = c.red.dim;
 
           # Blame settings
           blame-code-style = "syntax";
           blame-format = "{author:<18} {commit:<6} {timestamp:<15}";
-          blame-palette = "#2E3440 #3B4252 #434C5E";
+          blame-palette = "${c.black.dim} ${c.black.base} ${c.black.bright}";
 
           # File labels
           file-added-label = "[+]";

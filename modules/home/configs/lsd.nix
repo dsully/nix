@@ -1,11 +1,20 @@
-{
+{config, ...}: let
+  c = config.colors;
+in {
   programs.lsd = {
     enable = true;
     enableFishIntegration = false;
 
     settings = {
       classic = false;
-      blocks = ["permission" "user" "group" "size" "date" "name"];
+      blocks = [
+        "permission"
+        "user"
+        "group"
+        "size"
+        "date"
+        "name"
+      ];
       color = {
         when = "auto";
         theme = "custom";
@@ -46,41 +55,41 @@
     };
 
     colors = {
-      user = "#e5e9f0";
-      group = "#e5e9f0";
+      user = c.white.base;
+      group = c.white.base;
 
       permission = {
-        read = "#8fbcbb";
-        write = "#88c0d0";
-        exec = "#eceff4";
-        exec-sticky = "#bf616a";
-        no-access = "#eceff4";
+        read = c.cyan.base;
+        write = c.cyan.bright;
+        exec = c.white.bright;
+        exec-sticky = c.red.base;
+        no-access = c.white.bright;
       };
 
       date = {
-        hour-old = "#eceff4";
-        day-old = "#e5e9f0";
-        older = "#d8dee9";
+        hour-old = c.white.bright;
+        day-old = c.white.base;
+        older = c.white.dim;
       };
 
       size = {
-        none = "#8fbcbb";
-        small = "#88c0d0";
-        medium = "#81a1c1";
-        large = "#5e81ac";
+        none = c.cyan.base;
+        small = c.cyan.bright;
+        medium = c.blue.base;
+        large = c.blue.bright;
       };
 
       inode = {
-        valid = "#88c0d0";
-        invalid = "#bf616a";
+        valid = c.cyan.bright;
+        invalid = c.red.base;
       };
 
       links = {
-        valid = "#88c0d0";
-        invalid = "#bf616a";
+        valid = c.cyan.bright;
+        invalid = c.red.base;
       };
 
-      tree-edge = "#bf616a";
+      tree-edge = c.red.base;
     };
   };
 }

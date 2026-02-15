@@ -41,11 +41,6 @@ in {
         source = mkLink "fish/completions";
         recursive = true;
       };
-
-      "fish/themes" = {
-        source = mkLink "fish/themes";
-        recursive = true;
-      };
     }
     // lib.listToAttrs (
       map (name: {

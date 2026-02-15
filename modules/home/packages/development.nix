@@ -11,12 +11,9 @@
       dive
       fork-cleaner
       fx
-      gh
       gibo
-      git
       git-dive
       git-ignore
-      git-lfs
       git-quick-stats
       git-sizer
       git-trim
@@ -30,14 +27,12 @@
       jq
       kickstart
       nodejs
-      ruff
       scc
       sq
       sqlite
       tree-sitter
       typos
       uv
-      vivid
       xan
       yarn
       yek

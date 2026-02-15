@@ -1,36 +1,32 @@
-{
+{config, ...}: let
+  c = config.colors;
+  inherit (config.colors) noHash;
+in {
   programs.vivid = {
     enable = true;
 
     themes = {
       nord = {
         colors = {
-          # Based on the Nord colorscheme.
-          # (https://www.nordtheme.com/docs/colors-and-palettes)
+          polar-night-nord0 = noHash c.black.dim;
+          polar-night-nord1 = noHash c.black.base;
+          polar-night-nord2 = noHash c.black.bright;
+          polar-night-nord3 = noHash c.gray.base;
 
-          # Polar night
-          polar-night-nord0 = "2e3440";
-          polar-night-nord1 = "3b4252";
-          polar-night-nord2 = "434c5e";
-          polar-night-nord3 = "4c566a";
+          snow-storm-nord4 = noHash c.white.dim;
+          snow-storm-nord5 = noHash c.white.base;
+          snow-storm-nord6 = noHash c.white.bright;
 
-          # Snow storm
-          snow-storm-nord4 = "d8dee9";
-          snow-storm-nord5 = "e5e9f0";
-          snow-storm-nord6 = "eceff4";
+          frost-nord7 = noHash c.cyan.base;
+          frost-nord8 = noHash c.cyan.bright;
+          frost-nord9 = noHash c.blue.base;
+          frost-nord10 = noHash c.blue.bright;
 
-          # Frost
-          frost-nord7 = "8fbcbb";
-          frost-nord8 = "88c0d0";
-          frost-nord9 = "81a1c1";
-          frost-nord10 = "5e81ac";
-
-          # Aurora
-          aurora-nord11 = "bf616a";
-          aurora-nord12 = "d08770";
-          aurora-nord13 = "ebcb8b";
-          aurora-nord14 = "a3be8c";
-          aurora-nord15 = "b48ead";
+          aurora-nord11 = noHash c.red.base;
+          aurora-nord12 = noHash c.orange.base;
+          aurora-nord13 = noHash c.yellow.base;
+          aurora-nord14 = noHash c.green.base;
+          aurora-nord15 = noHash c.magenta.base;
         };
 
         core = {
