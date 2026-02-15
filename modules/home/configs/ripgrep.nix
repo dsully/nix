@@ -1,43 +1,34 @@
-{
-  xdg.configFile."ripgrep/config".text = ''
-    # Only search with case sensitivity if there is mixed case
-    --smart-case
+_: {
+  programs.ripgrep = {
+    enable = true;
 
-    # Include dot files
-    --hidden
+    arguments = [
+      "--smart-case"
+      "--hidden"
+      "--glob=!.git/*"
+      "--no-binary"
+      "--pretty"
+      "--max-columns=150"
+      "--max-columns-preview"
 
-    --glob=!.git/*
+      # Type shortcuts
+      "--type-add=conf:*rc,*init,*.{conf,config}"
+      "--type-add=csv:*.{txt,csv,tsv}*"
+      "--type-add=image:*.{avif,bmp,dns,heic,heif,gif,jpg,jpeg,png,raw,tiff}"
+      "--type-add=shell:*.{sh,bash,fish,zsh}"
+      "--type-add=text:*.{md,mdown,markdown,mkdn,textile,rst,txt}*"
+      "--type-add=web:*.{html,css,js,jsx,ts,tsx}*"
 
-    --no-binary
-    --pretty
-
-    # Don't let ripgrep vomit really long lines to my terminal, and show a preview
-    --max-columns=150
-    --max-columns-preview
-
-    # Add type shortcuts
-    --type-add=conf:*rc,*init,*.{conf,config}
-    --type-add=csv:*.{txt,csv,tsv}*
-    --type-add=image:*.{avif,bmp,dns,heic,heif,gif,jpg,jpeg,png,raw,tiff}
-    --type-add=shell:*.{sh,bash,fish,zsh}
-    --type-add=text:*.{md,mdown,markdown,mkdn,textile,rst,txt}*
-    --type-add=web:*.{html,css,js,jsx,ts,tsx}*
-
-    # Adjust the color styles for match the Nord theme
-    # Note that the Nord color palettes must be provided through the terminal
-    # Due to the format of this configuration file it is currently not possible to use shell syntax like
-    # environment variables in order to dynamically pass color values
-    # See:
-    #   1. https://www.nordtheme.com
-    #   2. https://github.com/BurntSushi/ripgrep/issues/1548
-    --colors=column:none
-    --colors=column:fg:green
-    --colors=line:none
-    --colors=line:fg:green
-    --colors=match:none
-    --colors=match:fg:cyan
-    --colors=path:none
-    --colors=path:fg:blue
-    --colors=path:style:bold
-  '';
+      # Nord-aligned colors (ripgrep only supports named colors)
+      "--colors=column:none"
+      "--colors=column:fg:green"
+      "--colors=line:none"
+      "--colors=line:fg:green"
+      "--colors=match:none"
+      "--colors=match:fg:cyan"
+      "--colors=path:none"
+      "--colors=path:fg:blue"
+      "--colors=path:style:bold"
+    ];
+  };
 }

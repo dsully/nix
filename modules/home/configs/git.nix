@@ -5,7 +5,6 @@
   ...
 }: let
   editor = lib.getExe pkgs.neovim;
-  c = config.colors;
   inherit (config.system) userName;
 
   exclude_bots = "--perl-regexp --author='^((?!dependabot|renovate).*)$'";
@@ -233,61 +232,6 @@ in {
         # Speed up commands involving untracked files such as `git status`.
         # https://git-scm.com/docs/git-update-index#_untracked_cache
         untrackedCache = true;
-      };
-
-      delta = {
-        enable = true;
-        enableGitIntegration = true;
-
-        options = {
-          # Basic options
-          hyperlinks = true;
-          keep-plus-minus-markers = false;
-          line-numbers = false;
-          navigate = true;
-          relative-paths = true;
-          side-by-side = false;
-          true-color = "always";
-
-          # Color definitions
-          bg-green = c.green.dim;
-          bg-red = c.red.dim;
-
-          # Blame settings
-          blame-code-style = "syntax";
-          blame-format = "{author:<18} {commit:<6} {timestamp:<15}";
-          blame-palette = "${c.black.dim} ${c.black.base} ${c.black.bright}";
-
-          # File labels
-          file-added-label = "[+]";
-          file-copied-label = "[==]";
-          file-modified-label = "[*]";
-          file-removed-label = "[-]";
-          file-renamed-label = "[->]";
-          file-style = "omit";
-          file-transformation = "s,(.*),  $1,";
-
-          # Hunk header settings
-          hunk-header-decoration-style = "blue ul";
-          hunk-header-file-style = "blue bold";
-          hunk-header-line-number-style = "white bold";
-          hunk-header-style = "file line-number syntax bold italic";
-          hunk-label = "";
-
-          # Diff styling
-          minus-emph-style = "white bg-red";
-          minus-non-emph-style = "syntax normal";
-          minus-style = "white bg-red";
-          plus-emph-style = "black bg-green";
-          plus-non-emph-style = "syntax normal";
-          plus-style = "black bg-green";
-
-          # Theme and display
-          syntax-theme = "Nord";
-          width = "variable";
-          whitespace-error-style = "black bold";
-          zero-style = "syntax";
-        };
       };
 
       diff = {

@@ -3,11 +3,13 @@
     ./ai/ccstatusline.nix
     ./bacon.nix
     ./btop.nix
+    ./delta.nix
     ./emmylua.nix
     ./fastfetch.nix
     ./fd.nix
     ./fish.nix
     ./fselect.nix
+    ./fzf.nix
     ./gh.nix
     ./ghostty.nix
     ./git.nix
@@ -17,6 +19,7 @@
     ./misc.nix
     ./nix-init.nix
     ./pager.nix
+    ./procs.nix
     ./ripgrep.nix
     ./ruff.nix
     ./ssh.nix

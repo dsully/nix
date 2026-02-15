@@ -20,7 +20,6 @@
         croc
         curl
         dasel
-        delta
         dua
         dust
         fclones
@@ -39,7 +38,6 @@
         procs
         q
         rip2
-        ripgrep
         rnr
         rsync
         sad
