@@ -150,6 +150,8 @@ in {
       };
     };
 
+    language.base = "en_US.UTF-8";
+
     sessionPath = ["${config.home.homeDirectory}/.local/bin" "${config.home.homeDirectory}/.cargo/bin"];
 
     sessionVariables = {
