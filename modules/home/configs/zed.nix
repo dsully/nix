@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}: {
+{lib, ...}: {
   programs.zed-editor = {
     enable = true;
     package = lib.mkDefault null;

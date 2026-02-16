@@ -42,7 +42,7 @@ in {
         sphinx-lint
         stylelint
         stylua
-        # superhtml
+        superhtml
         systemd-lsp
         tombi
         ts_query_ls
@@ -65,7 +65,12 @@ in {
         #     '';
         # }))
         yamllint
-        # zls
+        zls
+      ]
+      ++ [
+        luajitPackages.busted
+        luajitPackages.luarocks
+        luajitPackages.nlua
       ]
       ++ (with my.pkgs; [
         codesort
@@ -74,8 +79,8 @@ in {
         pytest-language-server
         xmlformatter
         version-lsp
-      ])
-      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with my.pkgs; [
+        # ])
+        # ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with my.pkgs; [
         # lemminx
         # pkl-lsp
       ]);
