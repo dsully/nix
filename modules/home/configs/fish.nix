@@ -101,6 +101,12 @@ in {
       }
     ];
 
+    completions.rm =
+      builtins.replaceStrings ["complete -c rip"] ["complete -c rm"]
+      (builtins.readFile (pkgs.runCommand "rip-completions" {} ''
+        ${lib.getExe pkgs.rip2} completions fish > $out
+      ''));
+
     shellAbbrs =
       {
         dc = "cd";
