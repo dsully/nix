@@ -13,9 +13,8 @@
 
   home = {
     # Handle merging nixpkgs, the packages in this flake and allowing dependent to use the packages from this flake.
-    packages = with (pkgs // my.pkgs);
+    packages = with my.pkgs;
       [
-        # anthropic-api-key
         devmoji-log
         dirstat-rs
         geil
@@ -30,7 +29,6 @@
       ]
       ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
         syncthing
-        xcp
       ];
   };
 }

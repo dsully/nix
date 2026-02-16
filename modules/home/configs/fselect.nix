@@ -1,6 +1,10 @@
 {pkgs, ...}: let
   tomlFormat = pkgs.formats.toml {};
 in {
+  home.packages = [
+    pkgs.fselect
+  ];
+
   xdg.configFile = {
     "fselect/config.toml".source = tomlFormat.generate "fselect-config" {
       no_color = false;

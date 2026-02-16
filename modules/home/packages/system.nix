@@ -23,7 +23,6 @@
         dua
         dust
         fclones
-        fselect
         gnutar
         hexyl
         inetutils
@@ -49,6 +48,7 @@
         unzip
         viu
         wget
+        xcp
         xh
         xz
       ]
