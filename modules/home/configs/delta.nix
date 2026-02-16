@@ -7,15 +7,12 @@ in {
 
     options = {
       hyperlinks = true;
-      keep-plus-minus-markers = false;
+      keep-plus-minus-markers = true;
       line-numbers = false;
       navigate = true;
       relative-paths = true;
       side-by-side = false;
       true-color = "always";
-
-      bg-green = c.green.dim;
-      bg-red = c.red.dim;
 
       blame-code-style = "syntax";
       blame-format = "{author:<18} {commit:<6} {timestamp:<15}";
@@ -27,20 +24,20 @@ in {
       file-removed-label = "[-]";
       file-renamed-label = "[->]";
       file-style = "omit";
-      file-transformation = "s,(.*),  $1,";
+      file-transformation = "s,(.*),  $1,";
 
       hunk-header-decoration-style = "blue ul";
       hunk-header-file-style = "blue bold";
       hunk-header-line-number-style = "white bold";
       hunk-header-style = "file line-number syntax bold italic";
-      hunk-label = "";
+      hunk-label = "none";
 
-      minus-emph-style = "white bg-red";
+      minus-emph-style = "syntax red";
       minus-non-emph-style = "syntax normal";
-      minus-style = "white bg-red";
-      plus-emph-style = "black bg-green";
+      minus-style = "red";
+      plus-emph-style = "black green";
       plus-non-emph-style = "syntax normal";
-      plus-style = "black bg-green";
+      plus-style = "green";
 
       syntax-theme = "Nord";
       width = "variable";
