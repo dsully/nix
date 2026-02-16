@@ -6,7 +6,9 @@
   imports = [
     ./development.nix
     ./editor.nix
+    ./javascript.nix
     ./nix.nix
+    ./python.nix
     ./rust.nix
     ./system.nix
   ];

@@ -83,11 +83,6 @@ in {
         fi
       '';
 
-      uv = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        ${lib.getExe pkgs.uv} tool install ptpython --quiet --upgrade
-        # ${lib.getExe pkgs.uv} tool upgrade --all
-      '';
-
       checkipConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
         maxmind_key="${homeDir}/.config/checkip/maxmind-key"
         urlscan_key="${homeDir}/.config/checkip/urlscan-key"
