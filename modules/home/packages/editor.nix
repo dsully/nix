@@ -7,6 +7,8 @@
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
 in {
   home = {
+    sessionVariables.VIMRUNTIME = "${neovim}/share/nvim/runtime";
+
     packages = with pkgs;
       [
         actionlint

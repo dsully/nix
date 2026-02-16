@@ -1,5 +1,11 @@
-{pkgs, ...}: let
+{
+  # config,
+  inputs,
+  pkgs,
+  ...
+}: let
   jsonFormat = pkgs.formats.json {};
+  inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
 in {
   xdg.configFile."emmyrc.json".source = jsonFormat.generate "emmyrc.json" {
     "$schema" = "https://raw.githubusercontent.com/EmmyLuaLs/emmylua-analyzer-rust/refs/heads/main/crates/emmylua_code_analysis/resources/schema.json";
@@ -35,8 +41,8 @@ in {
         "**/*_spec.lua"
       ];
       library = [
-        "$VIMRUNTIME"
-        # "$XDG_DATA_HOME/nvim/lazy/"
+        "${neovim}/share/nvim/runtime"
+        # "${config.xdg.dataHome}/nvim/lazy/"
       ];
       workspaceRoots = [
         "lua"
