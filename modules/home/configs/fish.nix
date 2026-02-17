@@ -20,6 +20,9 @@ in {
     '';
 
     sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+
       TREE_SITTER_DIR = "${config.xdg.configHome}/tree-sitter";
 
       # JavaScript
@@ -98,6 +101,10 @@ in {
       {
         dc = "cd";
         fgfg = "fg";
+
+        vi = "nvim";
+        vim = "nvim";
+        view = "nvim -R";
       }
       // lib.optionalAttrs pkgs.stdenv.isLinux {
         sc = "sudo systemctl";
