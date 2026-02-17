@@ -64,37 +64,37 @@ in {
         reference = "op://Services/Cachix/token";
         path = cachixAuthTokenPath;
         mode = "0600";
-        group = "dsully";
+        group = config.system.primaryGroup;
       };
       huggingFace = {
         reference = "op://Services/HuggingFace/credential";
         path = ".config/huggingface/token";
         mode = "0600";
-        group = "dsully";
+        group = config.system.primaryGroup;
       };
       sshPrivateKey = {
         reference = "op://Services/server/private key";
         path = ".ssh/id_ed25519";
         mode = "0600";
-        group = "dsully";
+        group = config.system.primaryGroup;
       };
       voponoConfig = {
         reference = "op://Services/ProtonVPN Tunnel/config";
         path = vopono-config;
         mode = "0640";
-        group = "dsully";
+        group = config.system.primaryGroup;
       };
       mullvadAccount = {
         reference = "op://Services/Mullvad/username";
         path = ".mullvad-account";
         mode = "0600";
-        group = "dsully";
+        group = config.system.primaryGroup;
       };
       cloudflareApiToken = {
         reference = "op://Services/Cloudflare DNS Token/credential";
         path = ".config/caddy/cloudflare-token";
         mode = "0600";
-        group = "dsully";
+        group = config.system.primaryGroup;
       };
     };
 

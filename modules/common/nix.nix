@@ -55,6 +55,12 @@ in {
       default = "dsully";
     };
 
+    primaryGroup = lib.mkOption {
+      type = lib.types.str;
+      default = "dsully";
+      description = "Primary group of the user.";
+    };
+
     nixFlavor = lib.mkOption {
       type = lib.types.enum [
         "cppnix"
