@@ -85,13 +85,13 @@ in {
         group = "dsully";
       };
       mullvadAccount = {
-        reference = "op://Services/Mullvad/account";
+        reference = "op://Services/Mullvad/username";
         path = ".mullvad-account";
         mode = "0600";
         group = "dsully";
       };
       cloudflareApiToken = {
-        reference = "op://Services/Cloudflare/api token";
+        reference = "op://Services/Cloudflare DNS Token/credential";
         path = ".config/caddy/cloudflare-token";
         mode = "0600";
         group = "dsully";
