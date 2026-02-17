@@ -19,10 +19,6 @@ in {
       fi
     '';
 
-    packages = with pkgs; [
-      fishPlugins.plugin-git
-    ];
-
     sessionVariables = {
       TREE_SITTER_DIR = "${config.xdg.configHome}/tree-sitter";
 
@@ -35,19 +31,6 @@ in {
 
   programs.fish = {
     enable = true;
-
-    functions = {
-      auto_pwd = {
-        onEvent = "variable-PWD";
-        body = ''
-          if test -d "$PWD/.git"
-              ${lib.getExe my.pkgs.devmoji-log}
-          end
-
-          __python_virtualenv
-        '';
-      };
-    };
 
     # Magic enter functions: https://kau.sh/blog/magic-enter-shell/
     interactiveShellInit =
@@ -91,6 +74,10 @@ in {
 
     plugins = [
       {
+        name = "plugin-git";
+        inherit (pkgs.fishPlugins.plugin-git) src;
+      }
+      {
         name = "opah";
         src = pkgs.fetchFromGitHub {
           owner = "tbcrawford";
@@ -133,6 +120,16 @@ in {
   };
 
   xdg.configFile = {
+    "fish/conf.d/pwd.fish".text = ''
+      function auto_pwd --on-variable PWD
+          if test -d "$PWD/.git"
+              ${lib.getExe my.pkgs.devmoji-log}
+          end
+
+          __python_virtualenv
+      end
+    '';
+
     "fish/secrets.yaml".source = yamlFormat.generate "fish-secrets-yaml" {
       secrets = {
         CACHIX_AUTH_TOKEN = "op://Services/Cachix/token";
