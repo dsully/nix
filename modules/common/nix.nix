@@ -57,7 +57,10 @@ in {
 
     primaryGroup = lib.mkOption {
       type = lib.types.str;
-      default = "dsully";
+      default =
+        if pkgs.stdenv.hostPlatform.isDarwin
+        then "staff"
+        else "dsully";
       description = "Primary group of the user.";
     };
 
