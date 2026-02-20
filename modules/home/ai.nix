@@ -60,7 +60,7 @@
       legacy-modernizer = "legacy-modernizer.md";
       refactoring-reviewer = "code-reviewer.md";
     };
-    code-review-ai.architect-review = "architect-review.md";
+    comprehensive-review.architect-review = "architect-review.md";
     codebase-cleanup.cleanup-test-automator = "test-automator.md";
     data-engineering.data-engineer = "data-engineer.md";
     debugging-toolkit = {
