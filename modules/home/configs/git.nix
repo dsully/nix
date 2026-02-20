@@ -319,5 +319,8 @@ in {
         useConfigOnly = true;
       };
     };
+
+    # Don't set delta as the pager via it's git integration
+    iniContent.core.pager = lib.mkForce config.home.sessionVariables.PAGER;
   };
 }

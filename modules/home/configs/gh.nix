@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   programs.gh = {
     enable = true;
     settings = {
@@ -30,7 +34,7 @@
       };
       editor = "${pkgs.lib.getExe pkgs.neovim}";
       git_protocol = "ssh";
-      pager = "${pkgs.lib.getExe pkgs.delta}";
+      pager = config.home.sessionVariables.PAGER;
       prompt = "enabled";
     };
     extensions = with pkgs; [
