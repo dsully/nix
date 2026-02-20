@@ -5,6 +5,7 @@
     extraOptions = [
       "--follow"
       "--full-path"
+      "--one-file-system"
     ];
 
     hidden = true;

@@ -1,6 +1,15 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   c = config.colors;
-  fdOptions = "--color always --hidden --follow --exclude .git --one-file-system";
+  inherit (config.programs) fd;
+  fdOptions = lib.concatStringsSep " " (
+    ["--color always"]
+    ++ lib.optional fd.hidden "--hidden"
+    ++ fd.extraOptions
+  );
 in {
   programs.fzf = {
     enable = true;
