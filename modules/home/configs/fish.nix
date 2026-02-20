@@ -101,10 +101,16 @@ in {
       {
         dc = "cd";
         fgfg = "fg";
+        lf = "pytest --lf";
+        pt = "pytest";
+        mkdir = "mkdir -p";
 
         vi = "nvim";
         vim = "nvim";
         view = "nvim -R";
+      }
+      // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        ldd = "otool -L";
       }
       // lib.optionalAttrs pkgs.stdenv.isLinux {
         sc = "sudo systemctl";
