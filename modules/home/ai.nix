@@ -38,63 +38,43 @@
 
   # Map of plugin directory -> { agentName = "filename.md"; }
   wsPluginAgents = {
-    application-performance = {
-      app-observability-engineer = "observability-engineer.md";
-      app-performance-engineer = "performance-engineer.md";
-    };
     backend-development = {
       backend-architect = "backend-architect.md";
-      event-sourcing-architect = "event-sourcing-architect.md";
+      performance-engineer = "performance-engineer.md";
+      tdd-orchestrator = "tdd-orchestrator.md";
+      test-automator = "test-automator.md";
     };
     cloud-infrastructure = {
       cloud-architect = "cloud-architect.md";
       deployment-engineer = "deployment-engineer.md";
-      hybrid-cloud-architect = "hybrid-cloud-architect.md";
-      service-mesh-expert = "service-mesh-expert.md";
+      kubernetes-architect = "kubernetes-architect.md";
     };
     code-documentation = {
       docs-architect = "docs-architect.md";
-      tutorial-engineer = "tutorial-engineer.md";
     };
-    code-refactoring = {
-      legacy-modernizer = "legacy-modernizer.md";
-      refactoring-reviewer = "code-reviewer.md";
+    comprehensive-review = {
+      code-reviewer = "code-reviewer.md";
     };
-    comprehensive-review.architect-review = "architect-review.md";
-    codebase-cleanup.cleanup-test-automator = "test-automator.md";
     data-engineering.data-engineer = "data-engineer.md";
     debugging-toolkit = {
       debugger = "debugger.md";
       dx-optimizer = "dx-optimizer.md";
     };
-    error-diagnostics.error-detective = "error-detective.md";
-    incident-response = {
+    distributed-debugging = {
       devops-troubleshooter = "devops-troubleshooter.md";
-      incident-responder = "incident-responder.md";
+      error-detective = "error-detective.md";
     };
     observability-monitoring = {
       database-optimizer = "database-optimizer.md";
-      network-engineer = "network-engineer.md";
-      obs-performance-engineer = "performance-engineer.md";
       observability-engineer = "observability-engineer.md";
     };
-    performance-testing-review = {
-      perf-performance-engineer = "performance-engineer.md";
-      perf-test-automator = "test-automator.md";
-    };
     python-development = {
-      fastapi-pro = "fastapi-pro.md";
       python-pro = "python-pro.md";
     };
     systems-programming = {
-      golang-pro = "golang-pro.md";
+      # golang-pro = "golang-pro.md";
       rust-pro = "rust-pro.md";
     };
-    tdd-workflows = {
-      tdd-code-reviewer = "code-reviewer.md";
-      tdd-orchestrator = "tdd-orchestrator.md";
-    };
-    unit-testing.test-automator = "test-automator.md";
   };
 
   # Generate wshobson agents with proper opencode frontmatter
