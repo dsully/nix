@@ -36,6 +36,57 @@
     ${modelLine}${colorLine}---
     ${stripFrontmatter file}'';
 
+  # Build an opencode command markdown string with frontmatter + original body.
+  mkCommand = {
+    file,
+    description,
+    agent ? null,
+    subtask ? null,
+  }: let
+    agentLine = lib.optionalString (agent != null) "agent: ${agent}\n";
+    subtaskLine = lib.optionalString (subtask != null) "subtask: ${lib.boolToString subtask}\n";
+  in ''
+    ---
+    description: ${description}
+    ${agentLine}${subtaskLine}---
+    ${stripFrontmatter file}'';
+
+  # Map of plugin directory -> { commandName = { file, description, ... }; }
+  wsPluginCommands = {
+    systems-programming = {
+      rust-project = {
+        file = "rust-project.md";
+        description = "Scaffold production-ready Rust project structures";
+      };
+    };
+    code-refactoring = {
+      tech-debt = {
+        file = "tech-debt.md";
+        description = "Analyze and remediate technical debt";
+      };
+      refactor-clean = {
+        file = "refactor-clean.md";
+        description = "Refactor code for cleanliness and maintainability";
+      };
+    };
+  };
+
+  # Generate wshobson commands with proper opencode frontmatter
+  wsCommands =
+    lib.foldlAttrs (
+      acc: plugin: commandAttrs:
+        acc
+        // lib.mapAttrs (
+          _name: cmdDef:
+            mkCommand {
+              file = "${ws}/${plugin}/commands/${cmdDef.file}";
+              inherit (cmdDef) description;
+            }
+        )
+        commandAttrs
+    ) {}
+    wsPluginCommands;
+
   # Map of plugin directory -> { agentName = "filename.md"; }
   wsPluginAgents = {
     backend-development = {
@@ -535,6 +586,7 @@ in {
       enableMcpIntegration = true;
       rules = ./configs/ai/AGENTS.md;
       inherit agents;
+      commands = wsCommands;
       skills =
         {
           astral-uv = "${acp}/plugins/astral/skills/uv";
