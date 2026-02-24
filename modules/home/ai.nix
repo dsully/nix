@@ -301,6 +301,9 @@
     ast-grep = {
       command = "${pkgs.uv}/bin/uvx";
       args = ["--from" "git+https://github.com/ast-grep/ast-grep-mcp" "ast-grep-server"];
+      env = {
+        PYTHON_GIL = "1";
+      };
     };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
@@ -309,6 +312,9 @@
     git = {
       command = "${pkgs.uv}/bin/uvx";
       args = ["git-mcp"];
+      env = {
+        PYTHON_GIL = "1";
+      };
     };
     rime = {
       command = lib.getExe my.pkgs.rime;
