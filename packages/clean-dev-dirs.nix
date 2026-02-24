@@ -9,7 +9,7 @@ with pkgs;
       hash = "sha256-X4hxvLBoo4QcQmQkc/GEoUKcO1hHJojUwWHVGdxMf08=";
     };
 
-    cargoHash = "";
+    cargoHash = "sha256-Fq3wGGR7RVLGzj69dKbnlftrAXjYJFjO0Ay1zMDGrUI=";
     doCheck = false;
 
     meta = {

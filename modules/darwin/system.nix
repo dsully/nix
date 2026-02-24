@@ -18,13 +18,17 @@
     /usr/bin/tmutil disable 2>/dev/null || true
 
     # TCP performance tuning
+    # https://rolande.wordpress.com/2025/08/07/performance-tuning-the-network-stack-on-macos-sequoia-15-6/
+    #
     sysctl -w net.inet.tcp.delayed_ack=0 2>/dev/null || true
-    sysctl -w net.inet.tcp.mssdflt=1448 2>/dev/null || true
+    sysctl -w net.inet.tcp.mssdflt=1360 2>/dev/null || true
     sysctl -w net.inet.tcp.blackhole=2 2>/dev/null || true
-    sysctl -w net.inet.tcp.sendspace=3125000 2>/dev/null || true
-    sysctl -w net.inet.tcp.recvspace=3125000 2>/dev/null || true
-    sysctl -w net.inet.tcp.win_scale_factor=6 2>/dev/null || true
-    sysctl -w net.inet.tcp.autorcvbufmax=3125000 2>/dev/null || true
-    sysctl -w net.inet.tcp.autosndbufmax=3125000 2>/dev/null || true
+    sysctl -w net.inet.tcp.win_scale_factor=7 2>/dev/null || true
+
+    sysctl -w net.inet.tcp.sendspace=861275 2>/dev/null || true
+    sysctl -w net.inet.tcp.recvspace=861275 2>/dev/null || true
+
+    sysctl -w net.inet.tcp.autorcvbufmax=8388608 2>/dev/null || true
+    sysctl -w net.inet.tcp.autosndbufmax=8388608 2>/dev/null || true
   '';
 }
