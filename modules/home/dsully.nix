@@ -171,8 +171,6 @@ in {
 
   nixpkgs.overlays = [
     (_final: prev: {
-      nix = prev.lixPackageSets.latest.lix;
-
       python313Packages = prev.python313Packages.override {
         overrides = _pyFinal: pyPrev: {
           mcp = pyPrev.mcp.overrideAttrs (_old: {
@@ -235,7 +233,6 @@ in {
 
       nix-direnv = {
         enable = true;
-        package = pkgs.lixPackageSets.latest.nix-direnv;
       };
     };
 

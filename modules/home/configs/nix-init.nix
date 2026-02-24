@@ -12,7 +12,6 @@ in {
   programs = {
     nix-init = {
       enable = true;
-      package = pkgs.lixPackageSets.latest.nix-init;
 
       settings = {
         maintainers = [config.system.userName];

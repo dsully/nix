@@ -70,7 +70,7 @@ in {
         "determinate"
         "lix"
       ];
-      default = "lix";
+      default = "cppnix";
     };
 
     nixSettings = lib.mkOption {
