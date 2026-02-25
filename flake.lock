@@ -59,6 +59,26 @@
         "type": "github"
       }
     },
+    "charmbracelet-nur": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771967194,
+        "narHash": "sha256-4Sl/sUShHPVl3i7Wer60E8jSshN9u2D9qF+J3jBHKn8=",
+        "owner": "charmbracelet",
+        "repo": "nur",
+        "rev": "e7b3dbaeb2b711984ee13ec9ccabca701311901f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "charmbracelet",
+        "repo": "nur",
+        "type": "github"
+      }
+    },
     "claude-plugins-official": {
       "flake": false,
       "locked": {
@@ -394,6 +414,7 @@
       "inputs": {
         "astral-claude-plugins": "astral-claude-plugins",
         "blueprint": "blueprint",
+        "charmbracelet-nur": "charmbracelet-nur",
         "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "direnv-instant": "direnv-instant",

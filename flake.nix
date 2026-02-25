@@ -30,8 +30,8 @@
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
-    # charmbracelet-nur.url = "github:charmbracelet/nur";
-    # charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
+    charmbracelet-nur.url = "github:charmbracelet/nur";
+    charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 
     opnix.url = "github:brizzbuzz/opnix";
     opnix.inputs.nixpkgs.follows = "nixpkgs";
