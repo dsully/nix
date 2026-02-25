@@ -92,6 +92,7 @@ in {
         keep-going = true;
         keep-outputs = true;
         max-jobs = "auto";
+        max-substitution-jobs = 128;
         narinfo-cache-negative-ttl = 0;
         stalled-download-timeout = 20;
         substituters = map (x: x.url) substituters;
