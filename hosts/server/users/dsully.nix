@@ -126,23 +126,23 @@ in {
   };
 
   systemd.user.services = {
-    cachix-watch-store = {
-      Unit = {
-        Description = "Cachix Store Watcher";
-        After = ["network.target"];
-      };
-      Service = {
-        ExecStart = "${pkgs.writeShellScript "cachix-watch" ''
-          export CACHIX_AUTH_TOKEN=$(cat ~/${cachixAuthTokenPath})
-          exec ${lib.getExe pkgs.cachix} watch-store dsully
-        ''}";
-        Restart = "always";
-        RestartSec = 10;
-      };
-      Install = {
-        WantedBy = ["default.target"];
-      };
-    };
+    # cachix-watch-store = {
+    #   Unit = {
+    #     Description = "Cachix Store Watcher";
+    #     After = ["network.target"];
+    #   };
+    #   Service = {
+    #     ExecStart = "${pkgs.writeShellScript "cachix-watch" ''
+    #       export CACHIX_AUTH_TOKEN=$(cat ~/${cachixAuthTokenPath})
+    #       exec ${lib.getExe pkgs.cachix} watch-store dsully
+    #     ''}";
+    #     Restart = "always";
+    #     RestartSec = 10;
+    #   };
+    #   Install = {
+    #     WantedBy = ["default.target"];
+    #   };
+    # };
 
     vopono = {
       Unit = {
