@@ -52,6 +52,10 @@ in {
   config = {
     packageTools.uvTools = [
       {package = "ptpython";}
+      {package = "pyproject";}
+      {package = "pyproject-fmt";}
+      {package = "pytest-language-server";}
+      {package = "xmlformatter";}
     ];
 
     home.activation.uvTools = lib.mkIf (config.packageTools.uvTools != []) (
