@@ -6,28 +6,20 @@
 }: let
   substituters = [
     {
-      url = "https://dsully.cachix.org?priority=30";
+      url = "https://cache.nixos.org?priority=10";
+      key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
+    }
+    {
+      url = "https://dsully.cachix.org?priority=20";
       key = "dsully.cachix.org-1:smJ/u8VCUmfyavfuZBNXhXhPDfryFeo+vhYT0BPEIQo=";
     }
     {
-      url = "https://charmbracelet.cachix.org?priority=38";
-      key = "charmbracelet.cachix.org-1:iA+l3/8TVJsKR9h28f7f0C0CYA9JjI24yJ8YlGabbkg=";
-    }
-    {
-      url = "https://claude-code.cachix.org?priority=40";
-      key = "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk=";
-    }
-    {
-      url = "https://nix-community.cachix.org?priority=40";
-      key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
-    }
-    {
-      url = "https://cache.numtide.com?priority=35";
+      url = "https://cache.numtide.com?priority=30";
       key = "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=";
     }
     {
-      url = "https://cache.nixos.org?priority=40";
-      key = "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
+      url = "https://nix-community.cachix.org?priority=35";
+      key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
     }
   ];
 

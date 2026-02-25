@@ -30,14 +30,11 @@
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
-    charmbracelet-nur.url = "github:charmbracelet/nur";
-    charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
+    # charmbracelet-nur.url = "github:charmbracelet/nur";
+    # charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 
     opnix.url = "github:brizzbuzz/opnix";
     opnix.inputs.nixpkgs.follows = "nixpkgs";
-
-    ai-skills-ast-grep.url = "github:ast-grep/claude-skill";
-    ai-skills-ast-grep.flake = false;
 
     claude-plugins-official.url = "github:anthropics/claude-plugins-official";
     claude-plugins-official.flake = false;
