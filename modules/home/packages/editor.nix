@@ -76,10 +76,10 @@ in {
       ]
       ++ (with my.pkgs; [
         codesort
-        pyproject
-        pyproject-fmt
-        pytest-language-server
-        xmlformatter
+        # pyproject
+        # pyproject-fmt
+        # pytest-language-server
+        # xmlformatter
         version-lsp
         # ])
         # ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with my.pkgs; [
