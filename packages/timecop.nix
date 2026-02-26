@@ -2,13 +2,13 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "timecop";
-    version = "0.1.12";
+    version = "0.1.13";
 
     src = fetchFromGitHub {
       owner = "kamilmac";
       repo = "timecop";
-      rev = "d1399e2cf3ac5e8c8bef5f41b97df792f67e0329";
-      hash = "sha256-tZh7qLAPPnUGzD4aJ2sdrNAd2DQhoFNk4+9KIn3r0r8=";
+      rev = "36d1d6a7efe5e94ca041c1db86602bbc66aaee21";
+      hash = "sha256-AV8oFnXhNHhestWlGxfUymle+iD5Gf+cJN9IXW58V0Y=";
     };
 
     cargoHash = "sha256-kY3sNLlLqqgFsfngAaLEev1b0GPCAPU/mGkCTyUMu8A=";
