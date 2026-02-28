@@ -325,11 +325,9 @@
     };
     mcp-rust-builder = {
       command = lib.getExe my.pkgs.mcp-rust-builder;
-      args = ["stdio"];
     };
     nixos = {
       command = "mcp-nixos";
-      args = ["stdio"];
       env = {
         PYTHON_GIL = "1";
       };
@@ -340,6 +338,9 @@
     };
     rust-analyzer = {
       command = lib.getExe my.pkgs.mcp-rust-analyzer;
+    };
+    treesitter = {
+      command = lib.getExe my.pkgs.treesitter-mcp;
     };
   };
 
@@ -402,6 +403,7 @@ in {
         mcp-rust-builder
         rust-mcp-filesystem
         rust-mcp-server
+        treesitter-mcp
         turbo-commit
       ]);
   };
