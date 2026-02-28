@@ -24,7 +24,6 @@
     ./ruff.nix
     ./ssh.nix
     ./topgrade.nix
-    ./turbocommit.nix
     ./vivid.nix
     ./yamllint.nix
     ./zed.nix

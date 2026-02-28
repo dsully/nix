@@ -377,7 +377,6 @@ in {
       )
       ++ (with my.pkgs; [
         cai
-        ccometixline
         crates-mcp
         git-ai-commit
         infiniloom
@@ -502,7 +501,6 @@ in {
         };
 
         statusLine = {
-          # command = "${lib.getExe my.pkgs.ccometixline} --theme nord";
           command = lib.getExe perSystem.llm-agents.ccstatusline;
           padding = 0;
           type = "command";
