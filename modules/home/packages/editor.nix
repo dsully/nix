@@ -67,7 +67,6 @@ in {
         #     '';
         # }))
         yamllint
-        zls
       ]
       ++ [
         luajitPackages.busted

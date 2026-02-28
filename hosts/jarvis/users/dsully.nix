@@ -19,6 +19,7 @@
     [
       copilot-language-server
       nix-output-monitor
+      zls
       zuban
     ]
     ++ (with perSystem.self; [
