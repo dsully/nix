@@ -2,14 +2,14 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "clean-dev-dirs";
-    version = "2.5.4";
+    version = "2.7.0";
 
     src = fetchCrate {
       inherit pname version;
-      hash = "sha256-rr5etNbdRMR58kFrLHXq3n78PlDKbY4C/CUxM0kPylc=";
+      hash = "sha256-ygLDRcu64KYmX3eJqSMWYf7Y5RjSXxeLxWX+eDCoVME=";
     };
 
-    cargoHash = "sha256-2BV2GT3L3oq4j51FolOCH6AvZwDWDeO1C7h75A58VbI=";
+    cargoHash = "sha256-qEBZyMbU/xbPmY5Yteiq+l3a+mDHtwo8kz1ZLEB+H+Q=";
     doCheck = false;
 
     meta = {

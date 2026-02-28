@@ -2,11 +2,11 @@
 with pkgs;
   stdenv.mkDerivation rec {
     pname = "pkl-lsp";
-    version = "0.5.3";
+    version = "0.6.0";
 
     src = fetchurl {
       url = "https://github.com/apple/pkl-lsp/releases/download/${version}/${pname}-${version}.jar";
-      hash = "sha256-oswF10l3ql60GHV7OiHOjhV/7c9ZxZmJ4Xt/3dLlgUs=";
+      hash = "sha256-7ZvICpHXEHSrRZjxqnMe/IhB2S5JvR2V5mf76D6Lvps=";
     };
 
     nativeBuildInputs = [makeWrapper];
