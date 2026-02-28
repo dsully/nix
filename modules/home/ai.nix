@@ -211,33 +211,6 @@
 
   agents = wsAgents // cpoAgents;
 
-  # Collect all wshobson skills by scanning plugin directories.
-  wsSkills = let
-    plugins = builtins.attrNames (
-      lib.filterAttrs (_: v: v == "directory")
-      (builtins.readDir "${inputs.wshobson-agents}/plugins")
-    );
-  in
-    builtins.foldl' (
-      acc: plugin: let
-        skillsDir = "${ws}/${plugin}/skills";
-        hasSkills = builtins.pathExists skillsDir;
-        skillNames =
-          if hasSkills
-          then
-            builtins.attrNames (
-              lib.filterAttrs (_: v: v == "directory")
-              (builtins.readDir skillsDir)
-            )
-          else [];
-      in
-        acc
-        // builtins.listToAttrs (
-          map (skill: lib.nameValuePair skill "${skillsDir}/${skill}") skillNames
-        )
-    ) {}
-    plugins;
-
   # Generate wshobson enabledPlugins from wsPluginAgents keys
   wsEnabledPlugins =
     lib.mapAttrs' (
@@ -375,6 +348,7 @@
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
+    inputs.skills-nix.homeModules.default
   ];
 
   home = {
@@ -606,6 +580,15 @@ in {
       servers = mcpServers;
     };
 
+    skills = {
+      enable = true;
+      defaultAgents = ["opencode" "claude-code"];
+      sources = [
+        "wshobson/agents"
+        "vercel-labs/agent-skills"
+      ];
+    };
+
     # https://opencode.ai/docs/
     opencode = {
       enable = true;
@@ -614,16 +597,11 @@ in {
       rules = ./configs/ai/AGENTS.md;
       inherit agents;
       commands = wsCommands;
-      skills =
-        {
-          astral-uv = "${acp}/plugins/astral/skills/uv";
-          astral-ruff = "${acp}/plugins/astral/skills/ruff";
-          astral-ty = "${acp}/plugins/astral/skills/ty";
-          # Individual wshobson skills can be added selectively instead:
-          # python-testing-patterns = "${ws}/python-development/skills/python-testing-patterns";
-          # rust-async-patterns = "${ws}/systems-programming/skills/rust-async-patterns";
-        }
-        // wsSkills;
+      skills = {
+        astral-uv = "${acp}/plugins/astral/skills/uv";
+        astral-ruff = "${acp}/plugins/astral/skills/ruff";
+        astral-ty = "${acp}/plugins/astral/skills/ty";
+      };
       settings = {
         # model = opencodeModel models.large;
         autoupdate = lib.mkDefault true;

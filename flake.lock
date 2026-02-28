@@ -430,6 +430,22 @@
     },
     "nixpkgs_2": {
       "locked": {
+        "lastModified": 1770562336,
+        "narHash": "sha256-ub1gpAONMFsT/GU2hV6ZWJjur8rJ6kKxdm9IlCT0j84=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "d6c71932130818840fc8fe9509cf50be8c64634f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
         "lastModified": 1771369470,
         "narHash": "sha256-0NBlEBKkN3lufyvFegY4TYv5mCNHbi5OmBDrzihbBMQ=",
         "owner": "NixOS",
@@ -531,13 +547,32 @@
         "nixpkgs": "nixpkgs",
         "opnix": "opnix",
         "qbit-tools": "qbit-tools",
+        "skills-nix": "skills-nix",
         "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
       }
     },
+    "skills-nix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1771626965,
+        "narHash": "sha256-seuLm2I9jQlnm69aYvcSwwqM5WJcBU3OCQ8ronR/NO0=",
+        "owner": "idjoo",
+        "repo": "skills.nix",
+        "rev": "3b6c8253ce68c60accf67aded71a64177a758904",
+        "type": "github"
+      },
+      "original": {
+        "owner": "idjoo",
+        "repo": "skills.nix",
+        "type": "github"
+      }
+    },
     "system-manager": {
       "inputs": {
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "userborn": "userborn"
       },
       "locked": {

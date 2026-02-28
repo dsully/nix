@@ -47,6 +47,8 @@
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 
+    skills-nix.url = "github:idjoo/skills.nix";
+
     astral-claude-plugins.url = "github:astral-sh/claude-code-plugins";
     astral-claude-plugins.flake = false;
 
