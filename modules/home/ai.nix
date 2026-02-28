@@ -317,11 +317,10 @@
       args = [config.home.homeDirectory "--allow-write"];
     };
     git = {
-      command = "${pkgs.uv}/bin/uvx";
-      args = ["git-mcp"];
-      env = {
-        PYTHON_GIL = "1";
-      };
+      command = lib.getExe my.pkgs.mcp-git-tools;
+    };
+    git-remote = {
+      command = lib.getExe my.pkgs.git-mcp-rs;
     };
     mcp-rust-builder = {
       command = lib.getExe my.pkgs.mcp-rust-builder;
@@ -398,7 +397,9 @@ in {
         cai
         cargo-mcp
         crates-mcp
+        git-mcp-rs
         infiniloom
+        mcp-git-tools
         mcp-rust-analyzer
         mcp-rust-builder
         rust-mcp-filesystem
