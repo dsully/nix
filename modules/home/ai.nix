@@ -299,11 +299,18 @@
 
   mcpServers = {
     ast-grep = {
-      command = "${pkgs.uv}/bin/uvx";
-      args = ["--from" "git+https://github.com/ast-grep/ast-grep-mcp" "ast-grep-server"];
+      command = "ast-grep-server";
       env = {
         PYTHON_GIL = "1";
       };
+    };
+    cargo-mcp = {
+      command = lib.getExe my.pkgs.cargo-mcp;
+      args = ["stdio"];
+    };
+    crates-mcp = {
+      command = lib.getExe my.pkgs.crates-mcp;
+      args = ["stdio"];
     };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
@@ -315,6 +322,10 @@
       env = {
         PYTHON_GIL = "1";
       };
+    };
+    mcp-rust-builder = {
+      command = lib.getExe my.pkgs.mcp-rust-builder;
+      args = ["stdio"];
     };
     rime = {
       command = lib.getExe my.pkgs.rime;
@@ -377,10 +388,11 @@ in {
       )
       ++ (with my.pkgs; [
         cai
+        cargo-mcp
         crates-mcp
-        git-ai-commit
         infiniloom
         mcp-rust-analyzer
+        mcp-rust-builder
         rust-mcp-filesystem
         rust-mcp-server
         turbo-commit
