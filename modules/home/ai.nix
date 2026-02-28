@@ -404,6 +404,7 @@ in {
         mcp-rust-builder
         rust-mcp-filesystem
         rust-mcp-server
+        sentry-mcp
         treesitter-mcp
         turbo-commit
       ]);
