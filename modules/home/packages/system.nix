@@ -15,7 +15,6 @@
         bandwhich
         bombardier
         checkip
-        chezmoi
         choose
         croc
         curl
