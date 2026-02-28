@@ -327,6 +327,13 @@
       command = lib.getExe my.pkgs.mcp-rust-builder;
       args = ["stdio"];
     };
+    nixos = {
+      command = "mcp-nixos";
+      args = ["stdio"];
+      env = {
+        PYTHON_GIL = "1";
+      };
+    };
     rime = {
       command = lib.getExe my.pkgs.rime;
       args = ["stdio"];

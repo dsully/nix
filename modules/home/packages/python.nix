@@ -52,6 +52,7 @@ in {
   config = {
     packageTools.uvTools = [
       {package = "git+https://github.com/ast-grep/ast-grep-mcp";}
+      {package = "mcp-nixos";}
       {package = "ptpython";}
       {package = "pyproject";}
       {package = "pyproject-fmt";}
