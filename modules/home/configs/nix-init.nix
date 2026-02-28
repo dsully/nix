@@ -19,6 +19,10 @@ in {
         access-tokens = {
           "github.com".file = gitHubToken;
         };
+
+        format = {
+          command = ["alejandra"];
+        };
       };
     };
 

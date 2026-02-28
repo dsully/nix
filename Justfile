@@ -95,7 +95,7 @@ fmt:
 
 # Usage: just init-from-url https://github.com/anistark/feluda
 [group('nix')]
-init-from-url URL:
+init-from-url URL *args:
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -109,10 +109,7 @@ init-from-url URL:
     OUTPUT_FILE=packages/"${LAST_COMPONENT}.nix"
 
     # Run nix-init with the specified parameters
-    nix-init -n 'builtins.getFlake "nixpkgs"' -u "{{ URL }}" "${OUTPUT_FILE}"
-
-    # Add useFetchCargoVendor = true; to the file
-    sed -i '/cargoHash = ".*";/a \    useFetchCargoVendor = true;' "${OUTPUT_FILE}"
+    nix-init -u "{{ URL }}" {{ args }} "${OUTPUT_FILE}"
 
 # https://github.com/stefanzweifel/git-auto-commit-action
 
