@@ -62,6 +62,7 @@ in {
 
     home.activation.uvTools = lib.mkIf (config.packageTools.uvTools != []) (
       lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
+        export PATH="${lib.makeBinPath [pkgs.git]}:$PATH"
         ${installScript}
       ''
     );
