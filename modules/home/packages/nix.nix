@@ -1,5 +1,6 @@
 {
   my,
+  perSystem,
   pkgs,
   ...
 }: {
@@ -16,6 +17,7 @@
       ++ [
         my.pkgs.nh
         my.pkgs.nurl
+        perSystem.nix-auth.nix-auth
       ];
   };
 }
