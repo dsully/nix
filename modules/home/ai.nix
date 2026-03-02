@@ -640,7 +640,6 @@ in {
             command = [
               "${lib.getExe pkgs.ruff}"
               "check"
-              "--fix"
               "\$FILE"
             ];
             extensions = [".py" ".pyi"];
