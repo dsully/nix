@@ -54,7 +54,7 @@
     astral-claude-plugins.url = "github:astral-sh/claude-code-plugins";
     astral-claude-plugins.flake = false;
 
-    qbit-tools.url = "github:dsully/qbit-tools";
+    qbit-tools.url = "git+ssh://git@github.com/dsully/qbit-tools";
     qbit-tools.inputs.nixpkgs.follows = "nixpkgs";
   };
 

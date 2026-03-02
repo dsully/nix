@@ -1,7 +1,7 @@
 {pkgs, ...}:
 with pkgs;
   rustPlatform.buildRustPackage rec {
-    rev = "af5592327219199c263df8450e0f57c3e6080949";
+    rev = "5fa60e5143b1f4eaa7258d4e269457ede31c9314";
     pname = "geil";
     version = "0.0.1-alpha.1-${rev}";
 
@@ -9,10 +9,10 @@ with pkgs;
       inherit rev;
       owner = "Nukesor";
       repo = pname;
-      hash = "sha256-Qg+2S0dcEHGfSyvb/YDkno8lCMss9pEgpwY1Y03Jh1A=";
+      hash = "sha256-7JnBcTFHG1cMMBcixZ9zCskv6mXIb4xhdg1ci3pQ++k=";
     };
 
-    cargoHash = "sha256-jFVxuFjFO6J1e92FLJ+/fih/9V48nnUvIvFFjLMIbQA=";
+    cargoHash = "sha256-H77UKRcUFIPf6CUSjQmP0UIurWnXgPprq+u9/Fwcao8=";
     doCheck = false;
 
     meta = {
