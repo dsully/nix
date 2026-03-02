@@ -75,6 +75,7 @@ in {
       ]
       ++ (with my.pkgs; [
         codesort
+        pruner
         rust-markdown-lsp-server
         version-lsp
         # ])
