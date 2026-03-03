@@ -7,8 +7,8 @@ with pkgs;
     src = fetchFromGitHub {
       owner = "SignalWhisperer";
       repo = "cargo-mcp";
-      rev = "01f8748461f1b62be87ee41f81f97d69c503de88";
-      hash = "sha256-9TEnlR4SxcVz3yOcL0Jk5YnFd5n15E9b3E8mFQLkkz4=";
+      rev = "3f032879a5bef3e217a9ed3c57b2169e860fa3d2";
+      hash = "sha256-f89PF9fEJUi8lYlx45zAT6bgwGYPVe4luy3y2sTc6yg=";
     };
 
     cargoLock = {
