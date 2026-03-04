@@ -298,6 +298,9 @@
     mcp-rust-builder = {
       command = lib.getExe my.pkgs.mcp-rust-builder;
     };
+    memory = {
+      command = lib.getExe my.pkgs.memory-mcp-1file;
+    };
     nixos = {
       command = "mcp-nixos";
       env = {
@@ -375,6 +378,7 @@ in {
         mcp-git-tools
         mcp-rust-analyzer
         mcp-rust-builder
+        memory-mcp-1file
         rust-mcp-filesystem
         rust-mcp-server
         sentry-mcp
