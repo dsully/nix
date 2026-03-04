@@ -1,5 +1,4 @@
 {
-  my,
   perSystem,
   pkgs,
   ...
@@ -11,12 +10,12 @@
         cachix
         deadnix
         flake-checker
+        nh
         nix-tree
+        nurl
         statix
       ]
       ++ [
-        my.pkgs.nh
-        my.pkgs.nurl
         perSystem.nix-auth.nix-auth
       ];
   };
