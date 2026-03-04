@@ -1,0 +1,21 @@
+[build-system]
+build-backend = "uv_build"
+requires = [ "uv-build>=0.10.6,<0.11" ]
+
+[project]
+name = "nix"
+version = "0.1.0"
+description = "Nix Package Upstream Checker"
+readme = "README.md"
+requires-python = ">=3.14"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = [ "rich" ]
+scripts.check-upstream-packages = "scripts.check_upstream_packages:main"
+
+[tool.uv]
+package = true
+build-backend.module-name = "scripts"
+build-backend.module-root = ""
