@@ -360,11 +360,10 @@ in {
       (
         with perSystem.llm-agents; [
           ccstatusline
-          ccusage-opencode
           claude-code-acp
           # codex
           # gemini-cli
-          goose-cli
+          # goose-cli
         ]
       )
       ++ (with my.pkgs; [
