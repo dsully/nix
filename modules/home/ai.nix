@@ -283,7 +283,6 @@
     };
     crates-mcp = {
       command = lib.getExe my.pkgs.crates-mcp;
-      args = ["stdio"];
     };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
