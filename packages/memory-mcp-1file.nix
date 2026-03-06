@@ -2,17 +2,17 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "memory-mcp-1file";
-    rev = "57d829e41bbdc1692a3cb7f59de4a268581f47e3";
-    version = "0.8.1";
+    rev = "bff9dfceff21a99e62fa126346796bbf47835b56";
+    version = "0.8.2";
 
     src = pkgs.fetchFromGitHub {
       inherit rev;
       owner = "pomazanbohdan";
       repo = "memory-mcp-1file";
-      hash = "sha256-9t/gQDVYRtsQW/kn85cT+Wfblvz/6IZKqOw6j4rnNPI=";
+      hash = "sha256-5HFCPxk4pNbCuPjuMLU1fw9bwZHik5VxgCkT74sj648=";
     };
 
-    cargoHash = "sha256-2fMD3ttexxPT7IEiIPorX8a5JuhTP/boCULFeU6XNi8=";
+    cargoHash = "sha256-0BYtN4rGaSxukauNNGDoXlnN/ziDfpvZK//K6R8GMVM=";
     doCheck = false;
 
     nativeBuildInputs = [
