@@ -2,17 +2,17 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "pruner";
-    rev = "577cf6d2d49dbe773512f83e1c1365efddb27c1b";
+    rev = "fdd3ba7632353a72d16f4c354c3c8bfed062ef9a";
     version = "1.0.0-alpha.9-${rev}";
 
     src = fetchFromGitHub {
       inherit rev;
       owner = "pruner-formatter";
       repo = "pruner";
-      hash = "sha256-1vicEI84f7wGU0/0tEDN6EImkjVX0/SJIMASzrvZEPk=";
+      hash = "sha256-IXI6S2r7spaUTkdOzkL1BWMQ9gXWejpM5b5Fn3UY7s0=";
     };
 
-    cargoHash = "sha256-8T4v3QZk1PNFCvgAa6q+fXCXuasPE8miGuM84MftbGU=";
+    cargoHash = "sha256-vbA4M/DBmy5JZ5D2quixcVWaIm1MRHl2cYyKhzvkftI=";
     doCheck = false;
 
     nativeBuildInputs = [
