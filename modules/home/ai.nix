@@ -280,9 +280,11 @@
     cargo-mcp = {
       command = lib.getExe my.pkgs.cargo-mcp;
       args = ["stdio"];
+      disabled = true;
     };
     crates-mcp = {
       command = lib.getExe my.pkgs.crates-mcp;
+      disabled = true;
     };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
@@ -296,22 +298,27 @@
     };
     mcp-rust-builder = {
       command = lib.getExe my.pkgs.mcp-rust-builder;
+      disabled = true;
     };
     memory = {
       command = lib.getExe my.pkgs.memory-mcp-1file;
+      disabled = true;
     };
     nixos = {
       command = "mcp-nixos";
       env = {
         PYTHON_GIL = "1";
       };
+      disabled = true;
     };
     rime = {
       command = lib.getExe my.pkgs.rime;
       args = ["stdio"];
+      disabled = true;
     };
     rust-analyzer = {
       command = lib.getExe my.pkgs.mcp-rust-analyzer;
+      disabled = true;
     };
     treesitter = {
       command = lib.getExe my.pkgs.treesitter-mcp;
