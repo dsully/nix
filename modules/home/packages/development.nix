@@ -5,7 +5,7 @@
 }: {
   home = {
     packages = with pkgs; [
-      # ast-grep
+      ast-grep
       codebook
       cyme
       dive
