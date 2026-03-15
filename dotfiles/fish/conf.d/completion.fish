@@ -3,7 +3,7 @@ if status is-interactive
     # Exclude lock files from completion
     function __fish_complete_no_locks
         set -l token (commandline -ct)
-        __fish_complete_suffix "$token" "" | string match -v '*.lock' | string match -v '*/.container*'
+        __fish_complete_suffix "$token" "" | string match -v '*.lock' | string match -v '*/.container*' | string match -v '.nix-defexpr'
     end
 
     complete -c vi -f -a '(__fish_complete_no_locks)'

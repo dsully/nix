@@ -6,5 +6,5 @@ pkgs.caddy.withPlugins {
     "github.com/abiosoft/caddy-inspect@v0.0.0-20250214103948-96cdb1dfb122"
     "github.com/abiosoft/caddy-json-schema@v0.0.0-20220621031927-c4d6e132f3af"
   ];
-  hash = "sha256-AWQ9D89KatbVMrAVASAD5GuVWjfhCNrpYrXVhKn8DR8=";
+  hash = "sha256-4jMZ7S+ygfhv8FDdc5hvhAlqe6KuBV3xhEjibai7Cjc=";
 }

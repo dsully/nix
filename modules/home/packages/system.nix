@@ -51,9 +51,6 @@
         xh
         xz
       ]
-      ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-        my.pkgs.caddy-custom
-      ]
       ++ (with my.pkgs; [
         clean-dev-dirs
         leadr
