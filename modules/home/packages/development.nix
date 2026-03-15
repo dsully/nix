@@ -22,7 +22,6 @@
       gnused
       go
       gron
-      helix
       hyperfine
       jq
       kickstart

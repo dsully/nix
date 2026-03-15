@@ -24,6 +24,7 @@
     system-manager.url = "github:numtide/system-manager";
 
     nix-auth.url = "github:numtide/nix-auth";
+    nix-auth.inputs.nixpkgs.follows = "nixpkgs";
 
     blueprint.url = "github:numtide/blueprint";
     blueprint.inputs.nixpkgs.follows = "nixpkgs";

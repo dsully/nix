@@ -31,7 +31,6 @@ in {
         neovim
         nil
         nixd
-        nixpkgs-fmt
         oxfmt
         oxlint
         pyrefly
@@ -50,7 +49,6 @@ in {
         ts_query_ls
         ty
         typescript-go
-        typos
         vscode-langservers-extracted
         wordnet
         write-good

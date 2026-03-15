@@ -5,7 +5,6 @@
     ./btop.nix
     ./delta.nix
     ./emmylua.nix
-    ./fastfetch.nix
     ./fd.nix
     ./fish.nix
     ./fselect.nix

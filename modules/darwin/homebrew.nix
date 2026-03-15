@@ -56,7 +56,6 @@
       "soulver"
       "stay"
       "suspicious-package"
-      "tableplus"
       "tower"
       "transmit"
       "typora"

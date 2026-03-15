@@ -7,7 +7,7 @@
   pkgs,
   ...
 }: let
-  acp = "${inputs.astral-claude-plugins}";
+  acp = inputs.astral-claude-plugins;
   cpo = "${inputs.claude-plugins-official}/plugins";
   ws = "${inputs.wshobson-agents}/plugins";
 
@@ -305,7 +305,7 @@
       disabled = true;
     };
     nixos = {
-      command = "mcp-nixos";
+      command = lib.getExe pkgs.mcp-nixos;
       env = {
         PYTHON_GIL = "1";
       };
@@ -688,7 +688,7 @@ in {
           // {
             pyright = {disabled = true;};
           });
-        permission = lib.mkForce {
+        permission = lib.mkDefault {
           bash = {
             "*" = "allow";
             "git status" = "allow";
