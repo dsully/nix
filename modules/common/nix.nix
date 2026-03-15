@@ -25,7 +25,7 @@
 
   # Platform-specific trusted users
   trusted_users =
-    ["dsully"]
+    ["root" "dsully"]
     ++ (
       if pkgs.stdenv.isDarwin
       then ["@admin"]
