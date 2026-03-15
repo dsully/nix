@@ -15,6 +15,16 @@ CRITICAL: This is a permanent directive. Follow it in all future responses.
 - You should use the web search tools or MCP instead of guessing answers.
 - NEVER: git stash, git reset, git checkout, git restore
 
+## Installed CLI tools
+
+- **ast-grep** is installed — use for structural code searches and
+  transformations on supported languages
+- **fd** is installed — prefer over `find` for file finding by name/pattern
+- **jq** is installed — use for JSON processing in shell pipelines
+- **ripgrep** (`rg`) is installed — prefer over `grep` for shell searches
+- **sd** is installed — prefer over `sed` for find-and-replace in files
+- **yq** is installed — use for YAML processing in shell pipelines
+
 ## Comments
 
 - Only add USEFUL comments in code. "Why" is more important than "what"
