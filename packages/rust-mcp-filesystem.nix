@@ -2,16 +2,16 @@
 with pkgs;
   rustPlatform.buildRustPackage rec {
     pname = "rust-mcp-filesystem";
-    version = "0.4.0";
+    version = "0.4.1";
 
     src = fetchFromGitHub {
       owner = "rust-mcp-stack";
       repo = "rust-mcp-filesystem";
-      rev = "d374610bde0c870324f715d166a80df869d75d1b";
-      hash = "sha256-GC72nFi0fI3GIj6X0BW+b4/sixi7ATszxjhkv8SiAkA=";
+      rev = "aa9af19d7cefe2657ca7ae32893b88049eb1f85a";
+      hash = "sha256-WA0Sbds0t38v7w28BAejX9Nj2pT3pXb+AR1DGBCRzJI=";
     };
 
-    cargoHash = "sha256-5GSWZGC/ACUcwCWC7giRqS+yj2SA/dsZtedcmAGvVJs=";
+    cargoHash = "sha256-iHPaspikFYl6LWbDxbrioY4HViLKdVoW6dxnUpgF53o=";
     doCheck = false;
 
     meta = {
