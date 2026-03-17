@@ -12,8 +12,12 @@
           then "${tool.package}[${tool.extras}]"
           else tool.package;
 
+        prereleaseFlag = lib.optionalString tool.prerelease "--prerelease=explicit";
+
+        withFlags = lib.concatMapStringsSep " " (dep: "--with '${dep}'") tool.withPackages;
+
         installCmd = ''
-          ${lib.getExe pkgs.uv} tool install "${spec}" --quiet --upgrade
+          ${lib.getExe pkgs.uv} tool install "${spec}" --quiet --upgrade ${prereleaseFlag} ${withFlags}
         '';
 
         injectCmds =
@@ -39,6 +43,16 @@ in {
             default = "";
           };
 
+          prerelease = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+
+          withPackages = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [];
+          };
+
           inject = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             default = [];
@@ -51,6 +65,12 @@ in {
 
   config = {
     packageTools.uvTools = [
+      # https://github.com/cocoindex-io/cocoindex-code
+      {
+        package = "cocoindex-code";
+        prerelease = true;
+        withPackages = ["cocoindex>=1.0.0a24"];
+      }
       {package = "git+https://github.com/ast-grep/ast-grep-mcp";}
       {package = "mcp-nixos";}
       {package = "ptpython";}
