@@ -348,6 +348,39 @@
     };
   };
 
+  # Extension-to-language mappings for claude-code's lspServers format.
+  lspLanguageIds = {
+    bash = {
+      ".sh" = "shellscript";
+      ".bash" = "shellscript";
+    };
+    go = {".go" = "go";};
+    helm = {
+      ".tpl" = "helm";
+      ".yaml" = "helm";
+    };
+    lua = {".lua" = "lua";};
+    nix = {".nix" = "nix";};
+    rust = {".rs" = "rust";};
+    toml = {".toml" = "toml";};
+    typescript = {
+      ".ts" = "typescript";
+      ".tsx" = "typescriptreact";
+      ".js" = "javascript";
+      ".jsx" = "javascriptreact";
+    };
+  };
+
+  # For claude-code: transform to { command, args?, extensionToLanguage }
+  claudeCodeLsp = lib.mapAttrs (
+    name: v:
+      {
+        inherit (v) command;
+        extensionToLanguage = lspLanguageIds.${name};
+      }
+      // lib.optionalAttrs (v ? args) {inherit (v) args;}
+  ) lsp;
+
   opencodeLsp = lib.mapAttrs (name: v: {
     command = [v.command] ++ (v.args or []);
     extensions = lspExtensions.${name};
@@ -580,6 +613,8 @@ in {
           ENABLE_TOOL_SEARCH = "1";
         };
       };
+
+      lspServers = claudeCodeLsp;
 
       mcpServers = mcpServersWithType;
     };
