@@ -395,6 +395,27 @@ in {
     inputs.skills-nix.homeModules.default
   ];
 
+  xdg.configFile."opencode/tui.jsonc".text = builtins.toJSON {
+    "$schema" = "https://opencode.ai/tui.json";
+    theme = "nord";
+    keybinds = {
+      input_delete_to_line_start = "ctrl+u";
+      input_delete_to_line_end = "ctrl+k";
+      # messages_half_page_down = "ctrl+d";
+      theme_list = "none";
+      username_toggle = "none";
+      model_list = "ctrl+p";
+      variant_cycle = "ctrl+r";
+      model_cycle_recent = "none";
+      model_cycle_recent_reverse = "none";
+      agent_list = "ctrl+a";
+      display_thinking = "ctrl+t";
+    };
+    scroll_acceleration = {
+      enabled = true;
+    };
+  };
+
   home = {
     sessionVariables = {
       OPENCODE_EXPERIMENTAL_LSP_TY = "1";
@@ -630,6 +651,8 @@ in {
       enable = true;
       defaultAgents = ["opencode" "claude-code"];
       sources = [
+        "cocoindex-io/cocoindex-code"
+        "dabiggm0e/autoresearch-opencode"
         "wshobson/agents"
         "vercel-labs/agent-skills"
       ];
