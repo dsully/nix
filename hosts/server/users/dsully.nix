@@ -148,7 +148,9 @@ in {
       Unit = {
         Description = "Vopono qBittorrent";
         Wants = ["network-online.target"];
-        After = ["local-fs.target" "network-online.target" "nss-lookup.target" "vopono-daemon.service"];
+        # Note: vopono-daemon.service is a system service so cross-boundary ordering
+        # doesn't work. The user service relies on RestartSec to retry until the daemon is ready.
+        After = ["local-fs.target" "network-online.target" "nss-lookup.target"];
       };
       Service = {
         WorkingDirectory = "%h/.config/vopono";
@@ -170,6 +172,7 @@ in {
         ];
         PrivateTmp = false;
         Restart = "on-failure";
+        RestartSec = "10s";
         Type = "simple";
       };
       Install = {

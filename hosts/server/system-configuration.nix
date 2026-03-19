@@ -23,7 +23,7 @@ in {
           Cmnd_Alias SYSTEM_MANAGER = ${system-manager}/bin/system-manager (build|switch) *
           Cmnd_Alias LIQUIDCTL = ${lib.getExe pkgs.liquidctl} (list|status)
           Cmnd_Alias NIX = ${lib.getExe pkgs.lix} *
-          Cmnd_Alias VPN_CLEANUP = /sbin/ip link delete vpn_s, /sbin/ip netns delete vpn
+          Cmnd_Alias VPN_CLEANUP = /sbin/ip link delete vpn_s, /sbin/ip link delete vpn_d, /sbin/ip netns delete vpn
 
           %admin ALL=(ALL:ALL) NOPASSWD:SETENV:LIQUIDCTL
           %admin ALL=(ALL:ALL) NOPASSWD:SETENV:NIX
