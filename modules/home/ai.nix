@@ -372,14 +372,16 @@
   };
 
   # For claude-code: transform to { command, args?, extensionToLanguage }
-  claudeCodeLsp = lib.mapAttrs (
-    name: v:
-      {
-        inherit (v) command;
-        extensionToLanguage = lspLanguageIds.${name};
-      }
-      // lib.optionalAttrs (v ? args) {inherit (v) args;}
-  ) lsp;
+  claudeCodeLsp =
+    lib.mapAttrs (
+      name: v:
+        {
+          inherit (v) command;
+          extensionToLanguage = lspLanguageIds.${name};
+        }
+        // lib.optionalAttrs (v ? args) {inherit (v) args;}
+    )
+    lsp;
 
   opencodeLsp = lib.mapAttrs (name: v: {
     command = [v.command] ++ (v.args or []);

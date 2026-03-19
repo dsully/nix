@@ -9,7 +9,7 @@
   caddyDataDir = "/var/lib/caddy";
   caddyLogDir = "/var/log/caddy";
 
-  caddy-custom = flake.packages.x86_64-linux.caddy-custom;
+  inherit (flake.packages.x86_64-linux) caddy-custom;
 in {
   imports = [
     flake.modules.system-manager.common

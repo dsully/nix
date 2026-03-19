@@ -1,15 +1,20 @@
 {
-  pname,
-  pkgs,
-  flake,
+  lib,
+  writeShellApplication,
+  alejandra,
+  deadnix,
+  statix,
+  git,
+  runCommand,
+  flake ? ./.,
 }: let
-  formatter = pkgs.writeShellApplication {
-    name = pname;
+  formatter = writeShellApplication {
+    name = "formatter";
 
     runtimeInputs = [
-      pkgs.alejandra
-      pkgs.deadnix
-      pkgs.statix
+      alejandra
+      deadnix
+      statix
     ];
 
     text = ''
@@ -31,14 +36,14 @@
   };
 
   check =
-    pkgs.runCommand "format-check"
+    runCommand "format-check"
     {
       nativeBuildInputs = [
         formatter
-        pkgs.git
+        git
       ];
 
-      meta.platforms = pkgs.lib.platforms.linux;
+      meta.platforms = lib.platforms.linux;
     }
     ''
       export HOME=$NIX_BUILD_TOP/home
@@ -48,7 +53,7 @@
       git init --quiet
       git add .
       shopt -s globstar
-      ${pname} **/*.nix
+      formatter **/*.nix
       if ! git diff --exit-code; then
         echo "-------------------------------"
         echo "aborting due to above changes ^"

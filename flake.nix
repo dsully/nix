@@ -1,11 +1,4 @@
 {
-  ##################################################################################################################
-  #
-  # Want to know Nix in details? Looking for a beginner-friendly tutorial?
-  # Check out https://github.com/ryan4yin/nixos-and-flakes-book !
-  #
-  ##################################################################################################################
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -26,8 +19,7 @@
     nix-auth.url = "github:numtide/nix-auth";
     nix-auth.inputs.nixpkgs.follows = "nixpkgs";
 
-    blueprint.url = "github:numtide/blueprint";
-    blueprint.inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts.url = "github:hercules-ci/flake-parts";
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
@@ -60,11 +52,224 @@
   };
 
   outputs = inputs:
-    inputs.blueprint {
-      inherit inputs;
-      systems = [
-        "aarch64-darwin"
-        "x86_64-linux"
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} ({
+      config,
+      withSystem,
+      ...
+    }: let
+      # Auto-discover packages from packages/ directory.
+      packageDir = ./packages;
+      packageEntries = builtins.readDir packageDir;
+      packageNames = builtins.filter (x: x != null) (map (name: let
+        type = packageEntries.${name};
+      in
+        if type == "regular" && builtins.match ".*\\.nix$" name != null
+        then builtins.replaceStrings [".nix"] [""] name
+        else if type == "directory"
+        then name
+        else null)
+      (builtins.attrNames packageEntries));
+
+      # Home modules exported for downstream consumption.
+      homeModules = {
+        dsully = ./modules/home/dsully.nix;
+        ai = ./modules/home/ai.nix;
+        paste = ./modules/home/paste.nix;
+        copypaste = ./modules/home/copypaste.nix;
+        xdg-open-svc = ./modules/home/xdg-open-svc.nix;
+        cachix-watch-store = ./modules/home/cachix-watch-store.nix;
+      };
+
+      # Blueprint-compatible "flake" arg passed via specialArgs.
+      flakeAttr = {
+        inherit homeModules inputs;
+        inherit (config.flake) packages;
+        modules = {
+          darwin = {
+            common = ./modules/darwin/common.nix;
+            homebrew = ./modules/darwin/homebrew.nix;
+          };
+          system-manager = {
+            common = ./modules/system-manager/common.nix;
+          };
+        };
+      };
+
+      # Blueprint-compatible "perSystem" arg for a given system.
+      mkPerSystem = system: {
+        self = config.flake.packages.${system};
+        llm-agents = inputs.llm-agents.packages.${system};
+        nix-auth = inputs.nix-auth.packages.${system};
+        devshell = inputs.devshell.legacyPackages.${system};
+      };
+
+      # Common extraSpecialArgs for home-manager modules.
+      hmArgs = system: {
+        inherit inputs;
+        flake = flakeAttr;
+        perSystem = mkPerSystem system;
+      };
+
+      # Standalone home-manager configuration builder.
+      mkHome = system: {
+        user,
+        userModule,
+      }:
+        withSystem system ({pkgs, ...}:
+          inputs.home-manager.lib.homeManagerConfiguration {
+            inherit pkgs;
+            extraSpecialArgs = hmArgs system;
+            modules = [
+              userModule
+              {
+                home.username = user;
+                home.homeDirectory =
+                  if pkgs.stdenv.isDarwin
+                  then "/Users/${user}"
+                  else "/home/${user}";
+              }
+            ];
+          });
+    in {
+      systems = ["aarch64-darwin" "x86_64-linux"];
+
+      imports = [
+        inputs.devshell.flakeModule
+        inputs.flake-parts.flakeModules.modules
       ];
-    };
+      flake = {
+        # Typed module exports with class checking.
+        modules = {
+          darwin = {
+            common = ./modules/darwin/common.nix;
+            homebrew = ./modules/darwin/homebrew.nix;
+          };
+          homeManager = homeModules;
+        };
+
+        # Also export as homeModules for backward compat with downstream.
+        inherit homeModules;
+
+        darwinConfigurations.jarvis = withSystem "aarch64-darwin" ({
+          pkgs,
+          system,
+          ...
+        }:
+          inputs.nix-darwin.lib.darwinSystem {
+            inherit pkgs;
+            specialArgs = {
+              inherit inputs;
+              flake = flakeAttr;
+            };
+            modules = [
+              inputs.home-manager.darwinModules.home-manager
+              ./hosts/jarvis/darwin-configuration.nix
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = hmArgs system;
+                  users.dsully = import ./hosts/jarvis/users/dsully.nix;
+                };
+              }
+            ];
+          });
+
+        systemManagerConfigurations = withSystem "x86_64-linux" ({
+          pkgs,
+          system,
+          ...
+        }: let
+          smPkg = inputs.system-manager.packages.${system}.default;
+          smArgs = {
+            inherit inputs pkgs;
+            flake = flakeAttr;
+            system-manager = smPkg;
+          };
+        in {
+          server = inputs.system-manager.lib.makeSystemConfig {
+            modules = [./hosts/server/system-configuration.nix];
+            extraSpecialArgs = smArgs;
+          };
+          zap = inputs.system-manager.lib.makeSystemConfig {
+            modules = [./hosts/zap/system-configuration.nix];
+            extraSpecialArgs = smArgs;
+          };
+        });
+      };
+
+      perSystem = {
+        pkgs,
+        system,
+        lib,
+        ...
+      }: let
+        selfPackages = builtins.listToAttrs (map (name: {
+            inherit name;
+            value = pkgs.callPackage (
+              if builtins.hasAttr "${name}.nix" packageEntries
+              then "${packageDir}/${name}.nix"
+              else "${packageDir}/${name}"
+            ) {};
+          })
+          packageNames);
+
+        fmt = pkgs.callPackage ./formatter.nix {};
+      in {
+        packages = selfPackages // {formatter = fmt;};
+
+        formatter = fmt;
+
+        checks =
+          lib.mapAttrs' (name: lib.nameValuePair "pkg-${name}") selfPackages
+          // lib.optionalAttrs pkgs.stdenv.isLinux {
+            formatting = fmt.passthru.tests.check;
+          };
+
+        # home-manager CLI discovers homeConfigurations here.
+        legacyPackages.homeConfigurations = let
+          mk = mkHome system;
+          homes = {
+            "dsully@jarvis" = {
+              user = "dsully";
+              userModule = ./hosts/jarvis/users/dsully.nix;
+            };
+            "dsully@server" = {
+              user = "dsully";
+              userModule = ./hosts/server/users/dsully.nix;
+            };
+            "dsully@zap" = {
+              user = "dsully";
+              userModule = ./hosts/zap/users/dsully.nix;
+            };
+          };
+          hostSystem = {
+            jarvis = "aarch64-darwin";
+            server = "x86_64-linux";
+            zap = "x86_64-linux";
+          };
+        in
+          lib.filterAttrs (name: _:
+            hostSystem.${lib.last (lib.splitString "@" name)} == system)
+          (lib.mapAttrs (_: mk) homes);
+
+        devshells.default = {
+          packages = with pkgs; [
+            alejandra
+            cachix
+            deadnix
+            fd
+            fish
+            jq
+            just
+            nh
+            nurl
+            ripgrep
+            sd
+            statix
+            selfPackages.nix-package-updater
+          ];
+        };
+      };
+    });
 }
