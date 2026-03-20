@@ -7,14 +7,14 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "pruner";
-  rev = "fdd3ba7632353a72d16f4c354c3c8bfed062ef9a";
+  rev = "5a878e955fb2a565134a206a50bc2f2b56a86aff";
   version = "1.0.0-alpha.9-${rev}";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "pruner-formatter";
     repo = "pruner";
-    hash = "sha256-IXI6S2r7spaUTkdOzkL1BWMQ9gXWejpM5b5Fn3UY7s0=";
+    hash = "sha256-758ViC0AzKgV8p9HoMD4XlKFFrE75NoqQSosIyjetYg=";
   };
 
   cargoHash = "sha256-vbA4M/DBmy5JZ5D2quixcVWaIm1MRHl2cYyKhzvkftI=";

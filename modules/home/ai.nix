@@ -663,14 +663,11 @@ in {
       enable = true;
       package = perSystem.llm-agents.opencode;
       enableMcpIntegration = true;
-      rules = ./configs/ai/AGENTS.md;
       inherit agents;
+
       commands = wsCommands;
-      skills = {
-        astral-uv = "${acp}/plugins/astral/skills/uv";
-        astral-ruff = "${acp}/plugins/astral/skills/ruff";
-        astral-ty = "${acp}/plugins/astral/skills/ty";
-      };
+
+      rules = ./configs/ai/AGENTS.md;
       settings = {
         # model = opencodeModel models.large;
         autoupdate = lib.mkDefault true;
@@ -759,7 +756,13 @@ in {
           edit = "allow";
           webfetch = "allow";
         };
+        plugin = ["opencode-claude-auth"];
         theme = "nord";
+      };
+      skills = {
+        astral-uv = "${acp}/plugins/astral/skills/uv";
+        astral-ruff = "${acp}/plugins/astral/skills/ruff";
+        astral-ty = "${acp}/plugins/astral/skills/ty";
       };
     };
   };

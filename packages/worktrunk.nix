@@ -5,14 +5,14 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "worktrunk";
-  version = "0.29.4";
+  version = "0.30.0";
 
   src = fetchCrate {
     inherit pname version;
-    hash = "sha256-00vXGB2l1bnTnKLw+jQc5tswL5fR3EN9BZuUhqOIz0w=";
+    hash = "sha256-VNMaQhSslD37ryx8Q/9lQjXXKHycudgszyS9vyHnxhM=";
   };
 
-  cargoHash = "sha256-ggTb5k03lyyStMpe6H45XZA8iPZnNqkdxirnsybH2gg=";
+  cargoHash = "sha256-khonALVYSkIokG6EGXjJFPwynIYi0d987GwoSVsZ54g=";
   doCheck = false;
 
   meta = {
