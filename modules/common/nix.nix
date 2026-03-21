@@ -21,6 +21,10 @@
       url = "https://nix-community.cachix.org?priority=35";
       key = "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
     }
+    {
+      url = "https://cache.lix.systems?priority=40";
+      key = "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o=";
+    }
   ];
 
   # Platform-specific trusted users

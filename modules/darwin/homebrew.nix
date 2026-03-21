@@ -14,9 +14,6 @@
     enable = true;
     enableFishIntegration = true;
 
-    # Don't quarantine apps installed by homebrew with gatekeeper
-    caskArgs.no_quarantine = true;
-
     global.autoUpdate = false;
     greedyCasks = true;
 
@@ -38,9 +35,10 @@
       "cleanshot"
       "daisydisk"
       "dash"
-      "font-monaspace"
       "fastmail"
+      "font-monaspace"
       "ghostty"
+      "jazzyalex/agent-sessions/agent-sessions"
       "keka"
       "little-snitch"
       "lunar"
@@ -97,6 +95,7 @@
     };
 
     taps = [
+      "jazzyalex/agent-sessions"
       "rust-mcp-stack/tap"
       "steipete/tap"
     ];
