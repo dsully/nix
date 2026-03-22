@@ -68,6 +68,15 @@ in {
           };
         };
 
+        "ca" = {
+          hostname = "192.46.222.69";
+
+          extraOptions = {
+            ControlMaster = "no";
+            ControlPersist = "no";
+          };
+        };
+
         "tnt" = {
           hostname = "172.236.14.101";
 
@@ -78,7 +87,7 @@ in {
         };
       }
 
-      (lib.mkIf (hostName != "stelvio") {
+      (lib.mkIf (hostName != "friday") {
         "sisyphus" = {
           hostname = "10.0.0.135";
           user = "pi";
