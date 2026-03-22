@@ -36,9 +36,6 @@
     claude-plugins-official.url = "github:anthropics/claude-plugins-official";
     claude-plugins-official.flake = false;
 
-    direnv-instant.url = "github:Mic92/direnv-instant";
-    direnv-instant.inputs.nixpkgs.follows = "nixpkgs";
-
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 

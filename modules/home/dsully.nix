@@ -20,7 +20,6 @@ in {
   ];
 
   imports = [
-    inputs.direnv-instant.homeModules.direnv-instant
     inputs.nix-index-database.homeModules.nix-index
     inputs.opnix.homeManagerModules.default
     ../common/nix.nix
@@ -222,8 +221,6 @@ in {
         enable = true;
       };
     };
-
-    direnv-instant.enable = true;
 
     home-manager.enable = true;
 
