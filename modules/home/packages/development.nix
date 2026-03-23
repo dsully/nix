@@ -32,12 +32,11 @@
       tree-sitter
       typos
       uv
+      worktrunk
       xan
       yarn
       yek
       yq
-
-      my.pkgs.worktrunk
     ];
   };
 }
