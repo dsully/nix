@@ -625,6 +625,22 @@
         "type": "github"
       }
     },
+    "qbit-port-update": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1768403862,
+        "narHash": "sha256-HpX6Icy/5sPYGZOUP0H/arV7ay6k/9LXQVGA2B3qWQE=",
+        "ref": "refs/heads/main",
+        "rev": "3043e88c53005390ffad5e7b65c18b6284b5a702",
+        "revCount": 6,
+        "type": "git",
+        "url": "ssh://git@github.com/dsully/qbit-port-update"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github.com/dsully/qbit-port-update"
+      }
+    },
     "qbit-tools": {
       "inputs": {
         "crane": "crane",
@@ -662,6 +678,7 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
         "opnix": "opnix",
+        "qbit-port-update": "qbit-port-update",
         "qbit-tools": "qbit-tools",
         "skills-nix": "skills-nix",
         "system-manager": "system-manager",

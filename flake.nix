@@ -46,6 +46,9 @@
 
     qbit-tools.url = "git+ssh://git@github.com/dsully/qbit-tools";
     qbit-tools.inputs.nixpkgs.follows = "nixpkgs";
+
+    qbit-port-update.url = "git+ssh://git@github.com/dsully/qbit-port-update";
+    qbit-port-update.flake = false;
   };
 
   outputs = inputs:
@@ -207,11 +210,16 @@
               if builtins.hasAttr "${name}.nix" packageEntries
               then "${packageDir}/${name}.nix"
               else "${packageDir}/${name}"
-            ) {};
+            ) (packageOverrides.${name} or {});
           })
           packageNames);
 
         fmt = pkgs.callPackage ./formatter.nix {};
+
+        # Overrides for packages that need flake input sources.
+        packageOverrides = {
+          qbit-port-update = {src = inputs.qbit-port-update;};
+        };
       in {
         packages = selfPackages // {formatter = fmt;};
 
