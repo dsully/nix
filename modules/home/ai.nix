@@ -305,7 +305,8 @@
       disabled = true;
     };
     nixos = {
-      command = lib.getExe pkgs.mcp-nixos;
+      # command = lib.getExe pkgs.mcp-nixos;
+      command = "mcp-nixos";
       env = {
         PYTHON_GIL = "1";
       };
