@@ -73,13 +73,8 @@ in {
       ]
       ++ (with my.pkgs; [
         codesort
-        pruner
         rust-markdown-lsp-server
         version-lsp
-        # ])
-        # ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin (with my.pkgs; [
-        # lemminx
-        # pkl-lsp
       ]);
   };
 }

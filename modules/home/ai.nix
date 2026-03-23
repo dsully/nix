@@ -433,11 +433,10 @@ in {
         ]
       )
       ++ (with my.pkgs; [
-        cai
         cargo-mcp
         crates-mcp
         git-mcp-rs
-        infiniloom
+        # infiniloom
         mcp-git-tools
         mcp-rust-analyzer
         mcp-rust-builder
