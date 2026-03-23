@@ -300,10 +300,10 @@
       command = lib.getExe my.pkgs.mcp-rust-builder;
       disabled = true;
     };
-    memory = {
-      command = lib.getExe my.pkgs.memory-mcp-1file;
-      disabled = true;
-    };
+    # memory = {
+    #   command = lib.getExe my.pkgs.memory-mcp-1file;
+    #   disabled = true;
+    # };
     nixos = {
       # command = lib.getExe pkgs.mcp-nixos;
       command = "mcp-nixos";
@@ -441,7 +441,7 @@ in {
         mcp-git-tools
         mcp-rust-analyzer
         mcp-rust-builder
-        memory-mcp-1file
+        # memory-mcp-1file
         rust-mcp-filesystem
         rust-mcp-server
         sentry-mcp
