@@ -25,7 +25,6 @@
     ./topgrade.nix
     ./vivid.nix
     ./yamllint.nix
-    ./zed.nix
     ./zellij.nix
     ./zoxide.nix
   ];
