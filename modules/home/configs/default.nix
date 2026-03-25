@@ -1,6 +1,5 @@
 {...}: {
   imports = [
-    ./ai/ccstatusline.nix
     ./bacon.nix
     ./btop.nix
     ./delta.nix

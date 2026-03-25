@@ -73,7 +73,7 @@
       # Home modules exported for downstream consumption.
       homeModules = {
         dsully = ./modules/home/dsully.nix;
-        ai = ./modules/home/ai.nix;
+        ai = ./modules/home/configs/ai;
         paste = ./modules/home/paste.nix;
         copypaste = ./modules/home/copypaste.nix;
         xdg-open-svc = ./modules/home/xdg-open-svc.nix;
