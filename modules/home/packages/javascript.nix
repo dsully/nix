@@ -6,7 +6,7 @@
 }: let
   installScript =
     lib.concatMapStringsSep "\n" (pkg: ''
-      ${lib.getExe pkgs.bun} install -g "${pkg}" || echo "Warning: Failed to install ${pkg}"
+      ${lib.getExe pkgs.bun} install -g "${pkg}" >/dev/null 2>&1 || echo "Warning: Failed to install ${pkg}"
     '')
     config.packageTools.javascript;
 in {

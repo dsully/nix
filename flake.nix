@@ -27,6 +27,9 @@
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-rtk.url = "github:deepwatrcreatur/nix-rtk";
+    nix-rtk.inputs.llm-agents.follows = "llm-agents";
+
     charmbracelet-nur.url = "github:charmbracelet/nur";
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 

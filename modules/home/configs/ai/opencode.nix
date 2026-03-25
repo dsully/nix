@@ -132,6 +132,13 @@ in {
     };
   };
 
+  programs.rtk-hooks = {
+    enable = lib.mkDefault true;
+    integrations = {
+      opencode.enable = lib.mkDefault true;
+    };
+  };
+
   # Not exposed by home-manager (yet?)
   xdg.configFile."opencode/tui.jsonc".text = builtins.toJSON {
     "$schema" = "https://opencode.ai/tui.json";

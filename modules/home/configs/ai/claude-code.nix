@@ -10,6 +10,11 @@
   aiLib = import ./lib.nix {inherit config inputs lib my perSystem pkgs;};
   aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
 in {
+  # Generate the rtk-rewrite.sh hook script without patching settings.json
+  home.activation.rtkClaudeHook = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${lib.getExe perSystem.llm-agents.rtk} init --global --hook-only --agent claude --no-patch >/dev/null 2>&1 || true
+  '';
+
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
@@ -62,6 +67,10 @@ in {
               {
                 type = "command";
                 command = ./hooks/enforce-uv.fish;
+              }
+              {
+                type = "command";
+                command = "${config.home.homeDirectory}/.claude/hooks/rtk-rewrite.sh";
               }
             ];
           }
@@ -165,5 +174,12 @@ in {
     lspServers = aiLib.claudeCodeLsp;
 
     mcpServers = aiLib.mcpServersWithType;
+  };
+
+  programs.rtk-hooks = {
+    enable = lib.mkDefault true;
+    integrations = {
+      claude.enable = lib.mkDefault false;
+    };
   };
 }
