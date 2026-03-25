@@ -120,7 +120,7 @@ in {
 
     # https://github.com/NixOS/nixpkgs/issues/502464
     nixpkgs.overlays = [
-      (final: prev: {
+      (_: prev: {
         direnv = prev.direnv.overrideAttrs (old: {
           allowGoReference = true;
           env.CGO_ENABLED = 0;
