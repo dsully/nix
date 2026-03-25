@@ -28,6 +28,7 @@
       "latest"
       "macdive"
       "mist"
+      "monarch"
       "ogdesign-eagle"
       "protonvpn"
       "proxyman"
