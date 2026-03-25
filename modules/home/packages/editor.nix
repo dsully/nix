@@ -6,7 +6,15 @@
 }: let
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
 in {
-  home = {
+  config.packageTools.python = [
+    {package = "ptpython";}
+    {package = "pyproject";}
+    {package = "pyproject-fmt";}
+    {package = "pytest-language-server";}
+    {package = "xmlformatter";}
+  ];
+
+  config.home = {
     sessionVariables.VIMRUNTIME = "${neovim}/share/nvim/runtime";
 
     packages = with pkgs;

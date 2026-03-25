@@ -28,9 +28,9 @@
       in
         installCmd + injectCmds
     )
-    config.packageTools.uvTools;
+    config.packageTools.python;
 in {
-  options.packageTools.uvTools = lib.mkOption {
+  options.packageTools.python = lib.mkOption {
     type = lib.types.listOf (
       lib.types.submodule {
         options = {
@@ -64,23 +64,7 @@ in {
   };
 
   config = {
-    packageTools.uvTools = [
-      # https://github.com/cocoindex-io/cocoindex-code
-      {
-        package = "cocoindex-code";
-        prerelease = true;
-        withPackages = ["cocoindex>=1.0.0a24"];
-      }
-      {package = "git+https://github.com/ast-grep/ast-grep-mcp";}
-      {package = "mcp-nixos";}
-      {package = "ptpython";}
-      {package = "pyproject";}
-      {package = "pyproject-fmt";}
-      {package = "pytest-language-server";}
-      {package = "xmlformatter";}
-    ];
-
-    home.activation.uvTools = lib.mkIf (config.packageTools.uvTools != []) (
+    home.activation.python = lib.mkIf (config.packageTools.python != []) (
       lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
         export PATH="${lib.makeBinPath [pkgs.git]}:$PATH"
         ${installScript}

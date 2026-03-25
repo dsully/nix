@@ -120,7 +120,10 @@ in {
         webfetch = "allow";
       };
 
-      plugin = ["opencode-claude-auth"];
+      plugin = lib.mkDefault [
+        "opencode-claude-auth"
+        "opencode-gemini-auth"
+      ];
     };
     skills = {
       astral-uv = "${aiLib.acp}/plugins/astral/skills/uv";
