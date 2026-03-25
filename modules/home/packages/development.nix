@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   home = {
     packages = with pkgs; [
       ast-grep
@@ -34,5 +38,10 @@
       yek
       yq
     ];
+  };
+
+  programs.go = {
+    enable = true;
+    env.GOPATH = "${config.xdg.dataHome}/go";
   };
 }
