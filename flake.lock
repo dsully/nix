@@ -111,21 +111,6 @@
         "type": "github"
       }
     },
-    "crane": {
-      "locked": {
-        "lastModified": 1767744144,
-        "narHash": "sha256-9/9ntI0D+HbN4G0TrK3KmHbTvwgswz7p8IEJsWyef8Q=",
-        "owner": "ipetkov",
-        "repo": "crane",
-        "rev": "2fb033290bf6b23f226d4c8b32f7f7a16b043d7e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ipetkov",
-        "repo": "crane",
-        "type": "github"
-      }
-    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -265,24 +250,6 @@
     "flake-utils": {
       "inputs": {
         "systems": "systems_2"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_2": {
-      "inputs": {
-        "systems": "systems_3"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -662,44 +629,6 @@
         "type": "github"
       }
     },
-    "qbit-port-update": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1768403862,
-        "narHash": "sha256-HpX6Icy/5sPYGZOUP0H/arV7ay6k/9LXQVGA2B3qWQE=",
-        "ref": "refs/heads/main",
-        "rev": "3043e88c53005390ffad5e7b65c18b6284b5a702",
-        "revCount": 6,
-        "type": "git",
-        "url": "ssh://git@github.com/dsully/qbit-port-update"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/dsully/qbit-port-update"
-      }
-    },
-    "qbit-tools": {
-      "inputs": {
-        "crane": "crane",
-        "flake-utils": "flake-utils_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1771079000,
-        "narHash": "sha256-5LxXt3gxemtnaHscuYgKdic0tMWyDZ2E7lVjxeXsv/U=",
-        "ref": "refs/heads/main",
-        "rev": "5ea3f6fc7cd615ba1714640ef55416e06cc05396",
-        "revCount": 51,
-        "type": "git",
-        "url": "ssh://git@github.com/dsully/qbit-tools"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/dsully/qbit-tools"
-      }
-    },
     "root": {
       "inputs": {
         "astral-claude-plugins": "astral-claude-plugins",
@@ -716,8 +645,6 @@
         "nix-rtk": "nix-rtk",
         "nixpkgs": "nixpkgs_3",
         "opnix": "opnix",
-        "qbit-port-update": "qbit-port-update",
-        "qbit-tools": "qbit-tools",
         "skills-nix": "skills-nix",
         "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
@@ -806,21 +733,6 @@
         "type": "github"
       }
     },
-    "systems_4": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -872,7 +784,7 @@
           "nixpkgs"
         ],
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "systems": "systems_4"
+        "systems": "systems_3"
       },
       "locked": {
         "lastModified": 1770377964,

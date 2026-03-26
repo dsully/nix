@@ -16,7 +16,6 @@ in {
     flake.homeModules.dsully
     flake.homeModules.ai
     flake.homeModules.copypaste
-    flake.inputs.qbit-tools.homeManagerModules.default
     ../options.nix
   ];
 
@@ -117,8 +116,6 @@ in {
   };
 
   services = {
-    stash-watcher.enable = true;
-
     syncthing = {
       enable = true;
       guiAddress = "0.0.0.0:8384";
@@ -126,6 +123,21 @@ in {
   };
 
   systemd.user.services = {
+    stash-watcher = {
+      Unit = {
+        Description = "Stash file watcher";
+        After = ["network.target"];
+      };
+      Service = {
+        ExecStart = "${perSystem.self.qbit-tools}/bin/stash-watcher";
+        Restart = "always";
+        RestartSec = 5;
+      };
+      Install = {
+        WantedBy = ["default.target"];
+      };
+    };
+
     # cachix-watch-store = {
     #   Unit = {
     #     Description = "Cachix Store Watcher";

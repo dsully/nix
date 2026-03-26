@@ -2,7 +2,6 @@
   lib,
   buildPackages,
   rustPlatform,
-  fetchFromGitHub,
   installShellFiles,
   pkg-config,
   openssl,
@@ -10,16 +9,14 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "qbit-tools";
-  version = "0.3.11";
+  version = "0.3.12";
 
-  src = fetchFromGitHub {
-    owner = "dsully";
-    repo = "qbit-tools";
-    rev = "5ea3f6fc7cd615ba1714640ef55416e06cc05396";
-    hash = "sha256-5LxXt3gxemtnaHscuYgKdic0tMWyDZ2E7lVjxeXsv/U=";
+  src = fetchGit {
+    url = "git+ssh://git@github.com/dsully/qbit-tools";
+    rev = "ae721e2a36aec5c97409cb8706556dc8cdbf953d";
   };
 
-  cargoHash = "sha256-UtJbBhnIkaF0Y+J+L7Bnz58Hlc5beOiEddWTNhKLpLU=";
+  cargoHash = "sha256-Z1vTr+1baeB8wV1CSqT48SA6LMYfmugk+maA4RBuPao=";
   doCheck = false;
 
   nativeBuildInputs =
