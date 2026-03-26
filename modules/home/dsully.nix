@@ -267,7 +267,7 @@ in {
     enable = true;
     mime.enable = false;
 
-    systemDirs = {
+    systemDirs = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       data = [
         "${config.home.profileDirectory}/share"
         "/usr/share"
