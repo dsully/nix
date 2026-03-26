@@ -266,5 +266,13 @@ in {
   xdg = {
     enable = true;
     mime.enable = false;
+
+    systemDirs = {
+      data = [
+        "${config.home.profileDirectory}/share"
+        "/usr/share"
+        "/usr/local/share"
+      ];
+    };
   };
 }

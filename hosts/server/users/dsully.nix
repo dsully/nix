@@ -50,6 +50,9 @@ in {
 
   programs = {
     fish = {
+      completions."stash-tool" =
+        builtins.readFile "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
+
       interactiveShellInit = ''
         if test -d /usr/local/cuda
             set -gx CUDA_HOME /usr/local/cuda
@@ -129,7 +132,7 @@ in {
         After = ["network.target"];
       };
       Service = {
-        ExecStart = "${perSystem.self.qbit-tools}/bin/stash-watcher";
+        ExecStart = lib.getExe' perSystem.self.qbit-tools "stash-watcher";
         Restart = "always";
         RestartSec = 5;
       };

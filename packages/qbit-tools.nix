@@ -1,6 +1,5 @@
 {
   lib,
-  buildPackages,
   rustPlatform,
   installShellFiles,
   pkg-config,
@@ -31,17 +30,14 @@ rustPlatform.buildRustPackage {
     openssl
   ];
 
-  postInstall = lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) (
-    let
-      emulator = stdenv.hostPlatform.emulator buildPackages;
-      tool = "stash-tool";
-    in ''
-      installShellCompletion --cmd ${tool} \
-        --bash <(${emulator} $out/bin/${tool} completions bash) \
-        --fish <(${emulator} $out/bin/${tool} completions fish) \
-        --zsh <(${emulator} $out/bin/${tool} completions zsh)
-    ''
-  );
+  postInstall = let
+    tool = "stash-tool";
+  in ''
+    installShellCompletion --cmd ${tool} \
+      --bash <($out/bin/${tool} completions bash) \
+      --fish <($out/bin/${tool} completions fish) \
+      --zsh <($out/bin/${tool} completions zsh)
+  '';
 
   meta = {
     description = "QB Tools";
