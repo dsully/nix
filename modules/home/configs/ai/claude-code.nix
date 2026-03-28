@@ -175,11 +175,4 @@ in {
 
     mcpServers = aiLib.mcpServersWithType;
   };
-
-  programs.rtk-hooks = {
-    enable = lib.mkDefault true;
-    integrations = {
-      claude.enable = lib.mkDefault false;
-    };
-  };
 }

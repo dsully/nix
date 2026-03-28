@@ -10,6 +10,10 @@
   aiLib = import ./lib.nix {inherit config inputs lib my perSystem pkgs;};
   aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
 in {
+  home.activation.rtkOpencodeHook = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${lib.getExe perSystem.llm-agents.rtk} init --global --opencode >/dev/null 2>&1 || true
+  '';
+
   home.sessionVariables = {
     # https://opencode.ai/docs/cli/#environment-variables
     OPENCODE_DISABLE_AUTOUPDATE = 1;
@@ -129,13 +133,6 @@ in {
       astral-uv = "${aiLib.acp}/plugins/astral/skills/uv";
       astral-ruff = "${aiLib.acp}/plugins/astral/skills/ruff";
       astral-ty = "${aiLib.acp}/plugins/astral/skills/ty";
-    };
-  };
-
-  programs.rtk-hooks = {
-    enable = lib.mkDefault true;
-    integrations = {
-      opencode.enable = lib.mkDefault true;
     };
   };
 

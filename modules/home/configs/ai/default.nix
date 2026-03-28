@@ -11,7 +11,6 @@
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
-    inputs.nix-rtk.homeManagerModules.default
     inputs.skills-nix.homeModules.default
     ./ccstatusline.nix
     ./claude-code.nix
@@ -45,6 +44,7 @@ in {
             # codex
             # gemini-cli
             # goose-cli
+            rtk
           ]
         )
         ++ (with my.pkgs; [
