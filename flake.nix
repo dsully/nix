@@ -134,7 +134,29 @@
         inputs.devshell.flakeModule
         inputs.flake-parts.flakeModules.modules
       ];
-      flake = {
+      flake = let
+        systemManagerConfigs = withSystem "x86_64-linux" ({
+          pkgs,
+          system,
+          ...
+        }: let
+          smPkg = inputs.system-manager.packages.${system}.default;
+          smArgs = {
+            inherit inputs pkgs;
+            flake = flakeAttr;
+            system-manager = smPkg;
+          };
+        in {
+          server = inputs.system-manager.lib.makeSystemConfig {
+            modules = [./hosts/server/system-configuration.nix];
+            extraSpecialArgs = smArgs;
+          };
+          zap = inputs.system-manager.lib.makeSystemConfig {
+            modules = [./hosts/zap/system-configuration.nix];
+            extraSpecialArgs = smArgs;
+          };
+        });
+      in {
         # Typed module exports with class checking.
         modules = {
           darwin = {
@@ -172,27 +194,8 @@
             ];
           });
 
-        systemManagerConfigurations = withSystem "x86_64-linux" ({
-          pkgs,
-          system,
-          ...
-        }: let
-          smPkg = inputs.system-manager.packages.${system}.default;
-          smArgs = {
-            inherit inputs pkgs;
-            flake = flakeAttr;
-            system-manager = smPkg;
-          };
-        in {
-          server = inputs.system-manager.lib.makeSystemConfig {
-            modules = [./hosts/server/system-configuration.nix];
-            extraSpecialArgs = smArgs;
-          };
-          zap = inputs.system-manager.lib.makeSystemConfig {
-            modules = [./hosts/zap/system-configuration.nix];
-            extraSpecialArgs = smArgs;
-          };
-        });
+        systemManagerConfigurations = systemManagerConfigs;
+        systemConfigs = systemManagerConfigs;
       };
 
       perSystem = {
