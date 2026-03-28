@@ -117,20 +117,5 @@ in {
       };
 
     nixpkgs.config.allowUnfree = true;
-
-    # https://github.com/NixOS/nixpkgs/issues/502464
-    nixpkgs.overlays = [
-      (_: prev: {
-        direnv = prev.direnv.overrideAttrs (old: {
-          allowGoReference = true;
-          env.CGO_ENABLED = 0;
-          postPatch =
-            (old.postPatch or "")
-            + ''
-              substituteInPlace GNUmakefile --replace-warn '-linkmode=external' ""
-            '';
-        });
-      })
-    ];
   };
 }
