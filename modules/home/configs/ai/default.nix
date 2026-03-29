@@ -54,6 +54,7 @@ in {
           mcp-git-tools
           mcp-rust-analyzer
           mcp-rust-builder
+          open-ralph-wiggum
           rust-mcp-filesystem
           rust-mcp-server
           treesitter-mcp
