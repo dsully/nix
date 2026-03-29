@@ -125,6 +125,7 @@ in {
       };
 
       plugin = lib.mkDefault [
+        "@mohak34/opencode-notifier@latest"
         "opencode-claude-auth"
         "opencode-gemini-auth"
       ];
