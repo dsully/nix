@@ -167,10 +167,6 @@
       command = lib.getExe my.pkgs.mcp-rust-builder;
       disabled = true;
     };
-    # memory = {
-    #   command = lib.getExe my.pkgs.memory-mcp-1file;
-    #   disabled = true;
-    # };
     nixos = {
       # command = lib.getExe pkgs.mcp-nixos;
       command = "mcp-nixos";

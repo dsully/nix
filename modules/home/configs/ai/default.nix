@@ -51,14 +51,11 @@ in {
           cargo-mcp
           crates-mcp
           git-mcp-rs
-          # infiniloom
           mcp-git-tools
           mcp-rust-analyzer
           mcp-rust-builder
-          # memory-mcp-1file
           rust-mcp-filesystem
           rust-mcp-server
-          sentry-mcp
           treesitter-mcp
           turbo-commit
         ]);
