@@ -7,6 +7,7 @@
   inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
 in {
   config.packageTools.python = [
+    {package = "lizard";}
     {package = "ptpython";}
     {package = "pyproject";}
     {package = "pyproject-fmt";}
