@@ -163,6 +163,8 @@ in {
       PYTHONDONTWRITEBYTECODE = "1";
       PTPYTHON_CONFIG_HOME = "${config.xdg.configHome}/ptpython";
       VIRTUAL_ENV_DISABLE_PROMPT = "1";
+
+      XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
     };
   };
 
