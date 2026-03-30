@@ -84,6 +84,7 @@ in {
         codesort
         rust-markdown-lsp-server
         version-lsp
+        vimdoc-language-server
       ]);
   };
 }
