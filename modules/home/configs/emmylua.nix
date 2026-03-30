@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   pkgs,
   ...
@@ -48,4 +49,6 @@ in {
       ];
     };
   };
+
+  xdg.configFile."nvim/.emmyrc.json".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.emmyrc.json";
 }
