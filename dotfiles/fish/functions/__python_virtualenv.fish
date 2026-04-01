@@ -1,26 +1,44 @@
 function __python_virtualenv --description "Auto activate/deactivate Python virtualenvs"
 
-    set -l venv_path ""
-
-    # Check current directory first (nearest .venv wins), then git root as fallback.
-    if test -e "$PWD/.venv/bin/activate.fish"
-        set venv_path "$PWD/.venv"
-    else if git rev-parse --show-toplevel &>/dev/null
-        set -l root (git rev-parse --show-toplevel 2>/dev/null)
-        if test -e "$root/.venv/bin/activate.fish"
-            set venv_path "$root/.venv"
-        end
+    # Defer to direnv when it's managing VIRTUAL_ENV.
+    if set -q DIRENV_DIR; and set -q VIRTUAL_ENV
+        return 0
     end
 
-    if test -n "$venv_path" -a "$VIRTUAL_ENV" != "$venv_path"
-        # Deactivate any existing venv before activating the new one.
-        if test -n "$VIRTUAL_ENV"; and functions -q deactivate
+    # Walk up directory tree looking for .venv or venv (nearest wins).
+    set -l dir $PWD
+    set -l venv_path ""
+
+    while test "$dir" != /
+        if test -f "$dir/.venv/bin/activate.fish"
+            set venv_path "$dir/$candidate"
+            break
+        end
+        test -n "$venv_path"; and break
+        set dir (path dirname $dir)
+    end
+
+    if test -n "$venv_path"
+        # Already active, nothing to do.
+        if test "$VIRTUAL_ENV" = "$venv_path"
+            return 0
+        end
+
+        # Deactivate any previously auto-activated venv before switching.
+        if set -q __auto_venv; and functions -q deactivate
             deactivate
         end
+
         source "$venv_path/bin/activate.fish" &>/dev/null
-    else if test -z "$venv_path" -a -n "$VIRTUAL_ENV"
+        set -g __auto_venv $venv_path
+
+    else if set -q __auto_venv
+        # We left the venv's directory tree. Deactivate only if we auto-activated.
         if functions -q deactivate
             deactivate
         end
+        set -e __auto_venv
     end
+
+    # If VIRTUAL_ENV is set without __auto_venv, user activated manually. Don't touch it.
 end
