@@ -5,14 +5,14 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "mdterm";
-  version = "1.5.0";
+  version = "2.0.0";
 
   src = fetchCrate {
     inherit pname version;
-    hash = "sha256-Ds9hlilZClIJQGakpbPESPHfgP8Q3/jzQ0e8k2PQQio=";
+    hash = "sha256-tbNE2XjOWeRJmIv6novNOg0kJX2s9TV6Ea5WzhxdDMQ=";
   };
 
-  cargoHash = "sha256-vxiDwblpu9Bo5ofXng6tAelRF3zyL65lCD5ztFnFRpU=";
+  cargoHash = "sha256-YUPKUFfbzL/1peXEAX5EDehWq4hFwxJLkP2DBDkY23E=";
 
   meta = {
     description = "A terminal-based Markdown viewer with syntax highlighting and interactive navigation";

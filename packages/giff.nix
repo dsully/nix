@@ -5,14 +5,14 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: rec {
   pname = "giff";
-  version = "1.1.0";
+  version = "1.2.0";
 
   src = fetchCrate {
     inherit (finalAttrs) pname version;
-    hash = "sha256-ivTkvQpq3aFrBGK53OlO+DpfXUAQ3yLCFMH27akGZEk=";
+    hash = "sha256-qjJsjL41O4WK8zMJiADd1Kz20jHfg8qQzCdWjAOULgg=";
   };
 
-  cargoHash = "sha256-IjXdWp5LdxIxfj2NL1EdxGh29L8Q/ExqX8yNHFStT1M=";
+  cargoHash = "sha256-094QMCEI4ShTqlfYZUxCUUd/Fx9kmATHKuJPKqGxw7s=";
 
   meta = {
     description = "Visualizes the differences in a git repository";
