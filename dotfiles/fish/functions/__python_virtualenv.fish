@@ -1,10 +1,5 @@
 function __python_virtualenv --description "Auto activate/deactivate Python virtualenvs"
 
-    # Defer to direnv when it's managing VIRTUAL_ENV.
-    if set -q DIRENV_DIR; and set -q VIRTUAL_ENV
-        return 0
-    end
-
     # Walk up directory tree looking for .venv or venv (nearest wins).
     set -l dir $PWD
     set -l venv_path ""
