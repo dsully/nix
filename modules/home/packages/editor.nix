@@ -1,11 +1,8 @@
 {
-  inputs,
   my,
   pkgs,
   ...
-}: let
-  inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
-in {
+}: {
   config.packageTools.python = [
     {package = "lizard";}
     {package = "ptpython";}
@@ -16,7 +13,7 @@ in {
   ];
 
   config.home = {
-    sessionVariables.VIMRUNTIME = "${neovim}/share/nvim/runtime";
+    sessionVariables.VIMRUNTIME = "${my.pkgs.neovim}/share/nvim/runtime";
 
     packages = with pkgs;
       [
@@ -37,7 +34,6 @@ in {
         jinja-lsp
         just-lsp
         mbake
-        neovim
         nil
         nixd
         oxfmt
@@ -82,6 +78,7 @@ in {
       ]
       ++ (with my.pkgs; [
         codesort
+        neovim
         rust-markdown-lsp-server
         version-lsp
         vimdoc-language-server

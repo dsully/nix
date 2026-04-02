@@ -1,10 +1,11 @@
 {
   config,
   lib,
+  my,
   pkgs,
   ...
 }: let
-  editor = lib.getExe pkgs.neovim;
+  editor = lib.getExe my.pkgs.neovim;
   inherit (config.system) userName;
 
   exclude_bots = "--perl-regexp --author='^((?!dependabot|renovate).*)$'";

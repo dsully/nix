@@ -1,5 +1,6 @@
 {
   config,
+  my,
   pkgs,
   ...
 }: {
@@ -32,7 +33,7 @@
         gc = "gist create";
         ge = "gist edit";
       };
-      editor = "${pkgs.lib.getExe pkgs.neovim}";
+      editor = "${pkgs.lib.getExe my.pkgs.neovim}";
       git_protocol = "ssh";
       pager = config.home.sessionVariables.PAGER;
       prompt = "enabled";
