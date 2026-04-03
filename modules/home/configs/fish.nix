@@ -134,12 +134,10 @@ in {
 
   xdg.configFile = {
     "fish/conf.d/pwd.fish".text = ''
-      function auto_pwd --on-variable PWD
+      function __auto_pwd --on-variable PWD
           if test -d "$PWD/.git"
               ${lib.getExe my.pkgs.devmoji-log}
           end
-
-          __python_virtualenv
       end
     '';
 
