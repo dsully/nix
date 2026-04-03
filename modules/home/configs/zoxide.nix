@@ -4,7 +4,9 @@
   ...
 }: let
   fzfCfg = config.programs.fzf;
+
   renderedColors = colors: lib.concatStringsSep "," (lib.mapAttrsToList (name: value: "${name}:${value}") colors);
+
   fzfOpts =
     lib.concatStringsSep " " fzfCfg.defaultOptions
     + lib.optionalString (fzfCfg.colors != {}) " --color ${renderedColors fzfCfg.colors}";
@@ -15,6 +17,7 @@ in {
 
   programs.zoxide = {
     enable = true;
+    enableFishIntegration = true;
     options = [
       "--cmd j"
     ];
