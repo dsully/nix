@@ -41,7 +41,8 @@ in {
           with perSystem.llm-agents; [
             # Used by codecompanion
             claude-code-acp
-            # codex
+            codex
+            codex-acp
             # gemini-cli
             # goose-cli
             rtk
