@@ -113,7 +113,9 @@ in rec {
       fonts.text = lib.mkForce "";
       nvram.text = lib.mkForce "";
 
-      postActivation.text = ''
+      postActivation.text =
+      # bash
+      ''
         # Following line should allow us to avoid a logout/login cycle
         sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 

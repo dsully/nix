@@ -59,6 +59,7 @@ in {
       ".ipynb_checkpoints # Jupyter Notebook"
       ".mypy_cache/"
       ".nox/"
+      ".opencode/"
       ".pypirc"
       ".pytest_cache/"
       ".ruff_cache/"

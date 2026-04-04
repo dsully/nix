@@ -10,7 +10,9 @@
   inherit (config.colors) noHash;
 in {
   home = {
-    activation.opahRefresh = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    activation.opahRefresh = lib.hm.dag.entryAfter ["writeBoundary"]
+    # bash
+    ''
       config_file="${config.xdg.configHome}/fish/secrets.yaml"
       cache_file="${config.xdg.cacheHome}/fish/opah/secrets.fish"
 
@@ -37,6 +39,7 @@ in {
 
     # Magic enter functions: https://kau.sh/blog/magic-enter-shell/
     interactiveShellInit =
+      # fish
       ''
         function __magic_enter
             set -l cmd (commandline)
@@ -71,7 +74,9 @@ in {
             bind $key $func_name
         end
       ''
-      + lib.optionalString pkgs.stdenv.isDarwin ''
+      + lib.optionalString pkgs.stdenv.isDarwin
+      # fish
+      ''
         ulimit -n unlimited
       '';
 
@@ -119,27 +124,31 @@ in {
         uj = "journalctl --all --follow --user-unit";
       };
 
-    shellInit = ''
-      set -g HOSTNAME ${config.system.hostName}
-      set -g OS ${
-        if pkgs.stdenv.isDarwin
-        then "Darwin"
-        else "Linux"
-      }
-      set -g fish_greeting ""
+    shellInit =
+      # fish
+      ''
+        set -g HOSTNAME ${config.system.hostName}
+        set -g OS ${
+          if pkgs.stdenv.isDarwin
+          then "Darwin"
+          else "Linux"
+        }
+        set -g fish_greeting ""
 
-      fish_config theme choose Nordish
-    '';
+        fish_config theme choose Nordish
+      '';
   };
 
   xdg.configFile = {
-    "fish/conf.d/pwd.fish".text = ''
-      function __auto_pwd --on-variable PWD
-          if test -d "$PWD/.git"
-              ${lib.getExe my.pkgs.devmoji-log}
-          end
-      end
-    '';
+    "fish/conf.d/pwd.fish".text =
+      # fish
+      ''
+        function __auto_pwd --on-variable PWD
+            if test -d "$PWD/.git"
+                ${lib.getExe my.pkgs.devmoji-log}
+            end
+        end
+      '';
 
     "fish/secrets.yaml".source = yamlFormat.generate "fish-secrets-yaml" {
       secrets = {
@@ -150,40 +159,42 @@ in {
       };
     };
 
-    "fish/themes/Nordish.theme".text = ''
-      # Nord Colors / Theme
-      #
-      # Syntax Highlighting Colors
-      fish_color_autosuggestion ${noHash c.blue.base}
-      fish_color_cancel -r
-      fish_color_command ${noHash c.blue.base}
-      fish_color_comment ${noHash c.gray.base}
-      fish_color_cwd ${noHash c.green.base}
-      fish_color_cwd_root ${noHash c.red.base}
-      fish_color_end ${noHash c.cyan.bright}
-      fish_color_error ${noHash c.yellow.base}
-      fish_color_escape ${noHash c.blue.base}
-      fish_color_history_current --bold
-      fish_color_host normal
-      fish_color_keyword ${noHash c.blue.base}
-      fish_color_match --background=${noHash c.blue.bright}
-      fish_color_normal normal
-      fish_color_operator ${noHash c.blue.bright}
-      fish_color_option ${noHash c.blue.base}
-      fish_color_param ${noHash c.blue.base}
-      fish_color_quote ${noHash c.white.base}
-      fish_color_redirection ${noHash c.red.base}
-      fish_color_search_match ${noHash c.yellow.base} --background=${noHash c.black.bright}
-      fish_color_selection ${noHash c.white.base} --bold --background=${noHash c.black.bright}
-      fish_color_user ${noHash c.green.base}
-      fish_color_valid_path --underline
+    "fish/themes/Nordish.theme".text =
+      # fish
+      ''
+        # Nord Colors / Theme
+        #
+        # Syntax Highlighting Colors
+        fish_color_autosuggestion ${noHash c.blue.base}
+        fish_color_cancel -r
+        fish_color_command ${noHash c.blue.base}
+        fish_color_comment ${noHash c.gray.base}
+        fish_color_cwd ${noHash c.green.base}
+        fish_color_cwd_root ${noHash c.red.base}
+        fish_color_end ${noHash c.cyan.bright}
+        fish_color_error ${noHash c.yellow.base}
+        fish_color_escape ${noHash c.blue.base}
+        fish_color_history_current --bold
+        fish_color_host normal
+        fish_color_keyword ${noHash c.blue.base}
+        fish_color_match --background=${noHash c.blue.bright}
+        fish_color_normal normal
+        fish_color_operator ${noHash c.blue.bright}
+        fish_color_option ${noHash c.blue.base}
+        fish_color_param ${noHash c.blue.base}
+        fish_color_quote ${noHash c.white.base}
+        fish_color_redirection ${noHash c.red.base}
+        fish_color_search_match ${noHash c.yellow.base} --background=${noHash c.black.bright}
+        fish_color_selection ${noHash c.white.base} --bold --background=${noHash c.black.bright}
+        fish_color_user ${noHash c.green.base}
+        fish_color_valid_path --underline
 
-      # Completion Pager Colors
-      fish_pager_color_completion normal
-      fish_pager_color_description ${noHash c.yellow.base}
-      fish_pager_color_prefix normal --bold --underline
-      fish_pager_color_progress ${noHash c.white.bright} --background=${noHash c.cyan.base}
-      fish_pager_color_selected_background --background=${noHash c.black.bright}
-    '';
+        # Completion Pager Colors
+        fish_pager_color_completion normal
+        fish_pager_color_description ${noHash c.yellow.base}
+        fish_pager_color_prefix normal --bold --underline
+        fish_pager_color_progress ${noHash c.white.bright} --background=${noHash c.cyan.base}
+        fish_pager_color_selected_background --background=${noHash c.black.bright}
+      '';
   };
 }

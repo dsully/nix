@@ -80,7 +80,9 @@ in {
             matcher = "Edit|Write|MultiEdit";
             hooks = [
               {
-                command = ''
+                command =
+                # bash
+                ''
                   file_path="$1"
                   case "$file_path" in
                     *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;

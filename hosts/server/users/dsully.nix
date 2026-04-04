@@ -53,7 +53,9 @@ in {
       completions."stash-tool" =
         builtins.readFile "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
 
-      interactiveShellInit = ''
+      interactiveShellInit =
+      # fish
+      ''
         if test -d /usr/local/cuda
             set -gx CUDA_HOME /usr/local/cuda
             fish_add_path --append "$CUDA_HOME/bin"
