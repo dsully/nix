@@ -135,14 +135,12 @@ in {
       astral-ruff = "${aiLib.acp}/plugins/astral/skills/ruff";
       astral-ty = "${aiLib.acp}/plugins/astral/skills/ty";
     };
-  };
 
-  # Not exposed by home-manager (yet?)
-  xdg.configFile."opencode/tui.jsonc".text = builtins.toJSON {
-    "$schema" = "https://opencode.ai/tui.json";
-    theme = "nord";
-    scroll_acceleration = {
-      enabled = true;
+    tui = {
+      theme = "nord";
+      scroll_acceleration = {
+        enabled = true;
+      };
     };
   };
 }
