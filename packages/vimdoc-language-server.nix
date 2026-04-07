@@ -5,14 +5,14 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: rec {
   pname = "vimdoc-language-server";
-  version = "0.1.1";
+  version = "0.2.0";
 
   src = fetchCrate {
     inherit (finalAttrs) pname version;
-    hash = "sha256-XAWOaovU3SYyZXa0aex2viIntKlDIUcIKGapIeYqJnw=";
+    hash = "sha256-V70J5Z4hOhhdUbuyl9Fsj1JULCJHLO2+6uFUI7N/Wxk=";
   };
 
-  cargoHash = "sha256-kpfvUlOg/dQSh9vej9Mm5qDzKYI8RLap/vUdkq7Bd6s=";
+  cargoHash = "sha256-gMQhtSWhh3noeCN7SsIntQ+Fus5bfxg4DmJh7h3VWuA=";
 
   meta = {
     description = "Language server for vim help files";
