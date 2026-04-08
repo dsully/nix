@@ -23,6 +23,7 @@
     };
 
     brews = [
+      "gtab"
       "mactop"
       "mas"
       "rust-analyzer"
@@ -95,6 +96,7 @@
     };
 
     taps = [
+      "Franvy/gtab"
       "jazzyalex/agent-sessions"
       "rust-mcp-stack/tap"
       "steipete/tap"
