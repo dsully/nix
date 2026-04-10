@@ -96,7 +96,7 @@
         "vim/catch_all=ignore"
 
         # https://github.com/Franvy/gtab
-        "config-file=${config.xdg.configHome}/gtab/ghostty-shortcut.conf"
+        # "config-file=${config.xdg.configHome}/gtab/ghostty-shortcut.conf"
       ];
     };
   };
