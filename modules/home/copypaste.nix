@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   my,
   pkgs,
@@ -6,7 +7,7 @@
 }: {
   home = {
     file = {
-      ".local/bin/pbcopy" = {
+      "${config.xdg.binHome}/pbcopy" = {
         force = true;
         source = pkgs.writeScript "pbcopy" ''
           ${lib.getExe pkgs.fish}
@@ -25,7 +26,7 @@
         '';
       };
 
-      ".local/bin/pbpaste" = {
+      "${config.xdg.binHome}/pbpaste" = {
         force = true;
         source = pkgs.writeScript "pbpaste" ''
           ${lib.getExe pkgs.fish}
@@ -38,7 +39,7 @@
         '';
       };
 
-      ".local/bin/xdg-open".source = lib.getExe my.pkgs.magic-opener;
+      "${config.xdg.binHome}/xdg-open".source = lib.getExe my.pkgs.magic-opener;
     };
   };
 }
