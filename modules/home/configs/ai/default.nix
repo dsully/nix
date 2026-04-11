@@ -14,6 +14,7 @@ in {
     inputs.skills-nix.homeModules.default
     ./ccstatusline.nix
     ./claude-code.nix
+    ./codex.nix
     ./opencode.nix
   ];
 
@@ -71,7 +72,7 @@ in {
 
       skills = {
         enable = true;
-        defaultAgents = ["opencode" "claude-code"];
+        defaultAgents = ["codex" "claude-code" "opencode"];
         sources = [
           "cocoindex-io/cocoindex-code"
           "dabiggm0e/autoresearch-opencode"
