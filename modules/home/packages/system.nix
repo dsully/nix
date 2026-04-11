@@ -40,7 +40,6 @@
         rsync
         sad
         sd
-        see-cat
         sniffnet
         tree
         unar
