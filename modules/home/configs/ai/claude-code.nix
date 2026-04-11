@@ -81,15 +81,15 @@ in {
             hooks = [
               {
                 command =
-                # bash
-                ''
-                  file_path="$1"
-                  case "$file_path" in
-                    *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
-                    *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
-                    *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
-                  esac
-                '';
+                  # bash
+                  ''
+                    file_path="$1"
+                    case "$file_path" in
+                      *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
+                      *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
+                      *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
+                    esac
+                  '';
                 timeout = 10;
                 type = "command";
               }

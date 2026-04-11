@@ -114,44 +114,44 @@ in rec {
       nvram.text = lib.mkForce "";
 
       postActivation.text =
-      # bash
-      ''
-        # Following line should allow us to avoid a logout/login cycle
-        sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+        # bash
+        ''
+          # Following line should allow us to avoid a logout/login cycle
+          sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
-        chflags nohidden ~/Library /Volumes
+          chflags nohidden ~/Library /Volumes
 
-        # Spotlight exclusions for Electron apps (reduces mds_stores CPU usage)
-        # Note: postActivation runs as root, so we must use absolute paths
-        USER_HOME="/Users/${config.system.primaryUser}"
-        SPOTLIGHT_EXCLUSIONS=(
-          "$USER_HOME/Library/Application Support/1Password"
-          "$USER_HOME/Library/Application Support/Discord"
-          "$USER_HOME/Library/Application Support/Eagle"
-          "$USER_HOME/Library/Application Support/Fastmail"
-          "$USER_HOME/Library/Application Support/Google/Chrome"
-          "$USER_HOME/Library/Application Support/Granola"
-          "$USER_HOME/Library/Application Support/LM Studio"
-          "$USER_HOME/Library/Application Support/Marco"
-          "$USER_HOME/Library/Application Support/Raindrop.io"
-          "$USER_HOME/Library/Application Support/Signal"
-          "$USER_HOME/Library/Application Support/Slack"
-          "$USER_HOME/Library/Caches"
-          "$USER_HOME/.cargo"
-          "$USER_HOME/.rustup"
-          "$USER_HOME/.npm"
-          "$USER_HOME/.pnpm"
-        )
+          # Spotlight exclusions for Electron apps (reduces mds_stores CPU usage)
+          # Note: postActivation runs as root, so we must use absolute paths
+          USER_HOME="/Users/${config.system.primaryUser}"
+          SPOTLIGHT_EXCLUSIONS=(
+            "$USER_HOME/Library/Application Support/1Password"
+            "$USER_HOME/Library/Application Support/Discord"
+            "$USER_HOME/Library/Application Support/Eagle"
+            "$USER_HOME/Library/Application Support/Fastmail"
+            "$USER_HOME/Library/Application Support/Google/Chrome"
+            "$USER_HOME/Library/Application Support/Granola"
+            "$USER_HOME/Library/Application Support/LM Studio"
+            "$USER_HOME/Library/Application Support/Marco"
+            "$USER_HOME/Library/Application Support/Raindrop.io"
+            "$USER_HOME/Library/Application Support/Signal"
+            "$USER_HOME/Library/Application Support/Slack"
+            "$USER_HOME/Library/Caches"
+            "$USER_HOME/.cargo"
+            "$USER_HOME/.rustup"
+            "$USER_HOME/.npm"
+            "$USER_HOME/.pnpm"
+          )
 
-        for dir in "''${SPOTLIGHT_EXCLUSIONS[@]}"; do
-          if [ -d "$dir" ]; then
-            # Add .metadata_never_index file to prevent Spotlight indexing
-            touch "$dir/.metadata_never_index"
-          fi
-        done
+          for dir in "''${SPOTLIGHT_EXCLUSIONS[@]}"; do
+            if [ -d "$dir" ]; then
+              # Add .metadata_never_index file to prevent Spotlight indexing
+              touch "$dir/.metadata_never_index"
+            fi
+          done
 
-        # /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
-      '';
+          # /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
+        '';
     };
 
     # Disable nix-darwin features I don't care about.

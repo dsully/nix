@@ -37,11 +37,12 @@ in {
   # packages = [
   #   (builtins.trace "Available packages: ${builtins.toJSON (builtins.attrNames (perSystem.upstream.self or perSystem.self))}")
   # ];
-  _module.args.my.pkgs = pkgs.extend (_final: _prev:
-    (perSystem.upstream or perSystem.self)
-    // lib.optionalAttrs (inputs ? neovim-nightly-overlay) {
-      neovim = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.neovim;
-    }
+  _module.args.my.pkgs = pkgs.extend (
+    _final: _prev:
+      (perSystem.upstream or perSystem.self)
+      // lib.optionalAttrs (inputs ? neovim-nightly-overlay) {
+        inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
+      }
   );
 
   editorconfig = {
