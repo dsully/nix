@@ -49,7 +49,7 @@
             repos = [
               "${config.home.homeDirectory}/src/*/"
               "${config.home.homeDirectory}/src/neovim/*/"
-              "${config.home.homeDirectory}/src/neovim/dots/*/"
+              "${config.home.homeDirectory}/src/dots/*/*/"
               "${config.home.homeDirectory}/src/nix/*/"
               "${config.home.homeDirectory}/src/rust/*/"
             ];
