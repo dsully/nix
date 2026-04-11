@@ -54,6 +54,7 @@
         ts_query_ls
         ty
         typescript-go
+        vimdoc-language-server
         vscode-langservers-extracted
         wordnet
         write-good
@@ -81,7 +82,6 @@
         neovim
         rust-markdown-lsp-server
         version-lsp
-        vimdoc-language-server
       ]);
   };
 }
