@@ -54,13 +54,13 @@ in {
         builtins.readFile "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
 
       interactiveShellInit =
-      # fish
-      ''
-        if test -d /usr/local/cuda
-            set -gx CUDA_HOME /usr/local/cuda
-            fish_add_path --append "$CUDA_HOME/bin"
-        end
-      '';
+        # fish
+        ''
+          if test -d /usr/local/cuda
+              set -gx CUDA_HOME /usr/local/cuda
+              fish_add_path --append "$CUDA_HOME/bin"
+          end
+        '';
     };
 
     onepassword-secrets.secrets = {

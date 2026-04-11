@@ -23,6 +23,7 @@ in {
       javascript = [
         "opencode-claude-auth"
         "opencode-gemini-auth@latest"
+        "opencode-with-claude"
       ];
       python = [
         # https://github.com/cocoindex-io/cocoindex-code
@@ -56,6 +57,7 @@ in {
           mcp-git-tools
           mcp-rust-analyzer
           mcp-rust-builder
+          meridian
           open-ralph-wiggum
           rust-mcp-filesystem
           rust-mcp-server

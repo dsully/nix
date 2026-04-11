@@ -10,28 +10,35 @@
   aiLib = import ./lib.nix {inherit config inputs lib my perSystem pkgs;};
   aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
 in {
-  home.activation.rtkOpencodeHook = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    ${lib.getExe perSystem.llm-agents.rtk} init --global --opencode >/dev/null 2>&1 || true
-  '';
+  home = {
+    activation.rtkOpencodeHook = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      ${lib.getExe perSystem.llm-agents.rtk} init --global --opencode >/dev/null 2>&1 || true
+    '';
 
-  home.sessionVariables = {
-    # https://opencode.ai/docs/cli/#environment-variables
-    OPENCODE_DISABLE_AUTOUPDATE = 1;
+    file."${config.xdg.binHome}/opencode" = {
+      force = true;
+      source = "${my.pkgs.meridian}/libexec/meridian/opencode-wrapper";
+    };
 
-    # https://opencode.ai/docs/rules/#claude-code-compatibility
-    OPENCODE_DISABLE_CLAUDE_CODE = 1;
+    sessionVariables = {
+      # https://opencode.ai/docs/cli/#environment-variables
+      OPENCODE_DISABLE_AUTOUPDATE = 1;
 
-    OPENCODE_DISABLE_LSP_DOWNLOAD = 1;
-    OPENCODE_DISABLE_PRUNE = 1;
+      # https://opencode.ai/docs/rules/#claude-code-compatibility
+      OPENCODE_DISABLE_CLAUDE_CODE = 1;
 
-    # https://opencode.ai/docs/cli/#experimental
-    OPENCODE_EXPERIMENTAL = 1;
-    OPENCODE_EXPERIMENTAL_FILEWATCHER = 1;
-    OPENCODE_EXPERIMENTAL_ICON_DISCOVERY = 1;
-    OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
-    OPENCODE_EXPERIMENTAL_LSP_TY = 1;
-    OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
-    OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
+      OPENCODE_DISABLE_LSP_DOWNLOAD = 1;
+      OPENCODE_DISABLE_PRUNE = 1;
+
+      # https://opencode.ai/docs/cli/#experimental
+      OPENCODE_EXPERIMENTAL = 1;
+      OPENCODE_EXPERIMENTAL_FILEWATCHER = 1;
+      OPENCODE_EXPERIMENTAL_ICON_DISCOVERY = 1;
+      OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
+      OPENCODE_EXPERIMENTAL_LSP_TY = 1;
+      OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
+      OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
+    };
   };
 
   programs.opencode = {
@@ -126,8 +133,10 @@ in {
 
       plugin = lib.mkDefault [
         "@mohak34/opencode-notifier@latest"
-        "opencode-claude-auth"
+        # "opencode-claude-auth"
         "opencode-gemini-auth"
+        # "opencode-with-claude"
+        "${my.pkgs.meridian}/libexec/meridian/plugin/meridian.ts"
       ];
     };
     skills = {

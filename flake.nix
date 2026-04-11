@@ -70,6 +70,7 @@
         ai = ./modules/home/configs/ai;
         paste = ./modules/home/paste.nix;
         copypaste = ./modules/home/copypaste.nix;
+        meridian = ./modules/home/meridian.nix;
         xdg-open-svc = ./modules/home/xdg-open-svc.nix;
         cachix-watch-store = ./modules/home/cachix-watch-store.nix;
       };
@@ -213,8 +214,14 @@
 
         fmt = pkgs.callPackage ./formatter.nix {};
 
+        llm-agents = inputs.llm-agents.packages.${system};
+
         # Overrides for packages that need flake input sources.
         packageOverrides = {
+          meridian = {
+            inherit (llm-agents) claude-code;
+            inherit (llm-agents) opencode;
+          };
         };
       in {
         packages = selfPackages // {formatter = fmt;};

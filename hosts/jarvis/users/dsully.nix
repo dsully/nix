@@ -15,16 +15,18 @@
     ../options.nix
   ];
 
-  home.packages = with pkgs;
-    [
-      copilot-language-server
-      nix-output-monitor
-      zls
-      zuban
-    ]
-    ++ (with perSystem.self; [
-      autorebase
-    ]);
+  home = {
+    packages = with pkgs;
+      [
+        copilot-language-server
+        nix-output-monitor
+        zls
+        zuban
+      ]
+      ++ (with perSystem.self; [
+        autorebase
+      ]);
+  };
 
   programs = {
     onepassword-secrets.secrets = {
