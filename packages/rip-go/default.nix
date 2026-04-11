@@ -15,7 +15,10 @@ buildGoModule rec {
     hash = "sha256-c0G6hkMLkFBetP75YKrh/c/5USR6Vc4TPSVZJTSXDkU=";
   };
 
-  vendorHash = "sha256-Q6AstIIHJwmi6JHNQEAr2c5dZSXbDQSbqIvCxgyXuJ8=";
+  patches = [./gopsutil-v4.patch];
+
+  proxyVendor = true;
+  vendorHash = "sha256-wX4LaaYWyqGMstoio5kjhPUODsCyFndw95/vGLUu1FY=";
   doCheck = false;
 
   ldflags = ["-s" "-w"];
