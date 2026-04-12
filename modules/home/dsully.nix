@@ -71,6 +71,10 @@ in {
       "Makefile" = {
         indent_style = "tab";
       };
+      "just" = {
+        indent_size = 4;
+        indent_style = "tab";
+      };
     };
   };
 

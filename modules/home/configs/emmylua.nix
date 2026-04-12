@@ -42,6 +42,7 @@ in {
       library = [
         "${my.pkgs.neovim}/share/nvim/runtime"
         # "${config.xdg.dataHome}/nvim/lazy/"
+        # "${config.xdg.dataHome}/nvim/site/pack/core/opt/"
       ];
       workspaceRoots = [
         "lua"
