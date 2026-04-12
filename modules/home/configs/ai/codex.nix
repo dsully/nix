@@ -30,7 +30,7 @@ in {
     package = perSystem.llm-agents.codex;
     enableMcpIntegration = true;
 
-    custom-instructions = builtins.readFile ./AGENTS.md;
+    context = ./AGENTS.md;
 
     settings = {
       agents = codexAgentRoles;

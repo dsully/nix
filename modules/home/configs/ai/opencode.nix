@@ -47,7 +47,7 @@ in {
     enableMcpIntegration = true;
     inherit (aiAgents) agents commands;
 
-    rules = ./AGENTS.md;
+    context = ./AGENTS.md;
     settings = {
       autoupdate = lib.mkDefault true;
       compaction = {

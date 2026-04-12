@@ -21,7 +21,7 @@ in {
 
     inherit (aiAgents) agents;
 
-    memory.source = ./AGENTS.md;
+    context = ./AGENTS.md;
 
     settings = {
       inherit (aiLib.models.large) model;
