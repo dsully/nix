@@ -42,6 +42,7 @@ stdenvNoCC.mkDerivation rec {
       set -e
 
       export PATH="${lib.makeBinPath [claude-code]}:$PATH"
+      PYTHON_GIL=1
 
       # Pick a random free port.
       PORT=$(${lib.getExe python3} -c \
