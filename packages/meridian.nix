@@ -15,7 +15,7 @@ stdenvNoCC.mkDerivation rec {
 
   src = fetchurl {
     url = "https://registry.npmjs.org/@rynfar/meridian/-/meridian-${version}.tgz";
-    hash = "sha512-zo8wvuK29dNgFldHRoDqq6+v2aVk7v+n84IqoAgRWAr1/rQuq666SM37HVjA6FMvt7mLNkbPUr/neSBPhTjhqw==";
+    hash = "sha256-fbCklMGNlzbe2GD5hJOeRpRGVMueHXuFzBGerX6ohm8=";
   };
 
   sourceRoot = "package";
