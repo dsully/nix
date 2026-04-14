@@ -25,10 +25,16 @@ function print_custom_binds --description "Prints out custom user binds"
     # Define the bindings data
     set -l bindings
     set -a bindings "Alt+C\tFuzzy search directories to cd into"
-    set -a bindings "Ctrl+N\tNavigate down in directory tree"
-    set -a bindings "Ctrl+O\tNavigate up in directory tree"
-    set -a bindings "Ctrl+R\tFuzzy search command history"
-    set -a bindings "Ctrl+T\tFuzzy search files in current directory"
+    set -a bindings "Ctrl+g-Ctrl-b\tGit Branch"
+    set -a bindings "Ctrl+g-Ctrl-f\tGit Status"
+    set -a bindings "Ctrl+g-Ctrl-h\tGit History (Log)"
+    set -a bindings "Ctrl+g-Ctrl-r\tGit Remote"
+    set -a bindings "Ctrl+g-Ctrl-t\tGit Tag"
+
+    set -a bindings "Ctrl+n\tNavigate down in directory tree"
+    set -a bindings "Ctrl+o\tNavigate up in directory tree"
+    set -a bindings "Ctrl+r\tFuzzy search command history"
+    set -a bindings "Ctrl+t\tFuzzy search files in current directory"
     set -a bindings ",ff\tCustom file finder function"
     set -a bindings ",fg\tCustom file grep function"
     set -a bindings ",fr\tCustom file replace function"
@@ -85,7 +91,9 @@ function fzf_add_multi_hashes_to_commandline -d 'add multiple hashes as a range'
     read -d \n -z -a result
     set -l hashes
     for hash in $result
-        if test -n (string trim $hash)
+        set -l trimmedHash (string trim -- $hash)
+
+        if test -n "$trimmedHash"
             set -a hashes $hash
         end
     end
@@ -121,11 +129,19 @@ end
 
 function __git_fzf_git_branch
     __git_fzf_is_in_git_repo; or return
-    git branch -a --color=always | grep -v '/HEAD\s' | fzf-down -m --ansi --preview-window right:70% --preview 'git log --color=always --oneline --graph --date=short \
-			--pretty="format:%C(auto)%cd %h%d %s %C(magenta)[%an]%Creset" \
-			--print0 \
-			--read0 \
-			(echo {} | sed s/^..// | cut -d" " -f1) | head -'$LINES | sed 's/^..//' | cut -d' ' -f1 | sed 's#^remotes/##' | fzf_add_to_commandline
+
+    set -l selected (git branch --all --color=always | grep -v HEAD | sed 's/^[* ]*//' | sed 's#^remotes/origin/##' | awk '!seen[$0]++' | fzf-down \
+        --border-label="  Git Branches " \
+        --preview 'git log --color=always --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" {} | head -50' \
+        --preview-window "right:55%:border-rounded" \
+        --preview-label=" 󰜘 Commits " \
+        --header="  ⌨  enter checkout │ esc cancel")
+
+    if test -n "$selected"
+        commandline -t ""
+        commandline -it -- "git checkout $selected"
+        commandline -f repaint
+    end
 end
 
 function __git_fzf_git_tag

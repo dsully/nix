@@ -7,4 +7,6 @@ function ,ft --description 'Fuzzy search for files of a specific type'
 
     __fzf_picker_args
     __fzf_grep --type $argv[1] --query "$argv[2..]"
+
+    commandline --function repaint
 end

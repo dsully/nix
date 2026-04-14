@@ -9,4 +9,6 @@ function ,fk --description 'Kill a process by name'
             command kill $pid
         end
     end
+
+    commandline --function repaint
 end
