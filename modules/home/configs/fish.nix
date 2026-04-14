@@ -22,6 +22,10 @@ in {
         fi
       '';
 
+    packages = [
+      my.pkgs.fish-session
+    ];
+
     sessionVariables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
