@@ -163,13 +163,15 @@ in {
       };
 
       env = {
+        CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING = "1";
         CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+        CLAUDE_CODE_EFFORT_LEVEL = "max";
         DISABLE_AUTOUPDATER = "1";
         DISABLE_BUG_COMMAND = "1";
         DISABLE_ERROR_REPORTING = "1";
         DISABLE_TELEMETRY = "1";
-        # Dynamically load MCPs
         ENABLE_TOOL_SEARCH = "1";
+        MAX_THINKING_TOKENS = "127999";
       };
     };
 
