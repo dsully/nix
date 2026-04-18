@@ -28,7 +28,7 @@
         iperf3
         ipmitool
         just
-        kondo
+        lla
         moor
         mtr
         p7zip

@@ -1,6 +1,5 @@
 {
   config,
-  my,
   pkgs,
   ...
 }: let
@@ -13,6 +12,7 @@ in {
         "missing-fields"
         "type-not-found"
         "undefined-field"
+        "unnecessary-if"
       ];
       globals = [
         "Snacks"
@@ -34,19 +34,27 @@ in {
     };
     runtime = {
       version = "LuaJIT";
+      requirePattern = [
+        "lua/?.lua"
+        "lua/?/init.lua"
+        "?/lua/?.lua"
+        "?/lua/?/init.lua"
+      ];
     };
     workspace = {
+      ignoreDir = [
+        "debug"
+        "templates"
+      ];
       ignoreGlobs = [
         "**/*_spec.lua"
       ];
       library = [
-        "${my.pkgs.neovim}/share/nvim/runtime"
-        # "${config.xdg.dataHome}/nvim/lazy/"
-        # "${config.xdg.dataHome}/nvim/site/pack/core/opt/"
+        "$VIMRUNTIME"
+        "${config.xdg.dataHome}/nvim/lazy"
+        "${config.xdg.dataHome}/nvim/site/pack/core/opt"
       ];
-      workspaceRoots = [
-        "lua"
-      ];
+      workspaceRoots = ["./lua"];
     };
   };
 

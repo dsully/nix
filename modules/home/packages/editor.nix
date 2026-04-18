@@ -13,8 +13,6 @@
   ];
 
   config.home = {
-    sessionVariables.VIMRUNTIME = "${my.pkgs.neovim}/share/nvim/runtime";
-
     packages = with pkgs;
       [
         actionlint
