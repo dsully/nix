@@ -246,7 +246,6 @@ in {
 
       clean = {
         enable = true;
-        extraArgs = "-d";
       };
 
       flake = "${config.xdg.configHome}/nix";
