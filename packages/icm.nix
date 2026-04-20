@@ -4,6 +4,7 @@
   fetchFromGitHub,
   pkg-config,
   oniguruma,
+  onnxruntime,
   openssl,
   sqlite,
 }:
@@ -28,12 +29,14 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     oniguruma
+    onnxruntime
     openssl
     sqlite
   ];
 
   env = {
     OPENSSL_NO_VENDOR = true;
+    ORT_LIB_LOCATION = "${onnxruntime}/lib";
     RUSTONIG_SYSTEM_LIBONIG = true;
   };
 

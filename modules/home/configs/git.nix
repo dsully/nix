@@ -2,7 +2,6 @@
   config,
   lib,
   my,
-  pkgs,
   ...
 }: let
   editor = lib.getExe my.pkgs.neovim;
