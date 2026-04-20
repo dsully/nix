@@ -54,6 +54,7 @@ in {
           cargo-mcp
           crates-mcp
           git-mcp-rs
+          icm
           mcp-git-tools
           mcp-rust-analyzer
           mcp-rust-builder
