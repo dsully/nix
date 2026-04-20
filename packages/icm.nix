@@ -1,6 +1,7 @@
 {
   lib,
   rustPlatform,
+  stdenv,
   fetchFromGitHub,
   pkg-config,
   oniguruma,
@@ -27,18 +28,22 @@ rustPlatform.buildRustPackage rec {
     pkg-config
   ];
 
-  buildInputs = [
-    oniguruma
-    onnxruntime
-    openssl
-    sqlite
-  ];
+  buildInputs =
+    [
+      oniguruma
+      openssl
+      sqlite
+    ]
+    ++ lib.optionals stdenv.isLinux [onnxruntime];
 
-  env = {
-    OPENSSL_NO_VENDOR = true;
-    ORT_LIB_LOCATION = "${onnxruntime}/lib";
-    RUSTONIG_SYSTEM_LIBONIG = true;
-  };
+  env =
+    {
+      OPENSSL_NO_VENDOR = true;
+      RUSTONIG_SYSTEM_LIBONIG = true;
+    }
+    // lib.optionalAttrs stdenv.isLinux {
+      ORT_LIB_LOCATION = "${onnxruntime}/lib";
+    };
 
   meta = {
     description = "Permanent memory for AI agents. Single binary, zero dependencies, MCP native";
