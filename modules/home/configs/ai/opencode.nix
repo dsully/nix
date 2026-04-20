@@ -11,7 +11,8 @@
   aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
 in {
   home = {
-    activation.rtkOpencodeHook = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    activation.opencodeHooks = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      ${lib.getExe my.pkgs.icm} init --mode hook >/dev/null 2>&1 || true
       ${lib.getExe perSystem.llm-agents.rtk} init --global --opencode >/dev/null 2>&1 || true
     '';
 

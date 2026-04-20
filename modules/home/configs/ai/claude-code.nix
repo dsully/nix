@@ -11,7 +11,7 @@
   aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
 in {
   # Generate the rtk-rewrite.sh hook script without patching settings.json
-  home.activation.rtkClaudeHook = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.claudeHooks = lib.hm.dag.entryAfter ["writeBoundary"] ''
     ${lib.getExe perSystem.llm-agents.rtk} init --global --hook-only --agent claude --no-patch >/dev/null 2>&1 || true
   '';
 
@@ -60,6 +60,16 @@ in {
         // aiAgents.enabledPlugins;
 
       hooks = lib.mkDefault {
+        PreCompact = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${lib.getExe my.pkgs.icm} hook compact";
+              }
+            ];
+          }
+        ];
         PreToolUse = [
           {
             matcher = "Bash";
@@ -71,6 +81,10 @@ in {
               {
                 type = "command";
                 command = "${config.home.homeDirectory}/.claude/hooks/rtk-rewrite.sh";
+              }
+              {
+                type = "command";
+                command = "${lib.getExe my.pkgs.icm} hook pre";
               }
             ];
           }
@@ -92,6 +106,30 @@ in {
                   '';
                 timeout = 10;
                 type = "command";
+              }
+              {
+                type = "command";
+                command = "${lib.getExe my.pkgs.icm} hook post";
+              }
+            ];
+          }
+        ];
+        SessionStart = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${lib.getExe my.pkgs.icm} hook start";
+              }
+            ];
+          }
+        ];
+        UserPromptSubmit = [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = "${lib.getExe my.pkgs.icm} hook prompt";
               }
             ];
           }
