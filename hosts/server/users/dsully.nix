@@ -15,6 +15,7 @@ in {
   imports = [
     flake.homeModules.dsully
     flake.homeModules.ai
+    flake.homeModules.meridian
     flake.homeModules.copypaste
     ../options.nix
   ];

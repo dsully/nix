@@ -16,11 +16,6 @@ in {
       ${lib.getExe perSystem.llm-agents.rtk} init --global --opencode >/dev/null 2>&1 || true
     '';
 
-    file."${config.xdg.binHome}/opencode" = {
-      force = true;
-      source = "${my.pkgs.meridian}/libexec/meridian/opencode-wrapper";
-    };
-
     sessionVariables = {
       # https://opencode.ai/docs/cli/#environment-variables
       OPENCODE_DISABLE_AUTOUPDATE = 1;
@@ -134,10 +129,6 @@ in {
 
       plugin = lib.mkDefault [
         "@mohak34/opencode-notifier@latest"
-        # "opencode-claude-auth"
-        "opencode-gemini-auth"
-        # "opencode-with-claude"
-        "${my.pkgs.meridian}/libexec/meridian/plugin/meridian.ts"
       ];
     };
     skills = {
