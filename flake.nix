@@ -51,28 +51,49 @@
       withSystem,
       ...
     }: let
-      # Auto-discover packages from packages/ directory.
-      packageDir = ./packages;
-      packageEntries = builtins.readDir packageDir;
-      packageNames = builtins.filter (x: x != null) (map (name: let
-        type = packageEntries.${name};
-      in
-        if type == "regular" && builtins.match ".*\\.nix$" name != null
-        then builtins.replaceStrings [".nix"] [""] name
-        else if type == "directory"
-        then name
-        else null)
-      (builtins.attrNames packageEntries));
+      inherit (inputs.nixpkgs) lib;
 
-      # Home modules exported for downstream consumption.
-      homeModules = {
-        dsully = ./modules/home/dsully.nix;
-        ai = ./modules/home/configs/ai;
-        paste = ./modules/home/paste.nix;
-        copypaste = ./modules/home/copypaste.nix;
-        meridian = ./modules/home/meridian.nix;
-        xdg-open-svc = ./modules/home/xdg-open-svc.nix;
-        cachix-watch-store = ./modules/home/cachix-watch-store.nix;
+      # Auto-discover packages from packages/ as { name = pathToCallPackage; }.
+      packageDir = ./packages;
+      packagePaths = lib.pipe (builtins.readDir packageDir) [
+        (lib.filterAttrs (name: type:
+          (type == "regular" && lib.hasSuffix ".nix" name)
+          || type == "directory"))
+        (lib.mapAttrs' (name: type:
+          lib.nameValuePair
+          (
+            if type == "regular"
+            then lib.removeSuffix ".nix" name
+            else name
+          )
+          (packageDir + "/${name}")))
+      ];
+
+      # Auto-discover public home modules from modules/home/*.nix.
+      # Internal files (imported directly by dsully.nix) are excluded.
+      homeModulesDir = ./modules/home;
+      homeModulesInternal = ["colors.nix" "dotfiles.nix"];
+      homeModules =
+        (lib.pipe (builtins.readDir homeModulesDir) [
+          (lib.filterAttrs (
+            name: type:
+              type
+              == "regular"
+              && lib.hasSuffix ".nix" name
+              && !(builtins.elem name homeModulesInternal)
+          ))
+          (lib.mapAttrs' (name: _:
+            lib.nameValuePair
+            (lib.removeSuffix ".nix" name)
+            (homeModulesDir + "/${name}")))
+        ])
+        // {
+          ai = ./modules/home/configs/ai;
+        };
+
+      darwinModules = {
+        common = ./modules/darwin/common.nix;
+        homebrew = ./modules/darwin/homebrew.nix;
       };
 
       # Blueprint-compatible "flake" arg passed via specialArgs.
@@ -80,10 +101,7 @@
         inherit homeModules inputs;
         inherit (config.flake) packages;
         modules = {
-          darwin = {
-            common = ./modules/darwin/common.nix;
-            homebrew = ./modules/darwin/homebrew.nix;
-          };
+          darwin = darwinModules;
           system-manager = {
             common = ./modules/system-manager/common.nix;
           };
@@ -155,16 +173,8 @@
           };
         });
       in {
-        # Typed module exports with class checking.
-        modules = {
-          darwin = {
-            common = ./modules/darwin/common.nix;
-            homebrew = ./modules/darwin/homebrew.nix;
-          };
-          homeManager = homeModules;
-        };
+        modules.darwin = darwinModules;
 
-        # Also export as homeModules for backward compat with downstream.
         inherit homeModules;
 
         darwinConfigurations.jarvis = withSystem "aarch64-darwin" ({
@@ -192,7 +202,6 @@
             ];
           });
 
-        systemManagerConfigurations = systemManagerConfigs;
         systemConfigs = systemManagerConfigs;
       };
 
@@ -202,15 +211,11 @@
         lib,
         ...
       }: let
-        selfPackages = builtins.listToAttrs (map (name: {
-            inherit name;
-            value = pkgs.callPackage (
-              if builtins.hasAttr "${name}.nix" packageEntries
-              then "${packageDir}/${name}.nix"
-              else "${packageDir}/${name}"
-            ) (packageOverrides.${name} or {});
-          })
-          packageNames);
+        selfPackages =
+          lib.mapAttrs (
+            name: path: pkgs.callPackage path (packageOverrides.${name} or {})
+          )
+          packagePaths;
 
         fmt = pkgs.callPackage ./formatter.nix {};
 
@@ -236,30 +241,20 @@
 
         # home-manager CLI discovers homeConfigurations here.
         legacyPackages.homeConfigurations = let
-          mk = mkHome system;
-          homes = {
-            "dsully@jarvis" = {
-              user = "dsully";
-              userModule = ./hosts/jarvis/users/dsully.nix;
-            };
-            "dsully@server" = {
-              user = "dsully";
-              userModule = ./hosts/server/users/dsully.nix;
-            };
-            "dsully@zap" = {
-              user = "dsully";
-              userModule = ./hosts/zap/users/dsully.nix;
-            };
-          };
-          hostSystem = {
+          user = "dsully";
+          hosts = {
             jarvis = "aarch64-darwin";
             server = "x86_64-linux";
             zap = "x86_64-linux";
           };
+          mk = mkHome system;
         in
-          lib.filterAttrs (name: _:
-            hostSystem.${lib.last (lib.splitString "@" name)} == system)
-          (lib.mapAttrs (_: mk) homes);
+          lib.mapAttrs' (host: _:
+            lib.nameValuePair "${user}@${host}" (mk {
+              inherit user;
+              userModule = ./hosts + "/${host}/users/dsully.nix";
+            }))
+          (lib.filterAttrs (_: sys: sys == system) hosts);
 
         devshells.default = {
           packages = with pkgs; [
