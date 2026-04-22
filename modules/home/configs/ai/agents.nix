@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  inherit (aiLib) cpo mkAgent mkCommand ws;
+  inherit (aiLib) cpo mkAgent mkCommand parseAgent ws;
 
   # Map of plugin directory -> { commandName = { file, description, ... }; }
   wsPluginCommands = {
@@ -60,7 +60,9 @@
     # comprehensive-review = {
     #   code-reviewer = "code-reviewer.md";
     # };
-    data-engineering.data-engineer = "data-engineer.md";
+    data-engineering = {
+      data-engineer = "data-engineer.md";
+    };
     debugging-toolkit = {
       debugger = "debugger.md";
       dx-optimizer = "dx-optimizer.md";
@@ -82,84 +84,79 @@
     };
   };
 
-  wsAgents =
+  # Parse each agent file exactly once: { name = { description, body }; }
+  wsParsed =
     lib.foldlAttrs (
       acc: plugin: agentAttrs:
         acc
         // lib.mapAttrs (
-          _name: file:
-            mkAgent {
-              file = "${ws}/${plugin}/agents/${file}";
-              description = let
-                raw = builtins.readFile "${ws}/${plugin}/agents/${file}";
-                parts = lib.splitString "description: " raw;
-                desc =
-                  if builtins.length parts >= 2
-                  then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
-                  else "Specialized development agent";
-              in
-                desc;
-            }
+          _name: file: parseAgent "${ws}/${plugin}/agents/${file}"
         )
         agentAttrs
     ) {}
     wsPluginAgents;
 
-  cpoAgents = {
-    anthropic-code-simplifier = mkAgent {
+  wsAgents = lib.mapAttrs (_: p: mkAgent {inherit (p) description body;}) wsParsed;
+  wsDescriptions = lib.mapAttrs (_: p: p.description) wsParsed;
+
+  cpoSpecs = {
+    anthropic-code-simplifier = {
       file = "${cpo}/code-simplifier/agents/code-simplifier.md";
       description = "Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality";
     };
-    # anthropic-code-architect = mkAgent {
+    # anthropic-code-architect = {
     #   file = "${cpo}/feature-dev/agents/code-architect.md";
     #   description = "Designs feature architectures by analyzing codebase patterns, providing implementation blueprints with files to create/modify, component designs, and data flows";
     #   color = "success";
     # };
-    anthropic-code-explorer = mkAgent {
+    anthropic-code-explorer = {
       file = "${cpo}/feature-dev/agents/code-explorer.md";
       description = "Deeply analyzes codebase features by tracing execution paths, mapping architecture layers, understanding patterns, and documenting dependencies";
       color = "warning";
     };
-    anthropic-code-reviewer = mkAgent {
+    anthropic-code-reviewer = {
       file = "${cpo}/feature-dev/agents/code-reviewer.md";
       description = "Reviews code for bugs, logic errors, security vulnerabilities, and adherence to project conventions using confidence-based filtering";
       color = "error";
     };
-    # anthropic-pr-code-reviewer = mkAgent {
+    # anthropic-pr-code-reviewer = {
     #   file = "${cpo}/pr-review-toolkit/agents/code-reviewer.md";
     #   description = "Reviews pull request code for adherence to project guidelines, style guides, and best practices before committing or creating PRs";
     #   color = "success";
     # };
-    # anthropic-pr-code-simplifier = mkAgent {
+    # anthropic-pr-code-simplifier = {
     #   file = "${cpo}/pr-review-toolkit/agents/code-simplifier.md";
     #   description = "Automatically simplifies code after writing or modifying, following project best practices while retaining all functionality";
     # };
-    anthropic-comment-analyzer = mkAgent {
+    anthropic-comment-analyzer = {
       file = "${cpo}/pr-review-toolkit/agents/comment-analyzer.md";
       description = "Analyzes code comments for accuracy, completeness, and long-term maintainability to prevent comment rot and technical debt";
       color = "success";
     };
-    # anthropic-pr-test-analyzer = mkAgent {
+    # anthropic-pr-test-analyzer = {
     #   file = "${cpo}/pr-review-toolkit/agents/pr-test-analyzer.md";
     #   description = "Reviews pull requests for test coverage quality and completeness, identifying critical gaps in test scenarios";
     #   color = "info";
     # };
-    anthropic-silent-failure-hunter = mkAgent {
+    anthropic-silent-failure-hunter = {
       file = "${cpo}/pr-review-toolkit/agents/silent-failure-hunter.md";
       description = "Identifies silent failures, inadequate error handling, and inappropriate fallback behavior in code changes";
       color = "warning";
     };
-    anthropic-type-design-analyzer = mkAgent {
+    anthropic-type-design-analyzer = {
       file = "${cpo}/pr-review-toolkit/agents/type-design-analyzer.md";
       description = "Analyzes type design for encapsulation quality, invariant expression, usefulness, and enforcement with quantitative ratings";
       color = "accent";
     };
-    # anthropic-conversation-analyzer = mkAgent {
+    # anthropic-conversation-analyzer = {
     #   file = "${cpo}/hookify/agents/conversation-analyzer.md";
     #   description = "Analyzes conversation transcripts to find problematic behaviors and suggest preventive hooks";
     #   color = "warning";
     # };
   };
+
+  cpoAgents = lib.mapAttrs (_: spec: mkAgent spec) cpoSpecs;
+  cpoDescriptions = lib.mapAttrs (_: spec: spec.description) cpoSpecs;
 
   wsEnabledPlugins =
     lib.mapAttrs' (
@@ -169,5 +166,6 @@
 in {
   agents = wsAgents // cpoAgents;
   commands = wsCommands;
+  descriptions = wsDescriptions // cpoDescriptions;
   enabledPlugins = wsEnabledPlugins;
 }

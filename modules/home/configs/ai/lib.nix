@@ -19,21 +19,48 @@
     then lib.concatStringsSep "" (lib.drop 2 parts)
     else raw;
 
+  # Extract the `description: ...` value from a markdown frontmatter string.
+  extractDescription = text: let
+    parts = lib.splitString "description: " text;
+  in
+    if builtins.length parts >= 2
+    then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
+    else "Specialized development agent";
+
+  # Read an agent markdown file once, returning both description and body.
+  parseAgent = file: let
+    raw = builtins.readFile file;
+    parts = lib.splitString "---\n" raw;
+    body =
+      if builtins.length parts >= 3
+      then lib.concatStringsSep "" (lib.drop 2 parts)
+      else raw;
+  in {
+    description = extractDescription raw;
+    inherit body;
+  };
+
   # Build an opencode agent markdown string with new frontmatter + original body.
+  # Accepts either `body` (already stripped) or `file` (stripped on demand).
   mkAgent = {
-    file,
+    file ? null,
+    body ? null,
     description,
     model ? null,
     color ? null,
   }: let
     modelLine = lib.optionalString (model != null) "model: ${model}\n";
     colorLine = lib.optionalString (color != null) "color: ${color}\n";
+    actualBody =
+      if body != null
+      then body
+      else stripFrontmatter file;
   in ''
     ---
     description: ${description}
     mode: all
     ${modelLine}${colorLine}---
-    ${stripFrontmatter file}'';
+    ${actualBody}'';
 
   # Build an opencode command markdown string with frontmatter + original body.
   mkCommand = {
@@ -191,6 +218,13 @@
 
   mcpServersWithType = lib.mapAttrs (_: v: v // {type = "stdio";}) mcpServers;
 
+  # Astral skills shared across codex and opencode.
+  astralSkills = {
+    astral-uv = "${acp}/plugins/astral/skills/uv";
+    astral-ruff = "${acp}/plugins/astral/skills/ruff";
+    astral-ty = "${acp}/plugins/astral/skills/ty";
+  };
+
   models = {
     large = {
       model = "claude-opus-4-7";
@@ -214,8 +248,10 @@
 in {
   inherit
     acp
+    astralSkills
     claudeCodeLsp
     cpo
+    extractDescription
     lsp
     lspExtensions
     lspLanguageIds
@@ -225,6 +261,7 @@ in {
     mkCommand
     models
     opencodeLsp
+    parseAgent
     stripFrontmatter
     ws
     ;

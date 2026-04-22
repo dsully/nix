@@ -1,20 +1,13 @@
 {
-  config,
+  aiAgents,
+  aiLib,
   inputs,
   lib,
   my,
   perSystem,
   pkgs,
   ...
-}: let
-  aiLib = import ./lib.nix {inherit config inputs lib my perSystem pkgs;};
-  aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
-in {
-  # Generate the rtk-rewrite.sh hook script without patching settings.json
-  home.activation.claudeHooks = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    ${lib.getExe perSystem.llm-agents.rtk} init --global --hook-only --agent claude --no-patch >/dev/null 2>&1 || true
-  '';
-
+}: {
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
@@ -80,7 +73,7 @@ in {
               }
               {
                 type = "command";
-                command = "${config.home.homeDirectory}/.claude/hooks/rtk-rewrite.sh";
+                command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
               }
               {
                 type = "command";

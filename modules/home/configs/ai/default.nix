@@ -7,7 +7,8 @@
   pkgs,
   ...
 }: let
-  aiLib = import ./lib.nix {inherit config inputs lib my perSystem pkgs;};
+  aiLib = import ./lib.nix {inherit config inputs lib my pkgs;};
+  aiAgents = import ./agents.nix {inherit aiLib lib;};
 in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
@@ -19,6 +20,10 @@ in {
   ];
 
   config = {
+    _module.args = {
+      inherit aiAgents aiLib;
+    };
+
     packageTools = {
       javascript = [
         "opencode-claude-auth"

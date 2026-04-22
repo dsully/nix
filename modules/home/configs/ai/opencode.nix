@@ -1,21 +1,21 @@
 {
+  aiAgents,
+  aiLib,
   config,
-  inputs,
   lib,
   my,
   perSystem,
   pkgs,
   ...
-}: let
-  aiLib = import ./lib.nix {inherit config inputs lib my perSystem pkgs;};
-  aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
-in {
-  home = {
-    activation.opencodeHooks = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      ${lib.getExe my.pkgs.icm} init --mode hook >/dev/null 2>&1 || true
-      ${lib.getExe perSystem.llm-agents.rtk} init --global --opencode >/dev/null 2>&1 || true
-    '';
+}: {
+  # Allow host specific overrides.
+  options.programs.opencode.extraPlugins = lib.mkOption {
+    type = lib.types.listOf lib.types.str;
+    default = [];
+    description = "Additional opencode plugins appended to the base set.";
+  };
 
+  config.home = {
     sessionVariables = {
       # https://opencode.ai/docs/cli/#environment-variables
       OPENCODE_DISABLE_AUTOUPDATE = 1;
@@ -37,7 +37,7 @@ in {
     };
   };
 
-  programs.opencode = {
+  config.programs.opencode = {
     enable = true;
     package = perSystem.llm-agents.opencode;
     enableMcpIntegration = true;
@@ -127,15 +127,15 @@ in {
         webfetch = "allow";
       };
 
-      plugin = lib.mkDefault [
-        "@mohak34/opencode-notifier@latest"
-      ];
+      plugin =
+        [
+          "@mohak34/opencode-notifier@latest"
+          "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
+          "${my.pkgs.icm}/plugins/opencode-icm.ts"
+        ]
+        ++ config.programs.opencode.extraPlugins;
     };
-    skills = {
-      astral-uv = "${aiLib.acp}/plugins/astral/skills/uv";
-      astral-ruff = "${aiLib.acp}/plugins/astral/skills/ruff";
-      astral-ty = "${aiLib.acp}/plugins/astral/skills/ty";
-    };
+    skills = aiLib.astralSkills;
 
     tui = {
       theme = "nord";
