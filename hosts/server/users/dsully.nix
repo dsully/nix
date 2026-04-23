@@ -35,6 +35,7 @@ in {
       [
         copilot-language-server
         iproute2
+        meridian
         nix-output-monitor
         pnpm
         qbittorrent-nox
@@ -46,8 +47,11 @@ in {
         autorebase
         qbit-port-update
         qbit-tools
+        turbo-commit
       ]);
   };
+
+  nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
 
   programs = {
     fish = {

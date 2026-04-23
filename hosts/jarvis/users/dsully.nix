@@ -20,12 +20,15 @@
     packages = with pkgs;
       [
         copilot-language-server
+        meridian
         nix-output-monitor
         zls
         zuban
       ]
       ++ (with perSystem.self; [
         autorebase
+        meridian
+        turbo-commit
       ]);
   };
 
@@ -63,4 +66,6 @@
       ];
     };
   };
+
+  nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
 }

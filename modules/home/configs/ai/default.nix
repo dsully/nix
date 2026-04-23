@@ -63,12 +63,10 @@ in {
           mcp-git-tools
           mcp-rust-analyzer
           mcp-rust-builder
-          meridian
           open-ralph-wiggum
           rust-mcp-filesystem
           rust-mcp-server
           treesitter-mcp
-          turbo-commit
         ]);
     };
 
