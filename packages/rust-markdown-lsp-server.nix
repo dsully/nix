@@ -5,17 +5,17 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "rust-markdown-lsp-server";
-  rev = "3b0916b51b4ad35645282a41554cce12b19ac469";
+  rev = "d913d9ff9a512f6273479922cc80bb75575a5766";
   version = "0.1.0-${rev}";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "dougrocha";
     repo = "rust_markdown_lsp_server";
-    hash = "sha256-/l6sLsa2S8XXS3SXUaJqzaALxV1oUVtTqRW7PKzsvC8=";
+    hash = "sha256-wsmpCKJh6rHiA2IgmBWsspfq7A7lywT0Dp8T8NNJOso=";
   };
 
-  cargoHash = "sha256-BYlHcon/OvtPeYHFZvA4NoERPtaEYq5reXFlekxwJS0=";
+  cargoHash = "sha256-3HqA9iFxs5xzC4bclP9g67yM1ROxk/VBcknYicnMSg4=";
 
   meta = {
     description = "A markdown LSP server for my notes";

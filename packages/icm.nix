@@ -11,17 +11,17 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "icm";
-  version = "0.10.26";
-  rev = "47943d7cf044dc7e6b95f3b9edb32f8147daeddb";
+  version = "0.10.28";
+  rev = "b8b33b8261832d1963f98e65897bd1c0438105cd";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "rtk-ai";
     repo = "icm";
-    hash = "sha256-XLMv7jQ6nKzwguDfuDwceIxGMvmKvj8j39hh5sudJ00=";
+    hash = "sha256-THPlYzqybM7czoIdY5+Q4JNz0QtPdi4ypZtF1xwnIe4=";
   };
 
-  cargoHash = "sha256-zLDdgXpeLTLM4KRJntXjAt8v3o6+CB8+3UwJSM1LQuk=";
+  cargoHash = "sha256-JkibswGbsxCQwqf+HoOYvSJaaAJwrKhLi3P17eHzmeU=";
   doCheck = false;
 
   nativeBuildInputs = [

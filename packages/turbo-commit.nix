@@ -9,17 +9,17 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "turbo-commit";
-  rev = "a2e42f571121bb08f793ab3f44048e35910400b2";
+  rev = "885e23377fba3e3766c88075a31aee78089ea034";
   version = "3.0.0-${rev}";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "dikkadev";
     repo = "turboCommit";
-    hash = "sha256-xb9ZuiYiUstcPrpDRomi1u+Pi/WHHojzIH1yQHkvLkg=";
+    hash = "sha256-hmm0AhGvFrpcg3XKukVEghAm6AQVgQgzm2JIJyFPKsQ=";
   };
 
-  cargoHash = "sha256-QRAMM0ZJNo2iD/5+YbmNg2J1EjYtJGaxDtj5gcyTjTE=";
+  cargoHash = "sha256-spHPpsGVvAN4yJYVLP8UDIxdPwMnzqzOLXncdJS7EOU=";
   doCheck = false;
 
   nativeBuildInputs = [
