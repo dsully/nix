@@ -68,6 +68,10 @@ in {
         '';
     };
 
+    opencode.extraPlugins = [
+      "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
+    ];
+
     onepassword-secrets.secrets = {
       cachixAuthToken = {
         reference = "op://Services/Cachix/token";

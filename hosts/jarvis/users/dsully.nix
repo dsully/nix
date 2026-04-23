@@ -33,6 +33,10 @@
   };
 
   programs = {
+    opencode.extraPlugins = [
+      "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
+    ];
+
     onepassword-secrets.secrets = {
       sshPrivateKey = {
         reference = "op://Services/jarvis/private key";
