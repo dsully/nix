@@ -214,6 +214,10 @@ in {
     direnv = {
       enable = true;
 
+      package = pkgs.direnv.overrideAttrs (_: {
+        doCheck = false;
+      });
+
       config = {
         global = {
           hide_env_diff = true;
