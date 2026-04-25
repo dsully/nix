@@ -31,8 +31,8 @@
     charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
 
     # https://github.com/rynfar/meridian/pull/406 needs to be committed;
-    # meridian.url = "github:rynfar/meridian";
-    # meridian.inputs.nixpkgs.follows = "nixpkgs";
+    meridian.url = "github:rynfar/meridian";
+    meridian.inputs.nixpkgs.follows = "nixpkgs";
 
     opnix.url = "github:brizzbuzz/opnix";
     opnix.inputs.nixpkgs.follows = "nixpkgs";
