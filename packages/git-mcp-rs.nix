@@ -35,7 +35,6 @@ rustPlatform.buildRustPackage rec {
     description = "A high-performance Model Context Protocol (MCP) server written in Rust.";
     homepage = "https://github.com/HanSoBored/git-mcp-rs";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [dsully];
     mainProgram = "git_mcp";
   };
 }

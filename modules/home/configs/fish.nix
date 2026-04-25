@@ -120,7 +120,7 @@ in {
           set -f ext (string split "." -- $argv[1])[-1]
 
           if contains $ext $markdown_extensions; and type -q mdterm
-              ${lib.getExe my.pkgs.mdterm} $argv[1]
+              ${lib.getExe pkgs.mdterm} $argv[1]
 
           else if contains $ext $markdown_extensions; and type -q glow
               ${lib.getExe pkgs.glow} --pager $argv[1]

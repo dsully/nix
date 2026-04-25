@@ -29,6 +29,7 @@
         ipmitool
         just
         lla
+        mdterm
         moor
         mtr
         p7zip
@@ -52,9 +53,7 @@
       ]
       ++ (with my.pkgs; [
         clean-dev-dirs
-        giff
         leadr
-        mdterm
         rip-go
         timecop
         xdg-open-svc

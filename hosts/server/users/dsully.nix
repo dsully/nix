@@ -47,7 +47,6 @@ in {
         autorebase
         qbit-port-update
         qbit-tools
-        turbo-commit
       ]);
   };
 

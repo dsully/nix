@@ -27,7 +27,6 @@
       ]
       ++ (with perSystem.self; [
         autorebase
-        turbo-commit
       ]);
   };
 
