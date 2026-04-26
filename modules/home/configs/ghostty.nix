@@ -48,6 +48,9 @@
       clipboard-paste-protection = false;
       clipboard-read = "allow";
 
+      # https://github.com/ghostty-org/ghostty/pull/9335
+      selection-word-chars = " \t'\"│`|:;,()[]{}<>$";
+
       # Vim-mode keybindings for Ghostty.
       #
       # https://gist.github.com/mitchellh/1c5be5c083a2315f22f1cb8f239e9dcd

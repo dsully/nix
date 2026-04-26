@@ -35,7 +35,6 @@ in {
 
     syntaxes = {
       Just.src = ./bat/syntaxes/Just.sublime-syntax;
-      ghostty.src = ./bat/syntaxes/ghostty.sublime-syntax;
     };
   };
 }
