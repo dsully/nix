@@ -34,12 +34,6 @@ in {
     };
     runtime = {
       version = "LuaJIT";
-      requirePattern = [
-        "lua/?.lua"
-        "lua/?/init.lua"
-        "?/lua/?.lua"
-        "?/lua/?/init.lua"
-      ];
     };
     workspace = {
       ignoreDir = [
@@ -54,7 +48,6 @@ in {
         "${config.xdg.dataHome}/nvim/lazy"
         "${config.xdg.dataHome}/nvim/site/pack/core/opt"
       ];
-      workspaceRoots = ["./lua"];
     };
   };
 
