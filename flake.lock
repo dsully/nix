@@ -47,7 +47,6 @@
           "llm-agents",
           "flake-parts"
         ],
-        "import-tree": "import-tree",
         "nixpkgs": [
           "llm-agents",
           "nixpkgs"
@@ -62,11 +61,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777322186,
-        "narHash": "sha256-CFlRnym0RphrTymMUg7PfQgfdYdMd6BnMZQJhlwv0fI=",
+        "lastModified": 1777369708,
+        "narHash": "sha256-1xW7cRZNsFNPQD+cE0fwnLVStnDth0HSoASEIFeT7uI=",
         "owner": "nix-community",
         "repo": "bun2nix",
-        "rev": "8985e47786dd0bfa95b7c795f12aeafadd328eb8",
+        "rev": "e659e1cc4b8e1b21d0aa85f1c481f9db61ecfa98",
         "type": "github"
       },
       "original": {
@@ -79,7 +78,7 @@
     "bun2nix_2": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "import-tree": "import-tree_2",
+        "import-tree": "import-tree",
         "nixpkgs": [
           "meridian",
           "nixpkgs"
@@ -112,11 +111,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777321974,
-        "narHash": "sha256-aIa017A9qNqZkfCciRFMinY5b69ycR11jrgZxHi0CGw=",
+        "lastModified": 1777469742,
+        "narHash": "sha256-AvXCjRNWF1PUC5afpzAX05YTFuhXpHzgVUP50lclWes=",
         "owner": "charmbracelet",
         "repo": "nur",
-        "rev": "5a52917bf5e196f7e8ed14cd118610c3e98d7d19",
+        "rev": "7f460d2941896fd489b502656c58115081ea1a60",
         "type": "github"
       },
       "original": {
@@ -128,11 +127,11 @@
     "claude-plugins-official": {
       "flake": false,
       "locked": {
-        "lastModified": 1777376639,
-        "narHash": "sha256-fZ7M/AdT+4S/0Cn7W9cgr69xgb2i1bATnxujfq6ubf8=",
+        "lastModified": 1777417484,
+        "narHash": "sha256-5hIT23GqFpYPOkEuoLKYtwOii/uH1C3acbGQEbN6pUg=",
         "owner": "anthropics",
         "repo": "claude-plugins-official",
-        "rev": "18113ade5c13cd90e669c650a58b1c815f0b158b",
+        "rev": "e73e9a6257ac5285a7218dc5e7e99b1ae2dc65e7",
         "type": "github"
       },
       "original": {
@@ -322,11 +321,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777383340,
-        "narHash": "sha256-hr0r50h+w3RktVoH39i/xDiJ96r59tH85KoFjkJpw9k=",
+        "lastModified": 1777434174,
+        "narHash": "sha256-KwTyQ5g2qDhWIs/O6vH8HeF8n4JCzZIT/VYE7nYnukQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "dd6a8772d4faa9627fd342342c77b0afca59eba3",
+        "rev": "d3b4e4b1bd59aedd3d4eb0a8df7162edb6da4607",
         "type": "github"
       },
       "original": {
@@ -336,21 +335,6 @@
       }
     },
     "import-tree": {
-      "locked": {
-        "lastModified": 1773693634,
-        "narHash": "sha256-BtZ2dtkBdSUnFPPFc+n0kcMbgaTxzFNPv2iaO326Ffg=",
-        "owner": "vic",
-        "repo": "import-tree",
-        "rev": "c41e7d58045f9057880b0d85e1152d6a4430dbf1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "vic",
-        "repo": "import-tree",
-        "type": "github"
-      }
-    },
-    "import-tree_2": {
       "locked": {
         "lastModified": 1763762820,
         "narHash": "sha256-ZvYKbFib3AEwiNMLsejb/CWs/OL/srFQ8AogkebEPF0=",
@@ -377,11 +361,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1777354680,
-        "narHash": "sha256-jtMZ7U79JYGoE8NYIu8Y4bNr+EoQW5i6zMP6Mig7tCU=",
+        "lastModified": 1777439951,
+        "narHash": "sha256-1Bs4ZbBayXWicrOrQQn3/BnnqhEy+tQjdFn40wHu1dw=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "efa749415e2ee5015db3fda1d3d6d7484d8aa64c",
+        "rev": "2641c18f5bb9d0b95e81beca1b0415e174d7e650",
         "type": "github"
       },
       "original": {
@@ -678,11 +662,11 @@
         "userborn": "userborn"
       },
       "locked": {
-        "lastModified": 1776960992,
-        "narHash": "sha256-reaI3djQIIbTFRbnVVdvmOO7dwUN9PoboJIsIe12HY0=",
+        "lastModified": 1777451512,
+        "narHash": "sha256-JjdGUKwo8vYv66ldKF8y04h29rFQbg6tj2IcL3sB18o=",
         "owner": "numtide",
         "repo": "system-manager",
-        "rev": "6e8da9de4c937d5f8c2211406e2790c2cd219bb7",
+        "rev": "8e3d1421ccea00e3ffba648be7ef8e2396978c84",
         "type": "github"
       },
       "original": {

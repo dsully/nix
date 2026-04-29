@@ -5,13 +5,13 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "treesitter-mcp";
-  version = "0.6.0";
+  version = "0.7.0";
 
   src = fetchFromGitHub {
     owner = "Christoph";
     repo = "treesitter-mcp";
-    rev = "1b3dedc5f46c2d281434b04a1327ad276dec0d60";
-    hash = "sha256-rnjyvZBAnysNOkcPoQWqzwkC6+IKCDfLeBYKRj1vb20=";
+    rev = "97bb2fe35bcc7a63a6afc940aa6cbe6670b40ec1";
+    hash = "sha256-wZgta/NQEUKF6c0SQ+65EwUzb+MUPMgmB/W9c/D5KFA=";
   };
 
   cargoLock = {
