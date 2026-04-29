@@ -8,7 +8,8 @@
 }: let
   yamlFormat = pkgs.formats.yaml {};
 
-  enabledMcpServers = lib.filter (name: !(aiLib.mcpServers.${name}.disabled or false)) (lib.attrNames aiLib.mcpServers);
+  mcpServers = config.programs.mcp.servers;
+  enabledMcpServers = lib.filter (name: !(mcpServers.${name}.disabled or false)) (lib.attrNames mcpServers);
 
   mcpTarget = name: server: {
     inherit name;
@@ -44,7 +45,7 @@
 
                 backends = [
                   {
-                    mcp.targets = lib.map (name: mcpTarget name aiLib.mcpServers.${name}) enabledMcpServers;
+                    mcp.targets = lib.map (name: mcpTarget name mcpServers.${name}) enabledMcpServers;
                   }
                 ];
               }
