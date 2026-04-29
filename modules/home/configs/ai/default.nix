@@ -13,6 +13,7 @@ in {
   imports = [
     inputs.charmbracelet-nur.homeModules.crush
     inputs.skills-nix.homeModules.default
+    ./agentgateway.nix
     ./ccstatusline.nix
     ./claude-code.nix
     ./codex.nix
@@ -56,6 +57,7 @@ in {
           ]
         )
         ++ (with my.pkgs; [
+          agentgateway
           cargo-mcp
           crates-mcp
           git-mcp-rs

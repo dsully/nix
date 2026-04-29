@@ -10,6 +10,13 @@
   cpo = "${inputs.claude-plugins-official}/plugins";
   ws = "${inputs.wshobson-agents}/plugins";
 
+  agentgateway = rec {
+    port = 3000;
+    baseUrl = "http://localhost:${toString port}";
+    mcpHttpUrl = "${baseUrl}/mcp/http";
+    mcpSseUrl = "${baseUrl}/mcp/sse";
+  };
+
   # Strip YAML frontmatter from a markdown file, returning only the body.
   stripFrontmatter = file: let
     raw = builtins.readFile file;
@@ -248,6 +255,7 @@
 in {
   inherit
     acp
+    agentgateway
     astralSkills
     claudeCodeLsp
     cpo

@@ -208,6 +208,11 @@
 
     lspServers = aiLib.claudeCodeLsp;
 
-    mcpServers = aiLib.mcpServersWithType;
+    mcpServers = {
+      agentgateway = {
+        type = "http";
+        url = aiLib.agentgateway.mcpHttpUrl;
+      };
+    };
   };
 }
