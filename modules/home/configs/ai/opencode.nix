@@ -2,12 +2,26 @@
   aiAgents,
   aiLib,
   config,
+  inputs,
   lib,
   my,
   perSystem,
   pkgs,
   ...
-}: {
+}: let
+  aro = inputs.autoresearch-opencode;
+
+  autoresearchSkills = {
+    autoresearch = "${aro}/skills/autoresearch";
+  };
+
+  autoresearchCommands = {
+    autoresearch = aiLib.mkCommand {
+      file = "${aro}/commands/autoresearch.md";
+      description = "Run the autoresearch experiment loop";
+    };
+  };
+in {
   # Allow host specific overrides.
   options.programs.opencode.extraPlugins = lib.mkOption {
     type = lib.types.listOf lib.types.str;
@@ -41,7 +55,8 @@
     enable = true;
     package = perSystem.llm-agents.opencode;
     enableMcpIntegration = false;
-    inherit (aiAgents) agents commands;
+    inherit (aiAgents) agents;
+    commands = aiAgents.commands // autoresearchCommands;
 
     context = ./AGENTS.md;
     settings = {
@@ -140,10 +155,11 @@
           "@mohak34/opencode-notifier@latest"
           "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
           "${my.pkgs.icm}/plugins/opencode-icm.ts"
+          "${aro}/plugins/autoresearch-context.ts"
         ]
         ++ config.programs.opencode.extraPlugins;
     };
-    skills = aiLib.astralSkills;
+    skills = aiLib.astralSkills // autoresearchSkills;
 
     tui = {
       theme = "nord";

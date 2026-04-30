@@ -47,6 +47,9 @@
 
     astral-claude-plugins.url = "github:astral-sh/claude-code-plugins";
     astral-claude-plugins.flake = false;
+
+    autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
+    autoresearch-opencode.flake = false;
   };
 
   outputs = inputs:

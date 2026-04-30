@@ -38,8 +38,6 @@ in {
           prerelease = true;
           withPackages = ["cocoindex>=1.0.0a24"];
         }
-        {package = "git+https://github.com/ast-grep/ast-grep-mcp";}
-        {package = "mcp-nixos";}
       ];
     };
 
@@ -82,10 +80,28 @@ in {
         enable = true;
         defaultAgents = ["codex" "claude-code" "opencode"];
         sources = [
-          "cocoindex-io/cocoindex-code"
-          "dabiggm0e/autoresearch-opencode"
-          "wshobson/agents"
-          "vercel-labs/agent-skills"
+          {
+            source = "anthropics/skills";
+            skills = ["*"];
+          }
+          {
+            source = "obra/superpowers";
+            skills = {
+              exclude = ["commit-work"];
+            };
+          }
+          {
+            source = "cocoindex-io/cocoindex-code";
+            skills = ["*"];
+          }
+          {
+            source = "idjoo/skills";
+            skills = ["commit"];
+          }
+          {
+            source = "wshobson/agents";
+            skills = ["*"];
+          }
         ];
       };
     };
