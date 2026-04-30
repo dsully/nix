@@ -173,7 +173,8 @@
 
   mcpServers = {
     ast-grep = {
-      command = "ast-grep-server";
+      command = "${pkgs.uv}/bin/uvx";
+      args = ["--from" "git+https://github.com/ast-grep/ast-grep-mcp" "ast-grep-server"];
       env = {
         PYTHON_GIL = "1";
       };
@@ -202,8 +203,8 @@
       disabled = true;
     };
     nixos = {
-      # command = lib.getExe pkgs.mcp-nixos;
-      command = "mcp-nixos";
+      command = "${pkgs.uv}/bin/uvx";
+      args = ["mcp-nixos"];
       env = {
         PYTHON_GIL = "1";
       };
