@@ -66,6 +66,8 @@
     "${pkgs.nodejs}/bin"
     "${config.home.profileDirectory}/bin"
     "${config.home.homeDirectory}/.local/bin"
+    "/opt/homebrew/bin"
+    "/usr/local/bin"
   ];
 in {
   config = lib.mkMerge [
