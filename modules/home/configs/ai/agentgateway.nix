@@ -96,11 +96,14 @@ in {
 
               opah_cache="${config.xdg.cacheHome}/fish/opah/secrets.fish"
               if [ -r "$opah_cache" ]; then
-                # Translate `set -gx KEY 'val'` (fish) to `KEY=val` (sh).
-                # BSD sed (always present at /usr/bin/sed on darwin) handles this fine.
-                set -a
-                eval "$(/usr/bin/sed -nE "s/^set -gx ([A-Za-z_][A-Za-z0-9_]*) '(.*)'$/\1=\2/p" "$opah_cache")"
-                set +a
+                # Translate `set -gx KEY 'val'` (fish) to `export KEY='val'` (sh),
+                # preserving single-quote quoting so values containing shell
+                # metacharacters (|, &, ;, =, etc.) don't get interpreted by eval.
+                # Fish and sh single-quote literals are compatible as long as the
+                # value contains no single quotes or backslashes, which opah's
+                # cache currently never produces.
+                # BSD sed (always present at /usr/bin/sed on darwin) handles this.
+                eval "$(/usr/bin/sed -nE "s/^set -gx ([A-Za-z_][A-Za-z0-9_]*) '(.*)'$/export \1='\2'/p" "$opah_cache")"
               fi
 
               exec ${lib.getExe my.pkgs.agentgateway} -f ${configPath}
