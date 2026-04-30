@@ -110,7 +110,14 @@ in {
             ''
           ];
 
-          EnvironmentVariables.PATH = path;
+          EnvironmentVariables = {
+            PATH = path;
+            # Force-enable the Python GIL for all stdio Python MCP subprocesses.
+            # Non-freethreaded Python 3.13 builds crash on startup with
+            # "Fatal Python error: config_read_gil: Disabling the GIL is not supported"
+            # if PYTHON_GIL=0 leaks in from a user shell (e.g. via direnv/.envrc).
+            PYTHON_GIL = "1";
+          };
           # launchd's default soft FD limit is 256; spawning many stdio MCP
           # subprocesses exhausts it and yields "Too many open files (os error 24)".
           SoftResourceLimits.NumberOfFiles = 8192;
@@ -133,7 +140,11 @@ in {
 
         Service = {
           ExecStart = "${lib.getExe my.pkgs.agentgateway} -f ${configPath}";
-          Environment = "PATH=${path}";
+          Environment = [
+            "PATH=${path}"
+            # See darwin block above: force-enable GIL for Python MCP subprocesses.
+            "PYTHON_GIL=1"
+          ];
           LimitNOFILE = 8192;
           Restart = "on-failure";
         };
