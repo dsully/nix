@@ -82,11 +82,25 @@ in {
           # launchd GUI session. launchd agents don't inherit it otherwise,
           # which breaks config hot-reload when targets reference ${env:SSH_AUTH_SOCK}
           # and also prevents stdio MCP subprocesses from using ssh-agent.
+          #
+          # Also source opah's cached 1Password secrets if present, so stdio
+          # MCP subprocesses (hubble, splunk, sentry, etc.) inherit credentials
+          # that are otherwise only loaded into interactive fish sessions.
           ProgramArguments = [
             "/bin/sh"
             "-c"
             ''
               export SSH_AUTH_SOCK="$(/bin/launchctl getenv SSH_AUTH_SOCK)"
+
+              opah_cache="${config.xdg.cacheHome}/fish/opah/secrets.fish"
+              if [ -r "$opah_cache" ]; then
+                # Translate `set -gx KEY 'val'` (fish) to `KEY=val` (sh).
+                # BSD sed (always present at /usr/bin/sed on darwin) handles this fine.
+                set -a
+                eval "$(/usr/bin/sed -nE "s/^set -gx ([A-Za-z_][A-Za-z0-9_]*) '(.*)'$/\1=\2/p" "$opah_cache")"
+                set +a
+              fi
+
               exec ${lib.getExe my.pkgs.agentgateway} -f ${configPath}
             ''
           ];
