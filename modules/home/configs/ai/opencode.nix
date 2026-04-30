@@ -132,7 +132,7 @@ in {
         };
       };
 
-      lsp = lib.mkDefault (aiLib.opencodeLsp
+      lsp = lib.mkDefault ((lib.removeAttrs aiLib.opencodeLsp ["rust"])
         // {
           pyright = {disabled = true;};
         });
