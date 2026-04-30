@@ -78,13 +78,24 @@ in {
         enable = true;
         config = {
           Label = "localhost.agentgateway";
+          # Wrap so SSH_AUTH_SOCK is populated at startup from the user's
+          # launchd GUI session. launchd agents don't inherit it otherwise,
+          # which breaks config hot-reload when targets reference ${env:SSH_AUTH_SOCK}
+          # and also prevents stdio MCP subprocesses from using ssh-agent.
           ProgramArguments = [
-            "${lib.getExe my.pkgs.agentgateway}"
-            "-f"
-            configPath
+            "/bin/sh"
+            "-c"
+            ''
+              export SSH_AUTH_SOCK="$(/bin/launchctl getenv SSH_AUTH_SOCK)"
+              exec ${lib.getExe my.pkgs.agentgateway} -f ${configPath}
+            ''
           ];
 
           EnvironmentVariables.PATH = path;
+          # launchd's default soft FD limit is 256; spawning many stdio MCP
+          # subprocesses exhausts it and yields "Too many open files (os error 24)".
+          SoftResourceLimits.NumberOfFiles = 8192;
+          HardResourceLimits.NumberOfFiles = 8192;
           KeepAlive = {
             Crashed = true;
             SuccessfulExit = false;
@@ -104,6 +115,7 @@ in {
         Service = {
           ExecStart = "${lib.getExe my.pkgs.agentgateway} -f ${configPath}";
           Environment = "PATH=${path}";
+          LimitNOFILE = 8192;
           Restart = "on-failure";
         };
 
