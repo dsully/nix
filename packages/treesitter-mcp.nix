@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256:f62a7d349853f8db1643f7866eb61c9193cc0aff683e3c92b2e26644dce5fb8b";
+      hash = "sha256:03a710dbabee6ef9c109d407051b609d6e99036ba79ea0af5fefbe56b8eb7075";
     };
     x86_64-linux = {
       suffix = "unknown-linux-gnu";
-      hash = "sha256:23e31874954ca4fa4b74ef794f12fb8509121dcc6b3d008537ef8a4818c1bbc9";
+      hash = "sha256:5c960aeb0fd26667daea298a980f4c5b2a3e29d45c05cfa2d61c2ce07332caec";
     };
   };
   source =
@@ -18,11 +18,11 @@
       or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 in
   pkgs.stdenv.mkDerivation rec {
-    pname = "icm";
-    version = "0.10.42";
+    pname = "treesitter-mcp";
+    version = "0.7.0";
 
     src = pkgs.fetchurl {
-      url = "https://github.com/rtk-ai/${pname}/releases/download/${pname}-v${version}/${pname}-${source.suffix}.tar.gz";
+      url = "https://github.com/Christoph/${pname}/releases/download/v${version}/${pname}-${source.suffix}.tar.gz";
       inherit (source) hash;
     };
 
@@ -44,9 +44,9 @@ in
     '';
 
     meta = {
-      description = "Permanent memory for AI agents. Single binary, zero dependencies, MCP native";
-      homepage = "https://github.com/rtk-ai/icm";
-      license = lib.licenses.asl20;
+      description = "Tree-sitter MCP Server exposes powerful code analysis tools through the MCP protocol";
+      homepage = "https://github.com/Christoph/treesitter-mcp";
+      license = lib.licenses.mit;
       mainProgram = pname;
     };
   }

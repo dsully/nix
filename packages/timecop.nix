@@ -1,38 +1,47 @@
 {
-  rustPlatform,
-  fetchFromGitHub,
-  pkg-config,
-  libgit2,
-  openssl,
-  zlib,
-}:
-rustPlatform.buildRustPackage rec {
-  pname = "timecop";
-  version = "0.1.13";
-
-  src = fetchFromGitHub {
-    owner = "kamilmac";
-    repo = "timecop";
-    rev = "b649cfe4715208bb5ff046bbc571b9681bb55e8d";
-    hash = "sha256-KskABgTV7gCHfBA0tzK8iCctFKiqDvvtuARSIVXerTk=";
+  lib,
+  pkgs,
+  stdenv,
+}: let
+  packages = {
+    aarch64-darwin = {
+      suffix = "darwin-aarch64";
+      hash = "sha256:e95b8de19f3c7bc31fe3316c526abe45de821d59eda1e3f3a0cdcf9308879664";
+    };
+    x86_64-linux = {
+      suffix = "linux-x86_64";
+      hash = "sha256:4e82aa44aa69441f72b1675e9df2b95c29b9585d358c09a6bfc691258d13ab08";
+    };
   };
+  source =
+    packages.${stdenv.hostPlatform.system}
+      or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+in
+  pkgs.stdenv.mkDerivation rec {
+    pname = "timecop";
+    version = "0.1.13";
 
-  cargoHash = "sha256-s+XIbw0JOJCsrDBx2BwXR70Qf5Lx3HsEhzNxK1yddZY=";
-  doCheck = false;
+    src = pkgs.fetchurl {
+      url = "https://github.com/kamilmac/${pname}/releases/download/v${version}/${pname}-${source.suffix}.tar.gz";
+      inherit (source) hash;
+    };
 
-  nativeBuildInputs = [
-    pkg-config
-  ];
+    dontConfigure = true;
+    dontBuild = true;
+    dontStrip = true;
+    sourceRoot = ".";
 
-  buildInputs = [
-    libgit2
-    openssl
-    zlib
-  ];
+    nativeBuildInputs = lib.optionals stdenv.isLinux [
+      pkgs.autoPatchelfHook
+    ];
 
-  env = {
-    OPENSSL_NO_VENDOR = true;
-  };
+    installPhase = ''
+      runHook preInstall
+
+      install -m755 -D ${pname} $out/bin/${pname}
+
+      runHook postInstall
+    '';
 
   meta = {
     description = "";

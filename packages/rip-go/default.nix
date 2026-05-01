@@ -1,32 +1,52 @@
 {
   lib,
-  buildGoModule,
-  fetchFromGitHub,
-}:
-buildGoModule rec {
-  pname = "rip-go";
-  rev = "ae27d2d0855e02ce05ff63d9baedd054c4e658e2";
-  version = "0.2.2";
-
-  src = fetchFromGitHub {
-    inherit rev;
-    owner = "roniel-rhack";
-    repo = "rip-go";
-    hash = "sha256-c0G6hkMLkFBetP75YKrh/c/5USR6Vc4TPSVZJTSXDkU=";
+  pkgs,
+  stdenv,
+}: let
+  packages = {
+    aarch64-darwin = {
+      suffix = "darwin-arm64";
+      hash = "sha256:0bef7ceb9feab098a72c912ed1f04ff9d5aee0296c1155a757a3b324ab383688";
+    };
+    x86_64-linux = {
+      suffix = "linux-amd64";
+      hash = "sha256:40c50a81e46415fd3d0979bd29a46b6adc40401f2b738c507d035ac75c04f63b";
+    };
   };
+  source =
+    packages.${stdenv.hostPlatform.system}
+      or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+in
+  pkgs.stdenv.mkDerivation rec {
+    pname = "rip-go";
+    version = "0.2.3";
 
-  patches = [./gopsutil-v4.patch];
+    src = pkgs.fetchurl {
+      url = "https://github.com/roniel-rhack/rip-go/releases/download/v${version}/rip-go-${source.suffix}.tar.gz";
+      inherit (source) hash;
+    };
 
-  proxyVendor = true;
-  vendorHash = "sha256-wX4LaaYWyqGMstoio5kjhPUODsCyFndw95/vGLUu1FY=";
-  doCheck = false;
+    dontConfigure = true;
+    dontBuild = true;
+    dontStrip = true;
+    sourceRoot = ".";
 
-  ldflags = ["-s" "-w"];
+    nativeBuildInputs = lib.optionals stdenv.isLinux [
+      pkgs.autoPatchelfHook
+    ];
 
-  meta = {
-    description = "Fuzzy find and kill processes from your terminal with real-time updates";
-    homepage = "https://github.com/roniel-rhack/rip-go";
-    license = lib.licenses.mit;
-    mainProgram = pname;
-  };
-}
+    installPhase = ''
+      runHook preInstall
+
+      install -m755 -D ${pname} $out/bin/${pname}
+
+      runHook postInstall
+    '';
+
+    meta = {
+      description = "Fuzzy find and kill processes from your terminal with real-time updates";
+      homepage = "https://github.com/roniel-rhack/rip-go";
+      license = lib.licenses.mit;
+      mainProgram = pname;
+    };
+  }
