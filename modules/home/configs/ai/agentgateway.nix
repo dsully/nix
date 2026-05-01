@@ -64,10 +64,16 @@
   configPath = "${config.xdg.configHome}/agentgateway/config.yaml";
   path = lib.concatStringsSep ":" [
     "${pkgs.nodejs}/bin"
+    # uv's relocatable tool shims start with `exec "$(dirname "$(realpath "$0")")/python"`
+    # to find the bundled python in ~/.local/share/uv/python/<ver>/bin. Without coreutils
+    # on PATH, realpath/dirname fail and the shim execs /python, killing stdio MCP targets.
+    "${pkgs.coreutils}/bin"
     "${config.home.profileDirectory}/bin"
     "${config.home.homeDirectory}/.local/bin"
     "/opt/homebrew/bin"
     "/usr/local/bin"
+    "/usr/bin"
+    "/bin"
   ];
 in {
   config = lib.mkMerge [
