@@ -43,9 +43,9 @@ in
       runHook postInstall
     '';
 
-  meta = {
-    description = "";
-    homepage = "https://github.com/kamilmac/timecop";
-    mainProgram = pname;
-  };
-}
+    meta = {
+      description = "";
+      homepage = "https://github.com/kamilmac/timecop";
+      mainProgram = pname;
+    };
+  }
