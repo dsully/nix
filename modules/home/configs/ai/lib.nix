@@ -196,7 +196,7 @@
       command = lib.getExe my.pkgs.mcp-git-tools;
     };
     git-remote = {
-      command = lib.getExe my.pkgs.git-mcp-rs;
+      command = lib.getExe my.pkgs.git-remote-mcp;
     };
     mcp-rust-builder = {
       command = lib.getExe my.pkgs.mcp-rust-builder;

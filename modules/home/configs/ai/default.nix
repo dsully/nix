@@ -58,7 +58,7 @@ in {
           agentgateway
           cargo-mcp
           crates-mcp
-          git-mcp-rs
+          git-remote-mcp
           icm
           mcp-git-tools
           mcp-rust-analyzer
