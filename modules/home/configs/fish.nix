@@ -33,7 +33,6 @@ in {
       TREE_SITTER_DIR = "${config.xdg.configHome}/tree-sitter";
 
       # JavaScript
-      BIOME_CONFIG_PATH = "${config.xdg.configHome}/biome.json";
       NODE_REPL_HISTORY = "/dev/null";
       NO_UPDATE_NOTIFIER = "1";
     };

@@ -43,18 +43,6 @@ in {
       Index.StandardLibrary = "Yes";
     };
 
-    "biome.json".source = jsonFormat.generate "biome-config" {
-      formatter = {
-        enabled = true;
-        attributePosition = "multiline";
-        indentStyle = "space";
-        indentWidth = 2;
-        lineWidth = 120;
-        useEditorconfig = true;
-      };
-      linter.enabled = true;
-    };
-
     "repomix/repomix.config.json".source = jsonFormat.generate "repomix-config" {
       output = {
         filePath = "repomix-output.txt";

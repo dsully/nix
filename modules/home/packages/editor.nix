@@ -18,7 +18,6 @@
         actionlint
         basedpyright
         bash-language-server
-        biome
         commitlint-rs
         crates-lsp
         docker-compose-language-service
