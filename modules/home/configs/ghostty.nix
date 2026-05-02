@@ -49,7 +49,7 @@
       clipboard-read = "allow";
 
       # https://github.com/ghostty-org/ghostty/pull/9335
-      selection-word-chars = " \t'\"│`|:;,()[]{}<>$";
+      selection-word-chars = ''" \t'\"│`|:;,()[]{}<>$"'';
 
       # Vim-mode keybindings for Ghostty.
       #
