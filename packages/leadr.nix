@@ -45,7 +45,7 @@ in
 
     meta = {
       description = "Shell aliases on steroids";
-      homepage = "https://crates.io/crates/leadr";
+      homepage = "https://github.com/ll-nick/leadr";
       license = lib.licenses.mit;
       mainProgram = pname;
     };

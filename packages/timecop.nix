@@ -44,7 +44,7 @@ in
     '';
 
     meta = {
-      description = "";
+      description = "A terminal UI for reviewing GitHub PRs and local branches — built for the agent loop.";
       homepage = "https://github.com/kamilmac/timecop";
       mainProgram = pname;
     };

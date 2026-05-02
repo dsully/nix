@@ -56,8 +56,6 @@ in {
         )
         ++ (with my.pkgs; [
           agentgateway
-          cargo-mcp
-          crates-mcp
           git-remote-mcp
           icm
           mcp-git-tools

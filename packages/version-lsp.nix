@@ -44,8 +44,8 @@ in
     '';
 
     meta = {
-      description = "";
-      homepage = "https://crates.io/crates/version-lsp";
+      description = "A Language Server Protocol (LSP) implementation that provides version checking diagnostics for package dependency files";
+      homepage = "https://github.com/skanehira/version-lsp";
       license = lib.licenses.mit;
       mainProgram = pname;
     };

@@ -179,15 +179,6 @@
         PYTHON_GIL = "1";
       };
     };
-    cargo-mcp = {
-      command = lib.getExe my.pkgs.cargo-mcp;
-      args = ["stdio"];
-      disabled = true;
-    };
-    crates-mcp = {
-      command = lib.getExe my.pkgs.crates-mcp;
-      disabled = true;
-    };
     filesystem = {
       command = lib.getExe my.pkgs.rust-mcp-filesystem;
       args = [config.home.homeDirectory "--allow-write"];
