@@ -1,7 +1,8 @@
 {
   lib,
-  rustPlatform,
+  openssl,
   pkg-config,
+  rustPlatform,
 }:
 rustPlatform.buildRustPackage {
   pname = "git-remote-mcp";
@@ -17,6 +18,10 @@ rustPlatform.buildRustPackage {
 
   nativeBuildInputs = [
     pkg-config
+  ];
+
+  buildInputs = [
+    openssl
   ];
 
   meta = {

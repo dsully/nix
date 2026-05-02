@@ -31,10 +31,6 @@ in
     dontStrip = true;
     dontUnpack = true;
 
-    nativebuildInputs = lib.optionals stdenv.isLinux [
-      pkgs.autoPatchelfHook
-    ];
-
     installPhase = ''
       runHook preInstall
 

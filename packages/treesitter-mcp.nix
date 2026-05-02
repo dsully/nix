@@ -9,7 +9,7 @@
       hash = "sha256:03a710dbabee6ef9c109d407051b609d6e99036ba79ea0af5fefbe56b8eb7075";
     };
     x86_64-linux = {
-      suffix = "unknown-linux-gnu";
+      suffix = "x86_64-unknown-linux-gnu";
       hash = "sha256:5c960aeb0fd26667daea298a980f4c5b2a3e29d45c05cfa2d61c2ce07332caec";
     };
   };
@@ -30,10 +30,6 @@ in
     dontBuild = true;
     dontStrip = true;
     sourceRoot = ".";
-
-    nativeBuildInputs = lib.optionals stdenv.isLinux [
-      pkgs.autoPatchelfHook
-    ];
 
     installPhase = ''
       runHook preInstall
