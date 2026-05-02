@@ -1,6 +1,5 @@
 # https://github.com/sharkdp/bat
 {
-  config,
   lib,
   pkgs,
   ...
@@ -29,7 +28,6 @@ in {
         ".eslintrc:JSON"
         ".lua-format:YAML"
         ".luacheckrc:Lua"
-        "${config.xdg.configHome}/ghostty/config*:Ghostty Config"
       ];
     };
 

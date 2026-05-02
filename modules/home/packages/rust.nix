@@ -16,6 +16,7 @@
       cargo-hakari
       cargo-insta
       cargo-llvm-lines
+      cargo-machete
       cargo-msrv
       cargo-nextest
       cargo-run-bin
