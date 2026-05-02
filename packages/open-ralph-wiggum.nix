@@ -12,8 +12,8 @@ stdenv.mkDerivation (_: {
   src = fetchFromGitHub {
     owner = "Th0rgal";
     repo = "open-ralph-wiggum";
-    rev = "766908cb7a0f11d40a7e208c87238fa4a2f91121";
-    hash = "sha256-4+VCntNziPKJ25C+mC55AKnShlpW8rSHgzwn3Axs/ok=";
+    rev = "ec503200adf05ccd6b39ddd0fd18f666f595b085";
+    hash = "sha256-vTydK3Y0Rj01sp0zCfLoIYSLzQWw+vC2bvVx2/GybWk=";
   };
 
   nativeBuildInputs = [makeBinaryWrapper];
