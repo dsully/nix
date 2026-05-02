@@ -155,7 +155,7 @@
     # };
   };
 
-  cpoAgents = lib.mapAttrs (_: spec: mkAgent spec) cpoSpecs;
+  cpoAgents = lib.mapAttrs (_: mkAgent) cpoSpecs;
   cpoDescriptions = lib.mapAttrs (_: spec: spec.description) cpoSpecs;
 
   wsEnabledPlugins =
