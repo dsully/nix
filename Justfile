@@ -116,3 +116,22 @@ init-from-url URL *args:
 [group('git')]
 commit:
     @git commit -m "chore: update lockfile and versions"
+
+# Build all nix packages and push to cachix
+[group('cachix')]
+push-cache:
+    #!/usr/bin/env bash
+
+    set -euo pipefail
+
+    targets=()
+
+    for pkg in packages/*; do
+        name=$(basename "$pkg" .nix)
+
+        if [[ -f "$pkg" && "$pkg" == *.nix ]] || [[ -d "$pkg" && -f "$pkg/default.nix" ]]; then
+            targets+=(".#$name")
+        fi
+    done
+
+    nix build --no-link --print-out-paths "${targets[@]}" | cachix push dsully
