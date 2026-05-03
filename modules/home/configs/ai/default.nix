@@ -8,10 +8,9 @@
   ...
 }: let
   aiLib = import ./lib.nix {inherit config inputs lib my pkgs;};
-  aiAgents = import ./agents.nix {inherit aiLib lib;};
+  aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
 in {
   imports = [
-    inputs.charmbracelet-nur.homeModules.crush
     inputs.skills-nix.homeModules.default
     ./agentgateway.nix
     ./ccstatusline.nix
@@ -79,10 +78,6 @@ in {
         defaultAgents = ["codex" "claude-code" "opencode"];
         sources = [
           {
-            source = "anthropics/skills";
-            skills = ["*"];
-          }
-          {
             source = "obra/superpowers";
             skills = {
               exclude = ["commit-work"];
@@ -98,7 +93,27 @@ in {
           }
           {
             source = "wshobson/agents";
-            skills = ["*"];
+            skills = [
+              "architecture-patterns"
+              "debugging-strategies"
+              "e2e-testing-patterns"
+              "error-handling-patterns"
+              "memory-safety-patterns"
+              "python-anti-patterns"
+              "python-code-style"
+              "python-configuration"
+              "python-design-patterns"
+              "python-error-handling"
+              "python-observability"
+              "python-performance-optimization"
+              "python-project-structure"
+              "python-resilience"
+              "python-resource-management"
+              "python-testing-patterns"
+              "python-type-safety"
+              "rust-async-patterns"
+              "uv-package-manager"
+            ];
           }
         ];
       };

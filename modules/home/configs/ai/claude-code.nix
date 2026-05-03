@@ -1,7 +1,6 @@
 {
   aiAgents,
   aiLib,
-  inputs,
   lib,
   my,
   perSystem,
@@ -57,24 +56,8 @@ in {
       enableMcpIntegration = true;
       includeCoAuthoredBy = false;
 
-      extraKnownMarketplaces = {
-        "astral-sh" = {
-          source = {
-            source = "directory";
-            path = "${aiLib.acp}";
-          };
-        };
-        claude-code-workflows = {
-          source = {
-            source = "directory";
-            path = "${inputs.wshobson-agents}";
-          };
-        };
-      };
-
       enabledPlugins =
         {
-          "astral@astral-sh" = lib.mkDefault true;
           "code-review@claude-plugins-official" = lib.mkDefault true;
           "code-simplifier@claude-plugins-official" = lib.mkDefault true;
           "commit-commands@claude-plugins-official" = lib.mkDefault true;

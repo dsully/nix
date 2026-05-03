@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "astral-claude-plugins": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1772208555,
-        "narHash": "sha256-yQ8R2R95QFXjYYbwAN0NdySObo8S2Cf/TecOQ9Ucr/A=",
-        "owner": "astral-sh",
-        "repo": "claude-code-plugins",
-        "rev": "f3ce88a7ba830f53afd6d944c1d0278ed318e142",
-        "type": "github"
-      },
-      "original": {
-        "owner": "astral-sh",
-        "repo": "claude-code-plugins",
-        "type": "github"
-      }
-    },
     "autoresearch-opencode": {
       "flake": false,
       "locked": {
@@ -117,26 +101,6 @@
         "owner": "nix-community",
         "ref": "2.0.8",
         "repo": "bun2nix",
-        "type": "github"
-      }
-    },
-    "charmbracelet-nur": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1777663831,
-        "narHash": "sha256-k0hzp4qawGOijWyHmHyDTjUn8URFwJohtXboKb+V17w=",
-        "owner": "charmbracelet",
-        "repo": "nur",
-        "rev": "4602b5dbaded3b2264a9ac196d3fe2b3d8c2c16f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "charmbracelet",
-        "repo": "nur",
         "type": "github"
       }
     },
@@ -635,9 +599,7 @@
     },
     "root": {
       "inputs": {
-        "astral-claude-plugins": "astral-claude-plugins",
         "autoresearch-opencode": "autoresearch-opencode",
-        "charmbracelet-nur": "charmbracelet-nur",
         "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "flake-parts": "flake-parts",

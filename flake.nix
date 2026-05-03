@@ -27,9 +27,6 @@
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
-    charmbracelet-nur.url = "github:charmbracelet/nur";
-    charmbracelet-nur.inputs.nixpkgs.follows = "nixpkgs";
-
     # https://github.com/rynfar/meridian/pull/406 needs to be committed;
     meridian.url = "github:rynfar/meridian";
     meridian.inputs.nixpkgs.follows = "nixpkgs";
@@ -44,9 +41,6 @@
     wshobson-agents.flake = false;
 
     skills-nix.url = "github:idjoo/skills.nix";
-
-    astral-claude-plugins.url = "github:astral-sh/claude-code-plugins";
-    astral-claude-plugins.flake = false;
 
     autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
     autoresearch-opencode.flake = false;

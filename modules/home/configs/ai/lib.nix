@@ -1,15 +1,10 @@
 {
   config,
-  inputs,
   lib,
   my,
   pkgs,
   ...
 }: let
-  acp = inputs.astral-claude-plugins;
-  cpo = "${inputs.claude-plugins-official}/plugins";
-  ws = "${inputs.wshobson-agents}/plugins";
-
   agentgateway = rec {
     port = 3000;
     baseUrl = "http://localhost:${toString port}";
@@ -17,72 +12,96 @@
     mcpSseUrl = "${baseUrl}/mcp/sse";
   };
 
-  # Strip YAML frontmatter from a markdown file, returning only the body.
-  stripFrontmatter = file: let
-    raw = builtins.readFile file;
-    parts = lib.splitString "---\n" raw;
-  in
-    if builtins.length parts >= 3
-    then lib.concatStringsSep "" (lib.drop 2 parts)
-    else raw;
-
-  # Extract the `description: ...` value from a markdown frontmatter string.
-  extractDescription = text: let
+  agentDescription = file: let
+    text = builtins.readFile file;
     parts = lib.splitString "description: " text;
   in
     if builtins.length parts >= 2
     then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
     else "Specialized development agent";
 
-  # Read an agent markdown file once, returning both description and body.
-  parseAgent = file: let
-    raw = builtins.readFile file;
-    parts = lib.splitString "---\n" raw;
-    body =
-      if builtins.length parts >= 3
-      then lib.concatStringsSep "" (lib.drop 2 parts)
-      else raw;
-  in {
-    description = extractDescription raw;
-    inherit body;
-  };
+  mkAI = sources: let
+    sourceList =
+      if builtins.isList sources
+      then sources
+      else [sources];
 
-  # Build an opencode agent markdown string with new frontmatter + original body.
-  # Accepts either `body` (already stripped) or `file` (stripped on demand).
-  mkAgent = {
-    file ? null,
-    body ? null,
-    description,
-    model ? null,
-    color ? null,
-  }: let
-    modelLine = lib.optionalString (model != null) "model: ${model}\n";
-    colorLine = lib.optionalString (color != null) "color: ${color}\n";
-    actualBody =
-      if body != null
-      then body
-      else stripFrontmatter file;
-  in ''
-    ---
-    description: ${description}
-    mode: all
-    ${modelLine}${colorLine}---
-    ${actualBody}'';
+    normalizeFilter = filter:
+      if builtins.isList filter
+      then {
+        include = filter;
+        exclude = [];
+      }
+      else {
+        include = filter.include or [];
+        exclude = filter.exclude or [];
+      };
 
-  # Build an opencode command markdown string with frontmatter + original body.
-  mkCommand = {
-    file,
-    description,
-    agent ? null,
-    subtask ? null,
-  }: let
-    agentLine = lib.optionalString (agent != null) "agent: ${agent}\n";
-    subtaskLine = lib.optionalString (subtask != null) "subtask: ${lib.boolToString subtask}\n";
-  in ''
-    ---
-    description: ${description}
-    ${agentLine}${subtaskLine}---
-    ${stripFrontmatter file}'';
+    matchesFilter = filter: name: let
+      f = normalizeFilter filter;
+    in
+      (
+        f.include
+        == []
+        || builtins.elem "*" f.include
+        || builtins.elem name f.include
+      )
+      && !(builtins.elem name f.exclude);
+
+    sourcePath = sourceDef:
+      sourceDef.source or "${sourceDef.base}/${sourceDef.name}";
+
+    enumerateMdFiles = sourceDef: subdir: filter: let
+      source = sourcePath sourceDef;
+      prefix = sourceDef.prefix or "";
+      dir = "${source}/${subdir}";
+      entries =
+        if builtins.pathExists dir
+        then builtins.readDir dir
+        else {};
+      mdEntries =
+        lib.filterAttrs (
+          name: type: let
+            key = lib.removeSuffix ".md" name;
+          in
+            (type == "regular" || type == "symlink")
+            && lib.hasSuffix ".md" name
+            && matchesFilter filter key
+        )
+        entries;
+    in
+      lib.mapAttrs' (
+        name: _: let
+          key = "${prefix}${lib.removeSuffix ".md" name}";
+        in
+          lib.nameValuePair key (
+            builtins.path {
+              path = "${dir}/${name}";
+              name = "ai-${subdir}-${key}";
+            }
+          )
+      )
+      mdEntries;
+
+    # Missing agents/commands means skip that type; present empty filters mean include all.
+    mergeSource = acc: sourceDef: {
+      agents =
+        acc.agents
+        // lib.optionalAttrs (sourceDef ? agents) (
+          enumerateMdFiles sourceDef "agents" sourceDef.agents
+        );
+      commands =
+        acc.commands
+        // lib.optionalAttrs (sourceDef ? commands) (
+          enumerateMdFiles sourceDef "commands" sourceDef.commands
+        );
+    };
+  in
+    lib.foldl mergeSource {
+      agents = {};
+      commands = {};
+    }
+    sourceList;
 
   lsp = {
     bash = {
@@ -167,13 +186,6 @@
     };
   };
 
-  # Astral skills shared across codex and opencode.
-  astralSkills = {
-    astral-uv = "${acp}/plugins/astral/skills/uv";
-    astral-ruff = "${acp}/plugins/astral/skills/ruff";
-    astral-ty = "${acp}/plugins/astral/skills/ty";
-  };
-
   models = {
     large = {
       model = "claude-opus-4-7";
@@ -196,18 +208,11 @@
   };
 in {
   inherit
-    acp
     agentgateway
-    astralSkills
-    cpo
-    extractDescription
+    agentDescription
     lsp
     mcpServers
-    mkAgent
-    mkCommand
+    mkAI
     models
-    parseAgent
-    stripFrontmatter
-    ws
     ;
 }

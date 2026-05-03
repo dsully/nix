@@ -29,7 +29,5 @@ in {
       model = "gpt-5.5";
       model_reasoning_effort = "medium";
     };
-
-    skills = aiLib.astralSkills;
   };
 }

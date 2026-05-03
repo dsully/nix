@@ -28,13 +28,6 @@
   autoresearchSkills = {
     autoresearch = "${aro}/skills/autoresearch";
   };
-
-  autoresearchCommands = {
-    autoresearch = aiLib.mkCommand {
-      file = "${aro}/commands/autoresearch.md";
-      description = "Run the autoresearch experiment loop";
-    };
-  };
 in {
   # Allow host specific overrides.
   options.programs.opencode.extraPlugins = lib.mkOption {
@@ -70,7 +63,12 @@ in {
     package = perSystem.llm-agents.opencode;
     enableMcpIntegration = false;
     inherit (aiAgents) agents;
-    commands = aiAgents.commands // autoresearchCommands;
+    commands =
+      aiAgents.commands
+      // (aiLib.mkAI {
+        source = aro;
+        commands = ["autoresearch"];
+      }).commands;
 
     context = ./AGENTS.md;
     settings = {
@@ -174,7 +172,8 @@ in {
         ]
         ++ config.programs.opencode.extraPlugins;
     };
-    skills = aiLib.astralSkills // autoresearchSkills;
+
+    skills = autoresearchSkills;
 
     tui = {
       theme = "nord";
