@@ -38,6 +38,10 @@ in {
             default_sni server.sully.org
             http_port 80
             https_port 443
+
+            servers {
+              protocols h1 h2
+            }
           }
 
           *.sully.org {
