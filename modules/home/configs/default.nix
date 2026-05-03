@@ -3,6 +3,7 @@
     ./bacon.nix
     ./btop.nix
     ./delta.nix
+    ./eza.nix
     ./emmylua.nix
     ./fd.nix
     ./fish.nix
