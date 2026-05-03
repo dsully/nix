@@ -7,7 +7,40 @@
   perSystem,
   pkgs,
   ...
-}: {
+}: let
+  lspLanguageIds = {
+    bash = {
+      ".sh" = "shellscript";
+      ".bash" = "shellscript";
+    };
+    go = {".go" = "go";};
+    helm = {
+      ".tpl" = "helm";
+      ".yaml" = "helm";
+    };
+    lua = {".lua" = "lua";};
+    nix = {".nix" = "nix";};
+    rust = {".rs" = "rust";};
+    toml = {".toml" = "toml";};
+    typescript = {
+      ".ts" = "typescript";
+      ".tsx" = "typescriptreact";
+      ".js" = "javascript";
+      ".jsx" = "javascriptreact";
+    };
+  };
+
+  claudeCodeLsp =
+    lib.mapAttrs (
+      name: v:
+        {
+          inherit (v) command;
+          extensionToLanguage = lspLanguageIds.${name};
+        }
+        // lib.optionalAttrs (v ? args) {inherit (v) args;}
+    )
+    aiLib.lsp;
+in {
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
@@ -207,7 +240,7 @@
       };
     };
 
-    lspServers = aiLib.claudeCodeLsp;
+    lspServers = claudeCodeLsp;
 
     mcpServers = {
       agentgateway = {

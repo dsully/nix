@@ -11,6 +11,20 @@
 }: let
   aro = inputs.autoresearch-opencode;
 
+  lspExtensions = {
+    helm = [".tpl" ".yaml"];
+    lua = [".lua"];
+    nix = [".nix"];
+    rust = [".rs"];
+    toml = [".toml"];
+    typescript = [".ts" ".tsx" ".js" ".jsx"];
+  };
+
+  opencodeLsp = lib.mapAttrs (name: v: {
+    command = [v.command] ++ (v.args or []);
+    extensions = lspExtensions.${name};
+  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) aiLib.lsp);
+
   autoresearchSkills = {
     autoresearch = "${aro}/skills/autoresearch";
   };
@@ -132,7 +146,7 @@ in {
         };
       };
 
-      lsp = lib.mkDefault ((lib.removeAttrs aiLib.opencodeLsp ["rust"])
+      lsp = lib.mkDefault ((lib.removeAttrs opencodeLsp ["rust"])
         // {
           pyright = {disabled = true;};
         });

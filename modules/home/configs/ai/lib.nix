@@ -123,54 +123,6 @@
     };
   };
 
-  lspExtensions = {
-    helm = [".tpl" ".yaml"];
-    lua = [".lua"];
-    nix = [".nix"];
-    rust = [".rs"];
-    toml = [".toml"];
-    typescript = [".ts" ".tsx" ".js" ".jsx"];
-  };
-
-  # Extension-to-language mappings for claude-code's lspServers format.
-  lspLanguageIds = {
-    bash = {
-      ".sh" = "shellscript";
-      ".bash" = "shellscript";
-    };
-    go = {".go" = "go";};
-    helm = {
-      ".tpl" = "helm";
-      ".yaml" = "helm";
-    };
-    lua = {".lua" = "lua";};
-    nix = {".nix" = "nix";};
-    rust = {".rs" = "rust";};
-    toml = {".toml" = "toml";};
-    typescript = {
-      ".ts" = "typescript";
-      ".tsx" = "typescriptreact";
-      ".js" = "javascript";
-      ".jsx" = "javascriptreact";
-    };
-  };
-
-  claudeCodeLsp =
-    lib.mapAttrs (
-      name: v:
-        {
-          inherit (v) command;
-          extensionToLanguage = lspLanguageIds.${name};
-        }
-        // lib.optionalAttrs (v ? args) {inherit (v) args;}
-    )
-    lsp;
-
-  opencodeLsp = lib.mapAttrs (name: v: {
-    command = [v.command] ++ (v.args or []);
-    extensions = lspExtensions.${name};
-  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) lsp);
-
   mcpServers = {
     ast-grep = {
       command = "${pkgs.uv}/bin/uvx";
@@ -215,8 +167,6 @@
     };
   };
 
-  mcpServersWithType = lib.mapAttrs (_: v: v // {type = "stdio";}) mcpServers;
-
   # Astral skills shared across codex and opencode.
   astralSkills = {
     astral-uv = "${acp}/plugins/astral/skills/uv";
@@ -249,18 +199,13 @@ in {
     acp
     agentgateway
     astralSkills
-    claudeCodeLsp
     cpo
     extractDescription
     lsp
-    lspExtensions
-    lspLanguageIds
     mcpServers
-    mcpServersWithType
     mkAgent
     mkCommand
     models
-    opencodeLsp
     parseAgent
     stripFrontmatter
     ws
