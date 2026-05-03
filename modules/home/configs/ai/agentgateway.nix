@@ -1,5 +1,5 @@
 {
-  aiLib,
+  ai,
   config,
   lib,
   my,
@@ -28,7 +28,7 @@
   agentgatewayConfig = {
     binds = [
       {
-        inherit (aiLib.agentgateway) port;
+        inherit (ai.agentgateway) port;
         listeners = [
           {
             routes = [

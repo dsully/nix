@@ -1,6 +1,5 @@
 {
-  aiAgents,
-  aiLib,
+  ai,
   lib,
   my,
   perSystem,
@@ -38,18 +37,18 @@
         }
         // lib.optionalAttrs (v ? args) {inherit (v) args;}
     )
-    aiLib.lsp;
+    ai.lsp;
 in {
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
 
-    inherit (aiAgents) agents;
+    inherit (ai) agents;
 
     context = ./AGENTS.md;
 
     settings = {
-      inherit (aiLib.models.large) model;
+      inherit (ai.models.large) model;
 
       autoUpdates = false;
       enableAllProjectMcpServers = false;
@@ -67,7 +66,7 @@ in {
           "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
           "superpowers@claude-plugins-official" = lib.mkDefault true;
         }
-        // aiAgents.enabledPlugins;
+        // ai.enabledPlugins;
 
       hooks = lib.mkDefault {
         PreCompact = [
@@ -228,7 +227,7 @@ in {
     mcpServers = {
       agentgateway = {
         type = "http";
-        url = aiLib.agentgateway.mcpHttpUrl;
+        url = ai.agentgateway.mcpHttpUrl;
       };
     };
   };

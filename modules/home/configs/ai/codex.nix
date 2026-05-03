@@ -1,11 +1,10 @@
 {
-  aiAgents,
-  aiLib,
+  ai,
   lib,
   perSystem,
   ...
 }: let
-  codexAgentRoles = lib.mapAttrs (_: description: {inherit description;}) aiAgents.descriptions;
+  codexAgentRoles = lib.mapAttrs (_: description: {inherit description;}) ai.descriptions;
 in {
   programs.codex = {
     enable = true;
@@ -24,7 +23,7 @@ in {
         tool_search = true;
       };
 
-      mcp_servers.agentgateway.url = aiLib.agentgateway.mcpHttpUrl;
+      mcp_servers.agentgateway.url = ai.agentgateway.mcpHttpUrl;
 
       model = "gpt-5.5";
       model_reasoning_effort = "medium";

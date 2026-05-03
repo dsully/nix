@@ -7,8 +7,7 @@
   pkgs,
   ...
 }: let
-  aiLib = import ./lib.nix {inherit config inputs lib my pkgs;};
-  aiAgents = import ./agents.nix {inherit aiLib inputs lib;};
+  ai = import ./common.nix {inherit config inputs lib my pkgs;};
 in {
   imports = [
     inputs.skills-nix.homeModules.default
@@ -21,7 +20,7 @@ in {
 
   config = {
     _module.args = {
-      inherit aiAgents aiLib;
+      inherit ai;
     };
 
     packageTools = {
@@ -70,7 +69,7 @@ in {
     programs = {
       mcp = {
         enable = true;
-        servers = aiLib.mcpServers;
+        servers = ai.mcpServers;
       };
 
       skills = {

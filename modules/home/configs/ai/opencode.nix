@@ -1,6 +1,5 @@
 {
-  aiAgents,
-  aiLib,
+  ai,
   config,
   inputs,
   lib,
@@ -23,7 +22,7 @@
   opencodeLsp = lib.mapAttrs (name: v: {
     command = [v.command] ++ (v.args or []);
     extensions = lspExtensions.${name};
-  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) aiLib.lsp);
+  }) (lib.filterAttrs (n: _: lspExtensions ? ${n}) ai.lsp);
 
   autoresearchSkills = {
     autoresearch = "${aro}/skills/autoresearch";
@@ -62,10 +61,10 @@ in {
     enable = true;
     package = perSystem.llm-agents.opencode;
     enableMcpIntegration = false;
-    inherit (aiAgents) agents;
+    inherit (ai) agents;
     commands =
-      aiAgents.commands
-      // (aiLib.mkAI {
+      ai.commands
+      // (ai.mkAI {
         source = aro;
         commands = ["autoresearch"];
       }).commands;
@@ -139,7 +138,7 @@ in {
       mcp = lib.mkDefault {
         agentgateway = {
           type = "remote";
-          url = aiLib.agentgateway.mcpHttpUrl;
+          url = ai.agentgateway.mcpHttpUrl;
           enabled = true;
         };
       };
