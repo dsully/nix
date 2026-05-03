@@ -152,12 +152,25 @@ in {
         bash = {
           "*" = "allow";
           "git status" = "allow";
+          "home-manager build*" = "allow";
           clippy = "allow";
           fd = "allow";
           rg = "allow";
         };
-        edit = "allow";
+        edit = {
+          "*" = "allow";
+          "*.env" = "deny";
+          "*.env.*" = "deny";
+        };
+        external_directory = {
+          "/**" = "allow";
+        };
         lsp = "allow";
+        read = {
+          "*" = "allow";
+          "*.env" = "deny";
+          "*.env.*" = "deny";
+        };
         webfetch = "allow";
       };
 
@@ -170,6 +183,15 @@ in {
           "${inputs.superpowers}/.opencode/plugins/superpowers.js"
         ]
         ++ config.programs.opencode.extraPlugins;
+
+      watcher.ignore = [
+        ".direnv/**"
+        ".git/**"
+        ".rumdl_cache/**"
+        "dist/**"
+        "node_modules/**"
+        "target/**"
+      ];
     };
 
     skills = autoresearchSkills;
