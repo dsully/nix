@@ -49,8 +49,10 @@ system +args="":
 switch +args="":
     #!/usr/bin/env bash
     set -euo pipefail
+
     extra_args=""
     nix_args=""
+
     if [[ "$(hostname)" == "server" ]]; then
         extra_args="--impure"
         nix_args="--refresh"
