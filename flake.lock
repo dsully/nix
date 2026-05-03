@@ -650,6 +650,7 @@
         "nixpkgs": "nixpkgs_2",
         "opnix": "opnix",
         "skills-nix": "skills-nix",
+        "superpowers": "superpowers",
         "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
       }
@@ -669,6 +670,22 @@
       "original": {
         "owner": "idjoo",
         "repo": "skills.nix",
+        "type": "github"
+      }
+    },
+    "superpowers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777583321,
+        "narHash": "sha256-8/M/S0BUYurZkFqe6LemVtBQnPSxBNfy1C7Q6f92hjE=",
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "e7a2d16476bf042e9add4699c9d018a90f86e4a6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "obra",
+        "repo": "superpowers",
         "type": "github"
       }
     },

@@ -49,6 +49,7 @@
           "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
           "ralph-loop@claude-plugins-official" = lib.mkDefault true;
           "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+          "superpowers@claude-plugins-official" = lib.mkDefault true;
         }
         // aiAgents.enabledPlugins;
 

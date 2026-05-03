@@ -50,6 +50,11 @@
 
     autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
     autoresearch-opencode.flake = false;
+
+    superpowers = {
+      url = "github:obra/superpowers";
+      flake = false;
+    };
   };
 
   outputs = inputs:

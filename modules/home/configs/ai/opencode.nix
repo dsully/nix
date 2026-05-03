@@ -156,6 +156,7 @@ in {
           "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
           "${my.pkgs.icm}/plugins/opencode-icm.ts"
           "${aro}/plugins/autoresearch-context.ts"
+          "${inputs.superpowers}/.opencode/plugins/superpowers.js"
         ]
         ++ config.programs.opencode.extraPlugins;
     };
