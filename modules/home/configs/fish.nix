@@ -100,41 +100,63 @@ in {
       }
     ];
 
-    functions.cat = {
-      wraps = "bat";
-      description = "Use bat instead of cat";
-      body =
-        # fish
-        ''
-          # If no arguments are given, read from stdin.
-          if isatty stdin; and not set -q argv[1]
-              command cat -
-              return
-          end
+    functions = {
+      cat = {
+        wraps = "bat";
+        description = "Use bat instead of cat";
+        body =
+          # fish
+          ''
+            # If no arguments are given, read from stdin.
+            if isatty stdin; and not set -q argv[1]
+                command cat -
+                return
+            end
 
-          set -f image_extensions png jpg jpeg gif bmp tiff webp
-          set -f markdown_extensions md markdown mkd
+            set -f image_extensions png jpg jpeg gif bmp tiff webp
+            set -f markdown_extensions md markdown mkd
 
-          # Escape --version and similar.
-          set -f ext (string split "." -- $argv[1])[-1]
+            # Escape --version and similar.
+            set -f ext (string split "." -- $argv[1])[-1]
 
-          if contains $ext $markdown_extensions; and type -q mdterm
-              ${lib.getExe pkgs.mdterm} $argv[1]
+            if contains $ext $markdown_extensions; and type -q mdterm
+                ${lib.getExe pkgs.mdterm} $argv[1]
 
-          else if contains $ext $markdown_extensions; and type -q glow
-              ${lib.getExe pkgs.glow} --pager $argv[1]
+            else if contains $ext $markdown_extensions; and type -q glow
+                ${lib.getExe pkgs.glow} --pager $argv[1]
 
-          else if contains $ext ipynb; and type -q nbcat
-              command nbcat $argv
+            else if contains $ext ipynb; and type -q nbcat
+                command nbcat $argv
 
-          else if contains $ext $image_extensions; and type -q viu
-              ${lib.getExe pkgs.viu} $argv
-          else if type -q bat
-              ${lib.getExe pkgs.bat} $argv
-          else
-              command cat $argv
-          end
-        '';
+            else if contains $ext $image_extensions; and type -q viu
+                ${lib.getExe pkgs.viu} $argv
+            else if type -q bat
+                ${lib.getExe pkgs.bat} $argv
+            else
+                command cat $argv
+            end
+          '';
+      };
+
+      x = {
+        description = "Extract archives";
+        body =
+          # fish
+          ''
+            if not test -f "$file"
+                echo "Usage: x <file>"
+                return 1
+            end
+
+            switch "$file"
+                case '*.tar' '*.tar.*' '*.tbz2' '*.tgz' '*.txz' '*.bz2' '*.gz' '*.zip' '*.rar' '*.7z' '*.xz'
+                    ${lib.getExe pkgs.p7zip} x $file
+                case '*'
+                    echo "'$file' cannot be extracted via x()"
+                    return 1
+            end
+          '';
+      };
     };
 
     completions.rm =
