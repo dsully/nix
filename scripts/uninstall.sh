@@ -88,6 +88,7 @@ fi
 # 3. Stop and remove launchd services
 for plist in org.nixos.nix-daemon org.nixos.darwin-store; do
     plist_path="/Library/LaunchDaemons/${plist}.plist"
+
     if [[ -f $plist_path ]]; then
         log "Unloading ${plist}..."
         sudo launchctl unload "$plist_path" 2> /dev/null || true
@@ -98,10 +99,14 @@ done
 # 4. Restore shell config files
 for f in /etc/zshrc /etc/bashrc /etc/bash.bashrc; do
     backup="${f}.backup-before-nix"
+
     if [[ -f $backup ]]; then
+
         log "Restoring ${f} from backup"
         sudo mv "$backup" "$f"
+
     elif [[ -f $f ]]; then
+
         if grep -q 'nix-daemon\.sh' "$f" 2> /dev/null; then
             log "Removing Nix stanza from ${f}"
             sudo sed -i '' '/# Nix$/,/# End Nix$/d' "$f"
@@ -112,22 +117,29 @@ done
 # 5. Remove nixbld users and group
 if dscl . -read /Groups/nixbld > /dev/null 2>&1; then
     log "Removing nixbld group and users..."
-    for u in "$(dscl . -list /Users | grep _nixbld)"; do
+
+    dscl . -list /Users | grep '^_nixbld' | while IFS= read -r u; do
         sudo dscl . -delete "/Users/$u"
     done
+
     sudo dscl . -delete /Groups/nixbld
 fi
 
 # 6. Clean up system and user files
 log "Removing Nix state files..."
+
 sudo rm -rf /etc/nix /var/root/.nix-profile /var/root/.nix-defexpr /var/root/.nix-channels
+
 rm -rf "${HOME}/.nix-profile" "${HOME}/.nix-defexpr" "${HOME}/.nix-channels"
 
 # 7. Remove nix line from /etc/synthetic.conf
 if [[ -f /etc/synthetic.conf ]]; then
+
     if grep -q '^nix$' /etc/synthetic.conf; then
+
         log "Removing nix entry from /etc/synthetic.conf"
         sudo sed -i '' '/^nix$/d' /etc/synthetic.conf
+
         # Remove the file if it's now empty
         if [[ ! -s /etc/synthetic.conf ]]; then
             sudo rm -f /etc/synthetic.conf
