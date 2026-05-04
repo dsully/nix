@@ -40,7 +40,13 @@
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 
-    skills-nix.url = "github:idjoo/skills.nix";
+    agent-skills.url = "github:Kyure-A/agent-skills-nix";
+
+    cocoindex-code.url = "github:cocoindex-io/cocoindex-code";
+    cocoindex-code.flake = false;
+
+    idjoo-skills.url = "github:idjoo/skills";
+    idjoo-skills.flake = false;
 
     autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
     autoresearch-opencode.flake = false;

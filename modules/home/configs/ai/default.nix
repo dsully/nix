@@ -10,7 +10,7 @@
   ai = import ./common.nix {inherit config inputs lib my pkgs;};
 in {
   imports = [
-    inputs.skills-nix.homeModules.default
+    inputs.agent-skills.homeManagerModules.default
     ./agentgateway.nix
     ./ccstatusline.nix
     ./claude-code.nix
@@ -72,49 +72,82 @@ in {
         servers = ai.mcpServers;
       };
 
-      skills = {
+      agent-skills = {
         enable = true;
-        defaultAgents = ["codex" "claude-code" "opencode"];
-        sources = [
-          {
-            source = "obra/superpowers";
-            skills = {
-              exclude = ["commit-work"];
-            };
-          }
-          {
-            source = "cocoindex-io/cocoindex-code";
-            skills = ["*"];
-          }
-          {
-            source = "idjoo/skills";
-            skills = ["commit"];
-          }
-          {
-            source = "wshobson/agents";
-            skills = [
-              "architecture-patterns"
-              "debugging-strategies"
-              "e2e-testing-patterns"
-              "error-handling-patterns"
-              "memory-safety-patterns"
-              "python-anti-patterns"
-              "python-code-style"
-              "python-configuration"
-              "python-design-patterns"
-              "python-error-handling"
-              "python-observability"
-              "python-performance-optimization"
-              "python-project-structure"
-              "python-resilience"
-              "python-resource-management"
-              "python-testing-patterns"
-              "python-type-safety"
-              "rust-async-patterns"
-              "uv-package-manager"
-            ];
-          }
-        ];
+        sources = {
+          cocoindex-code = {
+            input = "cocoindex-code";
+            subdir = "skills";
+          };
+          idjoo-skills = {
+            input = "idjoo-skills";
+          };
+          superpowers = {
+            input = "superpowers";
+            subdir = "skills";
+          };
+          wshobson-backend-development = {
+            input = "wshobson-agents";
+            subdir = "plugins/backend-development/skills";
+          };
+          wshobson-developer-essentials = {
+            input = "wshobson-agents";
+            subdir = "plugins/developer-essentials/skills";
+          };
+          wshobson-python-development = {
+            input = "wshobson-agents";
+            subdir = "plugins/python-development/skills";
+          };
+          wshobson-systems-programming = {
+            input = "wshobson-agents";
+            subdir = "plugins/systems-programming/skills";
+          };
+        };
+        skills = {
+          enable = [
+            "architecture-patterns"
+            "brainstorming"
+            "ccc"
+            "commit"
+            "debugging-strategies"
+            "dispatching-parallel-agents"
+            "e2e-testing-patterns"
+            "error-handling-patterns"
+            "executing-plans"
+            "finishing-a-development-branch"
+            "memory-safety-patterns"
+            "python-anti-patterns"
+            "python-code-style"
+            "python-configuration"
+            "python-design-patterns"
+            "python-error-handling"
+            "python-observability"
+            "python-performance-optimization"
+            "python-project-structure"
+            "python-resilience"
+            "python-resource-management"
+            "python-testing-patterns"
+            "python-type-safety"
+            "receiving-code-review"
+            "requesting-code-review"
+            "rust-async-patterns"
+            "subagent-driven-development"
+            "systematic-debugging"
+            "test-driven-development"
+            "using-git-worktrees"
+            "using-superpowers"
+            "uv-package-manager"
+            "verification-before-completion"
+            "writing-plans"
+            "writing-skills"
+          ];
+          enableAll = ["cocoindex-code"];
+        };
+        targets = {
+          claude.enable = true;
+          codex.enable = true;
+          opencode.enable = true;
+        };
       };
     };
   };
