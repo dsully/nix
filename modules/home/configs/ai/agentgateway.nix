@@ -26,6 +26,13 @@
   };
 
   agentgatewayConfig = {
+    # Keep MCP sessions warm for a full workday. Each fresh client (one without
+    # Mcp-Session-Id) forces agentgateway to respawn every stdio upstream,
+    # which takes ~100s for this config's 20 Python MCP servers. With a 24h
+    # TTL, clients that cache their session ID (see mcp-list-tools) stay fast
+    # for an entire session of CLI usage.
+    mcp.sessionTtl = "24h";
+
     binds = [
       {
         inherit (ai.agentgateway) port;
@@ -45,7 +52,14 @@
 
                 backends = [
                   {
-                    mcp.targets = lib.map (name: mcpTarget name mcpServers.${name}) enabledMcpServers;
+                    mcp = {
+                      targets = lib.map (name: mcpTarget name mcpServers.${name}) enabledMcpServers;
+                      # Don't let a single slow/broken upstream MCP target (cold-start,
+                      # network blip, missing secret, etc.) block the whole fanout.
+                      # Default is `failClosed`, which makes `mcp-list-tools` and similar
+                      # discovery clients hang for minutes waiting on the slowest target.
+                      failureMode = "failOpen";
+                    };
                   }
                 ];
               }
