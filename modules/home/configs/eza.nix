@@ -7,21 +7,139 @@
   c = config.colors;
 in {
   programs = {
+    fish.interactiveShellInit =
+      # fish
+      ''
+        set -gx EZA_CONFIG_DIR "${config.xdg.configHome}/eza"
+      '';
+
     eza = {
       enable = true;
       enableFishIntegration = false;
 
-      colors = "auto";
-      git = true;
-      icons = "auto";
-
-      extraOptions = [
-        "--ignore-glob=*.egg-info|.git|.mypy_cache|.pytest_cache|.ruff_cache|__breadboard__|__pycache__|__pypackages__|build-results"
-        "--sort=name"
-        "--time-style=long-iso"
-      ];
-
       theme = {
+        colourful = false;
+
+        extensions = {
+          rs = {
+            icon = {
+              glyph = "🦀";
+            };
+          };
+        };
+
+        file_type = {
+          build = {
+            foreground = c.white.base;
+            is_bold = false;
+            underline = false;
+          };
+          compiled = {
+            foreground = c.orange.base;
+            is_bold = false;
+            underline = false;
+          };
+          compressed = {
+            foreground = c.red.base;
+            is_bold = false;
+            underline = false;
+          };
+          crypto = {
+            foreground = c.green.base;
+            is_bold = false;
+            underline = false;
+          };
+          document = {
+            foreground = c.blue.bright;
+            is_bold = false;
+            underline = false;
+          };
+          image = {
+            foreground = c.magenta.base;
+            is_bold = false;
+            underline = false;
+          };
+          lossless = {
+            foreground = c.cyan.bright;
+            is_bold = false;
+            underline = false;
+          };
+          music = {
+            foreground = c.cyan.bright;
+            is_bold = false;
+            underline = false;
+          };
+          source = {
+            foreground = c.blue.base;
+            is_bold = false;
+            underline = false;
+          };
+          temp = {
+            foreground = c.gray.base;
+            is_italic = false;
+            underline = false;
+          };
+          video = {
+            foreground = c.magenta.base;
+            is_bold = false;
+            underline = false;
+          };
+        };
+
+        filekinds = {
+          block_device = {
+            foreground = c.magenta.base;
+          };
+          char_device = {
+            foreground = c.magenta.base;
+          };
+          directory = {
+            foreground = c.blue.base;
+            is_bold = false;
+          };
+          executable = {
+            foreground = c.green.base;
+            is_bold = false;
+          };
+          mount_point = {
+            foreground = c.cyan.bright;
+            is_bold = false;
+          };
+          normal = {
+            foreground = c.white.dim;
+            is_bold = false;
+          };
+          pipe = {
+            foreground = c.gray.base;
+          };
+          socket = {
+            foreground = c.gray.base;
+          };
+          special = {
+            foreground = c.magenta.base;
+          };
+          symlink = {
+            foreground = c.cyan.bright;
+            is_bold = false;
+          };
+        };
+
+        filenames = {
+          "Cargo.toml" = {
+            icon = {
+              glyph = "🦀";
+            };
+          };
+          "Dockerfile" = {
+            icon = {
+              glyph = "🐳";
+              style = {
+                foreground = "Cyan";
+              };
+            };
+          };
+        };
+
         users = {
           group_other.foreground = c.white.base;
           group_root.foreground = c.white.base;
@@ -74,7 +192,7 @@ in {
           multi_link_file.foreground = c.cyan.bright;
         };
 
-        punctuation.foreground = c.red.base;
+        punctuation.foreground = c.white.base;
       };
     };
 
@@ -85,7 +203,13 @@ in {
         body =
           # fish
           ''
-            set -l args
+            set -l args "--ignore-glob=*.egg-info|.git|.mypy_cache|.pytest_cache|.ruff_cache|__breadboard__|__pycache__|__pypackages__|build-results" \
+              "--icons=always" \
+              "--git" \
+              "--sort=name" \
+              "--time-style=long-iso"
+
+            set -e LS_COLORS
 
             for arg in $argv
                 if string match -qr '^-[A-Za-z0-9]+$' -- $arg
@@ -102,7 +226,7 @@ in {
                             case r
                                 set -a args --reverse
                             case t
-                                set -a args --sort=modified
+                                set -a args --sort=time
                             case S
                                 set -a args --sort=size
                             case 1
