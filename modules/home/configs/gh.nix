@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   my,
   pkgs,
   ...
@@ -42,5 +43,11 @@
       gh-dash
       gh-poi
     ];
+  };
+
+  programs.fish.functions.gh = lib.mkIf pkgs.stdenv.isDarwin {
+    wraps = "gh";
+    description = "Wrap gh with 1Password";
+    body = "${pkgs.lib.getExe pkgs._1password-cli} plugin run -- g${pkgs.lib.getExe pkgs.gh} $argv";
   };
 }
