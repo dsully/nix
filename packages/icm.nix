@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256-gruEm6nIAsFAJp8xMW59oKyn0sdOLIAfUC8J/0onGdE=";
+      hash = "sha256-Xc5gURMNWAxbiEjxRyUaDJ9ZBTEtHyb9E4MBJLG7YrI=";
     };
     x86_64-linux = {
       suffix = "x86_64-unknown-linux-gnu";
-      hash = "sha256-jh761H23VdXV23blwZV32q1VVh6dzkWk1bvEAQbWdGQ=";
+      hash = "sha256-7tpKSTmJzyLUHtoWDUpOJkIwZBtblPdDNg8Dl+pzpQY=";
     };
   };
   source =
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "icm";
-    version = "0.10.43";
+    version = "0.10.44";
 
     src = pkgs.fetchurl {
       url = "https://github.com/rtk-ai/${pname}/releases/download/${pname}-v${version}/${pname}-${source.suffix}.tar.gz";
