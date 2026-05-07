@@ -1,5 +1,6 @@
 {
   ai,
+  config,
   lib,
   my,
   perSystem,
@@ -39,6 +40,8 @@
     )
     ai.lsp;
 in {
+  home.sessionVariables.CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
+
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;

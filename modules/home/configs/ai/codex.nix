@@ -1,11 +1,14 @@
 {
   ai,
+  config,
   lib,
   perSystem,
   ...
 }: let
   codexAgentRoles = lib.mapAttrs (_: description: {inherit description;}) ai.descriptions;
 in {
+  home.sessionVariables.CODEX_HOME = "${config.xdg.configHome}/codex";
+
   programs.codex = {
     enable = true;
 
