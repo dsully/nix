@@ -31,7 +31,7 @@
     # which takes ~100s for this config's 20 Python MCP servers. With a 24h
     # TTL, clients that cache their session ID (see mcp-list-tools) stay fast
     # for an entire session of CLI usage.
-    mcp.sessionTtl = "24h";
+    config.mcp.sessionTtl = "24h";
 
     binds = [
       {

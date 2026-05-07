@@ -5,11 +5,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "darwin-arm64";
-      hash = "sha256:e6637efb0e299dbc9af81c8b3a7867424afa4327a9b758d4fea3dbe4e42607df";
+      hash = "sha256-VLwdQnMt8230DiddiJmNgNmNjdhgEzO5PqAuw2zx5R8=";
     };
     x86_64-linux = {
       suffix = "linux-amd64";
-      hash = "sha256:955efb97afdcc7e106cee16d3f279c54ffe7e37dc8e9261d2594206711fb4701";
+      hash = "sha256:9e04efb06b1b412abd6e8250ce4120173288568e357e663662f2b8d325bd0e24";
     };
   };
   source =
@@ -18,7 +18,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "agentgateway";
-    version = "1.1.0";
+    version = "1.2.0-alpha.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/${pname}/${pname}/releases/download/v${version}/${pname}-${source.suffix}";
