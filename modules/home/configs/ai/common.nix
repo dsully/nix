@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   lib,
   my,
@@ -147,15 +146,8 @@
   };
 
   mcpServers = {
-    ast-grep = {
-      command = lib.getExe my.pkgs.ast-grep-mcp;
-      env = {
-        PYTHON_GIL = "1";
-      };
-    };
-    filesystem = {
-      command = lib.getExe my.pkgs.rust-mcp-filesystem;
-      args = [config.home.homeDirectory "--allow-write"];
+    codebase = {
+      command = lib.getExe my.pkgs.codebase-mcp;
     };
     git = {
       command = lib.getExe my.pkgs.mcp-server-git-rs;
@@ -181,9 +173,6 @@
     rust-analyzer = {
       command = lib.getExe my.pkgs.mcp-rust-analyzer;
       disabled = true;
-    };
-    treesitter = {
-      command = lib.getExe my.pkgs.treesitter-mcp;
     };
   };
 

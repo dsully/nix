@@ -59,9 +59,7 @@ in {
           mcp-rust-builder
           mcp-server-git-rs
           open-ralph-wiggum
-          rust-mcp-filesystem
           rust-mcp-server
-          treesitter-mcp
         ]);
     };
 
