@@ -148,8 +148,7 @@
 
   mcpServers = {
     ast-grep = {
-      command = "${pkgs.uv}/bin/uvx";
-      args = ["--from" "git+https://github.com/ast-grep/ast-grep-mcp" "ast-grep-server"];
+      command = lib.getExe my.pkgs.ast-grep-mcp;
       env = {
         PYTHON_GIL = "1";
       };
@@ -159,7 +158,11 @@
       args = [config.home.homeDirectory "--allow-write"];
     };
     git = {
-      command = lib.getExe my.pkgs.mcp-git-tools;
+      command = lib.getExe my.pkgs.mcp-server-git-rs;
+      args = [
+        "--features"
+        "inspection,remotes,worktrees,notes"
+      ];
     };
     git-remote = {
       command = lib.getExe my.pkgs.git-remote-mcp;
@@ -169,16 +172,10 @@
       disabled = true;
     };
     nixos = {
-      command = "${pkgs.uv}/bin/uvx";
-      args = ["mcp-nixos"];
+      command = lib.getExe pkgs.mcp-nixos;
       env = {
         PYTHON_GIL = "1";
       };
-      disabled = true;
-    };
-    rime = {
-      command = lib.getExe my.pkgs.rime;
-      args = ["stdio"];
       disabled = true;
     };
     rust-analyzer = {
