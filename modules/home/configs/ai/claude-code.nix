@@ -224,6 +224,8 @@ in {
         ENABLE_TOOL_SEARCH = "1";
         MAX_THINKING_TOKENS = "127999";
       };
+
+      skipAutoPermissionPrompt = true;
     };
 
     lspServers = claudeCodeLsp;
