@@ -45,6 +45,7 @@ in {
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
+    enableMcpIntegration = true;
 
     inherit (ai) agents;
 
@@ -226,12 +227,5 @@ in {
     };
 
     lspServers = claudeCodeLsp;
-
-    mcpServers = {
-      agentgateway = {
-        type = "http";
-        url = ai.agentgateway.mcpHttpUrl;
-      };
-    };
   };
 }

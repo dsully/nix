@@ -13,7 +13,7 @@ in {
     enable = true;
 
     package = perSystem.llm-agents.codex;
-    enableMcpIntegration = false;
+    enableMcpIntegration = true;
 
     context = ./AGENTS.md;
 
@@ -25,8 +25,6 @@ in {
         multi_agent = true;
         tool_search = true;
       };
-
-      mcp_servers.agentgateway.url = ai.agentgateway.mcpHttpUrl;
 
       model = "gpt-5.5";
       model_reasoning_effort = "medium";

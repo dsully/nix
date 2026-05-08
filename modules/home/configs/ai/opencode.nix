@@ -60,7 +60,7 @@ in {
   config.programs.opencode = {
     enable = true;
     package = perSystem.llm-agents.opencode;
-    enableMcpIntegration = false;
+    enableMcpIntegration = true;
     inherit (ai) agents;
     commands =
       ai.commands
@@ -132,14 +132,6 @@ in {
             "\$FILE"
           ];
           extensions = [".lua"];
-        };
-      };
-
-      mcp = lib.mkDefault {
-        agentgateway = {
-          type = "remote";
-          url = ai.agentgateway.mcpHttpUrl;
-          enabled = true;
         };
       };
 

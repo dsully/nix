@@ -6,12 +6,15 @@
   pkgs,
   ...
 }: let
-  agentgateway = rec {
-    port = 3000;
-    baseUrl = "http://localhost:${toString port}";
-    mcpHttpUrl = "${baseUrl}/mcp/http";
-    mcpSseUrl = "${baseUrl}/mcp/sse";
-  };
+  # Wrap an MCP stdio server definition so it is launched via mcp-mux, which
+  # shares one upstream process across all concurrent MCP client sessions.
+  # See https://github.com/thebtf/mcp-mux.
+  muxWrap = server:
+    server
+    // {
+      command = lib.getExe my.pkgs.mcp-mux;
+      args = [server.command] ++ (server.args or []);
+    };
 
   agentDescription = file: let
     text = builtins.readFile file;
@@ -270,17 +273,19 @@
   enabledPlugins = lib.genAttrs (
     lib.catAttrs "plugin" aiSources
   ) (_: lib.mkDefault true);
+
+  mcpServersMuxed = lib.mapAttrs (_: muxWrap) mcpServers;
 in {
   inherit
-    agentgateway
     agentDescription
     agents
     commands
     descriptions
     enabledPlugins
     lsp
-    mcpServers
     mkAI
     models
     ;
+
+  mcpServers = mcpServersMuxed;
 }

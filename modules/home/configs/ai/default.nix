@@ -11,7 +11,6 @@
 in {
   imports = [
     inputs.agent-skills.homeManagerModules.default
-    ./agentgateway.nix
     ./ccstatusline.nix
     ./claude-code.nix
     ./codex.nix
@@ -53,10 +52,10 @@ in {
           ]
         )
         ++ (with my.pkgs; [
-          agentgateway
           git-remote-mcp
           icm
           mcp-git-tools
+          mcp-mux
           mcp-rust-analyzer
           mcp-rust-builder
           open-ralph-wiggum
