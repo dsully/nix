@@ -8,13 +8,13 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: rec {
   pname = "codebase-mcp";
-  version = "1.2.1";
+  version = "1.2.0";
 
   src = fetchFromGitHub {
     owner = "DisturbedOcean";
     repo = "codebase-mcp";
-    rev = "7648cb155a1e6b574bb8bd7054ea1e643fe70351";
-    hash = "sha256-Q9VBjwdKN2/VFxF7oQxmN8KgDiJFdnPM3fBOhxSf+Vw=";
+    rev = "0e788371695f5346765cd2cc1ac94ea53ea2bfb9";
+    hash = "sha256-3ZiPM3ZJ87SXHFqwaMVpjJgtiTcBDwYSfVrFrLb02oI=";
   };
 
   cargoHash = "sha256-wBweOPf0ZL55S/MsXx3e6/a+cDgj1qBqYBjWYI9wWIc=";
