@@ -18,19 +18,19 @@ in {
       enableFishIntegration = false;
 
       theme = {
-        colourful = false;
+        colourful = true;
 
-        extensions = {
-          rs = {
-            icon = {
-              glyph = "🦀";
-            };
-          };
-        };
+        # extensions = {
+        #   rs = {
+        #     icon = {
+        #       glyph = "🦀";
+        #     };
+        #   };
+        # };
 
         file_type = {
           build = {
-            foreground = c.white.base;
+            foreground = c.white.dim;
             is_bold = false;
             underline = false;
           };
@@ -70,7 +70,7 @@ in {
             underline = false;
           };
           source = {
-            foreground = c.blue.base;
+            foreground = c.white.dim;
             is_bold = false;
             underline = false;
           };
@@ -98,7 +98,7 @@ in {
             is_bold = false;
           };
           executable = {
-            foreground = c.green.base;
+            foreground = c.green.bright;
             is_bold = false;
           };
           mount_point = {
@@ -125,16 +125,23 @@ in {
         };
 
         filenames = {
+          "Cargo.lock" = {
+            icon = {
+              glyph = "🦀";
+              foreground = c.white.dim;
+            };
+          };
           "Cargo.toml" = {
             icon = {
               glyph = "🦀";
+              foreground = c.white.dim;
             };
           };
           "Dockerfile" = {
             icon = {
               glyph = "🐳";
               style = {
-                foreground = "Cyan";
+                foreground = c.white.dim;
               };
             };
           };
@@ -209,8 +216,6 @@ in {
               "--sort=name" \
               "--time-style=long-iso"
 
-            set -e LS_COLORS
-
             for arg in $argv
                 if string match -qr '^-[A-Za-z0-9]+$' -- $arg
                     set -l chars (string split "" -- (string sub --start 2 -- $arg))
@@ -242,7 +247,7 @@ in {
                 end
             end
 
-            ${lib.getExe pkgs.eza} $args
+            LS_COLORS="" ${lib.getExe pkgs.eza} $args
           '';
       };
     };
