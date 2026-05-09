@@ -21,15 +21,15 @@ in {
   ];
 
   home = {
-    activation.caddyEnv = entryAfter ["writeBoundary" "onepassword-secrets"] ''
-      token_file="${homeDir}/.config/caddy/cloudflare-token"
-
-      if [ -f "$token_file" ]; then
-        sudo mkdir -p /etc/caddy
-        echo "CLOUDFLARE_API_TOKEN=$(cat "$token_file")" | sudo tee /etc/caddy/env > /dev/null
-        sudo chmod 600 /etc/caddy/env
-      fi
-    '';
+    # activation.caddyEnv = entryAfter ["writeBoundary" "onepassword-secrets"] ''
+    #   token_file="${homeDir}/.config/caddy/cloudflare-token"
+    #
+    #   if [ -f "$token_file" ]; then
+    #     sudo mkdir -p /etc/caddy
+    #     echo "CLOUDFLARE_API_TOKEN=$(cat "$token_file")" | sudo tee /etc/caddy/env > /dev/null
+    #     sudo chmod 600 /etc/caddy/env
+    #   fi
+    # '';
 
     packages = with pkgs;
       [
@@ -39,6 +39,7 @@ in {
         nix-output-monitor
         pnpm
         qbittorrent-nox
+        rustic
         socat
         vopono
         zuban
