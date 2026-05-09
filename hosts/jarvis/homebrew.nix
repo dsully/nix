@@ -17,6 +17,7 @@
 
     casks = [
       "anylist"
+      "backblaze-restore"
       "chatgpt"
       "claude"
       "discord"
