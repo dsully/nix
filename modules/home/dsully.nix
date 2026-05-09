@@ -227,6 +227,7 @@ in {
         };
         whitelist = {
           prefix = [
+            "${homeDir}/.config"
             "${homeDir}/dev/home"
             "${homeDir}/dev/work"
           ];
