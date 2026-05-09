@@ -142,11 +142,11 @@
     "cocoindex-code": {
       "flake": false,
       "locked": {
-        "lastModified": 1777951130,
-        "narHash": "sha256-5aELQjAEE8S2B3kDx86k+K+ax9DcJxE3AwSbrhUuMJY=",
+        "lastModified": 1778257515,
+        "narHash": "sha256-7syZZcBUSHZvAgeMA2jbbGR8L6imLxwagRjGPICQ288=",
         "owner": "cocoindex-io",
         "repo": "cocoindex-code",
-        "rev": "efd1273ab183358e3c5167c3ecdc0486b79c7f40",
+        "rev": "d429632c5eb9e2cfe8b0e02487fe5fa966082057",
         "type": "github"
       },
       "original": {
@@ -413,11 +413,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1778219255,
-        "narHash": "sha256-fAJUly400K2SoP75LaZ7x1fhwau2BxI7XBY4UgFXm6A=",
+        "lastModified": 1778290078,
+        "narHash": "sha256-xQ4Xwqyv22tEMpsS/+aczfv1ZqaKB4fO2faHTiS2zwk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "8dc08cc44249bacfabaf4e25e223ec9d1e7d677b",
+        "rev": "ec7e9c2f435bcb86459365b0ba22ed1ddb4a5dad",
         "type": "github"
       },
       "original": {
