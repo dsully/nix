@@ -6,8 +6,7 @@
   pkgs,
   ...
 }: let
-  inherit (flake.inputs.home-manager.lib.hm.dag) entryAfter;
-
+  # inherit (flake.inputs.home-manager.lib.hm.dag) entryAfter;
   cachixAuthTokenPath = ".config/cachix/auth-token";
   homeDir = config.home.homeDirectory;
   vopono-config = "${homeDir}/.cache/vopono/wg.conf";

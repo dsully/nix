@@ -6,7 +6,7 @@
   sqlite,
   zstd,
 }:
-rustPlatform.buildRustPackage (finalAttrs: rec {
+rustPlatform.buildRustPackage rec {
   pname = "codebase-mcp";
   version = "1.2.0";
 
@@ -39,4 +39,4 @@ rustPlatform.buildRustPackage (finalAttrs: rec {
     license = lib.licenses.asl20;
     mainProgram = pname;
   };
-})
+}
