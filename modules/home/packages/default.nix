@@ -19,7 +19,6 @@
       [
         devmoji-log
         dirstat-rs
-        geil
         lolcate-rs
         magic-opener
         nix-package-updater

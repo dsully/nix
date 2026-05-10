@@ -2,6 +2,7 @@
   config,
   lib,
   my,
+  pkgs,
   ...
 }: let
   editor = lib.getExe my.pkgs.neovim;
@@ -27,6 +28,18 @@ in {
         };
       };
     };
+
+    packages = with pkgs; [
+      git-dive
+      git-ignore
+      git-quick-stats
+      git-sizer
+      git-trim
+      git-who
+      lazyworktree
+      worktrunk
+      my.pkgs.geil
+    ];
   };
 
   programs.git = {

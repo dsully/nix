@@ -9,16 +9,9 @@
       [
         (lib.hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
         _1password-cli
-        act
-        age
-        b3sum
-        bandwhich
-        bombardier
         checkip
-        choose
         croc
         curl
-        dasel
         dua
         dust
         fclones
@@ -41,9 +34,7 @@
         rsync
         sad
         sd
-        sniffnet
         tree
-        unar
         unzip
         viu
         wget
