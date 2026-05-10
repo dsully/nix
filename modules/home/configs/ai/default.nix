@@ -79,6 +79,9 @@ in {
           idjoo-skills = {
             input = "idjoo-skills";
           };
+          local = {
+            path = ./skills;
+          };
           superpowers = {
             input = "superpowers";
             subdir = "skills";
@@ -135,6 +138,7 @@ in {
             "using-superpowers"
             "uv-package-manager"
             "verification-before-completion"
+            "visual-explainer"
             "writing-plans"
             "writing-skills"
           ];

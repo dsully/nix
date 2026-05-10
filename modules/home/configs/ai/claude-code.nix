@@ -1,6 +1,5 @@
 {
   ai,
-  config,
   lib,
   my,
   perSystem,
@@ -40,7 +39,8 @@
     )
     ai.lsp;
 in {
-  home.sessionVariables.CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
+  # home-manager doesn't write here. :(
+  # home.sessionVariables.CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
 
   programs.claude-code = {
     enable = true;
