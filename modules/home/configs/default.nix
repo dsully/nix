@@ -1,6 +1,5 @@
 {...}: {
   imports = [
-    ./bacon.nix
     ./btop.nix
     ./delta.nix
     ./emmylua.nix
