@@ -38,6 +38,7 @@
         unzip
         viu
         wget
+        witr
         xcp
         xh
         xz
