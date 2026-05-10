@@ -60,7 +60,7 @@ in {
     #   - "timeline": Group files by time periods
     #   - "sizemap": Visual representation of file sizes
     #   - "table": Structured data display
-    default_format = "default";
+    default_format = "grid";
 
     # Whether to show icons by default
     # When true, file and directory icons will be displayed in all views
