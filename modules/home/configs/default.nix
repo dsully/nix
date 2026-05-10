@@ -3,7 +3,6 @@
     ./bacon.nix
     ./btop.nix
     ./delta.nix
-    ./eza.nix
     ./emmylua.nix
     ./fd.nix
     ./fish.nix
@@ -14,7 +13,7 @@
     ./git.nix
     ./gitui.nix
     ./lolcate.nix
-    ./lsd.nix
+    ./lla.nix
     ./misc.nix
     ./nix-init.nix
     ./pager.nix
