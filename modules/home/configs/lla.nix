@@ -41,6 +41,12 @@ in {
       '';
   };
 
+  xdg.configFile."fish/conf.d/lla-completions.fish".text =
+    # fish
+    ''
+      complete -c lla --force-files -n __fish_use_subcommand
+    '';
+
   xdg.configFile."lla/config.toml".source = (pkgs.formats.toml {}).generate "lla-config" {
     # Default sorting method for file listings
     # Possible values:
