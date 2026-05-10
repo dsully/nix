@@ -13,7 +13,6 @@
     ./gitui.nix
     ./lolcate.nix
     ./lla.nix
-    ./misc.nix
     ./nix-init.nix
     ./pager.nix
     ./procs.nix

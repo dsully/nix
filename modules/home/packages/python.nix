@@ -70,5 +70,7 @@ in {
         ${installScript}
       ''
     );
+
+    xdg.configFile."ptpython/config.py".text = builtins.readFile ../../../dotfiles/ptpython/config.py;
   };
 }

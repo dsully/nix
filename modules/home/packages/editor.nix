@@ -2,7 +2,10 @@
   my,
   pkgs,
   ...
-}: {
+}: let
+  jsonFormat = pkgs.formats.json {};
+  yamlFormat = pkgs.formats.yaml {};
+in {
   config.packageTools.python = [
     {package = "lizard";}
     {package = "ptpython";}
@@ -80,5 +83,50 @@
         rust-markdown-lsp-server
         version-lsp
       ]);
+  };
+
+  config.xdg.configFile = {
+    "clangd/config.yaml".source = yamlFormat.generate "clangd-config" {
+      CompileFlags = {
+        Add = ["-xc++" "-Wall"];
+        Remove = [];
+        Compiler = "clang++";
+      };
+
+      Diagnostics = {
+        ClangTidy = {
+          Add = [
+            "bugprone-*"
+            "performance-*"
+            "portability-*"
+            "readability-*"
+            "google-*"
+            "misc-*"
+            "modernize-*"
+          ];
+          Remove = "modernize-use-trailing-return-type";
+          CheckOptions = {
+            "readability-identifier-naming.VariableCase" = "CamelCase";
+          };
+        };
+        UnusedIncludes = "Strict";
+      };
+
+      Completion.AllScopes = true;
+      Hover.ShowAKA = true;
+
+      InlayHints = {
+        Designators = true;
+        Enabled = true;
+        ParameterNames = true;
+        DeducedTypes = true;
+      };
+
+      Index.StandardLibrary = "Yes";
+    };
+
+    "github-copilot/terms.json".source = jsonFormat.generate "copilot-terms" {
+      dsully.version = "2021-10-14";
+    };
   };
 }
