@@ -23,7 +23,6 @@
     brews = [
       "mactop"
       "mas"
-      "rust-analyzer"
       "xz"
     ];
 
