@@ -37,7 +37,7 @@ system +args="":
         --nix-option "accept-flake-config" "true" \
         --nix-option "trusted-users" "dsully" \
         --nix-option "warn-dirty" "false" \
-        switch --flake . --sudo {{ args }}
+        switch --flake . --sudo --ask-sudo-password {{ args }}
     @/bin/rm -f result
 
 [macos]
