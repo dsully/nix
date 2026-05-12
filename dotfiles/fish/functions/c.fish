@@ -21,6 +21,9 @@ function expand-slug --argument slug
         set url "https://$url"
     end
 
+    # Trim github.com URLs to just OWNER/REPO (drops /blob/..., #L11, etc.)
+    set url (string replace -r '^(https?://github\.com/[^/]+/[^/]+).*' '$1' $url)
+
     echo $url
 end
 
@@ -28,11 +31,19 @@ function repo-from-url --argument url --description="Extract just the repo name"
     basename $url | sed "s|.git\$||"
 end
 
+function owner-from-url --argument url --description="Extract just the owner/user"
+    basename (dirname (string replace -r '\.git$' '' $url))
+end
+
 function c --wraps='git clone' --description 'Wrap git clone.' --argument url _destination cloneargs
 
     set url (expand-slug $url)
 
-    set destination (default $_destination (repo-from-url $url))
+    if string match -q "$HOME/src/dots/*" "$PWD/"
+        set destination (default $_destination (owner-from-url $url))
+    else
+        set destination (default $_destination (repo-from-url $url))
+    end
 
     if test -e $destination
         echo 'Already cloned. Attempting pull...'
