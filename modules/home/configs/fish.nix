@@ -143,6 +143,8 @@ in {
         body =
           # fish
           ''
+            set -l file $argv[1]
+
             if not test -f "$file"
                 echo "Usage: x <file>"
                 return 1
