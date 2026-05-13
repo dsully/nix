@@ -46,14 +46,13 @@ in {
             claude-agent-acp
             codex
             codex-acp
-            # gemini-cli
-            # goose-cli
             rtk
           ]
         )
         ++ (with my.pkgs; [
           git-remote-mcp
           icm
+          just-mcp
           mcp-mux
           mcp-rust-analyzer
           mcp-rust-builder
