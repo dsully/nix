@@ -32,6 +32,7 @@ in {
         # https://github.com/cocoindex-io/cocoindex-code
         {
           package = "cocoindex-code";
+          extras = "full";
           prerelease = true;
           withPackages = ["cocoindex>=1.0.0a24"];
         }
