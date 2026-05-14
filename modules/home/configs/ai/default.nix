@@ -13,6 +13,7 @@ in {
     inputs.agent-skills.homeManagerModules.default
     ./ccstatusline.nix
     ./claude-code.nix
+    ./codeburn.nix
     ./codex.nix
     ./opencode.nix
   ];
@@ -24,7 +25,6 @@ in {
 
     packageTools = {
       javascript = [
-        "codeburn"
         "opencode-claude-auth"
         "opencode-gemini-auth@latest"
         "opencode-with-claude"
