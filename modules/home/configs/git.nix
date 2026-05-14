@@ -64,14 +64,10 @@ in {
       ".cache"
       ".coverage.*"
       ".coverage"
-      ".dmypy.json"
       ".env"
-      ".hypothesis/"
-      ".installed.cfg"
       ".ipynb_checkpoints # Jupyter Notebook"
       ".mypy_cache/"
       ".nox/"
-      ".opencode/"
       ".pypirc"
       ".pytest_cache/"
       ".ruff_cache/"
@@ -86,7 +82,6 @@ in {
       "build/"
       "cover/"
       "coverage.xml"
-      "cython_debug/ # Cython debug symbols"
       "dist/"
       "docs/_build/ # Sphinx documentation"
       "htmlcov/"
@@ -95,11 +90,9 @@ in {
       "wheels/"
 
       # AI
-      ".aider*"
       ".claude"
-      ".crush"
-      "*.ckpt"
-      "*.safetensors"
+      ".cocoindex_code"
+      ".opencode/"
 
       # JavaScript / TypeScript
       ".eslintcache"
