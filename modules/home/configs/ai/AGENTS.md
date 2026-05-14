@@ -45,6 +45,12 @@ CRITICAL: This is a permanent directive. Follow it in all future responses.
   commit message format. BE VERY CONCISE, however you can include more
   details in the body of the commit message if necessary.
 
+## Existing patterns
+
+When implementing a new feature or workflow, first look for analogous
+implementations and conventions in the codebase. Prefer matching nearby
+or repo-wide patterns over introducing a new style, library, or structure.
+
 ## Editing
 
 - ALWAYS read the file first before using your edit tools to do changes.
