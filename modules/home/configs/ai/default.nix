@@ -24,6 +24,7 @@ in {
 
     packageTools = {
       javascript = [
+        "codeburn"
         "opencode-claude-auth"
         "opencode-gemini-auth@latest"
         "opencode-with-claude"
