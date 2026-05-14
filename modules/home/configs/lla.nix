@@ -113,8 +113,6 @@ in {
         #   - "~/Library/CloudStorage"      # macOS cloud storage providers
         # Default: [] (no exclusions)
         exclude_paths = [
-          "~/Library/Mobile Documents" # macOS iCloud Drive (Mobile Documents)
-          "~/Library/CloudStorage" # macOS cloud storage providers
         ];
 
         # Maximum depth for recursive directory traversal
