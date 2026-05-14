@@ -45,7 +45,7 @@ in {
       # `ccc init` performs its one-time setup and is idempotent on re-runs.
       activation.cocoindexInit = lib.mkIf (lib.any (t: t.package == "cocoindex-code") config.packageTools.python) (
         lib.hm.dag.entryAfter ["python"] ''
-          $DRY_RUN_CMD ${config.home.homeDirectory}/.local/bin/ccc init || true
+          $DRY_RUN_CMD ${config.xdg.binHome}/ccc init || true
         ''
       );
 
