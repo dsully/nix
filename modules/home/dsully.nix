@@ -155,6 +155,7 @@ in {
     };
 
     language.base = "en_US.UTF-8";
+    preferXdgDirectories = true;
 
     sessionPath = [config.xdg.binHome "${config.home.homeDirectory}/.cargo/bin"];
 
