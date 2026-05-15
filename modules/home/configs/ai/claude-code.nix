@@ -165,6 +165,7 @@
         "Grep"
         "Read(//tmp/**)"
         "Read(~/.claude/skills/**)"
+        "Read(~/.config/claude/skills/**)"
         "Read(~/dev/**)"
         "Skill(ast-grep)"
         "Task"
@@ -228,11 +229,8 @@
     }
   );
 
-  settingsPath = "${config.home.homeDirectory}/.claude/settings.json";
+  settingsPath = "${config.xdg.configHome}/claude/settings.json";
 in {
-  # home-manager doesn't write here. :(
-  # home.sessionVariables.CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
-
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
@@ -241,6 +239,7 @@ in {
     inherit (ai) agents;
     inherit settings;
 
+    configDir = "${config.xdg.configHome}/claude";
     context = ./AGENTS.md;
 
     lspServers = claudeCodeLsp;
@@ -250,7 +249,7 @@ in {
   # which breaks runtime commands like /effort. Disable that and install a
   # writable copy of the fully-merged settings instead (so downstream flakes
   # that override programs.claude-code.settings still take effect).
-  home.file.".claude/settings.json".enable = lib.mkForce false;
+  home.file.".config/claude/settings.json".enable = lib.mkForce false;
 
   home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["linkGeneration"] ''
     $DRY_RUN_CMD rm $VERBOSE_ARG -f ${settingsPath}
