@@ -88,7 +88,7 @@ in {
       uv
       xan
       yarn
-      yq
+      yq-go
     ];
 
     sessionVariables = {
