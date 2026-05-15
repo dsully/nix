@@ -54,7 +54,7 @@ in {
   home.file.".emmyrc.json".source = emmyrc [];
 
   home.file."${config.xdg.configHome}/nvim/.emmyrc.json".source = emmyrc [
-    "${config.xdg.dataHome}/nvim/lazy"
-    "${config.xdg.dataHome}/nvim/site/pack/core/opt"
+    # "${config.xdg.dataHome}/nvim/lazy"
+    # "${config.xdg.dataHome}/nvim/site/pack/core/opt"
   ];
 }
