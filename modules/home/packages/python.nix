@@ -17,7 +17,7 @@
         withFlags = lib.concatMapStringsSep " " (dep: "--with '${dep}'") tool.withPackages;
 
         installCmd = ''
-          ${lib.getExe pkgs.uv} tool install "${spec}" --quiet --upgrade ${prereleaseFlag} ${withFlags}
+          ${lib.getExe pkgs.uv} tool install "${spec}" --python 3.14+gil --quiet --upgrade ${prereleaseFlag} ${withFlags}
         '';
 
         injectCmds =
