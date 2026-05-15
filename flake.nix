@@ -140,9 +140,15 @@
         user,
         userModule,
       }:
-        withSystem system ({pkgs, ...}:
+        withSystem system ({pkgs, ...}: let
+          homePkgs = pkgs.extend (_: prev: {
+            mcp-nixos = prev.mcp-nixos.overridePythonAttrs (_: {
+              doCheck = false;
+            });
+          });
+        in
           inputs.home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
+            pkgs = homePkgs;
             extraSpecialArgs = hmArgs system;
             modules = [
               userModule
