@@ -11,7 +11,7 @@ buildGoModule (finalAttrs: rec {
     owner = "thebtf";
     repo = "mcp-mux";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-TdjcnoO5WNAI1tVbo9Wk7b1RJff+JktCGPL0xyqalnQ=";
+    hash = "sha256-ubtPuA0ExG2KtAsUnGveBIuSW66cY8u6FKMNw5rFNJo=";
   };
 
   vendorHash = "sha256-o5l9w8nFrxubei6fhnz3T4fZqlDykPGbXn1wU+/V7xQ=";

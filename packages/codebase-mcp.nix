@@ -13,8 +13,8 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "DisturbedOcean";
     repo = "codebase-mcp";
-    rev = "0e788371695f5346765cd2cc1ac94ea53ea2bfb9";
-    hash = "sha256-3ZiPM3ZJ87SXHFqwaMVpjJgtiTcBDwYSfVrFrLb02oI=";
+    rev = "4e1508324b9ec89a654988b38a79a175b893a789";
+    hash = "sha256-yrtdilQeLvmyXTUgtp5tZOPp2xuUFj3An2f4oPZfVlw=";
   };
 
   cargoHash = "sha256-wBweOPf0ZL55S/MsXx3e6/a+cDgj1qBqYBjWYI9wWIc=";
