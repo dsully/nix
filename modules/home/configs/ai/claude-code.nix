@@ -249,7 +249,7 @@ in {
   # which breaks runtime commands like /effort. Disable that and install a
   # writable copy of the fully-merged settings instead (so downstream flakes
   # that override programs.claude-code.settings still take effect).
-  home.file.".config/claude/settings.json".enable = lib.mkForce false;
+  home.file."${settingsPath}".enable = lib.mkForce false;
 
   home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["linkGeneration"] ''
     $DRY_RUN_CMD rm $VERBOSE_ARG -f ${settingsPath}
