@@ -126,11 +126,11 @@
     "claude-plugins-official": {
       "flake": false,
       "locked": {
-        "lastModified": 1778936129,
-        "narHash": "sha256-XNBcfSdbWAhGOnBz5tVqV9uZJ/rktmR6/9/S5Oll21c=",
+        "lastModified": 1779065378,
+        "narHash": "sha256-FvTtM4JT0UUkpmH6mKh9ZDmcKbOcaGEe0vU0Whzd+nI=",
         "owner": "anthropics",
         "repo": "claude-plugins-official",
-        "rev": "b5a156b6ecd2f69c418184b7c093930ddabaf9c0",
+        "rev": "f475d3ce5806c7edf9fc204ee276e7f45e24c798",
         "type": "github"
       },
       "original": {
@@ -357,11 +357,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779027260,
-        "narHash": "sha256-ZbgWWFQmSyM3HQ31nAZk2hJ7OSeNr9uRFHL8jCifY9M=",
+        "lastModified": 1779113444,
+        "narHash": "sha256-/L61sT1PIKmGWIQpIh0uJGH/ANvcsf6y4alxtb9kelg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "bcb774cfc3268120cd61808629f9aa7dad3750a2",
+        "rev": "74f170c62d57f90e656841f1f699e6bdf40f0a24",
         "type": "github"
       },
       "original": {
@@ -413,11 +413,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1779053270,
-        "narHash": "sha256-Ec4je/lnXblmekwsINNFjBRU/t0E9joLUkR90HbdcQY=",
+        "lastModified": 1779082717,
+        "narHash": "sha256-TE2ynGDxq6ahXlzxCDfatOYcnvvsOIi/QTMIZS0gWq0=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "f8d389c22727d14c76b973f1c048922d86458245",
+        "rev": "1f1ede7969673edd1d35764f5c930ecf96487156",
         "type": "github"
       },
       "original": {
@@ -445,6 +445,26 @@
       "original": {
         "owner": "rynfar",
         "repo": "meridian",
+        "type": "github"
+      }
+    },
+    "nh": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779051572,
+        "narHash": "sha256-OJoiO52X524vssPU8GVU7lZccFDj7klaqnymxQnvh3Y=",
+        "owner": "nix-community",
+        "repo": "nh",
+        "rev": "8b57533efb3a1e6f8295756cb3b12625dae76215",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nh",
         "type": "github"
       }
     },
@@ -628,11 +648,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768270397,
-        "narHash": "sha256-5qBcY7sGKwrn62bjOtn/AS25+Ed4DoZbK+Q4ypxOJPI=",
+        "lastModified": 1779111571,
+        "narHash": "sha256-dNZS9qIRiS478eKpGhRPUB8MOWkh1oGt742hd6xBR44=",
         "owner": "brizzbuzz",
         "repo": "opnix",
-        "rev": "4052e33f395b2be64be6457e001946c071a1b2b0",
+        "rev": "0c4b8f5d31a8be29acb69af0c7608b614e11453b",
         "type": "github"
       },
       "original": {
@@ -681,6 +701,7 @@
         "idjoo-skills": "idjoo-skills",
         "llm-agents": "llm-agents",
         "meridian": "meridian",
+        "nh": "nh",
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",

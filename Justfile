@@ -80,7 +80,7 @@ alias clean := gc
 
 [group('nix')]
 gc:
-    nh clean all --no-gcroots --optimise
+    nh clean all --no-gcroots --optimise --keep-one --cross-filesystems
 
 # Format the nix files in this repo
 

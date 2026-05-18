@@ -249,6 +249,7 @@ in {
 
     nh = {
       enable = true;
+      package = (perSystem.upstream or perSystem.self).nh;
 
       clean = {
         enable = true;

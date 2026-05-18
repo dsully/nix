@@ -10,13 +10,13 @@
         cachix
         deadnix
         flake-checker
-        nh
         nix-tree
         nurl
         statix
       ]
       ++ [
         perSystem.nix-auth.nix-auth
+        perSystem.self.nh
       ];
   };
 }

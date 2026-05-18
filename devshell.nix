@@ -13,7 +13,6 @@
         fish
         jq
         just
-        nh
         nurl
         ripgrep
         sd
@@ -21,6 +20,7 @@
       ]
       ++ [
         config.packages.nix-package-updater
+        config.packages.nh
       ];
   };
 }
