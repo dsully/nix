@@ -24,7 +24,6 @@
     brews = [
       "mactop"
       "mas"
-      "xz"
     ];
 
     casks = [
@@ -94,8 +93,7 @@
 
     taps = [
       "jazzyalex/agent-sessions"
-      "rust-mcp-stack/tap"
-      "steipete/tap"
+      "steipete/tap" # repobar
     ];
   };
 }
