@@ -16,8 +16,13 @@
 
         withFlags = lib.concatMapStringsSep " " (dep: "--with '${dep}'") tool.withPackages;
 
+        pythonVersion =
+          if pkgs.stdenv.isDarwin
+          then "3.14+gil"
+          else "3.14";
+
         installCmd = ''
-          ${lib.getExe pkgs.uv} tool install "${spec}" --python 3.14+gil --quiet --upgrade ${prereleaseFlag} ${withFlags}
+          ${lib.getExe pkgs.uv} tool install "${spec}" --python ${pythonVersion} --quiet --upgrade ${prereleaseFlag} ${withFlags}
         '';
 
         injectCmds =
