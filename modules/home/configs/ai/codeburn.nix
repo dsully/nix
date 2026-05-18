@@ -1,13 +1,22 @@
 {
   config,
   lib,
+  my,
   pkgs,
   ...
-}:
-lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-  packageTools.javascript = ["codeburn"];
+}: let
+  codeburnExe = lib.getExe my.pkgs.codeburn-rs;
+  codeburnLink = "/usr/local/bin/codeburn";
+in {
+  home = {
+    activation.codeburnSymlink = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      $DRY_RUN_CMD ln $VERBOSE_ARG -sf ${codeburnExe} ${codeburnLink}
+    '';
 
-  launchd.agents.codeburn-menubar = {
+    packages = [my.pkgs.codeburn-rs];
+  };
+
+  launchd.agents.codeburn-menubar = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     enable = true;
     config = {
       ProgramArguments = [
@@ -15,7 +24,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       ];
 
       EnvironmentVariables = {
-        CODEBURN_BIN = "${config.home.homeDirectory}/.local/state/nix/profile/bin/node ${config.home.homeDirectory}/.bun/bin/codeburn";
+        CODEBURN_BIN = codeburnLink;
         PATH = "${config.home.homeDirectory}/.local/state/nix/profile/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
       };
       KeepAlive = true;
@@ -23,4 +32,9 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       ProcessType = "Interactive";
     };
   };
+
+  packageTools.javascript =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then ["codeburn"]
+    else [];
 }
