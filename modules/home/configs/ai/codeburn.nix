@@ -6,11 +6,10 @@
   ...
 }: let
   codeburnExe = lib.getExe my.pkgs.codeburn-rs;
-  codeburnLink = "/usr/local/bin/codeburn";
 in {
   home = {
     activation.codeburnSymlink = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      $DRY_RUN_CMD ln $VERBOSE_ARG -sf ${codeburnExe} ${codeburnLink}
+      $DRY_RUN_CMD ln $VERBOSE_ARG -sf ${codeburnExe} ${config.xdg.binHome}
     '';
 
     packages = [my.pkgs.codeburn-rs];
@@ -24,7 +23,7 @@ in {
       ];
 
       EnvironmentVariables = {
-        CODEBURN_BIN = codeburnLink;
+        CODEBURN_BIN = codeburnExe;
         PATH = "${config.home.homeDirectory}/.local/state/nix/profile/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
       };
       KeepAlive = true;
