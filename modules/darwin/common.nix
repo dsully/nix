@@ -56,7 +56,7 @@ in rec {
         lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
       );
 
-      optimise.automatic = lib.mkIf (config.system.nixFlavor != "determinate") true;
+      optimise.automatic = lib.mkIf (config.system.nixFlavor == "cppnix") true;
 
       registry = lib.mapAttrs (_: value: {flake = value;}) (
         lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
@@ -68,11 +68,6 @@ in rec {
     (lib.mkIf (config.system.nixFlavor == "cppnix") {
       enable = true;
       package = pkgs.nixVersions.latest;
-      # Workaround for https://github.com/NixOS/nix/issues/11728
-      settings.download-buffer-size = let
-        GiB = 1024 * 1024 * 1024;
-      in
-        1 * GiB;
     })
 
     # https://lix.systems/add-to-config/
