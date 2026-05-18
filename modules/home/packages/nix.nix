@@ -1,5 +1,6 @@
 {
   perSystem,
+  my,
   pkgs,
   ...
 }: {
@@ -16,7 +17,7 @@
       ]
       ++ [
         perSystem.nix-auth.nix-auth
-        perSystem.self.nh
+        my.pkgs.nh
       ];
   };
 }
