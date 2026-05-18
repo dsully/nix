@@ -56,6 +56,7 @@ in {
             claude-agent-acp
             codex
             codex-acp
+            ralph-tui
             rtk
           ]
         )
