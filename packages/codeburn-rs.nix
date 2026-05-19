@@ -3,14 +3,14 @@
   rustPlatform,
   fetchFromGitHub,
 }:
-rustPlatform.buildRustPackage (finalAttrs: rec {
+rustPlatform.buildRustPackage rec {
   pname = "cburn";
   version = "0.1.1";
 
   src = fetchFromGitHub {
     owner = "rossnoah";
     repo = "codeburn-rs";
-    tag = "v${finalAttrs.version}";
+    rev = "32f7a7aa405f753d276ade0f2711b9b94d73845e";
     hash = "sha256-h7T/qdUxEF5YBFpIOxttCR50fHUZ4p+qDm4zmReHDSM=";
   };
 
@@ -22,4 +22,4 @@ rustPlatform.buildRustPackage (finalAttrs: rec {
     license = lib.licenses.gpl3Only;
     mainProgram = pname;
   };
-})
+}

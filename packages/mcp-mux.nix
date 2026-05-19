@@ -3,15 +3,15 @@
   buildGoModule,
   fetchFromGitHub,
 }:
-buildGoModule (finalAttrs: rec {
+buildGoModule rec {
   pname = "mcp-mux";
   version = "0.24.1";
 
   src = fetchFromGitHub {
     owner = "thebtf";
     repo = "mcp-mux";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-TdjcnoO5WNAI1tVbo9Wk7b1RJff+JktCGPL0xyqalnQ=";
+    rev = "a6ccfd185e909bb7c76519dc9432ed77e19d2dce";
+    hash = "sha256-ubtPuA0ExG2KtAsUnGveBIuSW66cY8u6FKMNw5rFNJo=";
   };
 
   vendorHash = "sha256-o5l9w8nFrxubei6fhnz3T4fZqlDykPGbXn1wU+/V7xQ=";
@@ -26,4 +26,4 @@ buildGoModule (finalAttrs: rec {
     license = lib.licenses.mit;
     mainProgram = pname;
   };
-})
+}
