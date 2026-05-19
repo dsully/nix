@@ -266,13 +266,6 @@ in {
           clean = "sed '/#gitignore$/d'";
           smudge = "cat";
         };
-
-        lfs = {
-          smudge = "git-lfs smudge -- %f";
-          process = "git-lfs filter-process";
-          required = true;
-          clean = "git-lfs clean -- %f";
-        };
       };
 
       # Automatically correct and execute mistyped commands.
