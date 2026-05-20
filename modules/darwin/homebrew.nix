@@ -67,6 +67,7 @@
       "CotEditor" = 1024640650;
       "Dato" = 1470584107;
       "DevCleaner" = 1388020431;
+      "Editorio" = 6759334075;
       "File Icons for GitHub and GitLab" = 1631366167;
       "Hyperspace" = 6739505345;
       "iPreview" = 1519213509;
