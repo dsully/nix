@@ -55,4 +55,9 @@ in {
       })
       platformFunctions
     );
+
+  # Live-symlinked scripts: edits to the working tree are reflected immediately,
+  # no rebuild needed. Target must remain executable in the source tree.
+  home.file."${config.xdg.binHome}/remove-unicode".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/remove-unicode.py";
 }
