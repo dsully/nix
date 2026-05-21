@@ -31,6 +31,13 @@ class LocalPackage:
     local_version: str
 
 
+@dataclass(frozen=True)
+class Match:
+    pkg: LocalPackage
+    attr: str
+    upstream_version: str
+
+
 def parse_attrs(text: str) -> dict[str, str]:
     """Return all simple string assignments found in a Nix file."""
     return {m.group(1): m.group(2) for m in _ATTR_RE.finditer(text)}
@@ -77,11 +84,13 @@ def collect_packages() -> list[LocalPackage]:
 
     for entry in sorted(PACKAGES_DIR.iterdir()):
         nix_file = (entry / "default.nix") if entry.is_dir() else entry
+
         if nix_file.suffix != ".nix" or not nix_file.exists():
             continue
 
         attrs = parse_attrs(nix_file.read_text())
         pname = attrs.get("pname")
+
         if not pname:
             continue
 
@@ -90,15 +99,9 @@ def collect_packages() -> list[LocalPackage]:
     return packages
 
 
-@dataclass(frozen=True)
-class Match:
-    pkg: LocalPackage
-    attr: str
-    upstream_version: str
-
-
 def search_nixpkgs(pkg: LocalPackage) -> Match | None:
     """Return a Match if the package exists in nixpkgs for all target platforms."""
+
     result = subprocess.run(
         ["nh", "search", "--json", "--platforms", pkg.pname],
         capture_output=True,
@@ -116,10 +119,18 @@ def search_nixpkgs(pkg: LocalPackage) -> Match | None:
     for entry in data.get("results", []):
         if entry.get("package_pname") != pkg.pname:
             continue
+
+        attr = entry.get("package_attr_name", "?")
+
+        # Only top-level `nixpkgs#<pname>` attributes count - skip nested sets
+        # like `emacsPackages.timecop` which are unrelated namespaced packages.
+        if "." in attr:
+            continue
+
         if all(p in entry.get("package_platforms", []) for p in PLATFORMS):
             return Match(
                 pkg=pkg,
-                attr=entry.get("package_attr_name", "?"),
+                attr=attr,
                 upstream_version=entry.get("package_pversion", "?"),
             )
 
@@ -150,6 +161,7 @@ def main() -> None:
 
             for future in as_completed(futures):
                 progress.advance(task)
+
                 if match := future.result():
                     found.append(match)
 
