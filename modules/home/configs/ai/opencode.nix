@@ -135,10 +135,7 @@ in {
         };
       };
 
-      lsp = lib.mkDefault ((lib.removeAttrs opencodeLsp ["rust"])
-        // {
-          pyright = {disabled = true;};
-        });
+      lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
 
       permission = lib.mkDefault {
         bash = {
