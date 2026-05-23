@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>co.kovoor.opencode.notifier</string>
+	<key>CFBundleName</key>
+	<string>OpenCode Notifier</string>
+	<key>CFBundleDisplayName</key>
+	<string>OpenCode Notifier</string>
+	<key>CFBundleExecutable</key>
+	<string>ClaudeNotifier</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleVersion</key>
+	<string>1.1.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.1.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSUserNotificationAlertStyle</key>
+	<string>banner</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Focuses the Ghostty terminal that triggered the notification.</string>
+</dict>
+</plist>

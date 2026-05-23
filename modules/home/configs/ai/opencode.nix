@@ -165,7 +165,7 @@ in {
 
       plugin =
         [
-          "@mohak34/opencode-notifier@latest"
+          my.pkgs.agent-notifier.passthru.opencodePlugin
           "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
           "${my.pkgs.icm}/plugins/opencode-icm.ts"
           "${aro}/plugins/autoresearch-context.ts"
