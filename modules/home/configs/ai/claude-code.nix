@@ -233,7 +233,6 @@
 
       skipAutoPermissionPrompt = true;
     }
-
     # Disable Claude Code's built-in notifier only where agent-notifier replaces
     # it; off darwin there's no replacement, so keep the default channel.
     // lib.optionalAttrs pkgs.stdenv.isDarwin {
