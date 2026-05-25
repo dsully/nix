@@ -138,22 +138,6 @@
         "type": "github"
       }
     },
-    "cocoindex-code": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1779166187,
-        "narHash": "sha256-q6Mik0qh/hHmhTsr8dhS388fNuqBmlk6VSFE4fY601Q=",
-        "owner": "cocoindex-io",
-        "repo": "cocoindex-code",
-        "rev": "e6a077fc60ea40d1906b335a837c4cb658bd6d76",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cocoindex-io",
-        "repo": "cocoindex-code",
-        "type": "github"
-      }
-    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -693,7 +677,6 @@
         "agent-skills": "agent-skills",
         "autoresearch-opencode": "autoresearch-opencode",
         "claude-plugins-official": "claude-plugins-official",
-        "cocoindex-code": "cocoindex-code",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",

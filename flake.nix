@@ -45,9 +45,6 @@
 
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
 
-    cocoindex-code.url = "github:cocoindex-io/cocoindex-code";
-    cocoindex-code.flake = false;
-
     idjoo-skills.url = "github:idjoo/skills";
     idjoo-skills.flake = false;
 

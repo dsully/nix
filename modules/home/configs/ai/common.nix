@@ -159,6 +159,10 @@
     git-remote = {
       command = lib.getExe my.pkgs.git-remote-mcp;
     };
+    indxr = {
+      command = lib.getExe my.pkgs.indxr;
+      args = ["serve" "." "--all-tools"];
+    };
     just = {
       command = lib.getExe my.pkgs.just-mcp;
     };

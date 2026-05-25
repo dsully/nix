@@ -29,26 +29,9 @@ in {
         "opencode-gemini-auth@latest"
         "opencode-with-claude"
       ];
-      python = [
-        # https://github.com/cocoindex-io/cocoindex-code
-        {
-          package = "cocoindex-code";
-          extras = "full";
-          prerelease = true;
-          withPackages = ["cocoindex>=1.0.0a24"];
-        }
-      ];
     };
 
     home = {
-      # cocoindex-code is installed via uv in the python activation script;
-      # `ccc init` performs its one-time setup and is idempotent on re-runs.
-      activation.cocoindexInit = lib.mkIf (lib.any (t: t.package == "cocoindex-code") config.packageTools.python) (
-        lib.hm.dag.entryAfter ["python"] ''
-          $DRY_RUN_CMD ${config.xdg.binHome}/ccc init || true
-        ''
-      );
-
       packages =
         (
           with perSystem.llm-agents; [
@@ -82,10 +65,6 @@ in {
       agent-skills = {
         enable = true;
         sources = {
-          cocoindex-code = {
-            input = "cocoindex-code";
-            subdir = "skills";
-          };
           idjoo-skills = {
             input = "idjoo-skills";
           };
@@ -117,7 +96,6 @@ in {
           enable = [
             "architecture-patterns"
             "brainstorming"
-            "ccc"
             "commit"
             "debugging-strategies"
             "dispatching-parallel-agents"
@@ -152,7 +130,7 @@ in {
             "writing-plans"
             "writing-skills"
           ];
-          enableAll = ["cocoindex-code"];
+          # enableAll = [""];
         };
         targets = {
           claude.enable = true;
