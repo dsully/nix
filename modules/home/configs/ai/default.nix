@@ -41,26 +41,6 @@ in {
     };
 
     home = {
-      # Link the notifier app bundles into ~/Applications and register them
-      # with LaunchServices, so notifications are delivered and the apps appear
-      # in System Settings → Notifications. The plugin/hook launch them from
-      # this stable path. (agent-notifier is emptyFile off darwin.)
-      file = lib.mkIf pkgs.stdenv.isDarwin {
-        "Applications/ClaudeCodeNotifier.app".source = "${my.pkgs.agent-notifier}/Applications/ClaudeCodeNotifier.app";
-        "Applications/OpenCodeNotifier.app".source = "${my.pkgs.agent-notifier}/Applications/OpenCodeNotifier.app";
-      };
-
-      activation.registerNotifierApps = lib.mkIf pkgs.stdenv.isDarwin (
-        lib.hm.dag.entryAfter ["linkGeneration"] ''
-
-          lsregister=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
-
-          for app in ClaudeCodeNotifier OpenCodeNotifier; do
-            $DRY_RUN_CMD "$lsregister" -f "$HOME/Applications/$app.app"
-          done
-        ''
-      );
-
       # cocoindex-code is installed via uv in the python activation script;
       # `ccc init` performs its one-time setup and is idempotent on re-runs.
       activation.cocoindexInit = lib.mkIf (lib.any (t: t.package == "cocoindex-code") config.packageTools.python) (

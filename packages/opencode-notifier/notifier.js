@@ -1,4 +1,4 @@
-// ClaudeCodeNotifier — OpenCode plugin
+// OpenCodeNotifier — OpenCode plugin
 // Fires native macOS banners for OpenCode session events via
 // OpenCodeNotifier.app. Idle banners fire only after the session was busy
 // (avoids startup noise); subagent sessions are filtered out. Clicking a

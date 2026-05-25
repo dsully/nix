@@ -4,7 +4,7 @@ import UserNotifications
 // Parsed form of the command-line payload.
 //
 // Usage:
-//   ClaudeNotifier <title> <subtitle> <message> [--tty <tty>] [--icon <path>]
+//   OpenCodeNotifier <title> <subtitle> <message> [--tty <tty>] [--icon <path>]
 //                  [--focus-script <path>]
 //
 // A click on a previously-posted banner relaunches this bundle with no
@@ -57,7 +57,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         guard let payload = Payload(arguments: args) else {
             if args.count > 1 {
                 fputs(
-                    "Usage: ClaudeNotifier <title> <subtitle> <message> [--tty <tty>] [--icon <path>]\n",
+                    "Usage: OpenCodeNotifier <title> <subtitle> <message> [--tty <tty>] [--icon <path>]\n",
                     stderr)
                 NSApp.terminate(nil)
                 return
@@ -154,7 +154,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         else { return nil }
 
         let tmp = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("ccn-\(UUID().uuidString).png")
+            .appendingPathComponent("ocn-\(UUID().uuidString).png")
         do {
             try png.write(to: tmp)
             return tmp

@@ -9,7 +9,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>OpenCode Notifier</string>
 	<key>CFBundleExecutable</key>
-	<string>ClaudeNotifier</string>
+	<string>OpenCodeNotifier</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIconName</key>

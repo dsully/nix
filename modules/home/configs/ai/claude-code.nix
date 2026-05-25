@@ -40,204 +40,184 @@
     )
     ai.lsp;
 
-  settings =
-    {
-      inherit (ai.models.large) model;
+  settings = {
+    inherit (ai.models.large) model;
 
-      autoUpdates = false;
-      effortLevel = "medium";
-      enableAllProjectMcpServers = false;
-      enableMcpIntegration = true;
-      includeCoAuthoredBy = false;
+    autoUpdates = false;
+    effortLevel = "medium";
+    enableAllProjectMcpServers = false;
+    enableMcpIntegration = true;
+    includeCoAuthoredBy = false;
 
-      # Keys below are mkDefault, so a downstream flake can override them with a
-      # plain assignment. Any key also present in `ai.enabledPlugins` becomes a
-      # plain value via the `//` merge, so overriding those needs lib.mkForce.
-      enabledPlugins =
+    # Keys below are mkDefault, so a downstream flake can override them with a
+    # plain assignment. Any key also present in `ai.enabledPlugins` becomes a
+    # plain value via the `//` merge, so overriding those needs lib.mkForce.
+    enabledPlugins =
+      {
+        "code-review@claude-plugins-official" = lib.mkDefault true;
+        "code-simplifier@claude-plugins-official" = lib.mkDefault true;
+        "commit-commands@claude-plugins-official" = lib.mkDefault true;
+        "feature-dev@claude-plugins-official" = lib.mkDefault true;
+        "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
+        "ralph-loop@claude-plugins-official" = lib.mkDefault true;
+        "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
+        "superpowers@claude-plugins-official" = lib.mkDefault true;
+      }
+      // ai.enabledPlugins;
+
+    hooks = lib.mkDefault {
+      PreCompact = [
         {
-          "code-review@claude-plugins-official" = lib.mkDefault true;
-          "code-simplifier@claude-plugins-official" = lib.mkDefault true;
-          "commit-commands@claude-plugins-official" = lib.mkDefault true;
-          "feature-dev@claude-plugins-official" = lib.mkDefault true;
-          "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-          "ralph-loop@claude-plugins-official" = lib.mkDefault true;
-          "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
-          "superpowers@claude-plugins-official" = lib.mkDefault true;
+          hooks = [
+            {
+              type = "command";
+              command = "${lib.getExe my.pkgs.icm} hook compact";
+            }
+          ];
         }
-        // ai.enabledPlugins;
-
-      hooks = lib.mkDefault {
-        # macOS-only: native banners via agent-notifier (emptyFile off darwin,
-        # so the list stays empty and the package ref is never forced there).
-        Notification = lib.optionals pkgs.stdenv.isDarwin [
-          {
-            matcher = "";
-            hooks = [
-              {
-                type = "command";
-                command = my.pkgs.agent-notifier.passthru.claudeNotificationHook;
-                timeout = 10;
-              }
-            ];
-          }
-        ];
-        PreCompact = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "${lib.getExe my.pkgs.icm} hook compact";
-              }
-            ];
-          }
-        ];
-        PreToolUse = [
-          {
-            matcher = "Bash";
-            hooks = [
-              {
-                type = "command";
-                command = ./hooks/enforce-uv.fish;
-              }
-              {
-                type = "command";
-                command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
-              }
-              {
-                type = "command";
-                command = "${lib.getExe my.pkgs.icm} hook pre";
-              }
-            ];
-          }
-        ];
-        PostToolUse = [
-          {
-            matcher = "Edit|Write|MultiEdit";
-            hooks = [
-              {
-                command =
-                  # bash
-                  ''
-                    file_path="$1"
-                    case "$file_path" in
-                      *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
-                      *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
-                      *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
-                    esac
-                  '';
-                timeout = 10;
-                type = "command";
-              }
-              {
-                type = "command";
-                command = "${lib.getExe my.pkgs.icm} hook post";
-              }
-            ];
-          }
-        ];
-        SessionStart = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "${lib.getExe my.pkgs.icm} hook start";
-              }
-            ];
-          }
-        ];
-        UserPromptSubmit = [
-          {
-            hooks = [
-              {
-                type = "command";
-                command = "${lib.getExe my.pkgs.icm} hook prompt";
-              }
-            ];
-          }
-        ];
-      };
-
-      statusLine = {
-        command = lib.getExe perSystem.llm-agents.ccstatusline;
-        padding = 0;
-        type = "command";
-      };
-
-      permissions = {
-        allow = [
-          "Bash(ast-grep *)"
-          "Bash(awk *)"
-          "Bash(cargo *)"
-          "Bash(curl *)"
-          "Bash(fd *)"
-          "Bash(jq *)"
-          "Bash(just *)"
-          "Bash(nix *)"
-          "Bash(rg *)"
-          "Edit(**/*.md)"
-          "Edit(//tmp/**)"
-          "Glob"
-          "Grep"
-          "Read(//tmp/**)"
-          "Read(~/.claude/skills/**)"
-          "Read(~/.config/claude/skills/**)"
-          "Read(~/dev/**)"
-          "Skill(ast-grep)"
-          "Task"
-          "WebFetch"
-          "WebSearch"
-          "Write(//tmp/**)"
-          "Write(**/plans/**)"
-        ];
-
-        ask = [
-          "Bash(rm)"
-          "Bash(rmdir)"
-          "Read(./secrets/**)"
-        ];
-
-        deny = [
-          "Bash(git)"
-          "Bash(su)"
-          "Bash(sudo)"
-          "Read(./.direnv)"
-          "Read(./.env)"
-          "Read(./.env.*)"
-          "Read(./.envrc)"
-          "Read(./build)"
-          "Read(./config/credentials.json)"
-          "Read(./target)"
-          "Read(~/.aws)"
-          "Read(~/.cache)"
-          "Read(~/.cargo)"
-          "Read(~/.ssh)"
-        ];
-
-        additionalDirectories = [
-          "/tmp"
-          "/var"
-        ];
-
-        defaultMode = "build";
-        disableBypassPermissionsMode = "disable";
-      };
-
-      env = {
-        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
-        DISABLE_AUTOUPDATER = "1";
-        DISABLE_BUG_COMMAND = "1";
-        DISABLE_ERROR_REPORTING = "1";
-        DISABLE_TELEMETRY = "1";
-        ENABLE_TOOL_SEARCH = "1";
-      };
-
-      skipAutoPermissionPrompt = true;
-    }
-    # Disable Claude Code's built-in notifier only where agent-notifier replaces
-    # it; off darwin there's no replacement, so keep the default channel.
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {
-      preferredNotifChannel = "notifications_disabled";
+      ];
+      PreToolUse = [
+        {
+          matcher = "Bash";
+          hooks = [
+            {
+              type = "command";
+              command = ./hooks/enforce-uv.fish;
+            }
+            {
+              type = "command";
+              command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
+            }
+            {
+              type = "command";
+              command = "${lib.getExe my.pkgs.icm} hook pre";
+            }
+          ];
+        }
+      ];
+      PostToolUse = [
+        {
+          matcher = "Edit|Write|MultiEdit";
+          hooks = [
+            {
+              command =
+                # bash
+                ''
+                  file_path="$1"
+                  case "$file_path" in
+                    *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
+                    *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
+                    *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
+                  esac
+                '';
+              timeout = 10;
+              type = "command";
+            }
+            {
+              type = "command";
+              command = "${lib.getExe my.pkgs.icm} hook post";
+            }
+          ];
+        }
+      ];
+      SessionStart = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "${lib.getExe my.pkgs.icm} hook start";
+            }
+          ];
+        }
+      ];
+      UserPromptSubmit = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "${lib.getExe my.pkgs.icm} hook prompt";
+            }
+          ];
+        }
+      ];
     };
+
+    statusLine = {
+      command = lib.getExe perSystem.llm-agents.ccstatusline;
+      padding = 0;
+      type = "command";
+    };
+
+    permissions = {
+      allow = [
+        "Bash(ast-grep *)"
+        "Bash(awk *)"
+        "Bash(cargo *)"
+        "Bash(curl *)"
+        "Bash(fd *)"
+        "Bash(jq *)"
+        "Bash(just *)"
+        "Bash(nix *)"
+        "Bash(rg *)"
+        "Edit(**/*.md)"
+        "Edit(//tmp/**)"
+        "Glob"
+        "Grep"
+        "Read(//tmp/**)"
+        "Read(~/.claude/skills/**)"
+        "Read(~/.config/claude/skills/**)"
+        "Read(~/dev/**)"
+        "Skill(ast-grep)"
+        "Task"
+        "WebFetch"
+        "WebSearch"
+        "Write(//tmp/**)"
+        "Write(**/plans/**)"
+      ];
+
+      ask = [
+        "Bash(rm)"
+        "Bash(rmdir)"
+        "Read(./secrets/**)"
+      ];
+
+      deny = [
+        "Bash(git)"
+        "Bash(su)"
+        "Bash(sudo)"
+        "Read(./.direnv)"
+        "Read(./.env)"
+        "Read(./.env.*)"
+        "Read(./.envrc)"
+        "Read(./build)"
+        "Read(./config/credentials.json)"
+        "Read(./target)"
+        "Read(~/.aws)"
+        "Read(~/.cache)"
+        "Read(~/.cargo)"
+        "Read(~/.ssh)"
+      ];
+
+      additionalDirectories = [
+        "/tmp"
+        "/var"
+      ];
+
+      defaultMode = "build";
+      disableBypassPermissionsMode = "disable";
+    };
+
+    env = {
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+      DISABLE_AUTOUPDATER = "1";
+      DISABLE_BUG_COMMAND = "1";
+      DISABLE_ERROR_REPORTING = "1";
+      DISABLE_TELEMETRY = "1";
+      ENABLE_TOOL_SEARCH = "1";
+    };
+
+    skipAutoPermissionPrompt = true;
+  };
 
   # Generated the same way the home-manager module would, but installed as a
   # mutable copy below instead of a read-only /nix/store symlink. Reads the
