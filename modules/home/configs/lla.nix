@@ -148,7 +148,7 @@ in {
 
           # Respect .gitignore (and git exclude) rules when listing files
           # Default: false
-          respect_gitignore = true;
+          respect_gitignore = false;
 
           # Named filter presets let you reuse complex filter combinations
           # Uncomment and customize the example below or define your own under filter.presets.<name>

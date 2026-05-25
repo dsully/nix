@@ -84,6 +84,7 @@ then
 
     meta = {
       description = "macOS desktop notifications for Claude Code and OpenCode, with click-to-focus Ghostty tabs";
+      homepage = "https://github.com/dsully/agent-notifier";
       platforms = lib.platforms.darwin;
     };
   })
