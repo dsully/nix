@@ -218,7 +218,7 @@
           "/var"
         ];
 
-        defaultMode = "plan";
+        defaultMode = "build";
         disableBypassPermissionsMode = "disable";
       };
 

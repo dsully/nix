@@ -96,7 +96,7 @@ in rec {
     enable = true;
     extraConfig = ''
       # Allow xdg-open-svc to work.
-      AcceptEnv SSH_CLIENT_HOME SSH_CLIENT
+      AcceptEnv SSH_CLIENT_HOME SSH_CLIENT_MOUNT SSH_CLIENT_OS
       StreamLocalBindUnlink yes
     '';
   };
