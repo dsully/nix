@@ -32,7 +32,7 @@ in {
 
     extraConfig = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
       IdentityAgent SSH_AUTH_SOCK
-      SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_OS="Darwin"
+      SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_MOUNT=/Volumes SSH_CLIENT_OS="Darwin"
       UseKeychain yes
     '';
 
