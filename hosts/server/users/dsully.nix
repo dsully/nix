@@ -181,6 +181,10 @@ in {
       Service = {
         WorkingDirectory = "%h/.config/vopono";
         Environment = "RUST_LOG=info";
+        # An unclean shutdown (SIGKILL) leaves qBittorrent's single-instance
+        # socket behind, which makes the next start silently exit 0 without
+        # launching. Clear it so a crashed previous run can't wedge startup.
+        ExecStartPre = "${pkgs.coreutils}/bin/rm -f /bits/media/torrents/qBittorrent/config/ipc-socket /bits/media/torrents/qBittorrent/config/lockfile";
         ExecStart = lib.concatStringsSep " " [
           "${lib.getExe pkgs.vopono}"
           "exec"
@@ -199,6 +203,9 @@ in {
         PrivateTmp = false;
         Restart = "on-failure";
         RestartSec = "10s";
+        # Give qBittorrent time to save resume data and remove its instance
+        # socket on stop, rather than hitting the 90s default and getting SIGKILLed.
+        TimeoutStopSec = "180s";
         Type = "simple";
       };
       Install = {

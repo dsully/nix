@@ -180,11 +180,11 @@
         in {
           server = inputs.system-manager.lib.makeSystemConfig {
             modules = [./hosts/server/system-configuration.nix];
-            extraSpecialArgs = smArgs;
+            specialArgs = smArgs;
           };
           zap = inputs.system-manager.lib.makeSystemConfig {
             modules = [./hosts/zap/system-configuration.nix];
-            extraSpecialArgs = smArgs;
+            specialArgs = smArgs;
           };
         });
       in {
