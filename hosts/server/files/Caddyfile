@@ -20,7 +20,7 @@
 	}
 
 	tls {
-		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+		dns cloudflare {file./run/secrets/caddy/cloudflare-token}
 	}
 
 	@syncthing host syncthing.sully.org

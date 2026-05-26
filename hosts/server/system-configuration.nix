@@ -1,5 +1,6 @@
 {
   flake,
+  inputs,
   lib,
   pkgs,
   system-manager,
@@ -10,6 +11,30 @@
   caddyLogDir = "/var/log/caddy";
 
   inherit (flake.packages.x86_64-linux) caddy-custom;
+
+  opnix = inputs.opnix.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+  # opnix reads this token at boot and writes secrets to disk. Bootstrap once
+  # on the host with: sudo opnix token set
+  opnixTokenFile = "/etc/opnix-token";
+  opnixOutputDir = "/var/lib/opnix";
+
+  # Cloudflare DNS-01 token for the *.sully.org wildcard cert. Lives on tmpfs
+  # so it is re-fetched (never persisted) on every boot. Caddy reads it via the
+  # {file.*} placeholder in the Caddyfile.
+  cloudflareTokenPath = "/run/secrets/caddy/cloudflare-token";
+
+  opnixConfig = (pkgs.formats.json {}).generate "opnix-secrets.json" {
+    secrets = [
+      {
+        path = cloudflareTokenPath;
+        reference = "op://Services/Cloudflare DNS Token/credential";
+        owner = "caddy";
+        group = "caddy";
+        mode = "0400";
+      }
+    ];
+  };
 
   smService = attrs:
     lib.recursiveUpdate {
@@ -91,11 +116,24 @@ in {
     };
 
     systemd.tmpfiles.rules = [
-      "d ${caddyDataDir} 0750 root root -"
-      "d ${caddyLogDir} 0750 root root -"
+      "d ${caddyDataDir} 0750 caddy caddy -"
+      "d ${caddyLogDir} 0750 caddy caddy -"
+      "d ${opnixOutputDir} 0700 root root -"
     ];
 
     systemd.services = {
+      opnix-secrets = smService {
+        description = "Fetch secrets from 1Password via opnix";
+        wants = ["network-online.target"];
+        after = ["network-online.target" "nss-lookup.target"];
+        before = ["caddy.service"];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "${opnix}/bin/opnix secret -token-file ${opnixTokenFile} -config ${opnixConfig} -output ${opnixOutputDir}";
+        };
+      };
+
       vopono-daemon = smService {
         description = "Vopono root daemon";
         wants = ["network-online.target"];
@@ -116,10 +154,12 @@ in {
       caddy = smService {
         description = "Caddy web server";
         documentation = ["https://caddyserver.com/docs/"];
-        wants = ["network-online.target"];
-        after = ["network-online.target"];
+        wants = ["network-online.target" "opnix-secrets.service"];
+        after = ["network-online.target" "opnix-secrets.service"];
         serviceConfig = {
           Type = "notify";
+          User = "caddy";
+          Group = "caddy";
           ExecStartPre = "${lib.getExe caddy-custom} validate --config ${caddyConfigDir}/Caddyfile";
           ExecStart = "${lib.getExe caddy-custom} run --config ${caddyConfigDir}/Caddyfile --resume --environ";
           ExecReload = "${lib.getExe caddy-custom} reload --config ${caddyConfigDir}/Caddyfile --force";
@@ -128,7 +168,6 @@ in {
           PrivateTmp = true;
           ProtectSystem = "full";
           AmbientCapabilities = "CAP_NET_BIND_SERVICE";
-          EnvironmentFile = "-/etc/caddy/env";
           ReadWritePaths = "${caddyDataDir} ${caddyLogDir}";
         };
       };
