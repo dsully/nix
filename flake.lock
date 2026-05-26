@@ -340,11 +340,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779678629,
-        "narHash": "sha256-gHcIFg0mm+KFsg7iZQt67kni3+qR5U3PhEC9P7vKlZ4=",
+        "lastModified": 1779726696,
+        "narHash": "sha256-/p37CB5n6Wpw250b0Lq0CYwNq2D8uGKzDoBulyLcQqA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "612bbe3b405ad5f71d7bf9edecc04b678a061652",
+        "rev": "1a95e2efb477959b70b4a14c51035975c0481df6",
         "type": "github"
       },
       "original": {
@@ -396,11 +396,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1779704624,
-        "narHash": "sha256-INy8z/zDl0EQSaxIV+S4Xkq99NCWaqBKtxHmJoOdfyE=",
+        "lastModified": 1779801808,
+        "narHash": "sha256-jrzX7xyjOLsa7f5+sVoh3jaRum6H0QZ7tB7JMDVEHgA=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "b4d59ea23a029466b3e8314835ac7714296f2595",
+        "rev": "da9d15d764d8f3b7ffb4be1c7dfedd72ff6049d5",
         "type": "github"
       },
       "original": {
@@ -428,26 +428,6 @@
       "original": {
         "owner": "rynfar",
         "repo": "meridian",
-        "type": "github"
-      }
-    },
-    "nh": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1779460018,
-        "narHash": "sha256-fSMBlPzWKgkYIgDjD8Fhp46RwNeAFoe575NO4TIgEEk=",
-        "owner": "nix-community",
-        "repo": "nh",
-        "rev": "444ba5185895f8b0014f387d03c06c00c6831961",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nh",
         "type": "github"
       }
     },
@@ -593,11 +573,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1779593580,
-        "narHash": "sha256-le3WvQyzAQjBZnb7q2c8C5Fk2c9LgN/Oq+b0KiD4fM4=",
+        "lastModified": 1779694939,
+        "narHash": "sha256-Ly4j75O8ICaSQx3uxPnwk2x7PMF0XQvn5r0c3yBA7FI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d849bb215dcdf71bce3e686839ccdb4219e84b2f",
+        "rev": "f9d8b65950353691ab56561e7c73d2e1063d810b",
         "type": "github"
       },
       "original": {
@@ -683,7 +663,6 @@
         "idjoo-skills": "idjoo-skills",
         "llm-agents": "llm-agents",
         "meridian": "meridian",
-        "nh": "nh",
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
@@ -883,11 +862,11 @@
     "wshobson-agents": {
       "flake": false,
       "locked": {
-        "lastModified": 1779670854,
-        "narHash": "sha256-YpMOSgofEqheuu8beu8TroaT8JwQB+M1+bBV/hUeLls=",
+        "lastModified": 1779809434,
+        "narHash": "sha256-N5BTQlf5gmWg9OXYvNads2abNUNtG53YCtw5QfA36yo=",
         "owner": "wshobson",
         "repo": "agents",
-        "rev": "9b6b4c1254c42be711c1a58416201c9f78873ac8",
+        "rev": "05231aa6398384ca94bb39d8be9d848a1b3b21db",
         "type": "github"
       },
       "original": {
