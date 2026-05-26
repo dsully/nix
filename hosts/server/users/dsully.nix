@@ -48,6 +48,12 @@ in {
         qbit-port-update
         qbit-tools
       ]);
+
+    sessionPath = ["/usr/local/cuda/bin"];
+
+    sessionVariables = {
+      CUDA_HOME = "/usr/local/cuda";
+    };
   };
 
   nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
@@ -56,15 +62,6 @@ in {
     fish = {
       completions."stash-tool" =
         builtins.readFile "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
-
-      interactiveShellInit =
-        # fish
-        ''
-          if test -d /usr/local/cuda
-              set -gx CUDA_HOME /usr/local/cuda
-              fish_add_path --append "$CUDA_HOME/bin"
-          end
-        '';
     };
 
     opencode.extraPlugins = [
@@ -100,12 +97,6 @@ in {
       mullvadAccount = {
         reference = "op://Services/Mullvad/username";
         path = ".mullvad-account";
-        mode = "0600";
-        group = config.system.primaryGroup;
-      };
-      cloudflareApiToken = {
-        reference = "op://Services/Cloudflare DNS Token/credential";
-        path = ".config/caddy/cloudflare-token";
         mode = "0600";
         group = config.system.primaryGroup;
       };

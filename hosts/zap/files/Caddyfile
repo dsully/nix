@@ -1,0 +1,76 @@
+{
+	admin off
+	default_sni sully.org
+	http_port 80
+	https_port 443
+}
+
+(cloudflare) {
+	tls {
+		dns cloudflare {file./run/secrets/caddy/cloudflare-token}
+	}
+}
+
+electricrain.com {
+	import cloudflare
+	root * /www/electricrain.com/htdocs/
+	file_server
+	encode zstd gzip
+}
+
+holonet.org {
+	import cloudflare
+	root * /www/holonet.org/htdocs/
+	file_server
+	encode zstd gzip
+}
+
+rss.sully.org {
+	import cloudflare
+	encode zstd gzip
+	reverse_proxy http://127.0.0.1:8082
+}
+
+sully.org {
+	import cloudflare
+	root * /www/sully.org/htdocs/
+	encode zstd gzip
+
+	handle_path /syncthing/* {
+		reverse_proxy http://localhost:8384 {
+			header_up Host {upstream_hostport}
+		}
+	}
+
+	handle_path /github/* {
+		reverse_proxy http://127.0.0.1:9000 {
+			header_up Host localhost
+		}
+	}
+
+	file_server {
+		precompressed zstd gzip
+	}
+
+	@immutable {
+		path *.json
+		path *.ico *.gif *.heic *.webp *.avif *.jpg *.jpeg *.png *.svg *.woff *.woff2
+	}
+
+	# 1 Week
+	# header @immutable Cache-Control "public, max-age=604800, immutable"
+
+	# WebFinger: https://johnmu.com/2022-mastodon-for-your-domain/
+	redir /.well-known/nodeinfo https://mastodon.social/.well-known/nodeinfo?{query} 302
+	redir /.well-known/host-meta https://mastodon.social/.well-known/host-meta?{query} 302
+	redir /.well-known/webfinger https://mastodon.social/.well-known/webfinger?{query} 302
+}
+
+g-na.org {
+	tls {
+		dns linode {
+			api_token {file./run/secrets/caddy/linode-token}
+		}
+	}
+	redir * https://portfolio.g-na.org permanent
+}
