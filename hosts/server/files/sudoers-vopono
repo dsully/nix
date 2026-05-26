@@ -1,0 +1,11 @@
+dsully ALL=(root) NOPASSWD: /sbin/ip link delete vpn_s
+dsully ALL=(root) NOPASSWD: /sbin/ip link delete vpn_d
+dsully ALL=(root) NOPASSWD: /sbin/ip link delete vpn
+dsully ALL=(root) NOPASSWD: /sbin/ip netns delete vpn
+dsully ALL=(root) NOPASSWD: /sbin/ip netns exec vpn *
+dsully ALL=(root) NOPASSWD: /usr/sbin/ip netns exec vpn *
+
+dsully ALL=(ALL) NOPASSWD:SETENV: /usr/bin/vopono
+dsully ALL=(ALL) NOPASSWD:SETENV: /home/dsully/.local/state/nix/profile/bin/vopono
+dsully ALL=(ALL) NOPASSWD:SETENV: /nix/store/*/bin/vopono
+dsully ALL=(ALL) NOPASSWD:SETENV: /nix/store/*-vopono-*/bin/vopono

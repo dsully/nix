@@ -1,0 +1,7 @@
+Cmnd_Alias SYSTEM_MANAGER = @systemManager@ (build|switch) *
+Cmnd_Alias NIX = @lix@ *
+
+%admin ALL=(ALL:ALL) NOPASSWD:SETENV:NIX
+%admin ALL=(ALL:ALL) NOPASSWD:SETENV:SYSTEM_MANAGER
+
+Defaults:%sudo env_keep += "PATH SSH_AGENT_PID SSH_AUTH_SOCK TERM TERMINFO"

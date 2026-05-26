@@ -1,0 +1,7 @@
+dsully ALL = NOPASSWD:SETENV: @liquidctl@
+dsully ALL = NOPASSWD:SETENV: /usr/bin/qbittorrent-nox
+
+Cmnd_Alias PKG_MGMT = /usr/bin/apt-get, /bin/apt-get, /usr/bin/dpkg, /usr/bin/snap refresh
+Cmnd_Alias SYSTEM = /usr/bin/systemctl, /bin/systemctl, /usr/bin/dmesg, /bin/dmesg
+
+dsully ALL=(root) NOPASSWD: PKG_MGMT, SYSTEM
