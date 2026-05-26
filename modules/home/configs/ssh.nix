@@ -30,12 +30,6 @@ in {
 
     enableDefaultConfig = false;
 
-    extraConfig = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin ''
-      IdentityAgent SSH_AUTH_SOCK
-      SetEnv SSH_CLIENT_HOME="${homeDirectory}" SSH_CLIENT_MOUNT="/Volumes" SSH_CLIENT_OS="Darwin"
-      UseKeychain yes
-    '';
-
     settings = lib.mkMerge [
       {
         "*" = {
@@ -46,6 +40,15 @@ in {
           ControlPersist = "10m";
           ForwardAgent = lib.mkDefault true;
           ServerAliveInterval = 10;
+          IdentityAgent = "SSH_AUTH_SOCK";
+          UseKeychain = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "yes";
+          SendEnv = "COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION";
+          SetEnv = {
+            SSH_CLIENT_HOME = homeDirectory;
+            SSH_CLIENT_MOUNT = "/Volumes";
+            SSH_CLIENT_OS = "Darwin";
+          };
+
         };
 
         "github.com" = {

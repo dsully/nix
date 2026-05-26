@@ -41,7 +41,11 @@
       # window-padding-color = "extend-always";
 
       # Shell integration
-      shell-integration-features = "no-cursor,sudo,title,ssh-env,ssh-terminfo";
+      shell-integration = "fish";
+
+      # https://ghostty.org/docs/features/ssh
+      # Don't set ssh-env as it will overwrite the custom SSH_* variables in ssh.nix
+      shell-integration-features = "no-cursor,sudo,title,ssh-terminfo";
       macos-titlebar-proxy-icon = "hidden";
 
       # Allow for Option-P, etc.
