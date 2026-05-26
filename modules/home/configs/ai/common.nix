@@ -268,6 +268,7 @@
   ) (_: lib.mkDefault true);
 
   mcpServersMuxed = lib.mapAttrs (_: muxWrap) mcpServers;
+  permissions = import ./permissions.nix {inherit lib;};
 in {
   inherit
     agentDescription
@@ -278,6 +279,7 @@ in {
     lsp
     mkAI
     models
+    permissions
     ;
 
   mcpServers = mcpServersMuxed;

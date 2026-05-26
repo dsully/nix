@@ -158,31 +158,7 @@ in {
 
       lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
 
-      permission = lib.mkDefault {
-        bash = {
-          "*" = "allow";
-          "git status" = "allow";
-          "home-manager build*" = "allow";
-          clippy = "allow";
-          fd = "allow";
-          rg = "allow";
-        };
-        edit = {
-          "*" = "allow";
-          "*.env" = "deny";
-          "*.env.*" = "deny";
-        };
-        external_directory = {
-          "/**" = "allow";
-        };
-        lsp = "allow";
-        read = {
-          "*" = "allow";
-          "*.env" = "deny";
-          "*.env.*" = "deny";
-        };
-        webfetch = "allow";
-      };
+      permission = lib.mkDefault ai.permissions.opencode.permission;
 
       plugin =
         lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin

@@ -54,6 +54,10 @@ in {
           open-ralph-wiggum
           rust-mcp-server
         ]);
+
+      sessionVariables = {
+        "RTK_TELEMETRY_DISABLED" = "1";
+      };
     };
 
     programs = {

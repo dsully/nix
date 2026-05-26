@@ -1,56 +1,72 @@
 {
   ai,
+  config,
   lib,
   perSystem,
   ...
 }: let
   codexAgentRoles = lib.mapAttrs (_: description: {inherit description;}) ai.descriptions;
 
-  # Auto-approve tool calls for every MCP server. The home-manager codex module
-  # merges `settings.mcp_servers` over the entries generated from
-  # `programs.mcp.servers`, but the merge is shallow per server name, so each
-  # entry here must be complete (command/args/enabled) rather than a partial
-  # overlay. Deriving from `ai.mcpServers` keeps this isolated to Codex without
-  # leaking the codex-only `default_tools_approval_mode` key into the shared
-  # claude-code / opencode MCP configs.
-  mcpServersAutoApprove =
-    lib.mapAttrs (
-      _: server:
-        (lib.removeAttrs server ["disabled"])
-        // {
-          enabled = !(server.disabled or false);
-          default_tools_approval_mode = "auto";
-        }
-    )
-    ai.mcpServers;
+  # The home-manager Codex module merges `settings.mcp_servers` over entries
+  # generated from `programs.mcp.servers`, but the merge is shallow per server
+  # name, so each entry here must be complete rather than a partial overlay.
+  mcpServersAutoApprove = ai.permissions.codex.mcpServers ai.mcpServers;
 in {
-  # home-manager doesn't write here. :(
-  # home.sessionVariables.CODEX_HOME = "${config.xdg.configHome}/codex";
-
   programs.codex = {
     enable = true;
 
     package = perSystem.llm-agents.codex;
     enableMcpIntegration = true;
 
-    context = ./AGENTS.md;
+    context = ''
+      ${builtins.readFile ./AGENTS.md}
+
+      ${builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md"}
+    '';
 
     settings = {
       agents = codexAgentRoles;
+      analytics.enabled = false;
       approval_policy = "on-request";
 
       features = {
+        hooks = true;
         multi_agent = true;
         tool_search = true;
       };
 
+      feedback.enabled = false;
+
+      mcp_servers = mcpServersAutoApprove;
       model = "gpt-5.5";
       model_reasoning_effort = "medium";
+
+      projects = {
+        "${config.home.homeDirectory}/dev" = {
+          trust_level = "trusted";
+        };
+        "${config.xdg.configHome}/nix" = {
+          trust_level = "trusted";
+        };
+        "${config.xdg.configHome}/nvim" = {
+          trust_level = "trusted";
+        };
+      };
 
       sandbox_mode = "workspace-write";
       sandbox_workspace_write.network_access = true;
 
-      mcp_servers = mcpServersAutoApprove;
+      tui.status_line = [
+        "model-with-reasoning"
+        "current-dir"
+        "context-remaining"
+        "context-used"
+        "five-hour-limit"
+      ];
     };
+
+    # Written to a separate file so Codex's interactively-managed
+    # `default.rules` smart-approvals allow-list is left untouched.
+    rules.common = ai.permissions.codex.rules.common;
   };
 }

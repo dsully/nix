@@ -148,64 +148,7 @@
       type = "command";
     };
 
-    permissions = {
-      allow = [
-        "Bash(ast-grep *)"
-        "Bash(awk *)"
-        "Bash(cargo *)"
-        "Bash(curl *)"
-        "Bash(fd *)"
-        "Bash(jq *)"
-        "Bash(just *)"
-        "Bash(nix *)"
-        "Bash(rg *)"
-        "Edit(**/*.md)"
-        "Edit(//tmp/**)"
-        "Glob"
-        "Grep"
-        "Read(//tmp/**)"
-        "Read(~/.claude/skills/**)"
-        "Read(~/.config/claude/skills/**)"
-        "Read(~/dev/**)"
-        "Skill(ast-grep)"
-        "Task"
-        "WebFetch"
-        "WebSearch"
-        "Write(//tmp/**)"
-        "Write(**/plans/**)"
-      ];
-
-      ask = [
-        "Bash(rm)"
-        "Bash(rmdir)"
-        "Read(./secrets/**)"
-      ];
-
-      deny = [
-        "Bash(git)"
-        "Bash(su)"
-        "Bash(sudo)"
-        "Read(./.direnv)"
-        "Read(./.env)"
-        "Read(./.env.*)"
-        "Read(./.envrc)"
-        "Read(./build)"
-        "Read(./config/credentials.json)"
-        "Read(./target)"
-        "Read(~/.aws)"
-        "Read(~/.cache)"
-        "Read(~/.cargo)"
-        "Read(~/.ssh)"
-      ];
-
-      additionalDirectories = [
-        "/tmp"
-        "/var"
-      ];
-
-      defaultMode = "auto";
-      disableBypassPermissionsMode = "disable";
-    };
+    permissions = ai.permissions.claude.permissions;
 
     env = {
       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
@@ -216,7 +159,7 @@
       ENABLE_TOOL_SEARCH = "1";
     };
 
-    skipAutoPermissionPrompt = true;
+    skipAutoPermissionPrompt = ai.permissions.claude.skipAutoPermissionPrompt;
   };
 
   # Generated the same way the home-manager module would, but installed as a
@@ -240,7 +183,12 @@ in {
     inherit settings;
 
     configDir = "${config.xdg.configHome}/claude";
-    context = ./AGENTS.md;
+
+    context = ''
+      ${builtins.readFile ./AGENTS.md}
+
+      ${builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md"}
+    '';
 
     lspServers = claudeCodeLsp;
   };
