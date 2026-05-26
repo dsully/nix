@@ -91,7 +91,7 @@ in {
 
       # AI
       ".claude"
-      ".cocoindex_code"
+      ".indxr-cache"
       ".opencode/"
 
       # JavaScript / TypeScript

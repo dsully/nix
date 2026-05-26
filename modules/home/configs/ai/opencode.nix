@@ -77,8 +77,11 @@ in {
   config.programs.opencode = {
     enable = true;
     package = perSystem.llm-agents.opencode;
+
     enableMcpIntegration = true;
+
     inherit (ai) agents;
+
     commands =
       ai.commands
       // (ai.mkAI {
@@ -87,6 +90,7 @@ in {
       }).commands;
 
     context = ./AGENTS.md;
+
     settings = {
       autoupdate = lib.mkDefault true;
       compaction = {
