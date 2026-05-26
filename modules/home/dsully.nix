@@ -253,6 +253,7 @@ in {
 
       clean = {
         enable = true;
+        extraArgs = "--no-direnv --no-gcroots";
       };
 
       flake = "${config.xdg.configHome}/nix";
