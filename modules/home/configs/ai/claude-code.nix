@@ -4,7 +4,6 @@
   lib,
   mutableConfig,
   perSystem,
-  pkgs,
   ...
 }: let
   lspLanguageIds = {

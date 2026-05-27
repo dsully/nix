@@ -52,6 +52,7 @@ in {
           mcp-rust-analyzer
           mcp-rust-builder
           mcp-server-git-rs
+          mcptools
           open-ralph-wiggum
           rust-mcp-server
         ]);
