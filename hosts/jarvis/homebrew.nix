@@ -58,13 +58,12 @@
       "Dark Noise" = 1465439395;
       "Darkroom" = 953286746;
       "Discovery" = 1381004916;
-      "DoubleMemory" = 6737529034;
       "Draw Things" = 6444050820;
       "FilmNoir" = 1528417240;
       "Flighty" = 1358823008;
       "Globetrotter" = 6469319235;
       "GoPro Quik" = 561350520;
-      "Homie" = 1533590432;
+      "HomeBar" = 6761261256;
       "Hyperduck" = 6444667067;
       "Infuse" = 1136220934;
       "Ivory" = 6444602274;
@@ -85,6 +84,7 @@
       "Sogni" = 6450021857;
       "Sortio" = 6737292062;
       "Starship" = 1530665887;
+      "Tampermonkey" = 6738342400;
       "Tripsy" = 1429967544;
       "UnTrap" = 1637438059;
       "Zero Loss Compress" = 6738362427;
