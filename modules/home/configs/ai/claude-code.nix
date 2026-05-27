@@ -2,6 +2,7 @@
   ai,
   config,
   lib,
+  mutableConfig,
   perSystem,
   pkgs,
   ...
@@ -89,18 +90,20 @@
     skipAutoPermissionPrompt = ai.permissions.claude.skipAutoPermissionPrompt;
   };
 
-  # Generated the same way the home-manager module would, but installed as a
-  # mutable copy below instead of a read-only /nix/store symlink. Reads the
-  # fully-merged option value so downstream flake overrides are included.
-  settingsFile = (pkgs.formats.json {}).generate "claude-code-settings.json" (
-    config.programs.claude-code.settings
-    // {
-      "$schema" = "https://json.schemastore.org/claude-code-settings.json";
-    }
-  );
-
   settingsPath = "${config.xdg.configHome}/claude/settings.json";
 in {
+  imports = [
+    (mutableConfig.json {
+      name = "claude-code";
+      target = "claude/settings.json";
+      managed =
+        config.programs.claude-code.settings
+        // {
+          "$schema" = "https://json.schemastore.org/claude-code-settings.json";
+        };
+    })
+  ];
+
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;
@@ -121,13 +124,7 @@ in {
   };
 
   # The module would symlink settings.json read-only into the /nix/store,
-  # which breaks runtime commands like /effort. Disable that and install a
-  # writable copy of the fully-merged settings instead (so downstream flakes
-  # that override programs.claude-code.settings still take effect).
+  # which breaks runtime commands like /effort. Disable that and merge the
+  # fully-merged settings into a writable file instead.
   home.file."${settingsPath}".enable = lib.mkForce false;
-
-  home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["linkGeneration"] ''
-    $DRY_RUN_CMD rm $VERBOSE_ARG -f ${settingsPath}
-    $DRY_RUN_CMD install $VERBOSE_ARG -Dm644 ${settingsFile} ${settingsPath}
-  '';
 }

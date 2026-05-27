@@ -131,6 +131,7 @@
       hmArgs = system: {
         inherit inputs;
         flake = flakeAttr;
+        mutableConfig = import ./lib/mutable-config.nix;
         perSystem = mkPerSystem system;
       };
 
