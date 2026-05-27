@@ -271,7 +271,7 @@
 
   hooks = import ./hooks.nix {inherit config lib my perSystem pkgs;};
   mcpServersMuxed = lib.mapAttrs (_: muxWrap) mcpServers;
-  permissions = import ./permissions.nix {inherit lib;};
+  permissions = import ./permissions.nix {inherit config lib;};
 in {
   inherit
     agentDescription

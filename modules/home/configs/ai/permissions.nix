@@ -1,6 +1,13 @@
-{lib}: let
+{
+  config,
+  lib,
+}: let
   taxonomy = {
     shell = {
+      wrappers = [
+        "rtk"
+      ];
+
       askCommands = [
         "rm"
         "rmdir"
@@ -15,7 +22,7 @@
       readOnly = [
         ["awk"]
         ["basename"]
-        ["cargo" ["build" "check" "clippy" "fmt" "nextest" "test"]]
+        ["cargo"]
         ["cat"]
         ["command" "-v"]
         ["curl"]
@@ -52,17 +59,14 @@
         ["just"]
         ["ls"]
         ["nh" "search"]
-        ["nix" "build"]
-        ["nix" "eval"]
+        ["nix" ["build" "eval" "path-info"]]
         ["nix" "flake" "metadata"]
         ["nix" "flake" "show"]
-        ["nix" "path-info"]
         ["ps"]
         ["pwd"]
         ["readlink"]
         ["realpath"]
         ["rg"]
-        ["rtk" ["git" "nvim" "ps" "rg"]]
         ["sed" "-n"]
         ["sort"]
         ["stat"]
@@ -78,17 +82,18 @@
 
     read = {
       allow = [
-        "~/.config/claude/skills/**"
-        "~/dev/**"
+        "${config.xdg.configHome}/claude/skills/**"
+        "${config.home.homeDirectory}/dev/**"
+        "${config.home.homeDirectory}/src/**"
         "/tmp/**"
       ];
       ask = [
         "./secrets/**"
       ];
       deny = [
-        "~/.cache"
-        "~/.cargo"
-        "~/.ssh"
+        config.xdg.cacheHome
+        "${config.home.homeDirectory}/.cargo"
+        "${config.home.homeDirectory}/.ssh"
         "./build"
         "./config/credentials.json"
         "./.direnv"
@@ -104,7 +109,7 @@
     edit = {
       allow = [
         "**/*.md"
-        "//tmp/**"
+        "/tmp/**"
       ];
       ask = [];
       deny = [
@@ -115,7 +120,7 @@
 
     write = {
       allow = [
-        "//tmp/**"
+        "/tmp/**"
         "**/plans/**"
       ];
       ask = [];
@@ -160,20 +165,23 @@
   claudeSkill = skill: "Skill(${skill})";
 
   shellPrefixAlternatives = prefix:
-    if builtins.isList prefix && builtins.length prefix == 1 && builtins.isList (builtins.head prefix)
-    then map (command: [command]) (builtins.head prefix)
-    else [prefix];
-
-  shellPrefixString = prefix:
-    lib.concatMapStringsSep " " (
-      part:
-        if builtins.isList part
-        then "{${lib.concatStringsSep "," part}}"
-        else part
-    )
+    lib.foldr (
+      part: suffixes: let
+        alternatives =
+          if builtins.isList part
+          then part
+          else [part];
+      in
+        lib.concatMap (
+          alternative: map (suffix: [alternative] ++ suffix) suffixes
+        )
+        alternatives
+    ) [[]]
     prefix;
 
-  shellPrefixStrings = prefix: map shellPrefixString (shellPrefixAlternatives prefix);
+  shellPrefixString = prefix:
+    lib.concatStringsSep " " prefix;
+
   claudeShellPrefix = prefix: "Bash(${prefix} *)";
 
   codexAtom = atom:
@@ -189,8 +197,13 @@
   attrsWithDecision = decision: values:
     lib.listToAttrs (map (value: lib.nameValuePair value decision) values);
 
-  allowPrefixes = shell.readOnly;
-  allowPrefixStrings = lib.unique (lib.concatMap shellPrefixStrings allowPrefixes);
+  wrappedAllowPrefixes = lib.concatMap (
+    wrapper: map (prefix: [wrapper] ++ prefix) shell.readOnly
+  ) (shell.wrappers or []);
+
+  allowPrefixes = shell.readOnly ++ wrappedAllowPrefixes;
+  expandedAllowPrefixes = lib.concatMap shellPrefixAlternatives allowPrefixes;
+  allowPrefixStrings = lib.unique (map shellPrefixString expandedAllowPrefixes);
 
   codexMcpServerAutoApprove = server:
     (lib.removeAttrs server ["disabled"])
@@ -249,7 +262,7 @@ in rec {
       # Generated from ai.permissions.taxonomy.shell.*Prefixes. Codex prefix
       # rules cover shell execution only; read/edit/tool policy is enforced by
       # its sandbox and by the other agents' native permission systems.
-      ${lib.concatStringsSep "\n" (map (codexPrefixRule "allow") allowPrefixes)}
+      ${lib.concatStringsSep "\n" (map (codexPrefixRule "allow") expandedAllowPrefixes)}
     '';
   };
 
