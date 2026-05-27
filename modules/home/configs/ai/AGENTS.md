@@ -69,16 +69,6 @@ issues, significant complexity debt, or unknown unknowns on non-trivial work.
 - Disagree honestly when needed. Come back with answers, not just questions.
 - Never write code you cannot trace the invariants for.
 
-## Installed CLI tools
-
-- **ast-grep** is installed — use for structural code searches and
-  transformations on supported languages
-- **fd** is installed — prefer over `find` for file finding by name/pattern
-- **jq** is installed — use for JSON processing in shell pipelines
-- **ripgrep** (`rg`) is installed — prefer over `grep` for shell searches
-- **sd** is installed — prefer over `sed` for find-and-replace in files
-- **yq** is installed — use for YAML processing in shell pipelines
-
 ## Comments
 
 - Only add USEFUL comments in code. "Why" is more important than "what"
@@ -105,19 +95,36 @@ When implementing a new feature or workflow, first look for analogous
 implementations and conventions in the codebase. Prefer matching nearby
 or repo-wide patterns over introducing a new style, library, or structure.
 
+## Codebase Navigation — MUST USE indxr and codebase MCP tools
+
+An MCP server called `indxr` is available.
+**Always use indxr tools before the Read tool.**
+
+Do NOT read full source files as a first step - use the MCP tools to explore,
+then read only what you need.
+
+### Exploration workflow (follow this order)
+
+1. `find(query)` - find files/symbols by concept, name, callers, or signature pattern
+2. `summarize(path)` - understand files/symbols without reading source (auto-detects file, glob, or symbol name)
+3. `read(path, symbol?)` - read just one function/struct (supports `symbols` array and `collapse`)
+4. `Read` (full file) - ONLY when editing or need exact formatting
+
+### When to use Read instead
+
+- You need to **edit** a file (Read is required before Edit)
+- You need exact formatting/whitespace
+- The file is not source code (e.g., CLAUDE.md, Cargo.toml, config files)
+
 ## Editing
 
-- ALWAYS read the file first before using your edit tools to do changes.
 - NEVER overwrite the explicit changes that is done over your changes unless
   instructed to do so and ALWAYS analyze them first to take it as a guideline
   for coding standards.
+
 - NEVER EVER PERFORM any operations that you can do with your internal tools
-  through cli tools. DONT use `sed` for commands directly just use available
-  editing tools, DONT use `cat` for writing scripts and similar.
-- Prefer the filesystem MCP or treesitter MCP for these tasks.
-- ALWAYS use git MCP server whenever needed instead of running the raw
-  git commands whenever possible.
-- Use treesitter MCP server for any kind of code structure analysis.
+  through cli tools. DO NOT use `sed` for commands directly just use available
+  editing tools, DO NOT use `cat` for writing scripts and similar.
 
 ## Python
 
@@ -126,12 +133,11 @@ or repo-wide patterns over introducing a new style, library, or structure.
 - Never use pip, always use uv.
 - Always use type hints.
   - Do NOT use "Any" or "cast" or "ignore" unless absolutely necessary.
-- Testing: Always use pytest style, no test classes. Reusability via pytest fixtures.
+- Testing: Always use pytest style, no test classes. Re-usability via pytest fixtures.
   - Use pytest-datadir instead of manual data file construction.
   - Use pytest tmppath for temporary files.
 
 ## Rust
 
 - Always use 2024 Edition.
-- Use cargo and crate mcps. Always use cargo to add or remove dependencies.
-- Clippy pedantic is enabled by default.
+- Pedantic clippy is enabled by default.

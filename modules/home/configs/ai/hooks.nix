@@ -45,8 +45,31 @@
 
     PreToolUse = [
       (group {
+        matcher = "Read";
+        hooks = [
+          (hook {
+            name = "prefer-indxr-before-read";
+            command = ''
+              echo 'IMPORTANT: Before reading full source files, use indxr MCP tools to minimize token usage:
+              - summarize(path): understand a file without reading it (~300 tokens vs ~3000+)
+              - find(query): find specific functions/types by name, concept, or signature
+              - read(path, symbol): read only the exact function/symbol you need (~100 tokens vs full file)
+              Only use Read when you need to EDIT a file, need exact formatting, or the file is not source code (e.g., CLAUDE.md, Cargo.toml).'
+            '';
+          })
+        ];
+      })
+      (group {
         matcher = "Bash";
         hooks = [
+          (hook {
+            name = "prefer-indxr-diff-summary";
+            command = ''
+              if printf '%s' "$TOOL_INPUT" | grep -qE 'git\s+diff'; then
+                echo 'IMPORTANT: Use indxr get_diff_summary MCP tool instead of git diff (requires --all-tools). It shows structural changes (added/removed/modified declarations) at ~200-500 tokens vs thousands for raw diffs. Example: get_diff_summary(since_ref: "main")'
+              fi
+            '';
+          })
           (hook {
             name = "enforce-uv";
             command = "${./hooks/enforce-uv.fish}";
