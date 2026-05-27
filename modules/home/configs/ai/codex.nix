@@ -36,11 +36,16 @@ in {
       };
 
       feedback.enabled = false;
+      hide_agent_reasoning = true;
 
       hooks = ai.hooks.codex;
       mcp_servers = mcpServersAutoApprove;
       model = "gpt-5.5";
+
       model_reasoning_effort = "medium";
+      model_reasoning_summary = "none";
+      model_verbosity = "low";
+      personality = "pragmatic";
 
       projects = {
         "${config.home.homeDirectory}/dev" = {
@@ -55,7 +60,13 @@ in {
       };
 
       sandbox_mode = "workspace-write";
-      sandbox_workspace_write.network_access = true;
+      sandbox_workspace_write = {
+        exclude_tmpdir_env_var = false; # Allow $TMPDIR
+        exclude_slash_tmp = false;
+        network_access = true;
+      };
+
+      show_raw_agent_reasoning = false;
 
       tui.status_line = [
         "model-with-reasoning"

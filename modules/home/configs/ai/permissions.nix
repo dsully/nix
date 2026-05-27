@@ -62,7 +62,7 @@
         ["readlink"]
         ["realpath"]
         ["rg"]
-        ["rtk" ["git" "nvim" "rg"]]
+        ["rtk" ["git" "nvim" "ps" "rg"]]
         ["sed" "-n"]
         ["sort"]
         ["stat"]
@@ -80,7 +80,7 @@
       allow = [
         "~/.config/claude/skills/**"
         "~/dev/**"
-        "//tmp/**"
+        "/tmp/**"
       ];
       ask = [
         "./secrets/**"

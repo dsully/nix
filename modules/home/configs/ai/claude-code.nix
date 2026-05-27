@@ -47,6 +47,8 @@
     enableAllProjectMcpServers = false;
     enableMcpIntegration = true;
     includeCoAuthoredBy = false;
+    # Never commit
+    includeGitInstructions = false;
 
     # Keys below are mkDefault, so a downstream flake can override them with a
     # plain assignment. Any key also present in `ai.enabledPlugins` becomes a
@@ -76,6 +78,7 @@
 
     env = {
       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
+      CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
       DISABLE_AUTOUPDATER = "1";
       DISABLE_BUG_COMMAND = "1";
       DISABLE_ERROR_REPORTING = "1";

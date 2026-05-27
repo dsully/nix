@@ -46,6 +46,7 @@ in {
         ++ (with my.pkgs; [
           git-remote-mcp
           icm
+          indxr
           just-mcp
           mcp-mux
           mcp-rust-analyzer

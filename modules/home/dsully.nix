@@ -82,6 +82,7 @@ in {
     # See here what bumping this value impacts:
     # https://nix-community.github.io/home-manager/release-notes.xhtml
     stateVersion = "25.05";
+    enableNixpkgsReleaseCheck = false;
 
     activation = {
       neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
