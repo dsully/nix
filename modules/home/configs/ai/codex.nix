@@ -37,6 +37,7 @@ in {
 
       feedback.enabled = false;
 
+      hooks = ai.hooks.codex;
       mcp_servers = mcpServersAutoApprove;
       model = "gpt-5.5";
       model_reasoning_effort = "medium";

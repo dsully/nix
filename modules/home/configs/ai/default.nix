@@ -7,7 +7,7 @@
   pkgs,
   ...
 }: let
-  ai = import ./common.nix {inherit config inputs lib my pkgs;};
+  ai = import ./common.nix {inherit config inputs lib my perSystem pkgs;};
 in {
   imports = [
     inputs.agent-skills.homeManagerModules.default

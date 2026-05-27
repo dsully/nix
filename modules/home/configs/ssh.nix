@@ -48,7 +48,6 @@ in {
             SSH_CLIENT_MOUNT = "/Volumes";
             SSH_CLIENT_OS = "Darwin";
           };
-
         };
 
         "github.com" = {

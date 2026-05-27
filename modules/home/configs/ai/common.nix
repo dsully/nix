@@ -2,6 +2,7 @@
   inputs,
   lib,
   my,
+  perSystem,
   pkgs,
   ...
 }: let
@@ -267,6 +268,7 @@
     lib.catAttrs "plugin" aiSources
   ) (_: lib.mkDefault true);
 
+  hooks = import ./hooks.nix {inherit lib my perSystem pkgs;};
   mcpServersMuxed = lib.mapAttrs (_: muxWrap) mcpServers;
   permissions = import ./permissions.nix {inherit lib;};
 in {
@@ -276,6 +278,7 @@ in {
     commands
     descriptions
     enabledPlugins
+    hooks
     lsp
     mkAI
     models

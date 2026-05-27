@@ -2,7 +2,6 @@
   ai,
   config,
   lib,
-  my,
   perSystem,
   pkgs,
   ...
@@ -65,82 +64,7 @@
       }
       // ai.enabledPlugins;
 
-    hooks = lib.mkDefault {
-      PreCompact = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "${lib.getExe my.pkgs.icm} hook compact";
-            }
-          ];
-        }
-      ];
-      PreToolUse = [
-        {
-          matcher = "Bash";
-          hooks = [
-            {
-              type = "command";
-              command = ./hooks/enforce-uv.fish;
-            }
-            {
-              type = "command";
-              command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
-            }
-            {
-              type = "command";
-              command = "${lib.getExe my.pkgs.icm} hook pre";
-            }
-          ];
-        }
-      ];
-      PostToolUse = [
-        {
-          matcher = "Edit|Write|MultiEdit";
-          hooks = [
-            {
-              command =
-                # bash
-                ''
-                  file_path="$1"
-                  case "$file_path" in
-                    *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
-                    *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
-                    *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
-                  esac
-                '';
-              timeout = 10;
-              type = "command";
-            }
-            {
-              type = "command";
-              command = "${lib.getExe my.pkgs.icm} hook post";
-            }
-          ];
-        }
-      ];
-      SessionStart = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "${lib.getExe my.pkgs.icm} hook start";
-            }
-          ];
-        }
-      ];
-      UserPromptSubmit = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "${lib.getExe my.pkgs.icm} hook prompt";
-            }
-          ];
-        }
-      ];
-    };
+    hooks = lib.mkDefault ai.hooks.claude;
 
     statusLine = {
       command = lib.getExe perSystem.llm-agents.ccstatusline;
