@@ -1,5 +1,66 @@
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  globeToControlMappings = lib.escapeShellArgs [
+    "<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer><key>HIDKeyboardModifierMappingSrc</key><integer>280379760050179</integer></dict>"
+    "<dict><key>HIDKeyboardModifierMappingDst</key><integer>30064771300</integer><key>HIDKeyboardModifierMappingSrc</key><integer>1095216660483</integer></dict>"
+  ];
+
+  keyboardModifierMappingKeys = pkgs.stdenv.mkDerivation {
+    pname = "keyboard-modifier-mapping-keys";
+    version = "1.0";
+    src = ./keyboard-modifier-mapping-keys.swift;
+
+    nativeBuildInputs = [pkgs.swift];
+
+    dontUnpack = true;
+
+    buildPhase = ''
+      runHook preBuild
+      swiftc -O "$src" -o keyboard-modifier-mapping-keys -framework CoreFoundation -framework IOKit
+      runHook postBuild
+    '';
+
+    installPhase = ''
+      runHook preInstall
+      mkdir -p "$out/bin"
+      install -m 755 keyboard-modifier-mapping-keys "$out/bin/keyboard-modifier-mapping-keys"
+      runHook postInstall
+    '';
+
+    meta.platforms = lib.platforms.darwin;
+  };
+
+  staleInternalKeyboardMappingKey = "com.apple.keyboard.modifiermapping.0-0-165";
+  primaryUser = lib.escapeShellArg config.system.primaryUser;
+in {
   system = {
+    activationScripts.userDefaults.text =
+      lib.mkAfter
+      # bash
+      ''
+        # MachineSettings.createKeyForKeyboard exposes multiple internal keyboard services.
+        launchctl asuser "$(id -u -- ${primaryUser})" sudo --user=${primaryUser} -- \
+          defaults -currentHost delete NSGlobalDomain ${lib.escapeShellArg staleInternalKeyboardMappingKey} || true
+
+        keyboardModifierMappingKeys="$(
+          launchctl asuser "$(id -u -- ${primaryUser})" sudo --user=${primaryUser} -- \
+            ${keyboardModifierMappingKeys}/bin/keyboard-modifier-mapping-keys 2>/dev/null | /usr/bin/sort -u || true
+        )"
+
+        if [ -n "$keyboardModifierMappingKeys" ]; then
+          printf '%s\n' "$keyboardModifierMappingKeys" | while IFS= read -r keyboardModifierMappingKey; do
+            [ -n "$keyboardModifierMappingKey" ] || continue
+
+            launchctl asuser "$(id -u -- ${primaryUser})" sudo --user=${primaryUser} -- \
+              defaults -currentHost write NSGlobalDomain "$keyboardModifierMappingKey" -array ${globeToControlMappings}
+          done
+        fi
+      '';
+
     defaults = {
       CustomUserPreferences = {
         "com.apple.HIToolbox" = {
@@ -241,5 +302,17 @@
         AppleFnUsageType = "Do Nothing";
       };
     };
+
+    keyboard.userKeyMapping = [
+      # Fn/Globe -> Control. swapLeftCtrlAndFn would also remap Control back to Fn.
+      {
+        HIDKeyboardModifierMappingDst = 30064771300;
+        HIDKeyboardModifierMappingSrc = 280379760050179;
+      }
+      {
+        HIDKeyboardModifierMappingDst = 30064771300;
+        HIDKeyboardModifierMappingSrc = 1095216660483;
+      }
+    ];
   };
 }
