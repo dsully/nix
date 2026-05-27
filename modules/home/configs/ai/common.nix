@@ -11,11 +11,14 @@
   # shares one upstream process across all concurrent MCP client sessions.
   # See https://github.com/thebtf/mcp-mux.
   muxWrap = server:
-    server
-    // {
-      command = lib.getExe my.pkgs.mcp-mux;
-      args = [server.command] ++ (server.args or []);
-    };
+    if server ? command
+    then
+      server
+      // {
+        command = lib.getExe my.pkgs.mcp-mux;
+        args = [server.command] ++ (server.args or []);
+      }
+    else server;
 
   agentDescription = file: let
     text = builtins.readFile file;
@@ -147,43 +150,54 @@
     };
   };
 
-  mcpServers = {
-    codebase = {
-      command = lib.getExe my.pkgs.codebase-mcp;
-    };
-    git = {
-      command = lib.getExe my.pkgs.mcp-server-git-rs;
-      args = [
-        "--features"
-        "inspection,remotes,worktrees,notes"
-      ];
-    };
-    git-remote = {
-      command = lib.getExe my.pkgs.git-remote-mcp;
-    };
-    indxr = {
-      command = lib.getExe my.pkgs.indxr;
-      args = ["serve" "." "--all-tools"];
-    };
-    just = {
-      command = lib.getExe my.pkgs.just-mcp;
-    };
-    mcp-rust-builder = {
-      command = lib.getExe my.pkgs.mcp-rust-builder;
-      disabled = true;
-    };
-    nixos = {
-      command = lib.getExe pkgs.mcp-nixos;
-      env = {
-        PYTHON_GIL = "1";
+  mcpServers =
+    {
+      codebase = {
+        command = lib.getExe my.pkgs.codebase-mcp;
       };
-      disabled = true;
+      git = {
+        command = lib.getExe my.pkgs.mcp-server-git-rs;
+        args = [
+          "--features"
+          "inspection,remotes,worktrees,notes"
+        ];
+      };
+      git-remote = {
+        command = lib.getExe my.pkgs.git-remote-mcp;
+      };
+      indxr = {
+        command = lib.getExe my.pkgs.indxr;
+        args = ["serve" "." "--all-tools"];
+      };
+      just = {
+        command = lib.getExe my.pkgs.just-mcp;
+      };
+      mcp-rust-builder = {
+        command = lib.getExe my.pkgs.mcp-rust-builder;
+        disabled = true;
+      };
+      nixos = {
+        command = lib.getExe pkgs.mcp-nixos;
+        env = {
+          PYTHON_GIL = "1";
+        };
+        disabled = true;
+      };
+      rust-analyzer = {
+        command = lib.getExe my.pkgs.mcp-rust-analyzer;
+        disabled = true;
+      };
+    }
+    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      homekit = {
+        type = "http";
+        url = "http://localhost:5333/mcp";
+        headers = {
+          Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
+        };
+        disabled = true;
+      };
     };
-    rust-analyzer = {
-      command = lib.getExe my.pkgs.mcp-rust-analyzer;
-      disabled = true;
-    };
-  };
 
   models = {
     large = {

@@ -77,6 +77,7 @@ in {
 
             bind $key $func_name
         end
+
       ''
       + lib.optionalString pkgs.stdenv.isDarwin
       # fish
@@ -220,6 +221,7 @@ in {
         CACHIX_AUTH_TOKEN = "op://Services/Cachix/token";
         GEMINI_API_KEY = "op://Services/Google Gemini/token";
         GITHUB_TOKEN = "op://Services/GitHub Home/token";
+        HOMEKIT_MCP_TOKEN = "op://Services/HomeBar MCP/credential";
         OPENAI_API_KEY = "op://Services/OpenAI/token";
       };
     };
