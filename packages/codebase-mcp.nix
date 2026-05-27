@@ -8,16 +8,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "codebase-mcp";
-  version = "1.2.0";
+  version = "1.2.1";
 
   src = fetchFromGitHub {
-    owner = "DisturbedOcean";
+    owner = "ndhkaeru";
     repo = "codebase-mcp";
-    rev = "4e1508324b9ec89a654988b38a79a175b893a789";
-    hash = "sha256-yrtdilQeLvmyXTUgtp5tZOPp2xuUFj3An2f4oPZfVlw=";
+    rev = "bfa4cd9705c05a02c6da7735f4ce817010089839";
+    hash = "sha256-aII4TQaoPKaa4iZHi4bKspJ/i/vDP2dyUWZ+cKQy9jc=";
   };
 
-  cargoHash = "sha256-wBweOPf0ZL55S/MsXx3e6/a+cDgj1qBqYBjWYI9wWIc=";
+  cargoHash = "sha256-ePvZRo1VaGrfBnpaGv2ZEf/KRoxA4HZbjzvjuJYRD8k=";
   doCheck = false;
 
   nativeBuildInputs = [
@@ -35,7 +35,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = {
     description = "A local-first MCP server for real codebases with 37 tools";
-    homepage = "https://github.com/DisturbedOcean/codebase-mcp";
+    homepage = "https://github.com/ndhkaeru/codebase-mcp";
     license = lib.licenses.asl20;
     mainProgram = pname;
   };
