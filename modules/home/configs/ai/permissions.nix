@@ -62,6 +62,7 @@
         ["readlink"]
         ["realpath"]
         ["rg"]
+        ["rtk" ["git" "nvim" "rg"]]
         ["sed" "-n"]
         ["sort"]
         ["stat"]

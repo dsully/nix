@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   my,
   perSystem,
@@ -168,11 +169,79 @@
       )
       events
     );
+
+  codexEventLabels = {
+    PreToolUse = "pre_tool_use";
+    PermissionRequest = "permission_request";
+    PostToolUse = "post_tool_use";
+    PreCompact = "pre_compact";
+    PostCompact = "post_compact";
+    SessionStart = "session_start";
+    UserPromptSubmit = "user_prompt_submit";
+    SubagentStart = "subagent_start";
+    SubagentStop = "subagent_stop";
+    Stop = "stop";
+  };
+
+  codexConfigFile = "${config.xdg.configHome}/codex/config.toml";
+
+  codexHookHash = eventName: groupDef: hookDef: let
+    matcher = groupDef.matcher or null;
+    eventLabel = codexEventLabels.${eventName};
+    normalizedHook =
+      {
+        type = "command";
+        inherit (hookDef) command;
+        timeout = hookDef.timeout or 600;
+        async = hookDef.async or false;
+      }
+      // lib.optionalAttrs (hookDef ? statusMessage) {
+        inherit (hookDef) statusMessage;
+      };
+    normalizedIdentity =
+      {
+        event_name = eventLabel;
+        hooks = [normalizedHook];
+      }
+      // lib.optionalAttrs (matcher != null) {inherit matcher;};
+  in "sha256:${builtins.hashString "sha256" (builtins.toJSON normalizedIdentity)}";
+
+  codexHookStateEntry = eventName: groupIndex: hookIndex: groupDef: hookDef:
+    lib.nameValuePair
+    "${codexConfigFile}:${codexEventLabels.${eventName}}:${toString groupIndex}:${toString hookIndex}"
+    {trusted_hash = codexHookHash eventName groupDef hookDef;};
+
+  codexHookStateForGroup = eventName: groupIndex: groupDef:
+    lib.imap0 (
+      hookIndex: hookDef:
+        codexHookStateEntry eventName groupIndex hookIndex groupDef hookDef
+    )
+    groupDef.hooks;
+
+  codexHookStateForEvent = eventName: groups:
+    lib.flatten (
+      lib.imap0 (
+        groupIndex: groupDef:
+          codexHookStateForGroup eventName groupIndex groupDef
+      )
+      groups
+    );
+
+  renderCodex = let
+    renderedEvents = renderEvents "codex";
+    stateEntries = lib.flatten (
+      lib.mapAttrsToList codexHookStateForEvent renderedEvents
+    );
+  in
+    renderedEvents
+    // {
+      state = builtins.listToAttrs stateEntries;
+    };
 in {
   inherit events;
 
   claude = renderEvents "claude";
-  codex = renderEvents "codex";
+  codex = renderCodex;
 
   # OpenCode's JSON schema does not expose native lifecycle hooks.
   opencode = {};

@@ -181,7 +181,6 @@ function main
 
     # Validate input
     if test -z "$input"
-        echo '{"decision": "approve"}'
         exit 0
     end
 
@@ -231,8 +230,7 @@ function main
         end
     end
 
-    # Default is approve
-    echo '{"decision": "approve"}'
+    # No match: allow the tool call by producing no hook decision.
 end
 
 # Execute script

@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   lib,
   my,
@@ -268,7 +269,7 @@
     lib.catAttrs "plugin" aiSources
   ) (_: lib.mkDefault true);
 
-  hooks = import ./hooks.nix {inherit lib my perSystem pkgs;};
+  hooks = import ./hooks.nix {inherit config lib my perSystem pkgs;};
   mcpServersMuxed = lib.mapAttrs (_: muxWrap) mcpServers;
   permissions = import ./permissions.nix {inherit lib;};
 in {
