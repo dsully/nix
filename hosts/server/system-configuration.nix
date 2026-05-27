@@ -26,52 +26,33 @@ in {
 
     environment = {
       etc = lib.mapAttrs (_: v: v // {replaceExisting = true;}) {
-        "sudoers.d/10-nix-commands".source = pkgs.replaceVars ./files/sudoers-nix {
-          systemManager = "${system-manager}/bin/system-manager";
-          lix = lib.getExe pkgs.lix;
-        };
-
-        "sudoers.d/dsully".source = pkgs.replaceVars ./files/sudoers-dsully {
-          liquidctl = lib.getExe pkgs.liquidctl;
-        };
-
-        "sudoers.d/vopono".source = ./files/sudoers-vopono;
-        "sudoers.d/homebridge".source = ./files/sudoers-homebridge;
-        "sudoers.d/netdata".source = ./files/sudoers-netdata;
-
+        "avahi/smb.service".source = ./files/avahi-smb.service;
+        "cloudflared/config.yml".source = ./files/cloudflared-config.yml;
+        "cockpit/cockpit.conf".source = ./files/cockpit.conf;
+        "default/homebridge".source = ./files/homebridge.default;
         "doas.conf" = {
           source = ./files/doas.conf;
           mode = "0400";
         };
-
-        "netplan/01-netcfg.yaml".source = ./files/01-netcfg.yaml;
-
-        "ssh/sshd_config.d/10-local.conf".source = ./files/sshd-10-local.conf;
-
-        "rsyncd.conf".source = ./files/rsyncd.conf;
-
-        "samba/smb.conf".source = ./files/smb.conf;
-
-        "udev/rules.d/71-liquidctl.rules".source = "${pkgs.liquidctl}/lib/udev/rules.d/71-liquidctl.rules";
-
+        "environment".source = ./files/environment;
         "modprobe.d/blacklist-dsully.conf".source = ./files/modprobe-blacklist-dsully.conf;
         "modprobe.d/i915.conf".source = ./files/modprobe-i915.conf;
         "modprobe.d/zfs.conf".source = ./files/modprobe-zfs.conf;
-
+        "netplan/01-netcfg.yaml".source = ./files/01-netcfg.yaml;
+        "samba/smb.conf".source = ./files/smb.conf;
+        "sanoid/sanoid.conf".source = ./files/sanoid.conf;
+        "ssh/sshd_config.d/10-local.conf".source = ./files/sshd-10-local.conf;
+        "sudoers.d/10-nix-commands".source = pkgs.replaceVars ./files/sudoers-nix {
+          systemManager = "${system-manager}/bin/system-manager";
+          lix = lib.getExe pkgs.lix;
+        };
+        "sudoers.d/dsully".source = pkgs.replaceVars ./files/sudoers-dsully {liquidctl = lib.getExe pkgs.liquidctl;};
+        "sudoers.d/homebridge".source = ./files/sudoers-homebridge;
+        "sudoers.d/netdata".source = ./files/sudoers-netdata;
+        "sudoers.d/vopono".source = ./files/sudoers-vopono;
         "sysctl.d/90-local.conf".source = ./files/sysctl-90-local.conf;
         "sysctl.d/99-tailscale.conf".source = ./files/sysctl-99-tailscale.conf;
-
-        "avahi/smb.service".source = ./files/avahi-smb.service;
-
-        "default/homebridge".source = ./files/homebridge.default;
-
-        "environment".source = ./files/environment;
-
-        "cloudflared/config.yml".source = ./files/cloudflared-config.yml;
-
-        "sanoid/sanoid.conf".source = ./files/sanoid.conf;
-
-        "cockpit/cockpit.conf".source = ./files/cockpit.conf;
+        "udev/rules.d/71-liquidctl.rules".source = "${pkgs.liquidctl}/lib/udev/rules.d/71-liquidctl.rules";
       };
 
       systemPackages = with pkgs; [
@@ -99,17 +80,6 @@ in {
             "RUST_LOG=info"
             "PATH=/usr/sbin:/usr/bin:/sbin:/bin"
           ];
-        };
-      };
-
-      rsync = smService {
-        description = "rsync daemon";
-        after = ["network.target"];
-        serviceConfig = {
-          Type = "forking";
-          ExecStart = "${lib.getExe pkgs.rsync} --daemon";
-          PIDFile = "/run/rsyncd.pid";
-          Restart = "on-failure";
         };
       };
 
