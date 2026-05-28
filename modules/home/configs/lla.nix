@@ -18,6 +18,7 @@ in {
         # fish
         ''
           set -l args
+          set -l paths
 
           for arg in $argv
               if string match -qr '^-[A-Za-z0-9]+$' -- $arg
@@ -35,10 +36,20 @@ in {
                   end
               else
                   set -a args $arg
+
+                  if not string match -q -- '-*' $arg
+                      set -a paths $arg
+                  end
               end
           end
 
-          ${lib.getExe pkgs.lla} $args
+          if test (count $paths) -gt 1
+              ${pkgs.coreutils}/bin/ls $argv
+          else if test (count $paths) -eq 1; and not test -d $paths[1]
+              ${pkgs.coreutils}/bin/ls $argv
+          else
+              ${lib.getExe pkgs.lla} $args
+          end
         '';
     };
 
