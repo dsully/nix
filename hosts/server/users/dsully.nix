@@ -9,7 +9,8 @@
   # inherit (flake.inputs.home-manager.lib.hm.dag) entryAfter;
   cachixAuthTokenPath = ".config/cachix/auth-token";
   homeDir = config.home.homeDirectory;
-  vopono-config = "${homeDir}/.cache/vopono/wg.conf";
+  voponoConfigPath = ".config/vopono/protonvpn-us-ca52.conf";
+  voponoConfig = "${homeDir}/${voponoConfigPath}";
 in {
   imports = [
     flake.homeModules.dsully
@@ -58,6 +59,14 @@ in {
 
   nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
 
+  xdg.configFile."vopono/config.toml".source = (pkgs.formats.toml {}).generate "vopono-config" {
+    interface = "eth0";
+    protocol = "Wireguard";
+    provider = "Custom";
+    custom = voponoConfig;
+    custom_netns_name = "vpn";
+  };
+
   programs = {
     fish = {
       completions."stash-tool" =
@@ -90,8 +99,8 @@ in {
       };
       voponoConfig = {
         reference = "op://Services/ProtonVPN Tunnel/config";
-        path = vopono-config;
-        mode = "0640";
+        path = voponoConfigPath;
+        mode = "0600";
         group = config.system.primaryGroup;
       };
       mullvadAccount = {
@@ -165,6 +174,7 @@ in {
       Unit = {
         Description = "Vopono qBittorrent";
         Wants = ["network-online.target"];
+        X-SwitchMethod = "keep-old";
         # Note: vopono-daemon.service is a system service so cross-boundary ordering
         # doesn't work. The user service relies on RestartSec to retry until the daemon is ready.
         After = ["local-fs.target" "network-online.target" "nss-lookup.target"];
@@ -184,7 +194,7 @@ in {
           "--forward=9091"
           "--protocol=Wireguard"
           "--custom-netns-name=vpn"
-          "--custom=${vopono-config}"
+          "--custom=${voponoConfig}"
           "--no-killswitch"
           "--allow-host-access"
           "--custom-port-forwarding=protonvpn"
@@ -197,6 +207,7 @@ in {
         # Give qBittorrent time to save resume data and remove its instance
         # socket on stop, rather than hitting the 90s default and getting SIGKILLed.
         TimeoutStopSec = "180s";
+        KillSignal = "SIGINT";
         Type = "simple";
       };
       Install = {
