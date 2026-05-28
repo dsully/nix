@@ -15,6 +15,7 @@ in {
     ./claude-code.nix
     ./codeburn.nix
     ./codex.nix
+    ./icm.nix
     ./opencode.nix
   ];
 
@@ -45,7 +46,6 @@ in {
         )
         ++ (with my.pkgs; [
           git-remote-mcp
-          icm
           indxr
           just-mcp
           mcp-mux

@@ -32,17 +32,17 @@
     }
     // lib.optionalAttrs (matcher != null) {inherit matcher;};
 
+  icmEnabled = config.programs.icm.enable or true;
+
   events = {
-    PreCompact = [
-      (group {
-        hooks = [
-          (hook {
-            name = "icm-compact";
-            command = "${lib.getExe my.pkgs.icm} hook compact";
-          })
-        ];
-      })
-    ];
+    PreCompact = lib.optional icmEnabled (group {
+      hooks = [
+        (hook {
+          name = "icm-compact";
+          command = "${lib.getExe my.pkgs.icm} hook compact";
+        })
+      ];
+    });
 
     PreToolUse = [
       (group {
@@ -62,80 +62,78 @@
       })
       (group {
         matcher = "Bash";
-        hooks = [
-          (hook {
-            name = "prefer-indxr-diff-summary";
-            command = ''
-              if printf '%s' "$TOOL_INPUT" | grep -qE 'git\s+diff'; then
-                echo 'IMPORTANT: Use indxr get_diff_summary MCP tool instead of git diff (requires --all-tools). It shows structural changes (added/removed/modified declarations) at ~200-500 tokens vs thousands for raw diffs. Example: get_diff_summary(since_ref: "main")'
-              fi
-            '';
-          })
-          (hook {
-            name = "enforce-uv";
-            command = "${./hooks/enforce-uv.fish}";
-          })
-          (hook {
-            name = "rtk-rewrite";
-            command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
-            targets = ["claude"];
-          })
-          (hook {
+        hooks =
+          [
+            (hook {
+              name = "prefer-indxr-diff-summary";
+              command = ''
+                if printf '%s' "$TOOL_INPUT" | grep -qE 'git\s+diff'; then
+                  echo 'IMPORTANT: Use indxr get_diff_summary MCP tool instead of git diff (requires --all-tools). It shows structural changes (added/removed/modified declarations) at ~200-500 tokens vs thousands for raw diffs. Example: get_diff_summary(since_ref: "main")'
+                fi
+              '';
+            })
+            (hook {
+              name = "enforce-uv";
+              command = "${./hooks/enforce-uv.fish}";
+            })
+            (hook {
+              name = "rtk-rewrite";
+              command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
+              targets = ["claude"];
+            })
+          ]
+          ++ lib.optional icmEnabled (hook {
             name = "icm-pre";
             command = "${lib.getExe my.pkgs.icm} hook pre";
-          })
-        ];
+          });
       })
     ];
 
     PostToolUse = [
       (group {
         matcher = "Edit|Write|MultiEdit";
-        hooks = [
-          (hook {
-            name = "format-written-file";
-            command =
-              # bash
-              ''
-                file_path="$1"
-                case "$file_path" in
-                  *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
-                  *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
-                  *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
-                esac
-              '';
-            targets = ["claude"];
-            timeout = 10;
-          })
-          (hook {
+        hooks =
+          [
+            (hook {
+              name = "format-written-file";
+              command =
+                # bash
+                ''
+                  file_path="$1"
+                  case "$file_path" in
+                    *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
+                    *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
+                    *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
+                  esac
+                '';
+              targets = ["claude"];
+              timeout = 10;
+            })
+          ]
+          ++ lib.optional icmEnabled (hook {
             name = "icm-post";
             command = "${lib.getExe my.pkgs.icm} hook post";
-          })
-        ];
+          });
       })
     ];
 
-    SessionStart = [
-      (group {
-        hooks = [
-          (hook {
-            name = "icm-start";
-            command = "${lib.getExe my.pkgs.icm} hook start";
-          })
-        ];
-      })
-    ];
+    SessionStart = lib.optional icmEnabled (group {
+      hooks = [
+        (hook {
+          name = "icm-start";
+          command = "${lib.getExe my.pkgs.icm} hook start";
+        })
+      ];
+    });
 
-    UserPromptSubmit = [
-      (group {
-        hooks = [
-          (hook {
-            name = "icm-prompt";
-            command = "${lib.getExe my.pkgs.icm} hook prompt";
-          })
-        ];
-      })
-    ];
+    UserPromptSubmit = lib.optional icmEnabled (group {
+      hooks = [
+        (hook {
+          name = "icm-prompt";
+          command = "${lib.getExe my.pkgs.icm} hook prompt";
+        })
+      ];
+    });
   };
 
   supportsTarget = target: hookDef: builtins.elem target hookDef.targets;
