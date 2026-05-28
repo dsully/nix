@@ -187,7 +187,7 @@
 
   models = {
     large = {
-      model = "claude-opus-4-7";
+      model = "claude-opus-4-8";
       provider = "anthropic";
       max_tokens = 1000000;
       reasoning_effort = "medium";
