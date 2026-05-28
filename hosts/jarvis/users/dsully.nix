@@ -1,4 +1,5 @@
 {
+  ai,
   config,
   flake,
   lib,
@@ -29,7 +30,30 @@
       ]);
   };
 
+  packageTools.python = [
+    {package = "unifi-mcp-server";}
+  ];
+
   programs = {
+    mcp.servers = {
+      homekit = {
+        type = "http";
+        url = "http://localhost:5333/mcp";
+        headers = {
+          Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
+        };
+      };
+      unifi = ai.muxWrap {
+        command = "${config.home.homeDirectory}/.local/bin/unifi-mcp-server";
+        env = {
+          UNIFI_API_TYPE = "local";
+          UNIFI_DEFAULT_SITE = "default";
+          UNIFI_LOCAL_HOST = "10.0.0.1";
+          UNIFI_LOCAL_VERIFY_SSL = "false";
+        };
+      };
+    };
+
     opencode.extraPlugins = [
       "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
       "opencode-gemini-auth"
