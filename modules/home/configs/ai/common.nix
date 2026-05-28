@@ -157,6 +157,7 @@
         "--features"
         "inspection,remotes,worktrees,notes"
       ];
+      disabled = true;
     };
     git-remote = {
       command = lib.getExe my.pkgs.git-remote-mcp;
@@ -167,6 +168,7 @@
     };
     just = {
       command = lib.getExe my.pkgs.just-mcp;
+      disabled = true;
     };
     nixos = {
       command = lib.getExe pkgs.mcp-nixos;
