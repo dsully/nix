@@ -168,19 +168,11 @@
     just = {
       command = lib.getExe my.pkgs.just-mcp;
     };
-    mcp-rust-builder = {
-      command = lib.getExe my.pkgs.mcp-rust-builder;
-      disabled = true;
-    };
     nixos = {
       command = lib.getExe pkgs.mcp-nixos;
       env = {
         PYTHON_GIL = "1";
       };
-      disabled = true;
-    };
-    rust-analyzer = {
-      command = lib.getExe my.pkgs.mcp-rust-analyzer;
       disabled = true;
     };
   };

@@ -49,8 +49,6 @@ in {
           indxr
           just-mcp
           mcp-mux
-          mcp-rust-analyzer
-          mcp-rust-builder
           mcp-server-git-rs
           mcptools
           open-ralph-wiggum
