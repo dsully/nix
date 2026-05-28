@@ -10,6 +10,8 @@ export NH_PRESERVE_ENV := "1"
 NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
 SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run nixpkgs#system-manager --" }
 NH_ARGS := "--ask --keep-failed --keep-going"
+NH_CLEAN_ARGS := "clean all --no-gcroots --no-direnv --optimise --keep-one --cross-filesystems"
+USER_HOME := home_directory()
 
 # This list
 default:
@@ -79,8 +81,14 @@ repl:
 alias clean := gc
 
 [group('nix')]
+[linux]
 gc:
-    nh clean all --no-gcroots --no-direnv --optimise --keep-one --cross-filesystems
+    @doas {{ USER_HOME }}/.local/state/nix/profile/bin/nh {{ NH_CLEAN_ARGS }}
+
+[group('nix')]
+[macos]
+gc:
+    @{{ NH }} {{ NH_CLEAN_ARGS }}
 
 # Format the nix files in this repo
 
