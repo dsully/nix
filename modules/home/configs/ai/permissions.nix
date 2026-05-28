@@ -129,6 +129,8 @@
 
     directory = {
       allow = [
+        "${config.home.homeDirectory}/dev"
+        "${config.home.homeDirectory}/src"
         "/tmp"
         "/var"
       ];

@@ -2,6 +2,7 @@
   ai,
   config,
   lib,
+  mutableConfig,
   perSystem,
   ...
 }: let
@@ -11,7 +12,16 @@
   # generated from `programs.mcp.servers`, but the merge is shallow per server
   # name, so each entry here must be complete rather than a partial overlay.
   mcpServersAutoApprove = ai.permissions.codex.mcpServers ai.mcpServers;
+  configPath = "${config.xdg.configHome}/codex/config.toml";
 in {
+  imports = [
+    (mutableConfig.toml {
+      name = "codex";
+      target = "codex/config.toml";
+      managed = config.programs.codex.settings;
+    })
+  ];
+
   programs.codex = {
     enable = true;
 
@@ -81,4 +91,8 @@ in {
     # `default.rules` smart-approvals allow-list is left untouched.
     rules.common = ai.permissions.codex.rules.common;
   };
+
+  # The module would symlink config.toml read-only into the /nix/store, which
+  # prevents Codex from persisting interactive trust decisions.
+  home.file."${configPath}".enable = lib.mkForce false;
 }
