@@ -11,8 +11,9 @@
   # The home-manager Codex module merges `settings.mcp_servers` over entries
   # generated from `programs.mcp.servers`, but the merge is shallow per server
   # name, so each entry here must be complete rather than a partial overlay.
-  mcpServersAutoApprove = ai.permissions.codex.mcpServers ai.mcpServers;
+  mcpServersAutoApprove = ai.permissions.codex.mcpServers config.programs.mcp.servers;
   configPath = "${config.xdg.configHome}/codex/config.toml";
+  homeFileConfigPath = lib.removePrefix config.home.homeDirectory configPath;
 in {
   imports = [
     (mutableConfig.toml {
@@ -94,5 +95,5 @@ in {
 
   # The module would symlink config.toml read-only into the /nix/store, which
   # prevents Codex from persisting interactive trust decisions.
-  home.file."${configPath}".enable = lib.mkForce false;
+  home.file."${homeFileConfigPath}".enable = lib.mkForce false;
 }

@@ -11,14 +11,11 @@
   # shares one upstream process across all concurrent MCP client sessions.
   # See https://github.com/thebtf/mcp-mux.
   muxWrap = server:
-    if server ? command
-    then
-      server
-      // {
-        command = lib.getExe my.pkgs.mcp-mux;
-        args = [server.command] ++ (server.args or []);
-      }
-    else server;
+    server
+    // {
+      command = lib.getExe my.pkgs.mcp-mux;
+      args = [server.command] ++ (server.args or []);
+    };
 
   agentDescription = file: let
     text = builtins.readFile file;
@@ -150,54 +147,43 @@
     };
   };
 
-  mcpServers =
-    {
-      codebase = {
-        command = lib.getExe my.pkgs.codebase-mcp;
-      };
-      git = {
-        command = lib.getExe my.pkgs.mcp-server-git-rs;
-        args = [
-          "--features"
-          "inspection,remotes,worktrees,notes"
-        ];
-      };
-      git-remote = {
-        command = lib.getExe my.pkgs.git-remote-mcp;
-      };
-      indxr = {
-        command = lib.getExe my.pkgs.indxr;
-        args = ["serve" "." "--all-tools"];
-      };
-      just = {
-        command = lib.getExe my.pkgs.just-mcp;
-      };
-      mcp-rust-builder = {
-        command = lib.getExe my.pkgs.mcp-rust-builder;
-        disabled = true;
-      };
-      nixos = {
-        command = lib.getExe pkgs.mcp-nixos;
-        env = {
-          PYTHON_GIL = "1";
-        };
-        disabled = true;
-      };
-      rust-analyzer = {
-        command = lib.getExe my.pkgs.mcp-rust-analyzer;
-        disabled = true;
-      };
-    }
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {
-      homekit = {
-        type = "http";
-        url = "http://localhost:5333/mcp";
-        headers = {
-          Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
-        };
-        disabled = true;
-      };
+  mcpServers = {
+    codebase = {
+      command = lib.getExe my.pkgs.codebase-mcp;
     };
+    git = {
+      command = lib.getExe my.pkgs.mcp-server-git-rs;
+      args = [
+        "--features"
+        "inspection,remotes,worktrees,notes"
+      ];
+    };
+    git-remote = {
+      command = lib.getExe my.pkgs.git-remote-mcp;
+    };
+    indxr = {
+      command = lib.getExe my.pkgs.indxr;
+      args = ["serve" "." "--all-tools"];
+    };
+    just = {
+      command = lib.getExe my.pkgs.just-mcp;
+    };
+    mcp-rust-builder = {
+      command = lib.getExe my.pkgs.mcp-rust-builder;
+      disabled = true;
+    };
+    nixos = {
+      command = lib.getExe pkgs.mcp-nixos;
+      env = {
+        PYTHON_GIL = "1";
+      };
+      disabled = true;
+    };
+    rust-analyzer = {
+      command = lib.getExe my.pkgs.mcp-rust-analyzer;
+      disabled = true;
+    };
+  };
 
   models = {
     large = {
@@ -284,7 +270,20 @@
   ) (_: lib.mkDefault true);
 
   hooks = import ./hooks.nix {inherit config lib my perSystem pkgs;};
-  mcpServersMuxed = lib.mapAttrs (_: muxWrap) mcpServers;
+
+  # Servers that must launch directly, never via mcp-mux. indxr serves a
+  # workspace-scoped index from the client's CWD, so a shared mux process would
+  # bind it to the wrong workspace for every other session.
+  noMuxServers = ["indxr"];
+
+  mcpServersMuxed =
+    lib.mapAttrs (
+      name: server:
+        if builtins.elem name noMuxServers
+        then server
+        else muxWrap server
+    )
+    mcpServers;
   permissions = import ./permissions.nix {inherit config lib;};
 in {
   inherit
@@ -297,6 +296,7 @@ in {
     lsp
     mkAI
     models
+    muxWrap
     permissions
     ;
 
