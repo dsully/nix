@@ -10,7 +10,6 @@
     flake.homeModules.dsully
     flake.homeModules.ai
     flake.homeModules.meridian
-    # flake.homeModules.cachix-watch-store
     flake.homeModules.paste
     flake.homeModules.xdg-open-svc
     ../options.nix
@@ -63,7 +62,11 @@
           };
 
           misc = {
-            only = ["brew_formula" "brew_cask" "git_repos"];
+            only = [
+              "brew_formula"
+              "brew_cask"
+              "git_repos"
+            ];
           };
         }
       ];

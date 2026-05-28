@@ -4,7 +4,7 @@
   my,
   ...
 }: {
-  config.home = {
+  home = {
     packages = with pkgs;
       [
         (lib.hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
@@ -51,7 +51,7 @@
       ]);
   };
 
-  config.packageTools.python = [
+  packageTools.python = [
     {package = "httptap";}
   ];
 }
