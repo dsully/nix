@@ -68,6 +68,7 @@
       "CotEditor" = 1024640650;
       "Dato" = 1470584107;
       "DevCleaner" = 1388020431;
+      "Devly" = 6759269801;
       "Editorio" = 6759334075;
       "File Icons for GitHub and GitLab" = 1631366167;
       "Hyperspace" = 6739505345;
@@ -84,9 +85,12 @@
       "Slack" = 803453959;
       "TestFlight" = 899247664;
       "Text Lens" = 6743369285;
+      "Trackless Links Pro" = 6754613166;
       "TrashMe 3" = 1490879410;
       "Tuneful" = 6739804295;
+      "USB Connection Info" = 6747853674;
       "Userscripts" = 1463298887;
+      "Vidi" = 6755982989;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
       "WordService" = 899972312;
