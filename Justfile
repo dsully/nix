@@ -119,7 +119,7 @@ init-from-url URL *args:
     OUTPUT_FILE=packages/"${LAST_COMPONENT}.nix"
 
     # Run nix-init with the specified parameters
-    nix-init {{ args }} -u "{{ URL }}" "${OUTPUT_FILE}"
+    nix-package-add {{ args }} "{{ URL }}"
 
 # https://github.com/stefanzweifel/git-auto-commit-action
 
