@@ -38,7 +38,7 @@
     mcp.servers = {
       homekit = {
         type = "http";
-        url = "http://localhost:5333/mcp";
+        url = "http://127.0.0.1:5333/mcp";
         headers = {
           Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
         };

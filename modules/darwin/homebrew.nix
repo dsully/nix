@@ -17,6 +17,7 @@
         HOMEBREW_NO_COMPAT = "1";
         HOMEBREW_NO_ENV_HINTS = "1";
         HOMEBREW_NO_INSTALL_CLEANUP = "1";
+        HOMEBREW_NO_REQUIRE_TAP_TRUST = "1";
       };
       upgrade = false;
     };
