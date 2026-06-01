@@ -160,24 +160,32 @@ in {
 
     sessionPath = [config.xdg.binHome "${config.home.homeDirectory}/.cargo/bin"];
 
-    sessionVariables = {
-      # Silence direnv logging. Hook is invoked via vendor_conf.d/
-      DIRENV_LOG_FORMAT = "";
+    sessionVariables =
+      lib.optionalAttrs pkgs.stdenv.isDarwin {
+        HOMEBREW_NO_ANALYTICS = "1";
+        HOMEBREW_NO_COMPAT = "1";
+        HOMEBREW_NO_ENV_HINTS = "1";
+        HOMEBREW_NO_INSTALL_CLEANUP = "1";
+        HOMEBREW_NO_REQUIRE_TAP_TRUST = "1";
+      }
+      // {
+        # Silence direnv logging. Hook is invoked via vendor_conf.d/
+        DIRENV_LOG_FORMAT = "";
 
-      # Python
-      PIP_CACHE_DIR = "${config.xdg.cacheHome}/pip";
-      PIP_CONFIG_FILE = "${config.xdg.configHome}/pip/pip.conf";
-      PIP_DISABLE_PIP_VERSION_CHECK = "1";
-      PIP_REQUIRE_VIRTUALENV = "1";
-      POETRY_CACHE_DIR = "${config.xdg.cacheHome}/poetry";
-      POETRY_CONFIG_DIR = "${config.xdg.configHome}/poetry";
-      POETRY_DATA_DIR = "${config.xdg.dataHome}/poetry";
-      PYTHONDONTWRITEBYTECODE = "1";
-      PTPYTHON_CONFIG_HOME = "${config.xdg.configHome}/ptpython";
-      VIRTUAL_ENV_DISABLE_PROMPT = "1";
+        # Python
+        PIP_CACHE_DIR = "${config.xdg.cacheHome}/pip";
+        PIP_CONFIG_FILE = "${config.xdg.configHome}/pip/pip.conf";
+        PIP_DISABLE_PIP_VERSION_CHECK = "1";
+        PIP_REQUIRE_VIRTUALENV = "1";
+        POETRY_CACHE_DIR = "${config.xdg.cacheHome}/poetry";
+        POETRY_CONFIG_DIR = "${config.xdg.configHome}/poetry";
+        POETRY_DATA_DIR = "${config.xdg.dataHome}/poetry";
+        PYTHONDONTWRITEBYTECODE = "1";
+        PTPYTHON_CONFIG_HOME = "${config.xdg.configHome}/ptpython";
+        VIRTUAL_ENV_DISABLE_PROMPT = "1";
 
-      XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
-    };
+        XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
+      };
   };
 
   manual.manpages.enable = false;
