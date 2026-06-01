@@ -38,7 +38,10 @@ in {
         "modprobe.d/blacklist-dsully.conf".source = ./files/modprobe-blacklist-dsully.conf;
         "modprobe.d/i915.conf".source = ./files/modprobe-i915.conf;
         "modprobe.d/zfs.conf".source = ./files/modprobe-zfs.conf;
-        "netplan/01-netcfg.yaml".source = ./files/01-netcfg.yaml;
+        "netplan/01-netcfg.yaml" = {
+          source = ./files/01-netcfg.yaml;
+          mode = "0600";
+        };
         "samba/smb.conf".source = ./files/smb.conf;
         "sanoid/sanoid.conf".source = ./files/sanoid.conf;
         "sudoers.d/10-nix-commands".source = pkgs.replaceVars ./files/sudoers-nix {
