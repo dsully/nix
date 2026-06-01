@@ -207,12 +207,33 @@
   expandedAllowPrefixes = lib.concatMap shellPrefixAlternatives allowPrefixes;
   allowPrefixStrings = lib.unique (map shellPrefixString expandedAllowPrefixes);
 
-  codexMcpServerAutoApprove = server:
-    (lib.removeAttrs server ["disabled"])
-    // {
-      enabled = !(server.disabled or false);
-      default_tools_approval_mode = "approve";
-    };
+  # Codex does not expand placeholders in MCP headers; it reads the token from
+  # the environment via bearer_token_env_var instead. Convert any http server
+  # whose Authorization header is `Bearer {env:NAME}` into that native form,
+  # dropping the header so Codex receives a token it can actually send.
+  codexBearerEnvVar = server: let
+    match = builtins.match "Bearer \\{env:([^}]+)\\}" (server.headers.Authorization or "");
+  in
+    if match == null
+    then null
+    else builtins.head match;
+
+  codexMcpServerAutoApprove = server: let
+    envVar = codexBearerEnvVar server;
+    remainingHeaders = lib.removeAttrs (server.headers or {}) ["Authorization"];
+    base =
+      (lib.removeAttrs server ["disabled"])
+      // {
+        enabled = !(server.disabled or false);
+        default_tools_approval_mode = "approve";
+      };
+  in
+    if envVar == null
+    then base
+    else
+      (lib.removeAttrs base ["headers"])
+      // {bearer_token_env_var = envVar;}
+      // lib.optionalAttrs (remainingHeaders != {}) {headers = remainingHeaders;};
 
   opencodeShellPermissions =
     attrsWithDecision "allow" (map (prefix: "${prefix} *") allowPrefixStrings)

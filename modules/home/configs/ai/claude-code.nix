@@ -39,6 +39,27 @@
     )
     ai.lsp;
 
+  # Claude Code expands ${VAR} in MCP headers, while the canonical
+  # programs.mcp.servers uses the {env:VAR} form that opencode consumes
+  # verbatim. Rewrite the placeholder for any http server with headers and feed
+  # it back as programs.claude-code.mcpServers, which the module merges over the
+  # generated set per server name. Mirrors the module's own mkMcpServer so the
+  # overriding entry stays complete.
+  rewriteEnvPlaceholders = lib.replaceStrings ["{env:"] ["\${"];
+
+  claudeMcpServers =
+    lib.mapAttrs (
+      _: server:
+        (lib.removeAttrs server ["disabled"])
+        // lib.optionalAttrs (server ? url) {type = "http";}
+        // lib.optionalAttrs (server ? command) {type = "stdio";}
+        // {
+          enabled = !(server.disabled or false);
+          headers = lib.mapAttrs (_: rewriteEnvPlaceholders) server.headers;
+        }
+    )
+    (lib.filterAttrs (_: server: server ? headers) config.programs.mcp.servers);
+
   settings = {
     inherit (ai.models.large) model;
 
@@ -110,6 +131,8 @@ in {
 
     inherit (ai) agents;
     inherit settings;
+
+    mcpServers = claudeMcpServers;
 
     configDir = "${config.xdg.configHome}/claude";
 

@@ -122,9 +122,9 @@ then read only what you need.
   instructed to do so and ALWAYS analyze them first to take it as a guideline
   for coding standards.
 
-- NEVER EVER PERFORM any operations that you can do with your internal tools
-  through cli tools. DO NOT use `sed` for commands directly just use available
-  editing tools, DO NOT use `cat` for writing scripts and similar.
+- NEVER EVER PERFORM any operations that you can do with your internal tools and MCPs (codebase)
+  through cli tools. DO NOT use "`sed"` or "read" for commands directly just use available
+  editing tools, DO NOT use "`cat"` for writing scripts and similar.
 
 ## Python
 
