@@ -124,6 +124,13 @@ in {
     })
   ];
 
+  home = {
+    packages = with perSystem.llm-agents; [
+      # Used by codecompanion
+      claude-agent-acp
+    ];
+  };
+
   programs.claude-code = {
     enable = true;
     package = perSystem.llm-agents.claude-code;

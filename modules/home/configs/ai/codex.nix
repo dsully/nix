@@ -23,6 +23,12 @@ in {
     })
   ];
 
+  home = {
+    packages = with perSystem.llm-agents; [
+      codex-acp
+    ];
+  };
+
   programs.codex = {
     enable = true;
 

@@ -36,7 +36,6 @@ in {
         NPM_CONFIG_CACHE = npmCacheDir;
         NPM_CONFIG_PREFIX = npmCacheDir;
         NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
-        NPM_CONFIG_USERCONFIG = "${config.xdg.configHome}/npm/config";
       };
     };
   };

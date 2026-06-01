@@ -24,22 +24,10 @@ in {
       inherit ai;
     };
 
-    packageTools = {
-      javascript = [
-        "opencode-claude-auth"
-        "opencode-gemini-auth@latest"
-        "opencode-with-claude"
-      ];
-    };
-
     home = {
       packages =
         (
           with perSystem.llm-agents; [
-            # Used by codecompanion
-            claude-agent-acp
-            codex
-            codex-acp
             ralph-tui
             rtk
           ]
