@@ -64,9 +64,14 @@
     then ''! ${onHomeLan} && ${tsPeerOnline} ${name}''
     else "${tsPeerOnline} ${name}";
 
+  # ControlMaster=no only prevents *creating* a master; ssh will still reuse an
+  # existing socket at ControlPath. Since SetEnv/SendEnv are applied once at
+  # master setup, a stale master makes these hosts serve empty SSH_CLIENT_*.
+  # ControlPath=none is the only setting that guarantees a fresh connection.
   muxOff = {
     ControlMaster = "no";
     ControlPersist = "no";
+    ControlPath = "none";
   };
 
   # Hosts reachable on both a non-tailscale address (LAN or public) and
@@ -78,6 +83,7 @@
       ts = "zap.tail2ca1.ts.net";
       forward = true;
       noMux = false;
+      aliases = ["er"];
     };
     ca = {
       lan = "192.46.222.69";
@@ -95,7 +101,7 @@
       lan = "10.0.0.100";
       ts = "server.tail2ca1.ts.net";
       forward = true;
-      noMux = false;
+      noMux = true;
     };
   };
 
@@ -106,8 +112,13 @@
     then withRemoteForwards base
     else base;
 
+  # Key each Host block on its primary name plus any aliases ("Host zap er")
+  # so an alias inherits the same HostName, forwards, and mux settings.
+  mkHostBlocks = lib.mapAttrs' (n: s:
+    lib.nameValuePair (lib.concatStringsSep " " ([n] ++ (s.aliases or []))) (mkHost n s));
+
   mkTsMatch = name: s: {
-    header = ''Match originalhost ${name} exec "${tsExec name s.lan}"'';
+    header = ''Match originalhost ${lib.concatStringsSep "," ([name] ++ (s.aliases or []))} exec "${tsExec name s.lan}"'';
     HostName = s.ts;
   };
 
@@ -155,7 +166,7 @@ in {
             ControlPersist = "no";
           };
         }
-        // (lib.mapAttrs mkHost publicDual)
+        // (mkHostBlocks publicDual)
         // publicTsMatches)
 
       (lib.mkIf (hostName != "friday") {
@@ -212,7 +223,7 @@ in {
             HostName = "10.0.0.95";
           };
         }
-        // (lib.mapAttrs mkHost jarvisDual)
+        // (mkHostBlocks jarvisDual)
         // jarvisTsMatches
       ))
     ];

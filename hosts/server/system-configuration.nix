@@ -41,7 +41,6 @@ in {
         "netplan/01-netcfg.yaml".source = ./files/01-netcfg.yaml;
         "samba/smb.conf".source = ./files/smb.conf;
         "sanoid/sanoid.conf".source = ./files/sanoid.conf;
-        "ssh/sshd_config.d/10-local.conf".source = ./files/sshd-10-local.conf;
         "sudoers.d/10-nix-commands".source = pkgs.replaceVars ./files/sudoers-nix {
           systemManager = "${system-manager}/bin/system-manager";
           lix = lib.getExe pkgs.lix;
