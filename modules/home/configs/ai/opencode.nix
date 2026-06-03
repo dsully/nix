@@ -74,19 +74,17 @@ in {
     };
   };
 
-  config.packageTools = {
-    javascript = [
-      "opencode-claude-auth"
-      "opencode-gemini-auth@latest"
-      "opencode-with-claude"
-    ];
-  };
-
   config.programs.opencode = {
     enable = true;
     package = perSystem.llm-agents.opencode;
 
     enableMcpIntegration = true;
+    extraPlugins = [
+      "context-mode"
+      "opencode-claude-auth"
+      "opencode-gemini-auth@latest"
+      "opencode-with-claude"
+    ];
 
     inherit (ai) agents;
 
