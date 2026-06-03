@@ -10,7 +10,7 @@
   hook = {
     name,
     command,
-    targets ? ["claude" "codex"],
+    targets ? ["claude" "codex" "pi"],
     timeout ? null,
     async ? null,
     statusMessage ? null,
@@ -136,7 +136,9 @@
     });
   };
 
-  supportsTarget = target: hookDef: builtins.elem target hookDef.targets;
+  supportsTarget = target: hookDef:
+    builtins.elem target hookDef.targets
+    && !(target == "pi" && lib.hasPrefix "icm-" hookDef.name);
 
   renderHook = hookDef:
     command (
@@ -240,6 +242,7 @@ in {
 
   claude = renderEvents "claude";
   codex = renderCodex;
+  pi = renderEvents "pi";
 
   # OpenCode's JSON schema does not expose native lifecycle hooks.
   opencode = {};

@@ -17,6 +17,7 @@ in {
     ./codex.nix
     ./icm.nix
     ./opencode.nix
+    ./pi.nix
   ];
 
   config = {
@@ -128,6 +129,11 @@ in {
           claude.enable = true;
           codex.enable = true;
           opencode.enable = true;
+          pi = {
+            enable = true;
+            dest = "${config.home.homeDirectory}/.pi/agent/skills";
+            structure = "symlink-tree";
+          };
         };
       };
     };
