@@ -212,7 +212,7 @@
   # whose Authorization header is `Bearer {env:NAME}` into that native form,
   # dropping the header so Codex receives a token it can actually send.
   codexBearerEnvVar = server: let
-    match = builtins.match "Bearer \\{env:([^}]+)\\}" (server.headers.Authorization or "");
+    match = builtins.match "Bearer [{]env:([A-Za-z_][A-Za-z0-9_]*)[}]" (server.headers.Authorization or "");
   in
     if match == null
     then null

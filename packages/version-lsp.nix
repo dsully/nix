@@ -10,7 +10,7 @@
     };
     x86_64-linux = {
       suffix = "Linux_x86_64";
-      hash = "sha256:6c9f64448c5e05ab4ab6a8be0233c918cc999c18776e047e7a9baa6b473111f6";
+      hash = "sha256-FXsbom60Hu98Lb5l0BF6YNrChbKBsw9KuerYkqleEb0=";
     };
   };
   source =

@@ -27,7 +27,7 @@
     headersWithoutAuthorization = lib.removeAttrs (server.headers or {}) ["Authorization"];
     bearerEnv =
       if builtins.isString authorization
-      then builtins.match "Bearer \\{env:([A-Za-z_][A-Za-z0-9_]*)\\}" authorization
+      then builtins.match "Bearer [{]env:([A-Za-z_][A-Za-z0-9_]*)[}]" authorization
       else null;
   in
     if bearerEnv == null
