@@ -6,7 +6,7 @@
   packages = {
     aarch64-darwin = {
       suffix = "Darwin_arm64";
-      hash = "sha256:18bb0c9ab20e5815b9752ee88c7dbcb939f3db16645d46662a69b3d9531d03f2";
+      hash = "sha256-mpOpD4cdNcCry1LtbI7e9mCZGlzFGgq838DAqtvwRCU=";
     };
     x86_64-linux = {
       suffix = "Linux_x86_64";
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "version-lsp";
-    version = "0.5.1";
+    version = "0.6.0";
 
     src = pkgs.fetchurl {
       url = "https://github.com/skanehira/${pname}/releases/download/v${version}/${pname}_${source.suffix}.tar.gz";
