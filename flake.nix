@@ -15,6 +15,7 @@
     # neovim-nightly-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
     system-manager.url = "github:numtide/system-manager";
+    system-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-auth.url = "github:numtide/nix-auth";
     nix-auth.inputs.nixpkgs.follows = "nixpkgs";
@@ -41,6 +42,7 @@
     wshobson-agents.flake = false;
 
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
+    agent-skills.inputs.nixpkgs.follows = "nixpkgs";
 
     idjoo-skills.url = "github:idjoo/skills";
     idjoo-skills.flake = false;
