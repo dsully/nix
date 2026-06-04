@@ -1,0 +1,28 @@
+Make the build output monitor configurable via the NH_MONITOR environment
+variable (defaulting to `nom`). This lets a drop-in monitor such as rom
+(github.com/manic-systems/rom) consume the same `internal-json` stream that
+nh already pipes to nix-output-monitor, without changing nh's behaviour for
+anyone who hasn't set NH_MONITOR.
+
+diff --git a/crates/nh-core/src/command.rs b/crates/nh-core/src/command.rs
+--- a/crates/nh-core/src/command.rs
++++ b/crates/nh-core/src/command.rs
+@@ -972,13 +972,18 @@
+       .args(&self.extra_args);
+
+     if self.nom {
++      // Output monitor is configurable via NH_MONITOR (defaults to `nom`).
++      // Any monitor that reads Nix's `internal-json` stream on stdin via
++      // `--json` (e.g. rom) is a drop-in replacement.
++      let monitor =
++        std::env::var("NH_MONITOR").unwrap_or_else(|_| "nom".to_string());
+       let pipeline = {
+         base_command
+           .args(["--log-format", "internal-json", "--verbose"])
+           .stderr(Redirection::Merge)
+           .stdout(Redirection::Pipe)
+-          | Exec::cmd("nom").args(["--json"])
++          | Exec::cmd(&monitor).args(["--json"])
+       }
+       .stdout(Redirection::None);
+       debug!(?pipeline);

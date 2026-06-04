@@ -247,6 +247,8 @@
             inherit (llm-agents) claude-code;
             inherit (llm-agents) opencode;
           };
+          # nh wraps itself to use rom as its build output monitor.
+          nh = {inherit (selfPackages) rom;};
         };
       in {
         packages = selfPackages // {formatter = fmt;};
