@@ -3,6 +3,9 @@
   pkgs,
   stdenv,
 }: let
+  pname = "icm";
+  version = "0.10.50";
+
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
@@ -16,10 +19,14 @@
   source =
     packages.${stdenv.hostPlatform.system}
       or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+
+  plugin = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/rtk-ai/${pname}/${pname}-v${version}/plugins/opencode-icm.ts";
+    hash = "sha256-98chPzOOhHBWHD6T0Rn1Rs/b9jMYFtFsCW6/iFwax0w=";
+  };
 in
-  pkgs.stdenv.mkDerivation rec {
-    pname = "icm";
-    version = "0.10.50";
+  pkgs.stdenv.mkDerivation {
+    inherit pname version;
 
     src = pkgs.fetchurl {
       url = "https://github.com/rtk-ai/${pname}/releases/download/${pname}-v${version}/${pname}-${source.suffix}.tar.gz";
@@ -35,6 +42,7 @@ in
       runHook preInstall
 
       install -m755 -D ${pname} $out/bin/${pname}
+      install -m644 -D ${plugin} $out/plugins/opencode-icm.ts
 
       runHook postInstall
     '';
