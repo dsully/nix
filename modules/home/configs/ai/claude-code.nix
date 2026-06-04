@@ -1,6 +1,7 @@
 {
   ai,
   config,
+  inputs,
   lib,
   mutableConfig,
   perSystem,
@@ -79,13 +80,17 @@
         "code-review@claude-plugins-official" = lib.mkDefault true;
         "code-simplifier@claude-plugins-official" = lib.mkDefault true;
         "commit-commands@claude-plugins-official" = lib.mkDefault true;
+        "context-mode@context-mode" = lib.mkDefault true;
         "feature-dev@claude-plugins-official" = lib.mkDefault true;
         "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-        "ralph-loop@claude-plugins-official" = lib.mkDefault true;
-        "rust-analyzer-lsp@claude-plugins-official" = lib.mkDefault true;
         "superpowers@claude-plugins-official" = lib.mkDefault true;
       }
       // ai.enabledPlugins;
+
+    extraKnownMarketplaces.context-mode.source = {
+      source = "directory";
+      path = inputs.context-mode;
+    };
 
     hooks = lib.mkDefault ai.hooks.claude;
 

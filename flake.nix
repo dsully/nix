@@ -38,6 +38,9 @@
     claude-plugins-official.url = "github:anthropics/claude-plugins-official";
     claude-plugins-official.flake = false;
 
+    context-mode.url = "github:mksglu/context-mode";
+    context-mode.flake = false;
+
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 
