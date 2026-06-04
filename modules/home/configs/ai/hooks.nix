@@ -89,11 +89,11 @@
       })
     ];
 
-    PostToolUse = [
-      (group {
-        matcher = "Edit|Write|MultiEdit";
-        hooks =
-          [
+    PostToolUse =
+      [
+        (group {
+          matcher = "Edit|Write|MultiEdit";
+          hooks = [
             (hook {
               name = "format-written-file";
               command =
@@ -109,13 +109,19 @@
               targets = ["claude"];
               timeout = 10;
             })
-          ]
-          ++ lib.optional icmEnabled (hook {
+          ];
+        })
+      ]
+      # icm extracts facts from *all* tool output every N calls, so it must not
+      # be scoped to file-mutation tools. No matcher = fires on every tool.
+      ++ lib.optional icmEnabled (group {
+        hooks = [
+          (hook {
             name = "icm-post";
             command = "${lib.getExe my.pkgs.icm} hook post";
-          });
-      })
-    ];
+          })
+        ];
+      });
 
     SessionStart = lib.optional icmEnabled (group {
       hooks = [
