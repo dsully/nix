@@ -81,9 +81,6 @@ in {
     enableMcpIntegration = true;
     extraPlugins = [
       "context-mode"
-      "opencode-claude-auth"
-      "opencode-gemini-auth@latest"
-      "opencode-with-claude"
     ];
 
     inherit (ai) agents;

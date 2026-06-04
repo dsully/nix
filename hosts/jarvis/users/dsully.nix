@@ -56,7 +56,6 @@
 
     opencode.extraPlugins = [
       "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
-      "opencode-gemini-auth"
     ];
 
     onepassword-secrets.secrets = {

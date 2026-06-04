@@ -83,7 +83,6 @@
       "Tuneful" = 6739804295;
       "USB Connection Info" = 6747853674;
       "Userscripts" = 1463298887;
-      "Vidi" = 6755982989;
       "WiFi Signal" = 525912054;
       "Wipr" = 1662217862;
       "WordService" = 899972312;

@@ -219,10 +219,9 @@ in {
     "fish/secrets.yaml".source = yamlFormat.generate "fish-secrets-yaml" {
       secrets = {
         CACHIX_AUTH_TOKEN = "op://Services/Cachix/token";
-        GEMINI_API_KEY = "op://Services/Google Gemini/token";
         GITHUB_TOKEN = "op://Services/GitHub Home/token";
         HOMEKIT_MCP_TOKEN = "op://Services/HomeBar MCP/credential";
-        OPENAI_API_KEY = "op://Services/OpenAI/token";
+        # OPENAI_API_KEY = "op://Services/OpenAI/token";
         UNIFI_API_KEY = "op://Services/UniFi API/credential";
       };
     };
