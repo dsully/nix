@@ -11,7 +11,18 @@ rustPlatform.buildRustPackage rec {
     owner = "manic-systems";
     repo = "rom";
     rev = "84824f78ca346fc2252591aa21f649f4c89feaf9";
-    hash = "sha256-/pv6/pAEtsKhPMg1/Z5v/FImbuj4xvpm4Ik0sK55t+Q=";
+    hash = "sha256-J4YhEWcZv/3DHJ0dIe9aykApwLd01Ro5KGZMhcVZp6A=";
+
+    # A test fixture embeds the literal store path of nixpkgs' fetch-builder
+    # `source-stdenv.sh`, which is also an inputSrc of this very FOD. Nix's
+    # reference scanner therefore rejects the fetched source. Neutralize the
+    # colliding path; the fixture is test-only and doCheck is disabled.
+    postFetch = ''
+      substituteInPlace $out/crates/cognos/src/aterm.rs \
+        --replace-fail \
+        '/nix/store/l622p70vy8k5sh7y5wizi5f2mic6ynpg-source-stdenv.sh' \
+        '/redacted/source-stdenv.sh'
+    '';
   };
 
   cargoHash = "sha256-FvBdpEgFv/WHrfe0U2oy4k7neCN7iOSmNJhNxWNI1Kc=";
