@@ -2,8 +2,8 @@
   ai,
   config,
   lib,
-  mutableConfig,
   perSystem,
+  pkgs,
   ...
 }: let
   codexAgentRoles = lib.mapAttrs (_: description: {inherit description;}) ai.descriptions;
@@ -14,15 +14,9 @@
   mcpServersAutoApprove = ai.permissions.codex.mcpServers config.programs.mcp.servers;
   configPath = "${config.xdg.configHome}/codex/config.toml";
   homeFileConfigPath = lib.removePrefix config.home.homeDirectory configPath;
-in {
-  imports = [
-    (mutableConfig.toml {
-      name = "codex";
-      target = "codex/config.toml";
-      managed = config.programs.codex.settings;
-    })
-  ];
 
+  settingsFile = (pkgs.formats.toml {}).generate "codex-config.toml" config.programs.codex.settings;
+in {
   home = {
     packages = with perSystem.llm-agents; [
       codex-acp
@@ -100,6 +94,11 @@ in {
   };
 
   # The module would symlink config.toml read-only into the /nix/store, which
-  # prevents Codex from persisting interactive trust decisions.
+  # prevents Codex from writing at runtime. Disable that and install a writable
+  # copy instead; each activation overwrites it with declared state.
   home.file."${homeFileConfigPath}".enable = lib.mkForce false;
+
+  home.activation.codexSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD install -Dm600 ${settingsFile} ${configPath}
+  '';
 }
