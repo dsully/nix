@@ -36,7 +36,7 @@
     ${tailscaleBin} status --json 2>/dev/null \
       | ${pkgs.jq}/bin/jq -e --arg h "$1" \
           'any(.Peer[]?; (.DNSName | startswith($h + ".")) and .Online == true)' \
-          >/dev/null
+          >/dev/null 2>&1
   '';
 
   # The single LAN whose direct addresses are preferable to the tailscale
