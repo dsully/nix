@@ -6,11 +6,8 @@
   pkgs,
   ...
 }: let
-  piPackage = perSystem.llm-agents.pi;
   jsonFormat = pkgs.formats.json {};
-  hasBuiltInExtensions =
-    builtins.pathExists "${piPackage}/examples/extensions"
-    || builtins.pathExists "${piPackage}/lib/node_modules/pi-monorepo/examples/extensions";
+  piPath = "${config.home.homeDirectory}/.pi/agent";
 
   rewriteEnvPlaceholders = lib.replaceStrings ["{env:"] ["\${"];
   rewriteMcpValue = value:
@@ -46,77 +43,28 @@
 
   piMcpServers = lib.mapAttrs (_: piMcpServer) config.programs.mcp.servers;
 in {
-  imports = [
-    ../../pi.nix
-  ];
+  home = {
+    file = {
+      "${piPath}/mcp.json" = lib.mkIf (piMcpServers != {}) {
+        source = jsonFormat.generate "pi-mcp.json" {
+          mcpServers = piMcpServers;
+        };
+      };
 
-  home.file."${config.home.homeDirectory}/.pi/agent/mcp.json" = lib.mkIf (piMcpServers != {}) {
-    source = jsonFormat.generate "pi-mcp.json" {
-      mcpServers = piMcpServers;
+      "${piPath}/themes/nord.json".source = ./pi/nord.json;
+    };
+
+    sessionVariables = {
+      PI_SKIP_VERSION_CHECK = "1";
+      PI_TELEMETRY = "0";
     };
   };
 
-  programs.pi = {
+  programs.pi-coding-agent = {
     enable = true;
+    package = perSystem.llm-agents.pi;
 
-    agentsMd = builtins.readFile ./AGENTS.md;
-
-    builtInExtensions = lib.mkIf hasBuiltInExtensions {
-      permissionGate = true;
-      protectedPaths = true;
-      confirmDestructive = true;
-      dirtyRepoGuard = true;
-
-      todo = false;
-
-      notify = false;
-      statusLine = false;
-      modelStatus = false;
-
-      inlineBash = true;
-      tools = true;
-      handoff = true;
-      qna = true;
-
-      titlebarSpinner = true;
-      triggerCompact = true;
-      sessionName = true;
-      preset = true;
-    };
-
-    packageExtensions = [
-      "npm:@agnishc/edb-session-manager"
-      # "npm:@aliou/pi-processes"
-      "npm:@gotgenes/pi-subagents"
-      "npm:@hsingjui/pi-hooks"
-      "npm:@juicesharp/rpiv-ask-user-question"
-      "npm:@juicesharp/rpiv-btw"
-      "npm:@narumitw/pi-goal"
-      "npm:context-mode"
-      "npm:pi-continue"
-      # "npm:pi-fff"
-      "npm:pi-icm-hook"
-      "npm:pi-lens"
-      "npm:pi-mcp-adapter"
-      "npm:pi-mermaid"
-      "npm:pi-permission-system"
-      # "npm:pi-powerline"
-      # "npm:pi-powerline-melbourne"
-      "npm:pi-qq"
-      "npm:pi-rtk-optimizer"
-      "npm:pi-session-exporter"
-      "npm:pi-simplify"
-      "npm:pi-sticky-input"
-      "npm:pi-sticky-prompt" # Has optional macOS/Swift companion
-      "npm:pi-tool-display"
-      # "npm:pi-vitals"
-      "npm:@pi-unipi/notify"
-      "npm:@vanillagreen/pi-skills-manager"
-    ];
-
-    # extensions = [
-    #   ./pi/autocomplete-above-editor.ts
-    # ];
+    context = ./AGENTS.md;
 
     settings = {
       collapseChangelog = true;
@@ -131,15 +79,42 @@ in {
       quietStartup = true;
       skipApprovals = true;
 
+      npmCommand = [(lib.getExe pkgs.bun)];
+      packages = lib.unique [
+        "npm:@agnishc/edb-session-manager"
+        # "npm:@aliou/pi-processes"
+        "npm:@gotgenes/pi-subagents"
+        "npm:@hsingjui/pi-hooks"
+        "npm:@juicesharp/rpiv-ask-user-question"
+        "npm:@juicesharp/rpiv-btw"
+        "npm:@narumitw/pi-goal"
+        "npm:context-mode"
+        "npm:pi-continue"
+        # "npm:pi-fff"
+        "npm:pi-icm-hook"
+        "npm:pi-lens"
+        "npm:pi-mcp-adapter"
+        "npm:pi-mermaid"
+        "npm:pi-permission-system"
+        # "npm:pi-powerline"
+        # "npm:pi-powerline-melbourne"
+        "npm:pi-qq"
+        "npm:pi-rtk-optimizer"
+        "npm:pi-session-exporter"
+        "npm:pi-simplify"
+        "npm:pi-sticky-input"
+        "npm:pi-sticky-prompt" # Has optional macOS/Swift companion
+        "npm:pi-tool-display"
+        # "npm:pi-vitals"
+        "npm:@pi-unipi/notify"
+        "npm:@vanillagreen/pi-skills-manager"
+      ];
+
       terminal = {
         showTerminalProgress = true;
       };
 
       theme = "nord";
     };
-
-    themes = [
-      ./pi/nord.json
-    ];
   };
 }
