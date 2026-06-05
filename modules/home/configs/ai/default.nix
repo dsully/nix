@@ -28,6 +28,11 @@ in {
     home = {
       packages =
         (
+          with pkgs; [
+            entire
+          ]
+        )
+        ++ (
           with perSystem.llm-agents; [
             ralph-tui
             rtk
