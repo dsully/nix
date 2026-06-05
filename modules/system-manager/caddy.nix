@@ -17,7 +17,7 @@
   # so it is re-fetched (never persisted) on every boot. Caddy reads it via the
   # {file.*} placeholder in the Caddyfile.
   cloudflareTokenPath = "/run/secrets/caddy/cloudflare-token";
-  linodeTokenPath = "/run/secrets/caddy/linod-token";
+  linodeTokenPath = "/run/secrets/caddy/linode-token";
 in {
   imports = [./opnix.nix];
 
