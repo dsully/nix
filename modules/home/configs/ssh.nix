@@ -79,34 +79,34 @@
   # overrides HostName to the ts.net name when tailscaled is up.
   dual = {
     zap = {
-      lan = "172.104.194.233";
+      ip = "172.104.194.233";
       ts = "zap.tail2ca1.ts.net";
       forward = true;
-      noMux = false;
+      mux = true;
       aliases = ["er"];
     };
     ca = {
-      lan = "192.46.222.69";
+      ip = "192.46.222.69";
       ts = "ca.tail2ca1.ts.net";
       forward = false;
-      noMux = true;
+      mux = false;
     };
     tnt = {
-      lan = "172.236.14.101";
+      ip = "172.236.14.101";
       ts = "tnt.tail2ca1.ts.net";
       forward = false;
-      noMux = true;
+      mux = false;
     };
     server = {
-      lan = "10.0.0.100";
+      ip = "10.0.0.100";
       ts = "server.tail2ca1.ts.net";
       forward = true;
-      noMux = true;
+      mux = true;
     };
   };
 
   mkHost = _: s: let
-    base = {HostName = s.lan;} // lib.optionalAttrs s.noMux muxOff;
+    base = {HostName = s.ip;} // lib.optionalAttrs (!s.mux) muxOff;
   in
     if s.forward
     then withRemoteForwards base
@@ -118,7 +118,7 @@
     lib.nameValuePair (lib.concatStringsSep " " ([n] ++ (s.aliases or []))) (mkHost n s));
 
   mkTsMatch = name: s: {
-    header = ''Match originalhost ${lib.concatStringsSep "," ([name] ++ (s.aliases or []))} exec "${tsExec name s.lan}"'';
+    header = ''Match originalhost ${lib.concatStringsSep "," ([name] ++ (s.aliases or []))} exec "${tsExec name s.ip}"'';
     HostName = s.ts;
   };
 
