@@ -24,6 +24,7 @@
       "disks.fish"
       "dmesg.fish"
       "systemctl.fish"
+      "vpn.fish"
     ];
 
   platformDir =
