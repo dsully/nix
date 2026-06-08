@@ -258,9 +258,11 @@ in rec {
         ++ (map (claudePath "Read") taxonomy.read.allow)
         ++ (map claudeSkill taxonomy.skill.allow)
         ++ (map (claudePath "Write") taxonomy.write.allow)
-        ++ lib.optionals taxonomy.mcp.autoAllowServers [
-          "mcp__*"
-        ];
+        # Claude rejects a server-position glob (mcp__*); enumerate each
+        # configured server as mcp__<name> to auto-allow all of its tools.
+        ++ lib.optionals taxonomy.mcp.autoAllowServers (
+          map (name: "mcp__${name}") (lib.attrNames config.programs.mcp.servers)
+        );
 
       ask =
         (map claudeExactShell shell.askCommands)
