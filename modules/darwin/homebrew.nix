@@ -29,7 +29,6 @@
       "fastmail"
       "font-monaspace"
       "ghostty"
-      "jazzyalex/agent-sessions/agent-sessions"
       "keka"
       "little-snitch"
       "lunar"
@@ -90,7 +89,6 @@
     };
 
     taps = [
-      "jazzyalex/agent-sessions"
       "steipete/tap" # repobar
     ];
   };
