@@ -24,7 +24,6 @@
         lla
         mdterm
         moor
-        mtr
         p7zip
         prmt
         procs
@@ -35,6 +34,7 @@
         sad
         sd
         tree
+        ttl
         unzip
         viu
         wget
