@@ -19,27 +19,39 @@
     then map rewriteMcpValue value
     else value;
 
+  # Normalize via lib.hm.mcp.transformMcpServer to drop the typed schema's null
+  # and empty-default fields and resolve `enabled`. pi consumes the legacy
+  # `disabled` flag (which transformMcpServer strips), so re-attach it afterwards.
   piMcpServer = server: let
     authorization = server.headers.Authorization or null;
-    headersWithoutAuthorization = lib.removeAttrs (server.headers or {}) ["Authorization"];
+    headersWithoutAuthorization = lib.removeAttrs server.headers ["Authorization"];
     bearerEnv =
       if builtins.isString authorization
       then builtins.match "Bearer [{]env:([A-Za-z_][A-Za-z0-9_]*)[}]" authorization
       else null;
+
+    transformed = lib.hm.mcp.transformMcpServer {
+      inherit server;
+      exclude = ["enabled"];
+      extraTransforms = [
+        (s:
+          if bearerEnv == null
+          then rewriteMcpValue s
+          else
+            (rewriteMcpValue (
+              (lib.removeAttrs s ["headers"])
+              // lib.optionalAttrs (headersWithoutAuthorization != {}) {
+                headers = headersWithoutAuthorization;
+              }
+            ))
+            // {
+              auth = "bearer";
+              bearerTokenEnv = builtins.head bearerEnv;
+            })
+      ];
+    };
   in
-    if bearerEnv == null
-    then rewriteMcpValue server
-    else
-      (rewriteMcpValue (
-        (lib.removeAttrs server ["headers"])
-        // lib.optionalAttrs (headersWithoutAuthorization != {}) {
-          headers = headersWithoutAuthorization;
-        }
-      ))
-      // {
-        auth = "bearer";
-        bearerTokenEnv = builtins.elemAt bearerEnv 0;
-      };
+    transformed // lib.optionalAttrs (server.enabled == false) {disabled = true;};
 
   piMcpServers = lib.mapAttrs (_: piMcpServer) config.programs.mcp.servers;
 in {

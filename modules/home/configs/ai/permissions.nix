@@ -218,22 +218,29 @@
     then null
     else builtins.head match;
 
+  # The Codex module replaces its generated mcp_servers entry with the one in
+  # settings.mcp_servers per server name (a shallow `//`), so this must emit a
+  # complete entry. Mirror the module's lib.hm.mcp.transformMcpServer normalization
+  # (drop `headers`/`type`, resolve `enabled`, filter nulls/empty defaults), then
+  # add the auto-approve flag and rewrite Bearer auth into Codex's native form.
   codexMcpServerAutoApprove = server: let
     envVar = codexBearerEnvVar server;
-    remainingHeaders = lib.removeAttrs (server.headers or {}) ["Authorization"];
-    base =
-      (lib.removeAttrs server ["disabled"])
-      // {
-        enabled = !(server.disabled or false);
-        default_tools_approval_mode = "approve";
-      };
+    remainingHeaders = lib.removeAttrs server.headers ["Authorization"];
   in
-    if envVar == null
-    then base
-    else
-      (lib.removeAttrs base ["headers"])
-      // {bearer_token_env_var = envVar;}
-      // lib.optionalAttrs (remainingHeaders != {}) {headers = remainingHeaders;};
+    lib.hm.mcp.transformMcpServer {
+      inherit server;
+      exclude = ["headers" "type"];
+      extraTransforms = [
+        (s:
+          if envVar == null
+          then s // lib.optionalAttrs (s.headers != {}) {http_headers = s.headers;}
+          else
+            s
+            // {bearer_token_env_var = envVar;}
+            // lib.optionalAttrs (remainingHeaders != {}) {http_headers = remainingHeaders;})
+        (s: s // {default_tools_approval_mode = "approve";})
+      ];
+    };
 
   opencodeShellPermissions =
     attrsWithDecision "allow" (map (prefix: "${prefix} *") allowPrefixStrings)
