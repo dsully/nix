@@ -6,7 +6,7 @@
   packages = {
     aarch64-darwin = {
       suffix = "macos-arm64";
-      hash = "sha256-OQISSGSP+gDGtQfDJwJLugnWl1oOzkIsGN94w9HTtOs=";
+      hash = "sha256-2FznQZoZOWeJFxj0buv2N7iKDqPIlgyAJ8pIDrOGPX8=";
     };
     x86_64-linux = {
       suffix = "linux-x86_64";
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "clean-dev-dirs";
-    version = "2.8.1";
+    version = "2.8.2";
 
     src = pkgs.fetchurl {
       url = "https://github.com/${pname}/${pname}/releases/download/v${version}/${pname}-${version}-${source.suffix}.tar.gz";
