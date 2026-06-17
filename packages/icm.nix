@@ -42,7 +42,16 @@ in
       runHook preInstall
 
       install -m755 -D ${pname} $out/bin/${pname}
-      install -m644 -D ${plugin} $out/plugins/opencode-icm.ts
+
+      # The upstream OpenCode plugin logs to stderr (`[icm] plugin loaded`,
+      # `[icm] injected N lines ...`, etc.). OpenCode surfaces plugin stderr
+      # in its UI, so that chatter leaks into the conversation view. Strip
+      # every console.error/console.warn call (single- and multi-line) before
+      # installing. Done here rather than upstream because the plugin is a
+      # hash-pinned fetchurl that we cannot edit in place.
+      ${pkgs.perl}/bin/perl -0pe 's/^[ \t]*console\.(error|warn)\([^;]*?\);?[ \t]*\n//gms' \
+        ${plugin} > opencode-icm.ts
+      install -m644 -D opencode-icm.ts $out/plugins/opencode-icm.ts
 
       runHook postInstall
     '';
