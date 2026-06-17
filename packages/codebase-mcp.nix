@@ -8,16 +8,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "codebase-mcp";
-  version = "1.3.0";
+  version = "1.3.1";
 
   src = fetchFromGitHub {
     owner = "ndhkaeru";
     repo = "codebase-mcp";
-    rev = "2a675201e6ab1a3e5a68134b99bbdbda1309d99f";
-    hash = "sha256-94v1H3+qi6dYJHcoMf3pI+dNW1dA9XNwgSVjvgF7kiI=";
+    rev = "48b30f15a64fdfbea15c5005e3dac2627b2113a0";
+    hash = "sha256-tTD1ulW+iqqg5N/uNlCizBrKf1td7iGgsSWi/j2cUdY=";
   };
 
-  cargoHash = "sha256-Qln6bCch8eErKocOgowRcIGEgknTYpXKLRgmzkVUAxA=";
+  cargoHash = "sha256-8nLQ2uZUE09bV5qDrKUGu2fhpz97lSTiuDYgHc74jsQ=";
   doCheck = false;
 
   nativeBuildInputs = [
