@@ -9,7 +9,7 @@ rustPlatform.buildRustPackage {
   version = "0.1.0";
 
   src = fetchGit {
-    url = "git+ssh://git@github.com/dsully/git-remote-mcp";
+    url = "https://github.com/dsully/git-remote-mcp";
     rev = "ff7ae4ddd1d332634d940613e5a4fb97693e4563";
   };
 
