@@ -5,16 +5,16 @@
 }:
 buildGoModule rec {
   pname = "mcp-mux";
-  version = "0.26.7";
+  version = "0.26.8";
 
   src = fetchFromGitHub {
     owner = "thebtf";
     repo = "mcp-mux";
-    rev = "41a2d6728b87950b39fa0ca1cb80329ac616b63a";
-    hash = "sha256-aHG3+Mo/H9QMuX5eanBds9W2LiZaT3md/qwtotlUcJA=";
+    rev = "08731ba1faaef13dd664a3e6ef133a463934fc49";
+    hash = "sha256-RonBrps8WiqoV35IEcXczOx3X//wV7LN+21/nxLh0E4=";
   };
 
-  vendorHash = "sha256-FKLV7A2xTsOrG6nPdNr8tbSHaKLWhay+l3+WBpWb+YQ=";
+  vendorHash = "sha256-5+GgThQ14tTIlHwcMoo+fgIMzZx9xq5o3dTPW7MsFHQ=";
 
   subPackages = ["cmd/mcp-mux"];
 
