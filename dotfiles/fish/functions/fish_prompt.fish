@@ -50,8 +50,8 @@ function fish_prompt
             set -a icons "blue:󰀸:1"
         end
 
-        # C (color 149 = light blue/cyan)
-        if count *.c *.h >/dev/null 2>&1
+        # C (color 149 = light blue/cyan); suppressed when Objective-C files are present
+        if count *.c *.h >/dev/null 2>&1; and not count *.m *.mm >/dev/null 2>&1
             set -a icons "95d3af::1"
         end
 
@@ -80,6 +80,10 @@ function fish_prompt
             #set -a icons "blue:❄️:1"
         end
 
+        if count *.m *.mm >/dev/null 2>&1
+            set -a icons "blue::1"
+        end
+
         if count *.js >/dev/null 2>&1; or test -f package.json -o -f .node-version -o -f .nvmrc -o -d node_modules
             set -a icons "red::1"
         end
@@ -90,6 +94,10 @@ function fish_prompt
 
         if count *.swift >/dev/null 2>&1; or test -f Package.swift
             set -a icons "red:󰛥:1"
+        end
+
+        if count *.xcodeproj *.xcworkspace >/dev/null 2>&1
+            set -a icons "blue::1"
         end
 
         if count *.ts >/dev/null 2>&1
