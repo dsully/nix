@@ -54,7 +54,6 @@
     masApps = {
       "1Password for Safari" = 1569813296;
       "Amphetamine" = 937984704;
-      "Bonjourr Startpage" = 1615431236;
       "CleanMyKeyboard" = 6468120888;
       "Color Picker" = 1545870783;
       "CotEditor" = 1024640650;
@@ -62,7 +61,6 @@
       "DevCleaner" = 1388020431;
       "Devly" = 6759269801;
       "Editorio" = 6759334075;
-      "File Icons for GitHub and GitLab" = 1631366167;
       "Hyperspace" = 6739505345;
       "iPreview" = 1519213509;
       "JSONPeep" = 1458969831;
