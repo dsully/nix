@@ -30,8 +30,8 @@
       ]);
   };
 
-  packageTools.python = [
-    {package = "unifi-mcp-server";}
+  programs.uv.tool.packages = [
+    "unifi-mcp-server"
   ];
 
   programs = {

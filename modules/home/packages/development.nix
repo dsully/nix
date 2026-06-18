@@ -85,7 +85,6 @@ in {
       sqlite
       tree-sitter
       typos
-      uv
       xan
       yarn
       yq-go

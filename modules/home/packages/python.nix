@@ -1,81 +1,21 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
-  installScript =
-    lib.concatMapStringsSep "\n" (
-      tool: let
-        spec =
-          if tool.extras != ""
-          then "${tool.package}[${tool.extras}]"
-          else tool.package;
-
-        prereleaseFlag = lib.optionalString tool.prerelease "--prerelease=explicit";
-
-        withFlags = lib.concatMapStringsSep " " (dep: "--with '${dep}'") tool.withPackages;
-
-        pythonVersion =
-          if pkgs.stdenv.isDarwin
-          then "3.14+gil"
-          else "3.14";
-
-        installCmd = ''
-          ${lib.getExe pkgs.uv} tool install "${spec}" --python ${pythonVersion} --quiet --upgrade ${prereleaseFlag} ${withFlags}
-        '';
-
-        injectCmds =
-          lib.concatMapStringsSep "\n" (dep: ''
-            ${lib.getExe pkgs.uv} tool inject "${tool.package}" "${dep}" --quiet 2>/dev/null || true
-          '')
-          tool.inject;
-      in
-        installCmd + injectCmds
-    )
-    config.packageTools.python;
+let
+  pythonVersion = "3.14";
 in {
-  options.packageTools.python = lib.mkOption {
-    type = lib.types.listOf (
-      lib.types.submodule {
-        options = {
-          package = lib.mkOption {
-            type = lib.types.str;
-          };
+  programs.uv = {
+    enable = true;
 
-          extras = lib.mkOption {
-            type = lib.types.str;
-            default = "";
-          };
+    python = {
+      versions = [pythonVersion];
+      default = pythonVersion;
+    };
 
-          prerelease = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-          };
-
-          withPackages = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [];
-          };
-
-          inject = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [];
-          };
-        };
-      }
-    );
-    default = [];
+    # uv tool install takes no per-tool --python, so pin the interpreter
+    # globally: install/default 3.14 and refuse non-managed pythons.
+    settings = {
+      preview = true;
+      python-preference = "only-managed";
+    };
   };
 
-  config = {
-    home.activation.python = lib.mkIf (config.packageTools.python != []) (
-      lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        export PATH="${lib.makeBinPath [pkgs.git]}:$PATH"
-        ${installScript}
-      ''
-    );
-
-    xdg.configFile."ptpython/config.py".text = builtins.readFile ../../../dotfiles/ptpython/config.py;
-  };
+  xdg.configFile."ptpython/config.py".text = builtins.readFile ../../../dotfiles/ptpython/config.py;
 }

@@ -76,14 +76,14 @@ in {
       ]);
   };
 
-  packageTools.python = [
-    {package = "lizard";}
-    {package = "ptpython";}
-    {package = "pyproject";}
-    {package = "pyproject-fmt";}
-    {package = "pytest-language-server";}
-    {package = "python-code-splitter";}
-    {package = "xmlformatter";}
+  programs.uv.tool.packages = [
+    "lizard"
+    "ptpython"
+    "pyproject"
+    "pyproject-fmt"
+    "pytest-language-server"
+    "python-code-splitter"
+    "xmlformatter"
   ];
 
   xdg.configFile = {

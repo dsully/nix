@@ -51,7 +51,7 @@
       ]);
   };
 
-  packageTools.python = [
-    {package = "httptap";}
+  programs.uv.tool.packages = [
+    "httptap"
   ];
 }
