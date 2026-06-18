@@ -11,7 +11,6 @@
   aro = inputs.autoresearch-opencode;
 
   lspExtensions = {
-    helm = [".tpl" ".yaml"];
     lua = [".lua"];
     nix = [".nix"];
     rust = [".rs"];

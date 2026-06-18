@@ -67,10 +67,6 @@ function fish_prompt
             set -a icons "cyan::1"
         end
 
-        if test -f helmfile.yaml -o -f Chart.yaml
-            set -a icons "white:⎈:2"
-        end
-
         if count *.java *.class *.jar >/dev/null 2>&1; or test -f pom.xml
             set -a icons "red::1"
         end
@@ -86,14 +82,6 @@ function fish_prompt
 
         if count *.js >/dev/null 2>&1; or test -f package.json -o -f .node-version -o -f .nvmrc -o -d node_modules
             set -a icons "red::1"
-        end
-
-        if test -f Pulumi.yaml; or test -f Pulumi.yml
-            set -a icons "magenta::1"
-        end
-
-        if count *.py *.ipynb >/dev/null 2>&1; or test -f requirements.txt -o -f pyproject.toml -o -f Pipfile -o -f setup.py
-            set -a icons "yellow:󰌠:1"
         end
 
         if count *.rs >/dev/null 2>&1; or test -f Cargo.toml

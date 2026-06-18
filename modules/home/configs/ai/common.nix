@@ -113,10 +113,6 @@
       command = lib.getExe pkgs.bash-language-server;
       args = ["start"];
     };
-    helm = {
-      command = lib.getExe pkgs.helm-ls;
-      args = ["serve" "--stdio"];
-    };
     go = {
       command = lib.getExe pkgs.gopls;
     };

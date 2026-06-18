@@ -13,10 +13,6 @@
       ".bash" = "shellscript";
     };
     go = {".go" = "go";};
-    helm = {
-      ".tpl" = "helm";
-      ".yaml" = "helm";
-    };
     lua = {".lua" = "lua";};
     nix = {".nix" = "nix";};
     rust = {".rs" = "rust";};
