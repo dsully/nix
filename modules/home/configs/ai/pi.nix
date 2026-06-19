@@ -91,7 +91,7 @@ in {
       quietStartup = true;
       skipApprovals = true;
 
-      npmCommand = [(lib.getExe pkgs.bun)];
+      npmCommand = [(lib.getExe config.programs.bun.package)];
       packages = lib.unique [
         "npm:@agnishc/edb-session-manager"
         # "npm:@aliou/pi-processes"

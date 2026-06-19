@@ -5,14 +5,13 @@
   ...
 }: let
   bunInstallPath = "${config.home.homeDirectory}/.bun";
+  npmCacheDir = "${config.xdg.cacheHome}/npm";
 
   installScript =
     lib.concatMapStringsSep "\n" (pkg: ''
-      BUN_INSTALL="${bunInstallPath}" ${lib.getExe pkgs.bun} install -g "${pkg}" >/dev/null 2>&1 || echo "Warning: Failed to install ${pkg}"
+      BUN_INSTALL="${bunInstallPath}" ${lib.getExe config.programs.bun.package} install -g "${pkg}" >/dev/null 2>&1 || echo "Warning: Failed to install ${pkg}"
     '')
     config.packageTools.javascript;
-
-  npmCacheDir = "${config.xdg.cacheHome}/npm";
 in {
   options.packageTools.javascript = lib.mkOption {
     type = lib.types.listOf lib.types.str;
@@ -21,6 +20,18 @@ in {
   };
 
   config = lib.mkIf (config.packageTools.javascript != [] && pkgs.stdenv.isDarwin) {
+    programs = {
+      bun.enable = true;
+
+      npm = {
+        enable = true;
+        settings = {
+          prefix = npmCacheDir;
+          cache = npmCacheDir;
+        };
+      };
+    };
+
     home = {
       activation.npmTools = lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
         ${installScript}
@@ -33,8 +44,6 @@ in {
 
       sessionVariables = {
         BUN_INSTALL = bunInstallPath;
-        NPM_CONFIG_CACHE = npmCacheDir;
-        NPM_CONFIG_PREFIX = npmCacheDir;
         NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
       };
     };
