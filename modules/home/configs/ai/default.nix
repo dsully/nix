@@ -45,7 +45,6 @@ in {
           mcp-mux
           mcp-server-git-rs
           mcptools
-          open-ralph-wiggum
           rust-mcp-server
         ]);
 
