@@ -20,14 +20,20 @@ function commit -d "Stage and generate AI commit message from diff"
 
     set_color normal
 
-    set -l msg (git diff --cached | claude -p --model sonnet "Analyze this git diff and generate a concise, professional commit message following conventional commit format. Use the structure:
+    set -l prompt "Analyze this git diff and generate a concise, professional commit message following conventional commit format. Use the structure:
     <type>(<optional scope>): <short description><two newlines>
 
     <body and/or bullet points newline separated>
 
 Example types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
 Include a body for more details in bullet points.
-Just return the commit message as plain text. Do not wrap it in backticks or any other formatting." | string collect)
+Just return the commit message as plain text. Do not wrap it in backticks or any other formatting."
+
+    if command -q fm
+        set msg (git diff --cached | fm respond --no-stream --instructions "$prompt" | string collect)
+    else
+        set msg (git diff --cached | claude -p --model sonnet "$prompt" | string collect)
+    end
 
     if test -n "$issue"
         set msg (string join \n "$msg" "" "Fixes: $issue" | string collect)
