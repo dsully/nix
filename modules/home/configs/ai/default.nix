@@ -8,6 +8,14 @@
   ...
 }: let
   ai = import ./common.nix {inherit config inputs lib my perSystem pkgs;};
+
+  # headroom isn't in nixpkgs; it's installed via `uv tool` (headroom-ai[all])
+  # into xdg.binHome. The programs.headroom module bakes ${package}/bin/headroom
+  # into store-path launch wrappers, so hand it a store wrapper that execs the
+  # uv-managed binary by absolute path.
+  headroomBin = pkgs.writeShellScriptBin "headroom" ''
+    exec ${config.xdg.binHome}/headroom "$@"
+  '';
 in {
   imports = [
     inputs.agent-skills.homeManagerModules.default
@@ -15,6 +23,7 @@ in {
     ./claude-code.nix
     ./codeburn.nix
     ./codex.nix
+    ./headroom.nix
     ./icm.nix
     ./opencode.nix
     ./pi.nix
@@ -138,6 +147,22 @@ in {
             dest = "${config.home.homeDirectory}/.pi/agent/skills";
             structure = "symlink-tree";
           };
+        };
+      };
+
+      uv.tool.packages = [
+        "headroom-ai[all]"
+      ];
+
+      headroom = {
+        enable = true;
+        package = headroomBin;
+
+        integrations.claudeCode.enable = true;
+
+        optimization = {
+          interceptToolResults = true;
+          codeAware = true;
         };
       };
     };

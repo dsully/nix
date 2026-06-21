@@ -16,11 +16,27 @@
   homeFileConfigPath = lib.removePrefix config.home.homeDirectory configPath;
 
   settingsFile = (pkgs.formats.toml {}).generate "codex-config.toml" config.programs.codex.settings;
+
+  # Route Codex's OpenAI-compatible traffic through the Headroom Claude proxy,
+  # which serves OpenAI format on the same port under /v1. Scoped to Codex via a
+  # wrapper so OPENAI_BASE_URL doesn't leak to every other OpenAI client.
+  headroom = config.programs.headroom;
+  routeCodexViaHeadroom = headroom.enable && headroom.integrations.claudeCode.enable;
+  codexBaseUrl = "http://${headroom.integrations.claudeCode.host}:${toString headroom.integrations.claudeCode.port}/v1";
+  codexWrapper = pkgs.writeShellScript "codex" ''
+    export OPENAI_BASE_URL="${codexBaseUrl}"
+    exec ${lib.getExe config.programs.codex.package} "$@"
+  '';
 in {
   home = {
     packages = with perSystem.llm-agents; [
       codex-acp
     ];
+  };
+
+  home.file."${config.xdg.binHome}/codex" = lib.mkIf routeCodexViaHeadroom {
+    force = true;
+    source = codexWrapper;
   };
 
   programs.codex = {
