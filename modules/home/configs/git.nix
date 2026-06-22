@@ -135,7 +135,12 @@ in {
       "Thumbs.db"
 
       # Language servers
+      "buildServer.json"
       ".ccls-cache"
+      ".clangd-build-session"
+      ".compile"
+      "compile_commands.json"
+      ".nvim/xcodebuild"
       "/.pkl-lsp/"
 
       "# Rust"
