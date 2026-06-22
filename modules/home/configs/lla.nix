@@ -123,7 +123,16 @@ in {
         #   - "~/Library/Mobile Documents"  # macOS iCloud Drive (Mobile Documents)
         #   - "~/Library/CloudStorage"      # macOS cloud storage providers
         # Default: [] (no exclusions)
+        # Mirrors the ignore-globs set in lsd.nix
         exclude_paths = [
+          ".git"
+          ".mypy_cache"
+          ".pytest_cache"
+          ".ruff_cache"
+          "__breadboard__"
+          "__pycache__"
+          "__pypackages__"
+          "build-results"
         ];
 
         # Maximum depth for recursive directory traversal
@@ -246,7 +255,15 @@ in {
             #  - Regular expression: "regex:.*\\.pyc$"
             # Default: ["node_modules", "target", ".git", ".idea", ".vscode"]
             ignore_patterns = [
+              "glob:*.egg-info"
               ".git"
+              ".mypy_cache"
+              ".pytest_cache"
+              ".ruff_cache"
+              "__breadboard__"
+              "__pycache__"
+              "__pypackages__"
+              "build-results"
               ".idea"
               "node_modules"
               "target"
@@ -268,10 +285,11 @@ in {
         name = "nord";
 
         colors = {
-          file = c.white.dim;
-          directory = c.blue.base;
+          # Mirror the vivid nord LS_COLORS palette (di / ln / ex / fi)
+          file = c.cyan.bright;
+          directory = c.blue.bright;
           symlink = c.cyan.bright;
-          executable = c.white.bright;
+          executable = c.cyan.base;
 
           size = c.cyan.base;
           date = c.white.base;
@@ -286,58 +304,61 @@ in {
         };
 
         special_files = {
+          # vivid nord dims caches/build output (unimportant -> gray.base)
           folders = {
-            node_modules = {
-              h = 0;
-              s = 0;
-              l = 0.15;
-            };
-            target = c.white.dim;
-            dist = c.white.dim;
-            ".git" = c.blue.base;
-            build = c.white.dim;
-            ".cache" = c.white.dim;
+            node_modules = c.gray.base;
+            target = c.gray.base;
+            dist = c.gray.base;
+            ".git" = c.gray.base;
+            build = c.gray.base;
+            ".cache" = c.gray.base;
             "*-env" = c.white.bright;
             venv = c.white.bright;
             ".env" = c.white.bright;
-            "*.d" = c.cyan.bright;
-            "*_cache" = c.white.dim;
-            "*-cache" = c.white.dim;
+            "*.d" = c.white.bright;
+            "*_cache" = c.gray.base;
+            "*-cache" = c.gray.base;
           };
 
+          # vivid colors dotfiles/config like regular files (white.bright)
           dotfiles = {
-            ".gitignore" = c.blue.bright;
-            ".env" = c.blue.base;
-            ".dockerignore" = c.blue.bright;
-            ".editorconfig" = c.blue.bright;
-            ".prettierrc" = c.blue.bright;
-            ".eslintrc" = c.blue.bright;
-            ".babelrc" = c.blue.bright;
+            ".gitignore" = c.white.bright;
+            ".env" = c.white.bright;
+            ".dockerignore" = c.white.bright;
+            ".editorconfig" = c.white.bright;
+            ".prettierrc" = c.white.bright;
+            ".eslintrc" = c.white.bright;
+            ".babelrc" = c.white.bright;
           };
 
           exact_match = {
-            Dockerfile = c.blue.bright;
-            "docker-compose.yml" = c.blue.bright;
-            Makefile = c.red.base;
-            "CMakeLists.txt" = c.red.base;
-            "README.md" = c.blue.base;
-            LICENSE = c.blue.base;
-            "package.json" = c.blue.base;
-            "Cargo.toml" = c.red.base;
-            "go.mod" = c.blue.bright;
-            "flake.nix" = c.blue.base;
-            "flake.lock" = c.white.dim;
-            "shell.nix" = c.blue.base;
-            "default.nix" = c.blue.base;
+            Dockerfile = c.white.bright;
+            "docker-compose.yml" = c.white.bright;
+            Makefile = c.white.bright;
+            "CMakeLists.txt" = c.white.bright;
+            "README.md" = c.white.bright;
+            LICENSE = c.white.bright;
+            "package.json" = c.white.bright;
+            "Cargo.toml" = c.white.bright;
+            "go.mod" = c.white.bright;
+            "flake.nix" = c.white.bright;
+            "flake.lock" = c.gray.base;
+            "shell.nix" = c.white.bright;
+            "default.nix" = c.white.bright;
+            "go.sum" = c.gray.base;
+            "package-lock.json" = c.gray.base;
+            "uv.lock" = c.gray.base;
+            "poetry.lock" = c.gray.base;
           };
 
+          # vivid dims generated/lock artifacts; TODO/test markers stay bright
           patterns = {
-            "*rc" = c.blue.bright;
-            "*.min.*" = c.white.dim;
+            "*rc" = c.white.bright;
+            "*.min.*" = c.gray.base;
             "*.test.*" = c.white.bright;
             "*.spec.*" = c.white.bright;
-            "*.lock" = c.white.dim;
-            "*.config.*" = c.blue.bright;
+            "*.lock" = c.gray.base;
+            "*.config.*" = c.white.bright;
           };
         };
 
@@ -387,52 +408,54 @@ in {
             archive = ["zip" "tar" "gz" "bz2" "xz" "7z" "rar" "iso" "dmg"];
           };
 
+          # vivid nord renders source uniformly (white.bright), media/docs/data
+          # green.base, archives green.base. Mirror that here.
           colors = {
-            rust = c.red.base;
+            rust = c.white.bright;
             python = c.white.bright;
-            javascript = c.yellow.base;
-            typescript = c.cyan.bright;
-            java = c.red.base;
+            javascript = c.white.bright;
+            typescript = c.white.bright;
+            java = c.white.bright;
             csharp = c.white.bright;
-            cpp = c.red.base;
-            go = c.cyan.bright;
-            ruby = c.red.base;
+            cpp = c.white.bright;
+            go = c.white.bright;
+            ruby = c.white.bright;
             php = c.white.bright;
-            swift = c.red.base;
+            swift = c.white.bright;
             kotlin = c.white.bright;
-            nix = c.cyan.bright;
+            nix = c.white.bright;
 
-            markup = c.magenta.base;
+            markup = c.white.bright;
             style = c.white.bright;
-            web_config = c.blue.base;
+            web_config = c.white.bright;
 
             shell = c.white.bright;
-            script = c.blue.base;
+            script = c.white.bright;
 
-            doc = c.white.dim;
+            doc = c.green.base;
 
-            image = c.orange.base;
-            video = c.orange.base;
-            audio = c.orange.base;
+            image = c.green.base;
+            video = c.green.base;
+            audio = c.green.base;
 
-            data = c.blue.base;
-            archive = c.red.base;
+            data = c.green.base;
+            archive = c.green.base;
 
-            rs = c.red.base;
+            rs = c.white.bright;
             py = c.white.bright;
-            js = c.yellow.base;
-            ts = c.cyan.bright;
-            jsx = c.yellow.base;
-            tsx = c.cyan.bright;
+            js = c.white.bright;
+            ts = c.white.bright;
+            jsx = c.white.bright;
+            tsx = c.white.bright;
             vue = c.white.bright;
             css = c.white.bright;
             scss = c.white.bright;
-            html = c.magenta.base;
-            md = c.white.dim;
-            json = c.blue.base;
-            yaml = c.blue.base;
-            toml = c.blue.base;
-            sql = c.cyan.bright;
+            html = c.white.bright;
+            md = c.white.bright;
+            json = c.white.bright;
+            yaml = c.white.bright;
+            toml = c.white.bright;
+            sql = c.white.bright;
           };
         };
       };
