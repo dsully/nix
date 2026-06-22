@@ -74,7 +74,6 @@ in {
       cyme
       dive
       gibo
-      glow
       gnused
       go
       hyperfine
