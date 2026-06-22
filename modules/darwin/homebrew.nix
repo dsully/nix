@@ -24,6 +24,7 @@
       "1password"
       "boltai"
       "cleanshot"
+      "cotypist"
       "daisydisk"
       "dash"
       "fastmail"
