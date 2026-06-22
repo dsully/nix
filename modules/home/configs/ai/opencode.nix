@@ -164,8 +164,8 @@ in {
 
       plugin =
         lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
+        ++ lib.optional config.programs.rtk.enable "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
         ++ [
-          "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
           "${aro}/plugins/autoresearch-context.ts"
           "${inputs.superpowers}/.opencode/plugins/superpowers.js"
         ]

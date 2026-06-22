@@ -27,6 +27,7 @@ in {
     ./icm.nix
     ./opencode.nix
     ./pi.nix
+    ./rtk.nix
   ];
 
   config = {
@@ -44,7 +45,6 @@ in {
         ++ (
           with perSystem.llm-agents; [
             ralph-tui
-            rtk
           ]
         )
         ++ (with my.pkgs; [
@@ -56,10 +56,6 @@ in {
           mcptools
           rust-mcp-server
         ]);
-
-      sessionVariables = {
-        "RTK_TELEMETRY_DISABLED" = "1";
-      };
     };
 
     programs = {

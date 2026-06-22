@@ -4,9 +4,7 @@
 }: let
   taxonomy = {
     shell = {
-      wrappers = [
-        "rtk"
-      ];
+      wrappers = lib.optional config.programs.rtk.enable "rtk";
 
       askCommands = [
         "rm"

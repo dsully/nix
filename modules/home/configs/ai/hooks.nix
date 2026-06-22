@@ -33,6 +33,7 @@
     // lib.optionalAttrs (matcher != null) {inherit matcher;};
 
   icmEnabled = config.programs.icm.enable or true;
+  rtkEnabled = config.programs.rtk.enable;
 
   events = {
     PreCompact = lib.optional icmEnabled (group {
@@ -76,12 +77,12 @@
               name = "enforce-uv";
               command = "${./hooks/enforce-uv.fish}";
             })
-            (hook {
-              name = "rtk-rewrite";
-              command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
-              targets = ["claude"];
-            })
           ]
+          ++ lib.optional rtkEnabled (hook {
+            name = "rtk-rewrite";
+            command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
+            targets = ["claude"];
+          })
           ++ lib.optional icmEnabled (hook {
             name = "icm-pre";
             command = "${lib.getExe my.pkgs.icm} hook pre";

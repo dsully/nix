@@ -47,8 +47,7 @@ in {
 
     context = ''
       ${builtins.readFile ./AGENTS.md}
-
-      ${builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md"}
+      ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md")}
     '';
 
     settings = {
