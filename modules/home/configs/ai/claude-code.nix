@@ -84,12 +84,17 @@
         "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
         "superpowers@claude-plugins-official" = lib.mkDefault true;
       }
-      // ai.enabledPlugins;
+      // ai.enabledPlugins
+      // ai.marketplaceClaudeEnabled;
 
-    extraKnownMarketplaces.context-mode.source = {
-      source = "directory";
-      path = inputs.context-mode;
-    };
+    extraKnownMarketplaces =
+      {
+        context-mode.source = {
+          source = "directory";
+          path = inputs.context-mode;
+        };
+      }
+      // ai.marketplaceClaudeMarketplaces;
 
     hooks = lib.mkDefault ai.hooks.claude;
 

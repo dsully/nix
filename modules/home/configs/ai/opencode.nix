@@ -169,7 +169,8 @@ in {
           "${aro}/plugins/autoresearch-context.ts"
           "${inputs.superpowers}/.opencode/plugins/superpowers.js"
         ]
-        ++ config.programs.opencode.extraPlugins;
+        ++ config.programs.opencode.extraPlugins
+        ++ ai.marketplacePlugins;
 
       watcher.ignore = [
         ".direnv/**"

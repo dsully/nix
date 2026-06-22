@@ -66,34 +66,36 @@ in {
 
       agent-skills = {
         enable = true;
-        sources = {
-          idjoo-skills = {
-            input = "idjoo-skills";
-          };
-          local = {
-            path = ./skills;
-          };
-          superpowers = {
-            input = "superpowers";
-            subdir = "skills";
-          };
-          wshobson-backend-development = {
-            input = "wshobson-agents";
-            subdir = "plugins/backend-development/skills";
-          };
-          wshobson-developer-essentials = {
-            input = "wshobson-agents";
-            subdir = "plugins/developer-essentials/skills";
-          };
-          wshobson-python-development = {
-            input = "wshobson-agents";
-            subdir = "plugins/python-development/skills";
-          };
-          wshobson-systems-programming = {
-            input = "wshobson-agents";
-            subdir = "plugins/systems-programming/skills";
-          };
-        };
+        sources =
+          {
+            idjoo-skills = {
+              input = "idjoo-skills";
+            };
+            local = {
+              path = ./skills;
+            };
+            superpowers = {
+              input = "superpowers";
+              subdir = "skills";
+            };
+            wshobson-backend-development = {
+              input = "wshobson-agents";
+              subdir = "plugins/backend-development/skills";
+            };
+            wshobson-developer-essentials = {
+              input = "wshobson-agents";
+              subdir = "plugins/developer-essentials/skills";
+            };
+            wshobson-python-development = {
+              input = "wshobson-agents";
+              subdir = "plugins/python-development/skills";
+            };
+            wshobson-systems-programming = {
+              input = "wshobson-agents";
+              subdir = "plugins/systems-programming/skills";
+            };
+          }
+          // ai.marketplaceSkillSources;
         skills = {
           enable = [
             "architecture-patterns"
@@ -132,7 +134,7 @@ in {
             "writing-plans"
             "writing-skills"
           ];
-          # enableAll = [""];
+          enableAll = ai.marketplaceEnableAll;
         };
         targets = {
           claude.enable = true;

@@ -199,6 +199,22 @@
   cpo = "${inputs.claude-plugins-official}/plugins";
   ws = "${inputs.wshobson-agents}/plugins";
 
+  marketplace = import ./marketplace.nix {inherit inputs lib;};
+
+  # Claude Code marketplaces to ingest: skills (all tools), agents (opencode +
+  # claude), opt-in opencode plugins, and opt-in claude-native enablement.
+  # Add each private genai repo as a flake input, then list it here. Example:
+  #   {
+  #     name = "some";
+  #     input = "some-marketplace";
+  #     src = inputs.some--marketplace;
+  #     opencodePlugins = []; # plugin names shipping .opencode/plugins/*
+  #     claudeEnable = []; # MCP-free plugin names to enable natively in claude
+  #   }
+  marketplaces = [];
+
+  mp = marketplace.mkMarketplace marketplaces;
+
   aiSources = [
     {
       base = ws;
@@ -250,7 +266,7 @@
     }
   ];
 
-  aiGenerated = mkAI aiSources;
+  aiGenerated = mkAI (aiSources ++ mp.agentSources);
 
   inherit (aiGenerated) agents commands;
   descriptions = lib.mapAttrs (_: agentDescription) agents;
@@ -289,6 +305,12 @@ in {
     muxWrap
     permissions
     ;
+
+  marketplaceSkillSources = mp.skillSources;
+  marketplaceEnableAll = mp.enableAll;
+  marketplacePlugins = mp.opencodePlugins;
+  marketplaceClaudeMarketplaces = mp.claudeMarketplaces;
+  marketplaceClaudeEnabled = mp.claudeEnabled;
 
   mcpServers = mcpServersMuxed;
 }
