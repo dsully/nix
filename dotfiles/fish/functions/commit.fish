@@ -29,10 +29,23 @@ Example types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, r
 Include a body for more details in bullet points.
 Just return the commit message as plain text. Do not wrap it in backticks or any other formatting."
 
+    set -l msg
+
+    # Apple's on-device fm model has a small context window; large diffs overflow
+    # it and it emits nothing on stdout. Fall back to claude when fm is missing or fails.
     if command -q fm
-        set msg (git diff --cached | fm respond --no-stream --instructions "$prompt" | string collect)
-    else
+        set msg (git diff --cached | fm respond --model pcc --no-stream --instructions "$prompt" 2>/dev/null | string collect)
+    end
+
+    if test -z "$msg"
         set msg (git diff --cached | claude -p --model sonnet "$prompt" | string collect)
+    end
+
+    if test -z "$msg"
+        set_color red
+        echo "❌ Failed to generate a commit message. Changes remain staged."
+        set_color normal
+        return 1
     end
 
     if test -n "$issue"
