@@ -249,7 +249,7 @@ in {
     integrations = {
       claudeCode =
         commonProxyOptions {
-          defaultPort = 8789;
+          defaultPort = 8787;
           descriptionName = "Claude Code Headroom proxy";
         }
         // {

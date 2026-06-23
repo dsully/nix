@@ -59,11 +59,6 @@ in {
     };
 
     programs = {
-      mcp = {
-        enable = true;
-        servers = ai.mcpServers;
-      };
-
       agent-skills = {
         enable = true;
         sources =
@@ -78,10 +73,10 @@ in {
               input = "superpowers";
               subdir = "skills";
             };
-            wshobson-backend-development = {
-              input = "wshobson-agents";
-              subdir = "plugins/backend-development/skills";
-            };
+            # wshobson-backend-development = {
+            #   input = "wshobson-agents";
+            #   subdir = "plugins/backend-development/skills";
+            # };
             wshobson-developer-essentials = {
               input = "wshobson-agents";
               subdir = "plugins/developer-essentials/skills";
@@ -90,15 +85,15 @@ in {
               input = "wshobson-agents";
               subdir = "plugins/python-development/skills";
             };
-            wshobson-systems-programming = {
-              input = "wshobson-agents";
-              subdir = "plugins/systems-programming/skills";
-            };
+            # wshobson-systems-programming = {
+            #   input = "wshobson-agents";
+            #   subdir = "plugins/systems-programming/skills";
+            # };
           }
           // ai.marketplaceSkillSources;
         skills = {
           enable = [
-            "architecture-patterns"
+            # "architecture-patterns"
             "brainstorming"
             "commit"
             "debugging-strategies"
@@ -107,7 +102,7 @@ in {
             "error-handling-patterns"
             "executing-plans"
             "finishing-a-development-branch"
-            "memory-safety-patterns"
+            # "memory-safety-patterns"
             "python-anti-patterns"
             "python-code-style"
             "python-configuration"
@@ -122,7 +117,7 @@ in {
             "python-type-safety"
             "receiving-code-review"
             "requesting-code-review"
-            "rust-async-patterns"
+            # "rust-async-patterns"
             "subagent-driven-development"
             "systematic-debugging"
             "test-driven-development"
@@ -148,10 +143,6 @@ in {
         };
       };
 
-      uv.tool.packages = [
-        "headroom-ai[all]"
-      ];
-
       headroom = {
         enable = true;
         package = headroomBin;
@@ -163,6 +154,19 @@ in {
           codeAware = true;
         };
       };
+
+      icm = {
+        enable = false;
+      };
+
+      mcp = {
+        enable = true;
+        servers = ai.mcpServers;
+      };
+
+      uv.tool.packages = [
+        "headroom-ai[all]"
+      ];
     };
   };
 }

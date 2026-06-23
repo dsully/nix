@@ -157,6 +157,7 @@
     };
     git-remote = {
       command = lib.getExe my.pkgs.git-remote-mcp;
+      enabled = false;
     };
     indxr = {
       command = lib.getExe my.pkgs.indxr;
@@ -216,12 +217,12 @@
   mp = marketplace.mkMarketplace marketplaces;
 
   aiSources = [
-    {
-      base = ws;
-      name = "backend-development";
-      plugin = "backend-development@claude-code-workflows";
-      agents = ["backend-architect" "performance-engineer" "tdd-orchestrator" "test-automator"];
-    }
+    # {
+    #   base = ws;
+    #   name = "backend-development";
+    #   plugin = "backend-development@claude-code-workflows";
+    #   agents = ["backend-architect" "performance-engineer" "tdd-orchestrator" "test-automator"];
+    # }
     {
       base = ws;
       name = "code-refactoring";
@@ -239,13 +240,13 @@
       plugin = "python-development@claude-code-workflows";
       agents = ["python-pro"];
     }
-    {
-      base = ws;
-      name = "systems-programming";
-      plugin = "systems-programming@claude-code-workflows";
-      agents = ["rust-pro"];
-      commands = ["rust-project"];
-    }
+    # {
+    #   base = ws;
+    #   name = "systems-programming";
+    #   plugin = "systems-programming@claude-code-workflows";
+    #   agents = ["rust-pro"];
+    #   commands = ["rust-project"];
+    # }
     {
       base = cpo;
       name = "code-simplifier";
