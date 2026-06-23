@@ -119,6 +119,7 @@
     "--mode"
     proxyCfg.mode
     "--disable-kompress"
+    "--no-telemetry"
   ];
 
   claudeProxyArgs =

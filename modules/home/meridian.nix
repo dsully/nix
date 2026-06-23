@@ -26,6 +26,13 @@
       USER = config.home.username;
       LOGNAME = config.home.username;
 
+      # The real OAuth credentials live in the non-default config dir. The
+      # claude-code wrapper exports this for interactive use, but launchd execs
+      # meridian directly — without it the SDK falls back to ~/.claude/Keychain,
+      # whose stale credential reads as logged-in (so /health is green) but 401s
+      # on a real query ("Run 'claude login'"). Point the SDK at the right dir.
+      CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
+
       MERIDIAN_HOST = host;
       MERIDIAN_PORT = toString port;
       # One shared proxy backs every OpenCode terminal; the plugin's per-session
