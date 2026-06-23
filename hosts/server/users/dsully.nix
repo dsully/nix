@@ -75,7 +75,6 @@ in {
 
     opencode.extraPlugins = [
       "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
-      "@ex-machina/opencode-anthropic-auth@1.8.1"
     ];
 
     onepassword-secrets.secrets = {
