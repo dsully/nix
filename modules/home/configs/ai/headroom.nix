@@ -7,24 +7,25 @@
   cfg = config.programs.headroom;
   optimizationCfg = cfg.optimization;
   claudeCodeCfg = cfg.integrations.claudeCode;
-  cliProxyCfg = cfg.integrations.cliProxyApi;
+  openaiCfg = cfg.integrations.openai;
 
   proxyUrl = proxyCfg: "http://${proxyCfg.host}:${toString proxyCfg.port}";
   claudeProxyUrl = proxyUrl claudeCodeCfg;
-  cliProxyUrl = proxyUrl cliProxyCfg;
+  openaiProxyUrl = proxyUrl openaiCfg;
   mcpProxyUrl =
     if cfg.mcp.proxyUrl != null
     then cfg.mcp.proxyUrl
     else if claudeCodeCfg.enable
     then claudeProxyUrl
-    else if cliProxyCfg.enable
-    then cliProxyUrl
+    else if openaiCfg.enable
+    then openaiProxyUrl
     else "";
 
-  claudeUpstreamUrl =
-    if claudeCodeCfg.upstreamUrl != null
-    then claudeCodeCfg.upstreamUrl
-    else null;
+  claudeUpstreamUrl = claudeCodeCfg.upstreamUrl;
+
+  darwinEnvironment = lib.optionalAttrs pkgs.stdenv.isDarwin {
+    HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps";
+  };
 
   toEnv = lib.mapAttrs (_: toString);
   toSystemdEnvironment = lib.mapAttrsToList (name: value: "${name}=${value}");
@@ -130,13 +131,13 @@
     ]
     ++ claudeCodeCfg.extraArgs;
 
-  cliProxyArgs =
-    baseProxyArgs cliProxyCfg
+  openaiProxyArgs =
+    baseProxyArgs openaiCfg
     ++ [
       "--openai-api-url"
-      cliProxyCfg.upstreamUrl
+      openaiCfg.upstreamUrl
     ]
-    ++ cliProxyCfg.extraArgs;
+    ++ openaiCfg.extraArgs;
 
   sourceEnvironmentFile = proxyCfg:
     lib.optionalString (proxyCfg.environmentFile != null) ''
@@ -145,9 +146,9 @@
       set +a
     '';
 
-  waitForCliProxyApi = ''
-    for _ in ${lib.concatStringsSep " " (map toString (lib.range 1 30))}; do
-      if (: > /dev/tcp/127.0.0.1/${toString cliProxyCfg.upstreamPort}) >/dev/null 2>&1; then
+  waitForOpenai = ''
+    for _ in $(seq 30); do
+      if (: > /dev/tcp/127.0.0.1/${toString openaiCfg.upstreamPort}) >/dev/null 2>&1; then
         break
       fi
       sleep 1
@@ -173,11 +174,11 @@
     proxyArgs = claudeProxyArgs;
   };
 
-  cliLaunchWrapper = mkLaunchWrapper {
-    name = "headroom-cli-proxy-api-proxy-launch";
-    proxyCfg = cliProxyCfg;
-    proxyArgs = cliProxyArgs;
-    preStart = waitForCliProxyApi;
+  openaiLaunchWrapper = mkLaunchWrapper {
+    name = "headroom-openai-proxy-launch";
+    proxyCfg = openaiCfg;
+    proxyArgs = openaiProxyArgs;
+    preStart = waitForOpenai;
   };
 
   claudeServiceEnvironment =
@@ -186,7 +187,7 @@
     // lib.optionalAttrs (claudeUpstreamUrl != null) {
       ANTHROPIC_TARGET_API_URL = claudeUpstreamUrl;
     };
-  cliServiceEnvironment = toEnv cliProxyCfg.environment // optimizationEnvironment;
+  openaiServiceEnvironment = toEnv openaiCfg.environment // optimizationEnvironment;
   mkSystemdService = {
     description,
     wrapper,
@@ -242,7 +243,7 @@ in {
       proxyUrl = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
-        description = "Proxy URL used by `headroom mcp serve`; defaults to the Claude proxy, then the cli-proxy-api proxy.";
+        description = "Proxy URL used by `headroom mcp serve`; defaults to the Claude proxy, then the OpenAI proxy.";
       };
     };
 
@@ -265,24 +266,24 @@ in {
           };
         };
 
-      cliProxyApi =
+      openai =
         commonProxyOptions {
           defaultPort = 8788;
-          descriptionName = "cli-proxy-api Headroom proxy";
+          descriptionName = "OpenAI Headroom proxy";
         }
         // {
-          enable = lib.mkEnableOption "routing OpenAI-compatible cli-proxy-api traffic through a dedicated Headroom proxy";
+          enable = lib.mkEnableOption "routing OpenAI-compatible traffic through a dedicated Headroom proxy";
 
           upstreamUrl = lib.mkOption {
             type = lib.types.str;
             default = "http://127.0.0.1:8317";
-            description = "OpenAI-compatible upstream URL for the existing cli-proxy-api service.";
+            description = "OpenAI-compatible upstream URL.";
           };
 
           upstreamPort = lib.mkOption {
             type = lib.types.port;
             default = 8317;
-            description = "Local cli-proxy-api port used by the startup wait loop.";
+            description = "Local upstream port used by the startup wait loop.";
           };
         };
     };
@@ -316,7 +317,7 @@ in {
           }
           {
             assertion =
-              !cfg.mcp.enable || cfg.mcp.proxyUrl != null || claudeCodeCfg.enable || cliProxyCfg.enable;
+              !cfg.mcp.enable || cfg.mcp.proxyUrl != null || claudeCodeCfg.enable || openaiCfg.enable;
             message = "programs.headroom.mcp.enable requires mcp.proxyUrl or at least one Headroom proxy integration.";
           }
           {
@@ -325,8 +326,8 @@ in {
             message = "programs.headroom.integrations.claudeCode.environmentFile must be an absolute runtime path.";
           }
           {
-            assertion = cliProxyCfg.environmentFile == null || lib.hasPrefix "/" cliProxyCfg.environmentFile;
-            message = "programs.headroom.integrations.cliProxyApi.environmentFile must be an absolute runtime path.";
+            assertion = openaiCfg.environmentFile == null || lib.hasPrefix "/" openaiCfg.environmentFile;
+            message = "programs.headroom.integrations.openai.environmentFile must be an absolute runtime path.";
           }
         ];
 
@@ -367,11 +368,11 @@ in {
         };
       })
 
-      (lib.mkIf (cliProxyCfg.enable && pkgs.stdenv.isLinux) {
-        systemd.user.services.headroom-cli-proxy-api-proxy = mkSystemdService {
-          description = "Headroom cli-proxy-api optimization proxy";
-          wrapper = cliLaunchWrapper;
-          environment = cliServiceEnvironment;
+      (lib.mkIf (openaiCfg.enable && pkgs.stdenv.isLinux) {
+        systemd.user.services.headroom-openai-proxy = mkSystemdService {
+          description = "Headroom OpenAI optimization proxy";
+          wrapper = openaiLaunchWrapper;
+          environment = openaiServiceEnvironment;
           after = ["cli-proxy-api.service"];
           requires = ["cli-proxy-api.service"];
         };
@@ -380,19 +381,19 @@ in {
       (lib.mkIf (claudeCodeCfg.enable && pkgs.stdenv.isDarwin) {
         launchd.agents.headroom-claude-code-proxy = mkLaunchdAgent {
           wrapper = claudeLaunchWrapper;
-          environment = claudeServiceEnvironment;
+          environment = claudeServiceEnvironment // darwinEnvironment;
         };
       })
 
-      (lib.mkIf (cliProxyCfg.enable && pkgs.stdenv.isDarwin) {
-        launchd.agents.headroom-cli-proxy-api-proxy = mkLaunchdAgent {
-          wrapper = cliLaunchWrapper;
-          environment = cliServiceEnvironment;
+      (lib.mkIf (openaiCfg.enable && pkgs.stdenv.isDarwin) {
+        launchd.agents.headroom-openai-proxy = mkLaunchdAgent {
+          wrapper = openaiLaunchWrapper;
+          environment = openaiServiceEnvironment // darwinEnvironment;
         };
       })
 
-      (lib.mkIf (cliProxyCfg.enable && config.programs.opencode.enable) {
-        programs.opencode.settings.provider.openai.options.baseURL = lib.mkForce "${cliProxyUrl}/v1";
+      (lib.mkIf (openaiCfg.enable && config.programs.opencode.enable) {
+        programs.opencode.settings.provider.openai.options.baseURL = lib.mkForce "${openaiProxyUrl}/v1";
       })
     ]
   );
