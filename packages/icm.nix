@@ -4,16 +4,16 @@
   stdenv,
 }: let
   pname = "icm";
-  version = "0.10.53";
+  version = "0.10.54";
 
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256-2V9lpnCPXR1AvA7gGc4Kg70873ZLC9IReZ/T6dv6Id4=";
+      hash = "sha256-f7Qr0BP06/5Q0x69M9BInyAN6HnFBFb4b7U87/PbPRQ=";
     };
     x86_64-linux = {
       suffix = "x86_64-unknown-linux-gnu";
-      hash = "sha256-ahC391kkFKAs1/hahzpyenkQ2sCr+b7BCndcc7rPDUk=";
+      hash = "sha256-PpVqcX+X32bFD4RLchKJ+9encoMtvdb5aZgz4NeWh7g=";
     };
   };
   source =

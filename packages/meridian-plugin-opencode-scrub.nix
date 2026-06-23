@@ -5,7 +5,7 @@
 }:
 buildNpmPackage rec {
   pname = "meridian-plugin-opencode-scrub";
-  version = "0.2.0";
+  version = "0.2.0-f58fe939";
 
   inherit src;
 

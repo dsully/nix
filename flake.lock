@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781510879,
-        "narHash": "sha256-YE3NCJtgZVa1U2VTjwQVuAhmEJW4raVq7eJaFiX60X8=",
+        "lastModified": 1782183570,
+        "narHash": "sha256-4LrewbD02WDf0CosGP/yO1yLneTeeJM39SjFa99kSRQ=",
         "owner": "Kyure-A",
         "repo": "agent-skills-nix",
-        "rev": "5ff9039277a9d62907426d033ecf76addb2402cb",
+        "rev": "fe867fe7be3a55d939746b278194deee4814fb08",
         "type": "github"
       },
       "original": {
@@ -127,11 +127,11 @@
     "claude-plugins-official": {
       "flake": false,
       "locked": {
-        "lastModified": 1782177732,
-        "narHash": "sha256-2HHJolTNcuXqTzNb93FoXB8ooU4ZAaGrZXDUP6t4dVM=",
+        "lastModified": 1782223166,
+        "narHash": "sha256-YKdW/0eFW2jKNR5xWBzHvQYI3Y+Qka2T7U+S9j342zI=",
         "owner": "anthropics",
         "repo": "claude-plugins-official",
-        "rev": "f57f28050818b8ee4558996d16cb925e47661a5c",
+        "rev": "b549903c7308db32615e6639c717ee91cae28ec6",
         "type": "github"
       },
       "original": {
@@ -143,11 +143,11 @@
     "context-mode": {
       "flake": false,
       "locked": {
-        "lastModified": 1782137115,
-        "narHash": "sha256-1JcMc8saCoA/csl9a2mXmk/q1oiGv8+YBhI8KbdT6Xs=",
+        "lastModified": 1782228017,
+        "narHash": "sha256-KJe5dAst5jBa0yXMIEA0IJr6zZSSDn3li6K1iFIdMdA=",
         "owner": "mksglu",
         "repo": "context-mode",
-        "rev": "412b8318e4d0a864d6b60cde3e03aa7a7aa3c88d",
+        "rev": "8b1c01863537dd27cb3a83d192fdf3ee17f66a47",
         "type": "github"
       },
       "original": {
@@ -338,11 +338,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781497404,
-        "narHash": "sha256-9GAF8sSsnkyCVCWkomXR0T+zdSxyUlfPt6neQidimdg=",
+        "lastModified": 1782100728,
+        "narHash": "sha256-YTyPsWf6ieaU6j/gJ+i7ERXKC7DEJC8BxUcAubx2SVQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "1285cd3d6882a9847f2d56ed5541b3350c8a6162",
+        "rev": "f3dc0b85833c6c9946ad1349ab810d07e0bdf761",
         "type": "github"
       },
       "original": {
@@ -358,11 +358,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782166451,
-        "narHash": "sha256-SA7LyrayyZBvtzZnesnSLV7haciFuVLeZaX2hd5v4j4=",
+        "lastModified": 1782231110,
+        "narHash": "sha256-sEP5lBEVsMf//ImkzcQK6Jh5pxPrFtZqSp852rcSpV4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "471a1d2f840eb7fcbdfd541d99c13a64096f46db",
+        "rev": "1ac720f007173754b204c2d25fee9a38680bf9bf",
         "type": "github"
       },
       "original": {
@@ -414,11 +414,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1782177411,
-        "narHash": "sha256-6Jf+e+UjPy40IRMagewrtoUnYGX+pMKtofvY4yRY9r8=",
+        "lastModified": 1782198869,
+        "narHash": "sha256-7HsiKhCUxnsldqGQRF8sDV/9t6N15Jb3PBZYR/9RJFA=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "3445e4346a99fdd8bb2de4f7e10e832ec1b9e526",
+        "rev": "238eb2728ede4b4e5ac3ec276bc81732b8df0b69",
         "type": "github"
       },
       "original": {
@@ -449,6 +449,22 @@
         "type": "github"
       }
     },
+    "meridian-plugin-opencode-scrub": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777227035,
+        "narHash": "sha256-30ybLSP0hvaGI1V7BonjqYxOfzEq1Gd+vsledd0A+D0=",
+        "owner": "rynfar",
+        "repo": "meridian-plugin-opencode-scrub",
+        "rev": "f58fe939b344bbc17b2ba1be34f686b9219792e6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rynfar",
+        "repo": "meridian-plugin-opencode-scrub",
+        "type": "github"
+      }
+    },
     "nix-auth": {
       "inputs": {
         "flake-parts": "flake-parts_4",
@@ -458,11 +474,11 @@
         "treefmt-nix": "treefmt-nix_3"
       },
       "locked": {
-        "lastModified": 1780284651,
-        "narHash": "sha256-m+06C+6CXiMiLkzZJF9gzFuL3vkE51RIKsySd1rfeMQ=",
+        "lastModified": 1782191243,
+        "narHash": "sha256-igCpUcCaYSjT6LUj6n1M5O0SFhfcMFCtfFsW7yMazyE=",
         "owner": "numtide",
         "repo": "nix-auth",
-        "rev": "ae9d43258f4830b38ab3458960e179f808944d60",
+        "rev": "e0b7e0c3aea2470e230bb36f5e8546885f93e5b4",
         "type": "github"
       },
       "original": {
@@ -650,6 +666,7 @@
         "idjoo-skills": "idjoo-skills",
         "llm-agents": "llm-agents",
         "meridian": "meridian",
+        "meridian-plugin-opencode-scrub": "meridian-plugin-opencode-scrub",
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
