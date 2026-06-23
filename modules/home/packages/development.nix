@@ -72,6 +72,7 @@ in {
       ast-grep
       codebook
       cyme
+      difftastic
       dive
       gibo
       gnused
