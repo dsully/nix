@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  perSystem,
   pkgs,
   ...
 }: let
@@ -69,6 +70,15 @@ in {
   home.file."${config.xdg.binHome}/opencode" = {
     force = true;
     source = opencodeWrapper;
+  };
+
+  xdg.configFile."meridian/plugins.json".source = (pkgs.formats.json {}).generate "meridian-plugins" {
+    plugins = [
+      {
+        path = "${perSystem.self.meridian-plugin-opencode-scrub}/dist/index.js";
+        enabled = true;
+      }
+    ];
   };
 
   launchd.agents.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {

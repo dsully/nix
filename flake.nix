@@ -32,6 +32,9 @@
     meridian.url = "github:rynfar/meridian";
     meridian.inputs.nixpkgs.follows = "nixpkgs";
 
+    meridian-plugin-opencode-scrub.url = "github:rynfar/meridian-plugin-opencode-scrub";
+    meridian-plugin-opencode-scrub.flake = false;
+
     opnix.url = "github:brizzbuzz/opnix";
     opnix.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -248,6 +251,9 @@
           meridian = {
             inherit (llm-agents) claude-code;
             inherit (llm-agents) opencode;
+          };
+          meridian-plugin-opencode-scrub = {
+            src = inputs.meridian-plugin-opencode-scrub;
           };
           # nh wraps itself to use rom as its build output monitor.
           nh = {inherit (selfPackages) rom;};
