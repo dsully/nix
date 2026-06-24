@@ -50,9 +50,6 @@
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
     agent-skills.inputs.nixpkgs.follows = "nixpkgs";
 
-    idjoo-skills.url = "github:idjoo/skills";
-    idjoo-skills.flake = false;
-
     autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
     autoresearch-opencode.flake = false;
 
@@ -202,11 +199,10 @@
 
         inherit homeModules;
 
-        # Reusable helper for consuming flakes. skillSourcesFrom turns a
-        # marketplace's curated `select` map into agent-skills `sources` plus the
-        # matching `skills.enable` IDs — see
-        # modules/home/configs/ai/skill-sources.nix.
-        lib.skillSourcesFrom = (import ./modules/home/configs/ai/skill-sources.nix {inherit lib;}).skillSourcesFrom;
+        # Reusable helper for consuming flakes. skillGroupsFrom turns a
+        # marketplace's curated plugin list into `programs.ai.skills` groups —
+        # see modules/home/configs/ai/skills/sources.nix.
+        lib.skillGroupsFrom = (import ./modules/home/configs/ai/skills/sources.nix {inherit lib;}).skillGroupsFrom;
 
         darwinConfigurations.jarvis = withSystem "aarch64-darwin" ({
           pkgs,

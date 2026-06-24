@@ -23,7 +23,6 @@
   mcp-nixos = pkgs.mcp-nixos.overridePythonAttrs (_: {doCheck = false;});
 in {
   imports = [
-    inputs.agent-skills.homeManagerModules.default
     ./ccstatusline.nix
     ./claude-code.nix
     ./codeburn.nix
@@ -33,7 +32,7 @@ in {
     ./opencode.nix
     ./pi.nix
     ./rtk.nix
-    ./skill-commands.nix
+    ./skills
   ];
 
   config = {
@@ -66,88 +65,6 @@ in {
     };
 
     programs = {
-      agent-skills = {
-        enable = true;
-        sources = {
-          idjoo-skills = {
-            input = "idjoo-skills";
-          };
-          local = {
-            path = ./skills;
-          };
-          superpowers = {
-            input = "superpowers";
-            subdir = "skills";
-          };
-          # wshobson-backend-development = {
-          #   input = "wshobson-agents";
-          #   subdir = "plugins/backend-development/skills";
-          # };
-          wshobson-developer-essentials = {
-            input = "wshobson-agents";
-            subdir = "plugins/developer-essentials/skills";
-          };
-          wshobson-python-development = {
-            input = "wshobson-agents";
-            subdir = "plugins/python-development/skills";
-          };
-          # wshobson-systems-programming = {
-          #   input = "wshobson-agents";
-          #   subdir = "plugins/systems-programming/skills";
-          # };
-        };
-        skills = {
-          enable = [
-            # "architecture-patterns"
-            "brainstorming"
-            "commit"
-            "debugging-strategies"
-            "dispatching-parallel-agents"
-            "e2e-testing-patterns"
-            "error-handling-patterns"
-            "executing-plans"
-            "finishing-a-development-branch"
-            # "memory-safety-patterns"
-            "python-anti-patterns"
-            "python-code-style"
-            "python-configuration"
-            "python-design-patterns"
-            "python-error-handling"
-            "python-observability"
-            "python-performance-optimization"
-            "python-project-structure"
-            "python-resilience"
-            "python-resource-management"
-            "python-testing-patterns"
-            "python-type-safety"
-            "receiving-code-review"
-            "requesting-code-review"
-            # "rust-async-patterns"
-            "subagent-driven-development"
-            "systematic-debugging"
-            "test-driven-development"
-            "using-git-worktrees"
-            "using-superpowers"
-            "uv-package-manager"
-            "verification-before-completion"
-            "visual-explainer"
-            "writing-plans"
-            "writing-skills"
-          ];
-          enableAll = false;
-        };
-        targets = {
-          claude.enable = true;
-          codex.enable = true;
-          opencode.enable = true;
-          pi = {
-            enable = true;
-            dest = "${config.home.homeDirectory}/.pi/agent/skills";
-            structure = "symlink-tree";
-          };
-        };
-      };
-
       headroom = {
         enable = true;
         package = headroomBin;
