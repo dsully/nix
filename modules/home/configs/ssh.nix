@@ -114,8 +114,9 @@
 
   # Key each Host block on its primary name plus any aliases ("Host zap er")
   # so an alias inherits the same HostName, forwards, and mux settings.
-  mkHostBlocks = lib.mapAttrs' (n: s:
-    lib.nameValuePair (lib.concatStringsSep " " ([n] ++ (s.aliases or []))) (mkHost n s));
+  mkHostBlocks =
+    lib.mapAttrs' (n: s:
+      lib.nameValuePair (lib.concatStringsSep " " ([n] ++ (s.aliases or []))) (mkHost n s));
 
   mkTsMatch = name: s: {
     header = ''Match originalhost ${lib.concatStringsSep "," ([name] ++ (s.aliases or []))} exec "${tsExec name s.ip}"'';
