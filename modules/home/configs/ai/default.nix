@@ -16,6 +16,11 @@
   headroomBin = pkgs.writeShellScriptBin "headroom" ''
     exec ${config.xdg.binHome}/headroom "$@"
   '';
+
+  # On PATH so per-repo project configs (.mcp.json / opencode.jsonc) can launch
+  # the nixos MCP server by name. Tests are disabled to match flake.nix mkHome,
+  # since the unmodified pkgs (e.g. the jarvis darwin eval path) would run them.
+  mcp-nixos = pkgs.mcp-nixos.overridePythonAttrs (_: {doCheck = false;});
 in {
   imports = [
     inputs.agent-skills.homeManagerModules.default
@@ -56,7 +61,8 @@ in {
           mcp-server-git-rs
           mcptools
           rust-mcp-server
-        ]);
+        ])
+        ++ [mcp-nixos];
     };
 
     programs = {
