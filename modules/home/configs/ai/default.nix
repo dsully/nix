@@ -7,7 +7,7 @@
   pkgs,
   ...
 }: let
-  ai = import ./common.nix {inherit config inputs lib my perSystem pkgs;};
+  ai = import ./registry.nix {inherit config inputs lib my perSystem pkgs;};
 
   # headroom isn't in nixpkgs; it's installed via `uv tool` (headroom-ai[all])
   # into xdg.binHome. The programs.headroom module bakes ${package}/bin/headroom
@@ -28,6 +28,7 @@ in {
     ./opencode.nix
     ./pi.nix
     ./rtk.nix
+    ./skill-commands.nix
   ];
 
   config = {
@@ -61,36 +62,34 @@ in {
     programs = {
       agent-skills = {
         enable = true;
-        sources =
-          {
-            idjoo-skills = {
-              input = "idjoo-skills";
-            };
-            local = {
-              path = ./skills;
-            };
-            superpowers = {
-              input = "superpowers";
-              subdir = "skills";
-            };
-            # wshobson-backend-development = {
-            #   input = "wshobson-agents";
-            #   subdir = "plugins/backend-development/skills";
-            # };
-            wshobson-developer-essentials = {
-              input = "wshobson-agents";
-              subdir = "plugins/developer-essentials/skills";
-            };
-            wshobson-python-development = {
-              input = "wshobson-agents";
-              subdir = "plugins/python-development/skills";
-            };
-            # wshobson-systems-programming = {
-            #   input = "wshobson-agents";
-            #   subdir = "plugins/systems-programming/skills";
-            # };
-          }
-          // ai.marketplaceSkillSources;
+        sources = {
+          idjoo-skills = {
+            input = "idjoo-skills";
+          };
+          local = {
+            path = ./skills;
+          };
+          superpowers = {
+            input = "superpowers";
+            subdir = "skills";
+          };
+          # wshobson-backend-development = {
+          #   input = "wshobson-agents";
+          #   subdir = "plugins/backend-development/skills";
+          # };
+          wshobson-developer-essentials = {
+            input = "wshobson-agents";
+            subdir = "plugins/developer-essentials/skills";
+          };
+          wshobson-python-development = {
+            input = "wshobson-agents";
+            subdir = "plugins/python-development/skills";
+          };
+          # wshobson-systems-programming = {
+          #   input = "wshobson-agents";
+          #   subdir = "plugins/systems-programming/skills";
+          # };
+        };
         skills = {
           enable = [
             # "architecture-patterns"
@@ -129,7 +128,7 @@ in {
             "writing-plans"
             "writing-skills"
           ];
-          enableAll = ai.marketplaceEnableAll;
+          enableAll = false;
         };
         targets = {
           claude.enable = true;

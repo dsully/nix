@@ -86,10 +86,9 @@ in {
 
     commands =
       ai.commands
-      // (ai.mkAI {
-        source = aro;
-        commands = ["autoresearch"];
-      }).commands;
+      // {
+        autoresearch = "${aro}/commands/autoresearch.md";
+      };
 
     context = ./AGENTS.md;
 
@@ -169,8 +168,7 @@ in {
           "${aro}/plugins/autoresearch-context.ts"
           "${inputs.superpowers}/.opencode/plugins/superpowers.js"
         ]
-        ++ config.programs.opencode.extraPlugins
-        ++ ai.marketplacePlugins;
+        ++ config.programs.opencode.extraPlugins;
 
       watcher.ignore = [
         ".direnv/**"

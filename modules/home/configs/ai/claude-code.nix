@@ -71,29 +71,10 @@
     includeGitInstructions = false;
 
     # Keys below are mkDefault, so a downstream flake can override them with a
-    # plain assignment. Any key also present in `ai.enabledPlugins` becomes a
-    # plain value via the `//` merge, so overriding those needs lib.mkForce.
-    enabledPlugins =
-      {
-        "code-review@claude-plugins-official" = lib.mkDefault true;
-        "code-simplifier@claude-plugins-official" = lib.mkDefault true;
-        "commit-commands@claude-plugins-official" = lib.mkDefault true;
-        "context-mode@context-mode" = lib.mkDefault true;
-        "feature-dev@claude-plugins-official" = lib.mkDefault true;
-        "pr-review-toolkit@claude-plugins-official" = lib.mkDefault true;
-        "superpowers@claude-plugins-official" = lib.mkDefault true;
-      }
-      // ai.enabledPlugins
-      // ai.marketplaceClaudeEnabled;
-
-    extraKnownMarketplaces =
-      {
-        context-mode.source = {
-          source = "directory";
-          path = inputs.context-mode;
-        };
-      }
-      // ai.marketplaceClaudeMarketplaces;
+    # plain assignment.
+    enabledPlugins = {
+      "context-mode@context-mode" = lib.mkDefault true;
+    };
 
     hooks = lib.mkDefault ai.hooks.claude;
 
@@ -132,8 +113,15 @@ in {
     package = perSystem.llm-agents.claude-code;
     enableMcpIntegration = true;
 
-    inherit (ai) agents;
+    inherit (ai) agents commands;
     inherit settings;
+
+    # context-mode is the only marketplace we enable a plugin from; the curated
+    # official-marketplace agents/commands are delivered through the native
+    # `agents`/`commands` options above rather than Claude's native loader.
+    marketplaces = {
+      inherit (inputs) context-mode;
+    };
 
     mcpServers = claudeMcpServers;
 

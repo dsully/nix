@@ -202,6 +202,12 @@
 
         inherit homeModules;
 
+        # Reusable helper for consuming flakes. skillSourcesFrom turns a
+        # marketplace's curated `select` map into agent-skills `sources` plus the
+        # matching `skills.enable` IDs — see
+        # modules/home/configs/ai/skill-sources.nix.
+        lib.skillSourcesFrom = (import ./modules/home/configs/ai/skill-sources.nix {inherit lib;}).skillSourcesFrom;
+
         darwinConfigurations.jarvis = withSystem "aarch64-darwin" ({
           pkgs,
           system,
