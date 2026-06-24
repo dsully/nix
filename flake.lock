@@ -127,11 +127,11 @@
     "claude-plugins-official": {
       "flake": false,
       "locked": {
-        "lastModified": 1782311778,
-        "narHash": "sha256-qg37jdb/jPRCzNRgpd/TTb6VWE48Wh3XfsWH6K5k1lM=",
+        "lastModified": 1782325166,
+        "narHash": "sha256-LoBR83so0q8BOHyfXxnEP7uAmUCnw57KSrEQ657NKGs=",
         "owner": "anthropics",
         "repo": "claude-plugins-official",
-        "rev": "1a8324639ea08fb605600a3d5b095cd59e7e57f2",
+        "rev": "e6714855363fbefeff5da7214ef975d9f8534d59",
         "type": "github"
       },
       "original": {
@@ -143,11 +143,11 @@
     "context-mode": {
       "flake": false,
       "locked": {
-        "lastModified": 1782304833,
-        "narHash": "sha256-9xqgj4TkS5A5tZELowogP/yVP1QH+/zFq5hFThV/dko=",
+        "lastModified": 1782326014,
+        "narHash": "sha256-leURWxWVgbFYZAj8yObQx0rVpqNSU+MsRkgjmWtF1z8=",
         "owner": "mksglu",
         "repo": "context-mode",
-        "rev": "180ad1a1bb440519f46e3d7292d04fe4612c37bf",
+        "rev": "73676755c0cb5ebdcca73260515fad581502c58f",
         "type": "github"
       },
       "original": {
@@ -371,22 +371,6 @@
         "type": "github"
       }
     },
-    "idjoo-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1772448514,
-        "narHash": "sha256-VQrcxNyP7ywebKq4rmy91SLc3uC52JXGYa7MXPBcf3M=",
-        "owner": "idjoo",
-        "repo": "skills",
-        "rev": "0f0c33369336f6d2148ec6fbeef7ea95e9e2bec9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "idjoo",
-        "repo": "skills",
-        "type": "github"
-      }
-    },
     "import-tree": {
       "locked": {
         "lastModified": 1763762820,
@@ -414,11 +398,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1782280168,
-        "narHash": "sha256-VjXPtEjoUNoBWXHmsC+TarsozLXqgbIvAFBYq09Pqmk=",
+        "lastModified": 1782330012,
+        "narHash": "sha256-ukPjA1PTH+HEDIkdZ6Rd1q81PgC/fNMMJv5vRXbjs/4=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "3c9586476ad8afad108db3b6586384685ce85747",
+        "rev": "8f291eb5f7277274a75689a2c38b8a79e832a860",
         "type": "github"
       },
       "original": {
@@ -663,7 +647,6 @@
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
-        "idjoo-skills": "idjoo-skills",
         "llm-agents": "llm-agents",
         "meridian": "meridian",
         "meridian-plugin-opencode-scrub": "meridian-plugin-opencode-scrub",
