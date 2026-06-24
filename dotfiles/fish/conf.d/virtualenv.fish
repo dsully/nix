@@ -1,6 +1,6 @@
 if status is-interactive
 
-    function __auto_venv --on-variable PWD
+    function __auto_venv_walk
         set -l current_venv $VIRTUAL_ENV
         set -l check_dir $PWD
         set -l __venv_names .venv venv env
@@ -36,6 +36,17 @@ if status is-interactive
             # @fish-lsp-disable-next-line 7001
             deactivate
         end
+    end
+
+    function __auto_venv --on-variable PWD
+        # Guard against re-entrancy: deactivate/source can mutate state that
+        # re-fires the PWD handler before this call returns, blowing the stack.
+        if set -q __auto_venv_running
+            return
+        end
+        set -g __auto_venv_running 1
+        __auto_venv_walk
+        set -e __auto_venv_running
     end
 
     __auto_venv
