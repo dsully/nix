@@ -15,8 +15,6 @@
   configPath = "${config.xdg.configHome}/codex/config.toml";
   homeFileConfigPath = lib.removePrefix config.home.homeDirectory configPath;
 
-  settingsFile = (pkgs.formats.toml {}).generate "codex-config.toml" config.programs.codex.settings;
-
   # Route Codex's OpenAI-compatible traffic through the Headroom Claude proxy,
   # which serves OpenAI format on the same port under /v1. Scoped to Codex via a
   # wrapper so OPENAI_BASE_URL doesn't leak to every other OpenAI client.
@@ -110,10 +108,12 @@ in {
 
   # The module would symlink config.toml read-only into the /nix/store, which
   # prevents Codex from writing at runtime. Disable that and install a writable
-  # copy instead; each activation overwrites it with declared state.
+  # copy of the module's own generated file instead; this is the single source of
+  # truth (so any module-generated plugin/marketplace tables flow through), and
+  # each activation overwrites it with declared state.
   home.file."${homeFileConfigPath}".enable = lib.mkForce false;
 
   home.activation.codexSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD install -Dm600 ${settingsFile} ${configPath}
+    $DRY_RUN_CMD install -Dm600 ${config.home.file."${homeFileConfigPath}".source} ${configPath}
   '';
 }

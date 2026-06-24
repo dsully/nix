@@ -4,7 +4,6 @@
   inputs,
   lib,
   perSystem,
-  pkgs,
   ...
 }: let
   lspLanguageIds = {
@@ -120,13 +119,6 @@
   };
 
   settingsPath = "${config.xdg.configHome}/claude/settings.json";
-
-  settingsFile = (pkgs.formats.json {}).generate "claude-code-settings.json" (
-    config.programs.claude-code.settings
-    // {
-      "$schema" = "https://json.schemastore.org/claude-code-settings.json";
-    }
-  );
 in {
   home = {
     packages = with perSystem.llm-agents; [
@@ -155,12 +147,14 @@ in {
     lspServers = claudeCodeLsp;
   };
 
-  # The module would symlink settings.json read-only into the /nix/store,
-  # which breaks runtime commands like /effort. Disable that and install a
-  # writable copy instead; each activation overwrites it with declared state.
+  # The module would symlink settings.json read-only into the /nix/store, which
+  # breaks runtime commands like /effort. Disable that and install a writable
+  # copy of the module's own generated file instead (it already merges $schema
+  # and extraKnownMarketplaces), so there's a single source of truth; each
+  # activation overwrites it with declared state.
   home.file."${settingsPath}".enable = lib.mkForce false;
 
   home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD install -Dm600 ${settingsFile} ${settingsPath}
+    $DRY_RUN_CMD install -Dm600 ${config.home.file."${settingsPath}".source} ${settingsPath}
   '';
 }
