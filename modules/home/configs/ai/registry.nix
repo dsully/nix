@@ -118,20 +118,16 @@
   # handed to each tool's native `agents`/`commands` option. The `anthropic-`
   # prefix namespaces claude-plugins-official agents to avoid name clashes.
   agents = {
-    debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
-    dx-optimizer = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/dx-optimizer.md";
-    python-pro = "${inputs.wshobson-agents}/plugins/python-development/agents/python-pro.md";
-    anthropic-code-simplifier = "${inputs.claude-plugins-official}/plugins/code-simplifier/agents/code-simplifier.md";
     anthropic-code-explorer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-explorer.md";
     anthropic-code-reviewer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-reviewer.md";
+    anthropic-code-simplifier = "${inputs.claude-plugins-official}/plugins/code-simplifier/agents/code-simplifier.md";
     anthropic-comment-analyzer = "${inputs.claude-plugins-official}/plugins/pr-review-toolkit/agents/comment-analyzer.md";
-    anthropic-silent-failure-hunter = "${inputs.claude-plugins-official}/plugins/pr-review-toolkit/agents/silent-failure-hunter.md";
-    anthropic-type-design-analyzer = "${inputs.claude-plugins-official}/plugins/pr-review-toolkit/agents/type-design-analyzer.md";
+    debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
   };
 
   commands = {
-    tech-debt = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/tech-debt.md";
     refactor-clean = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/refactor-clean.md";
+    tech-debt = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/tech-debt.md";
   };
 
   descriptions = lib.mapAttrs (_: agentDescription) agents;

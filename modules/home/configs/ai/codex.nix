@@ -30,6 +30,10 @@ in {
     packages = with perSystem.llm-agents; [
       codex-acp
     ];
+
+    # Point the legacy ~/.codex path at the XDG location, which is the single
+    # source of truth (config.toml below).
+    file.".codex".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/codex";
   };
 
   home.file."${config.xdg.binHome}/codex" = lib.mkIf routeCodexViaHeadroom {

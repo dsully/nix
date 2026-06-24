@@ -106,6 +106,13 @@ in {
       # Used by codecompanion
       claude-agent-acp
     ];
+
+    # Point the legacy ~/.claude paths at the XDG location, which is the single
+    # source of truth (configDir below).
+    file = {
+      ".claude".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude";
+      ".claude.json".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude/.claude.json";
+    };
   };
 
   programs.claude-code = {
