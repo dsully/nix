@@ -93,7 +93,6 @@ in {
       StandardOutPath = "${config.xdg.cacheHome}/meridian.log";
       StandardErrorPath = "${config.xdg.cacheHome}/meridian.log";
     };
-    domain = lib.mkDefault "user";
   };
 
   systemd.user.services.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {

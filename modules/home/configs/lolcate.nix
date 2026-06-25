@@ -54,7 +54,6 @@
           ProcessType = "Background";
           LowPriorityIO = true;
         };
-        domain = lib.mkDefault "user";
       };
     })
   ];

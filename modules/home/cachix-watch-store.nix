@@ -32,6 +32,5 @@ in
         StandardOutPath = "${config.xdg.cacheHome}/cachix-watch-store.log";
         StandardErrorPath = "${config.xdg.cacheHome}/cachix-watch-store.log";
       };
-      domain = lib.mkDefault "user";
     };
   }
