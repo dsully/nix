@@ -16,5 +16,6 @@
       # StandardOutPath = cfg.logFile;
       # StandardErrorPath = cfg.logFile;
     };
+    domain = lib.mkDefault "user";
   };
 }
