@@ -26,7 +26,7 @@ rustPlatform.buildRustPackage rec {
     '';
   };
 
-  cargoHash = "";
+  cargoHash = "sha256-wriuFTcPjL7h+4MvojuD2NOSWGeao0v4q/GGJVffXU0=";
   doCheck = false;
 
   meta = {
