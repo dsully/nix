@@ -230,6 +230,7 @@
       RunAtLoad = true;
       ThrottleInterval = 5;
     };
+    domain = lib.mkDefault "gui";
   };
 in {
   options.programs.headroom = {

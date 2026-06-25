@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   launchd.agents.pbcopy = {
     enable = true;
     config = {
@@ -21,6 +21,7 @@
 
       inetdCompatibility.Wait = false;
     };
+    domain = lib.mkDefault "gui";
   };
 
   launchd.agents.pbpaste = {
@@ -45,5 +46,6 @@
 
       inetdCompatibility.Wait = false;
     };
+    domain = lib.mkDefault "gui";
   };
 }
