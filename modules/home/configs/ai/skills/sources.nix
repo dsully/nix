@@ -20,17 +20,23 @@
     select,
     input ? null,
     src ? null,
+    subdir ? (plugin: "plugins/${plugin}/skills"),
   }: let
     base =
       if input != null
       then {inherit input;}
       else {path = src;};
+
+    subdirFor =
+      if lib.isFunction subdir
+      then subdir
+      else (_: subdir);
   in
     lib.listToAttrs (map
       (plugin:
         lib.nameValuePair "${name}-${plugin}" (base
           // {
-            subdir = "plugins/${plugin}/skills";
+            subdir = subdirFor plugin;
             idPrefix = name;
             all = true;
           }))

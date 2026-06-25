@@ -89,10 +89,7 @@ in {
         enable = true;
         targets = {
           agents.enable = false;
-          claude = {
-            enable = true;
-            structure = "symlink-tree";
-          };
+          claude.enable = true;
           codex.enable = true;
           opencode.enable = true;
           pi = {
