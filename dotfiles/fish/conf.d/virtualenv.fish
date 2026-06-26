@@ -17,7 +17,7 @@ if status is-interactive
                             deactivate
                         end
 
-                        # Some activate.fish scripts `cd` into bin/ to resolve VIRTUAL_ENV via `pwd`. 
+                        # Some activate.fish scripts `cd` into bin/ to resolve VIRTUAL_ENV via `pwd`.
                         # Sourced here, that `cd` leaks into the live shell, so snapshot and restore $PWD.
                         set -l pre_source_pwd $PWD
 

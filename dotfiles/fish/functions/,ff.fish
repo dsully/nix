@@ -19,6 +19,6 @@ function ,ff --description 'Find and open files with fzf'
     # No files selected
     test (count $selected_files) -eq 0; and return 0
 
-    commandline "nvim $selected_files"
+    commandline "nvim "(string escape -- $selected_files | string join " ")
     commandline --function repaint
 end
