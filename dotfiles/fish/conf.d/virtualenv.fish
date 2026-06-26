@@ -16,7 +16,16 @@ if status is-interactive
                             # @fish-lsp-disable-next-line 7001
                             deactivate
                         end
+
+                        # Some activate.fish scripts `cd` into bin/ to resolve VIRTUAL_ENV via `pwd`. 
+                        # Sourced here, that `cd` leaks into the live shell, so snapshot and restore $PWD.
+                        set -l pre_source_pwd $PWD
+
                         source "$activate_script"
+
+                        if test "$PWD" != "$pre_source_pwd"
+                            builtin cd "$pre_source_pwd"
+                        end
                     end
 
                     return
