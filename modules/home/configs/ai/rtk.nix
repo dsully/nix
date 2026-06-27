@@ -7,7 +7,7 @@
   options.programs.rtk.enable =
     lib.mkEnableOption "RTK (Rust Token Killer) shell-output compression for AI agents"
     // {
-      default = true;
+      default = false;
     };
 
   # The agent-specific wiring (Claude/Codex hooks + awareness, OpenCode plugin,

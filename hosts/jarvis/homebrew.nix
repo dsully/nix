@@ -39,7 +39,6 @@
       "signal"
       "superduper"
       "syncthing-app"
-      "tableplus"
       "tailscale-app"
       "telegram"
       "unifi-identity-endpoint"
