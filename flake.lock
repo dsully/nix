@@ -433,22 +433,6 @@
         "type": "github"
       }
     },
-    "meridian-plugin-opencode-scrub": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1777227035,
-        "narHash": "sha256-30ybLSP0hvaGI1V7BonjqYxOfzEq1Gd+vsledd0A+D0=",
-        "owner": "rynfar",
-        "repo": "meridian-plugin-opencode-scrub",
-        "rev": "f58fe939b344bbc17b2ba1be34f686b9219792e6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rynfar",
-        "repo": "meridian-plugin-opencode-scrub",
-        "type": "github"
-      }
-    },
     "nix-auth": {
       "inputs": {
         "flake-parts": "flake-parts_4",
@@ -649,7 +633,6 @@
         "home-manager": "home-manager_2",
         "llm-agents": "llm-agents",
         "meridian": "meridian",
-        "meridian-plugin-opencode-scrub": "meridian-plugin-opencode-scrub",
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
