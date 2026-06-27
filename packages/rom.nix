@@ -12,7 +12,7 @@ rustPlatform.buildRustPackage rec {
     inherit rev;
     owner = "manic-systems";
     repo = "rom";
-    hash = "sha256-GBxA8UJeoXTCHPFQbnVreoImtsVogNmn/0xZwuVsBqU=";
+    hash = "sha256-XNdJIZLQ1TNVYxxl2W7r6wO6Wm4eqMN8q9tEQpYfl/s=";
 
     # A test fixture embeds the literal store path of nixpkgs' fetch-builder
     # `source-stdenv.sh`, which is also an inputSrc of this very FOD. Nix's
