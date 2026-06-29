@@ -92,35 +92,6 @@ in {
             ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
         fi
       '';
-
-      checkipConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
-        maxmind_key="${homeDir}/.config/checkip/maxmind-key"
-        urlscan_key="${homeDir}/.config/checkip/urlscan-key"
-
-        if [ -f "$maxmind_key" ] && [ -f "$urlscan_key" ]; then
-          cat > "${homeDir}/.checkip.yaml" <<YAML
-        ---
-        MAXMIND_LICENSE_KEY: $(cat "$maxmind_key")
-        URLSCAN_API_KEY: $(cat "$urlscan_key")
-        YAML
-          chmod 600 "${homeDir}/.checkip.yaml"
-        fi
-      '';
-
-      zonedConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
-        token_file="${homeDir}/.config/zoned/cloudflare-token"
-        zone_file="${homeDir}/.config/zoned/cloudflare-zone-id"
-
-        if [ -f "$token_file" ] && [ -f "$zone_file" ]; then
-          cat > "${homeDir}/.config/zoned/config.toml" <<TOML
-        hostname = "${config.system.hostName}.sully.org"
-        ${lib.optionalString pkgs.stdenv.isDarwin ''ssid = "sully"''}
-        token = "$(cat "$token_file")"
-        zoneid = "$(cat "$zone_file")"
-        TOML
-          chmod 600 "${homeDir}/.config/zoned/config.toml"
-        fi
-      '';
     };
 
     file = {
@@ -134,7 +105,6 @@ in {
 
       "src".source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/dev/src";
 
-      ".huggingface".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/huggingface";
       ".ignore" = {
         force = true;
         text =
