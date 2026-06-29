@@ -25,7 +25,6 @@ in {
   imports = [
     ./ccstatusline.nix
     ./claude-code.nix
-    ./codeburn.nix
     ./codex.nix
     ./headroom.nix
     ./icm.nix
