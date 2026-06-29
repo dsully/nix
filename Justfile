@@ -144,4 +144,4 @@ push-cache:
         fi
     done
 
-    nix build --no-link --print-out-paths "${targets[@]}" | cachix push dsully
+    nix build --no-link --print-out-paths "${targets[@]}" | DYLD_LIBRARY_PATH=/usr/lib cachix push dsully
