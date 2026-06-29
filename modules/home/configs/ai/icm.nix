@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  my,
+  perSystem,
   ...
 }: {
   options.programs.icm.enable =
@@ -9,8 +9,8 @@
     // {default = true;};
 
   config = lib.mkIf config.programs.icm.enable {
-    home.packages = [my.pkgs.icm];
+    home.packages = [perSystem.llm-agents.icm];
 
-    programs.opencode.extraPlugins = ["${my.pkgs.icm}/plugins/opencode-icm.ts"];
+    programs.opencode.extraPlugins = ["${perSystem.llm-agents.icm}/plugins/opencode-icm.ts"];
   };
 }
