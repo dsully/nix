@@ -26,7 +26,6 @@
         mdterm
         moor
         p7zip
-        prmt
         procs
         q
         rip2
