@@ -11,7 +11,7 @@ in {
     python = {
       versions = [pythonVersion];
       default = pythonVersion;
-      prune = true;
+      prune = false;
     };
 
     # uv tool install takes no per-tool --python, so pin the interpreter
