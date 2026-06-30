@@ -2,6 +2,8 @@
   imports = [
     ./btop.nix
     ./delta.nix
+    ./direnv.nix
+    ./editorconfig.nix
     ./emmylua.nix
     ./fd.nix
     ./fish.nix

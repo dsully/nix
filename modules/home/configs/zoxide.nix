@@ -13,6 +13,7 @@
     + lib.optionalString (fzfCfg.colors != {}) " --color ${renderedColors fzfCfg.colors}";
 in {
   home.sessionVariables = {
+    _ZO_DATA_DIR = "${config.xdg.dataHome}/zoxide";
     _ZO_FZF_OPTS = "${fzfOpts} --bind=ctrl-z:ignore --exit-0 --info=default --layout=reverse-list --no-sort --select-1";
   };
 

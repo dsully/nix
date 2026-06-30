@@ -11,8 +11,8 @@
   # single source of truth. allowlistFor mirrors the agent-skills module's own
   # selection so this never drifts from what actually gets installed.
   allowlist = asLib.allowlistFor {
-    catalog = cfg.catalog;
-    sources = cfg.sources;
+    inherit (cfg) catalog;
+    inherit (cfg) sources;
     enableAll = cfg.skills.enableAll;
     enable = cfg.skills.enable;
   };

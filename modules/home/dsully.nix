@@ -45,39 +45,6 @@ in {
       }
   );
 
-  editorconfig = {
-    enable = true;
-
-    settings = {
-      "*" = {
-        charset = "utf-8";
-        end_of_line = "lf";
-        trim_trailing_whitespace = true;
-        insert_final_newline = true;
-        indent_style = "space";
-      };
-      "*.{js,json,jsonc,ts,nix,yml,yaml}" = {
-        indent_size = 2;
-        max_line_length = 160;
-      };
-      "*.{py,rs}" = {
-        indent_size = 4;
-        max_line_length = 160;
-      };
-      "*.go" = {
-        indent_size = 8;
-        indent_style = "tab";
-      };
-      "Makefile" = {
-        indent_style = "tab";
-      };
-      "just" = {
-        indent_size = 4;
-        indent_style = "tab";
-      };
-    };
-  };
-
   home = {
     # See here what bumping this value impacts:
     # https://nix-community.github.io/home-manager/release-notes.xhtml
@@ -131,6 +98,7 @@ in {
     sessionPath = [config.xdg.binHome "${config.home.homeDirectory}/.cargo/bin"];
 
     sessionVariables =
+      # These are here instead of homebrew.nix so they belong to home-manager instead of nix-darwin
       lib.optionalAttrs pkgs.stdenv.isDarwin {
         HOMEBREW_NO_ANALYTICS = "1";
         HOMEBREW_NO_ASK = "1";
@@ -140,21 +108,6 @@ in {
         HOMEBREW_NO_REQUIRE_TAP_TRUST = "1";
       }
       // {
-        # Silence direnv logging. Hook is invoked via vendor_conf.d/
-        DIRENV_LOG_FORMAT = "";
-
-        # Python
-        PIP_CACHE_DIR = "${config.xdg.cacheHome}/pip";
-        PIP_CONFIG_FILE = "${config.xdg.configHome}/pip/pip.conf";
-        PIP_DISABLE_PIP_VERSION_CHECK = "1";
-        PIP_REQUIRE_VIRTUALENV = "1";
-        POETRY_CACHE_DIR = "${config.xdg.cacheHome}/poetry";
-        POETRY_CONFIG_DIR = "${config.xdg.configHome}/poetry";
-        POETRY_DATA_DIR = "${config.xdg.dataHome}/poetry";
-        PYTHONDONTWRITEBYTECODE = "1";
-        PTPYTHON_CONFIG_HOME = "${config.xdg.configHome}/ptpython";
-        VIRTUAL_ENV_DISABLE_PROMPT = "1";
-
         XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
       };
   };
@@ -189,34 +142,6 @@ in {
           mode = "0600";
           group = config.system.primaryGroup;
         };
-      };
-    };
-
-    direnv = {
-      enable = true;
-
-      package = pkgs.direnv.overrideAttrs (_: {
-        doCheck = false;
-      });
-
-      config = {
-        global = {
-          hide_env_diff = true;
-          load_dotenv = true;
-          strict_env = true;
-          warn_timeout = "10s";
-        };
-        whitelist = {
-          prefix = [
-            "${homeDir}/.config"
-            "${homeDir}/dev/home"
-            "${homeDir}/dev/work"
-          ];
-        };
-      };
-
-      nix-direnv = {
-        enable = true;
       };
     };
 

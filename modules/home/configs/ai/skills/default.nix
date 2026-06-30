@@ -17,7 +17,7 @@
     (
       if g.input != null
       then {inherit (g) input;}
-      else {path = g.path;}
+      else {inherit (g) path;}
     )
     // lib.optionalAttrs (g.subdir != null) {inherit (g) subdir;}
     // lib.optionalAttrs (g.idPrefix != null) {inherit (g) idPrefix;};
