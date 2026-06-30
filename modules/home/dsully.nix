@@ -174,16 +174,6 @@ in {
     };
 
     nix-index-database.comma.enable = false;
-
-    npm = {
-      enable = true;
-
-      settings = {
-        audit = false;
-        fund = false;
-        prefix = "\${HOME}/.npm";
-      };
-    };
   };
 
   targets.darwin.linkApps.enable = false;

@@ -26,8 +26,10 @@ in {
       npm = {
         enable = true;
         settings = {
-          prefix = npmCacheDir;
+          audit = false;
           cache = npmCacheDir;
+          fund = false;
+          prefix = npmCacheDir;
         };
       };
     };
