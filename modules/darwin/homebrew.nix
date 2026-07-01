@@ -23,7 +23,6 @@
     casks = [
       "1password"
       "boltai"
-      "cleanshot"
       "cotypist"
       "daisydisk"
       "dash"
@@ -40,8 +39,8 @@
       "rapidapi"
       "raycast"
       "repobar"
-      "retcon"
       "rocket"
+      "snapzy"
       "soulver"
       "stay"
       "suspicious-package"
