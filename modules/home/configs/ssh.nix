@@ -128,11 +128,6 @@
   # key). Required because ssh_config uses first-value-wins per option, so a
   # Match override must appear before its corresponding Host block.
   tsMatches = lib.mapAttrs' (n: s: lib.nameValuePair "0-ts-${n}" (mkTsMatch n s)) dual;
-
-  publicDual = lib.filterAttrs (n: _: n != "server") dual;
-  jarvisDual = {inherit (dual) server;};
-  publicTsMatches = lib.filterAttrs (n: _: n != "0-ts-server") tsMatches;
-  jarvisTsMatches = {"0-ts-server" = tsMatches."0-ts-server";};
 in {
   programs.ssh = {
     enable = true;
@@ -167,8 +162,8 @@ in {
             ControlPersist = "no";
           };
         }
-        // (mkHostBlocks publicDual)
-        // publicTsMatches)
+        // (mkHostBlocks dual)
+        // tsMatches)
 
       (lib.mkIf (hostName != "friday") {
         "sisyphus" = {
@@ -209,24 +204,20 @@ in {
 
       (lib.mkIf (hostName != "jarvis") {
         "jarvis" = {
-          HostName = "10.0.0.97";
+          HostName = "10.0.0.98";
         };
       })
 
-      (lib.mkIf (hostName == "jarvis") (
-        {
-          "travel" = {
-            HostName = "192.168.8.1";
-            User = "root";
-          };
+      (lib.mkIf (hostName == "jarvis") {
+        "travel" = {
+          HostName = "192.168.8.1";
+          User = "root";
+        };
 
-          "work" = {
-            HostName = "10.0.0.95";
-          };
-        }
-        // (mkHostBlocks jarvisDual)
-        // jarvisTsMatches
-      ))
+        "work" = {
+          HostName = "10.0.0.95";
+        };
+      })
     ];
   };
 }
