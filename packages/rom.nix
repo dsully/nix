@@ -5,14 +5,14 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "rom";
-  rev = "cf2db30ce2754c95bb2d50287368abaa9986ad71";
+  rev = "bdf5edf384cfbe7651b71f83324eadb9301abf62";
   version = "0.2.0-${rev}";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "manic-systems";
     repo = "rom";
-    hash = "sha256-XNdJIZLQ1TNVYxxl2W7r6wO6Wm4eqMN8q9tEQpYfl/s=";
+    hash = "sha256-7gCPo5Zl/KrGlj3+5/Ed6wUmmgKD93HgPHv1vWqf3WQ=";
 
     # A test fixture embeds the literal store path of nixpkgs' fetch-builder
     # `source-stdenv.sh`, which is also an inputSrc of this very FOD. Nix's
