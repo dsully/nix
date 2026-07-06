@@ -69,11 +69,6 @@ in {
         package = headroomBin;
 
         integrations.claudeCode.enable = true;
-
-        optimization = {
-          interceptToolResults = true;
-          codeAware = true;
-        };
       };
 
       icm = {
