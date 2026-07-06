@@ -16,8 +16,8 @@ in {
     enableFishIntegration = true;
 
     defaultCommand = "fd --type f --type l ${fdOptions}";
-    fileWidgetCommand = "fd --type f ${fdOptions}";
-    changeDirWidgetCommand = "fd --type d ${fdOptions}";
+    fileWidget.command = "fd --type f ${fdOptions}";
+    changeDirWidget.command = "fd --type d ${fdOptions}";
 
     defaultOptions = [
       "--ansi"
