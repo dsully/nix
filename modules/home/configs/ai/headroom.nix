@@ -12,6 +12,7 @@
   environment = {
     HEADROOM_INTERCEPT_ENABLED = "1";
     HEADROOM_CODE_AWARE_ENABLED = "1";
+    HEADROOM_PORT = "${claudeCodeCfg.port}";
   };
 
   headroomPackage = pkgs.writeShellApplication {
