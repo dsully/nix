@@ -19,6 +19,11 @@ in {
     ../options.nix
   ];
 
+  fishSecrets = {
+    HOMEKIT_MCP_TOKEN = "op://Services/HomeBar MCP/credential";
+    UNIFI_API_KEY = "op://Services/UniFi API/credential";
+  };
+
   home = {
     activation = {
       checkipConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
