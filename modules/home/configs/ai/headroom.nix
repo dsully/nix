@@ -65,8 +65,8 @@ in {
       };
 
       port = lib.mkOption {
-        type = lib.types.port;
-        default = 8788;
+        type = lib.types.str;
+        default = "8788";
         description = "Port for the Claude Code Headroom proxy to bind.";
       };
 
