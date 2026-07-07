@@ -46,20 +46,7 @@ in {
         ty
         typescript-go
         vimdoc-language-server
-        # 4.10.0's bundled servers mix CommonJS `require()` with `createRequire(import.meta.url)`.
-        # Node sees `import.meta`, reparses the file as ESM, and the top-level `require()` calls
-        # throw "require is not defined in ES module scope", crashing jsonls on startup.
-        # Drop the redundant ESM shim so the bundles parse and run as CommonJS again.
-        (vscode-langservers-extracted.overrideAttrs (old: {
-          postInstall =
-            (old.postInstall or "")
-            + ''
-              find "$out" -name '*.js' -path '*node*' -print0 \
-                | xargs -0 sed -i \
-                    -e 's/(0, _module\.createRequire)(import\.meta\.url)/require/g' \
-                    -e 's/createRequire(import\.meta\.url)/require/g'
-            '';
-        }))
+        vscode-langservers-extracted
         wordnet
         write-good
         yaml-language-server
