@@ -18,6 +18,7 @@
     casks = [
       "anylist"
       "backblaze-restore"
+      "boltai"
       "chatgpt"
       "claude"
       "discord"
@@ -31,6 +32,7 @@
       "mist"
       "monarch"
       "ogdesign-eagle"
+      "osaurus"
       "protonvpn"
       "proxyman"
       "quicken"

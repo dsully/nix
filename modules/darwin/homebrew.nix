@@ -22,7 +22,6 @@
 
     casks = [
       "1password"
-      "boltai"
       "cotypist"
       "daisydisk"
       "dash"
@@ -33,12 +32,10 @@
       "little-snitch"
       "lunar"
       "monodraw"
-      "osaurus"
       "processspy"
       "raindropio"
       "rapidapi"
       "raycast"
-      "repobar"
       "rocket"
       "snapzy"
       "soulver"
