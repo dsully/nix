@@ -35,37 +35,12 @@
     )
     ai.lsp;
 
-  # Claude Code expands ${VAR} in MCP headers, while the canonical
-  # programs.mcp.servers uses the {env:VAR} form that opencode consumes
-  # verbatim. Rewrite the placeholder for any remote server with headers and
-  # feed it back as programs.claude-code.mcpServers, which the module merges
-  # over the generated set per server name. Run it through the same
-  # lib.hm.mcp.transformMcpServer the module uses so the override is normalized
-  # identically (type added, the unsupported `enabled` field stripped, nulls
-  # and empty defaults filtered out).
-  rewriteEnvPlaceholders = lib.replaceStrings ["{env:"] ["\${"];
-
-  claudeMcpServers =
-    lib.mapAttrs (
-      _: server:
-        lib.hm.mcp.transformMcpServer {
-          inherit server;
-          exclude = ["enabled"];
-          extraTransforms = [
-            lib.hm.mcp.addType
-            (s: s // {headers = lib.mapAttrs (_: rewriteEnvPlaceholders) s.headers;})
-          ];
-        }
-    )
-    (lib.filterAttrs (_: server: server.headers != {}) config.programs.mcp.servers);
-
   settings = {
     inherit (ai.models.large) model;
 
     autoUpdates = false;
     effortLevel = "medium";
     enableAllProjectMcpServers = false;
-    enableMcpIntegration = true;
     includeCoAuthoredBy = false;
     # Never commit
     includeGitInstructions = false;
@@ -129,8 +104,6 @@ in {
     marketplaces = {
       inherit (inputs) context-mode;
     };
-
-    mcpServers = claudeMcpServers;
 
     configDir = "${config.xdg.configHome}/claude";
 
