@@ -95,7 +95,7 @@ When implementing a new feature or workflow, first look for analogous
 implementations and conventions in the codebase. Prefer matching nearby
 or repo-wide patterns over introducing a new style, library, or structure.
 
-## Codebase Navigation — MUST USE indxr and codebase MCP tools
+## Codebase Navigation — MUST USE indxr and codeloupe MCP tools
 
 An MCP server called `indxr` is available.
 **Always use indxr tools before the Read tool.**

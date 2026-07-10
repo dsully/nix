@@ -61,8 +61,8 @@
   };
 
   mcpServers = {
-    codebase = {
-      command = lib.getExe my.pkgs.codebase-mcp;
+    codeloupe = {
+      command = lib.getExe my.pkgs.codeloupe-mcp;
     };
     git = {
       command = lib.getExe my.pkgs.mcp-server-git-rs;

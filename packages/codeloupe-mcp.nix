@@ -3,21 +3,20 @@
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
-  sqlite,
   zstd,
 }:
 rustPlatform.buildRustPackage rec {
-  pname = "codebase-mcp";
+  pname = "codeloupe-mcp";
   version = "1.4.1";
 
   src = fetchFromGitHub {
     owner = "ndhkaeru";
-    repo = "codebase-mcp";
-    rev = "acfc7e6fd2fdc9dbe9fc68c6262e7770546c1aaf";
-    hash = "sha256-/LX+G4Vv8cJ99AbtgHIBpd7boTZYSoV6teIbW+UDIzs=";
+    repo = "codeloupe-mcp";
+    rev = "b2113628c784b5ebf0c654eae89288e337edfdc3";
+    hash = "sha256-t1OMBO5p4/upHtbSc45K9fIwg4DRrcilvUWF8DSGtZw=";
   };
 
-  cargoHash = "sha256-ulhEWqfIHYVzK3o80BSJ3r8MBgDpqSYunQV4+lGui8k=";
+  cargoHash = "sha256-gpVMflmVY3/0ckPTu3L77nxIXnFIvkQqa4Qqzwg3jpI=";
   doCheck = false;
 
   nativeBuildInputs = [
@@ -25,7 +24,6 @@ rustPlatform.buildRustPackage rec {
   ];
 
   buildInputs = [
-    sqlite
     zstd
   ];
 
@@ -35,7 +33,7 @@ rustPlatform.buildRustPackage rec {
 
   meta = {
     description = "A local-first MCP server for real codebases with 37 tools";
-    homepage = "https://github.com/ndhkaeru/codebase-mcp";
+    homepage = "https://github.com/ndhkaeru/codeloupe-mcp";
     license = lib.licenses.asl20;
     mainProgram = pname;
   };
