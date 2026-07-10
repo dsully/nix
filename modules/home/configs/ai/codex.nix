@@ -26,98 +26,102 @@
     exec ${lib.getExe config.programs.codex.package} "$@"
   '';
 in {
-  home = {
-    packages = with perSystem.llm-agents; [
-      codex-acp
-    ];
+  config = lib.mkMerge [
+    {programs.codex.enable = lib.mkDefault true;}
 
-    # Point the legacy ~/.codex path at the XDG location, which is the single
-    # source of truth (config.toml below).
-    file.".codex".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/codex";
-  };
+    (lib.mkIf config.programs.codex.enable {
+      home = {
+        packages = with perSystem.llm-agents; [
+          codex-acp
+        ];
 
-  home.file."${config.xdg.binHome}/codex" = lib.mkIf routeCodexViaHeadroom {
-    force = true;
-    source = codexWrapper;
-  };
-
-  programs.codex = {
-    enable = true;
-
-    package = perSystem.llm-agents.codex;
-    enableMcpIntegration = true;
-
-    context = ''
-      ${builtins.readFile ./AGENTS.md}
-      ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md")}
-    '';
-
-    settings = {
-      agents = codexAgentRoles;
-      analytics.enabled = false;
-      approval_policy = "on-request";
-
-      features = {
-        hooks = true;
-        multi_agent = true;
-        tool_search = true;
+        # Point the legacy ~/.codex path at the XDG location, which is the single
+        # source of truth (config.toml below).
+        file.".codex".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/codex";
       };
 
-      feedback.enabled = false;
-      hide_agent_reasoning = true;
-
-      hooks = ai.hooks.codex;
-      mcp_servers = mcpServersAutoApprove;
-      model = "gpt-5.5";
-
-      model_reasoning_effort = "medium";
-      model_reasoning_summary = "none";
-      model_verbosity = "low";
-      personality = "pragmatic";
-
-      projects = {
-        "${config.home.homeDirectory}/dev" = {
-          trust_level = "trusted";
-        };
-        "${config.xdg.configHome}/nix" = {
-          trust_level = "trusted";
-        };
-        "${config.xdg.configHome}/nvim" = {
-          trust_level = "trusted";
-        };
+      home.file."${config.xdg.binHome}/codex" = lib.mkIf routeCodexViaHeadroom {
+        force = true;
+        source = codexWrapper;
       };
 
-      sandbox_mode = "workspace-write";
-      sandbox_workspace_write = {
-        exclude_tmpdir_env_var = false; # Allow $TMPDIR
-        exclude_slash_tmp = false;
-        network_access = true;
+      programs.codex = {
+        package = perSystem.llm-agents.codex;
+        enableMcpIntegration = true;
+
+        context = ''
+          ${builtins.readFile ./AGENTS.md}
+          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md")}
+        '';
+
+        settings = {
+          agents = codexAgentRoles;
+          analytics.enabled = false;
+          approval_policy = "on-request";
+
+          features = {
+            hooks = true;
+            multi_agent = true;
+            tool_search = true;
+          };
+
+          feedback.enabled = false;
+          hide_agent_reasoning = true;
+
+          hooks = ai.hooks.codex;
+          mcp_servers = mcpServersAutoApprove;
+          model = "gpt-5.5";
+
+          model_reasoning_effort = "medium";
+          model_reasoning_summary = "none";
+          model_verbosity = "low";
+          personality = "pragmatic";
+
+          projects = {
+            "${config.home.homeDirectory}/dev" = {
+              trust_level = "trusted";
+            };
+            "${config.xdg.configHome}/nix" = {
+              trust_level = "trusted";
+            };
+            "${config.xdg.configHome}/nvim" = {
+              trust_level = "trusted";
+            };
+          };
+
+          sandbox_mode = "workspace-write";
+          sandbox_workspace_write = {
+            exclude_tmpdir_env_var = false; # Allow $TMPDIR
+            exclude_slash_tmp = false;
+            network_access = true;
+          };
+
+          show_raw_agent_reasoning = false;
+
+          tui.status_line = [
+            "model-with-reasoning"
+            "current-dir"
+            "context-remaining"
+            "context-used"
+            "five-hour-limit"
+          ];
+        };
+
+        # Written to a separate file so Codex's interactively-managed
+        # `default.rules` smart-approvals allow-list is left untouched.
+        rules.common = ai.permissions.codex.rules.common;
       };
 
-      show_raw_agent_reasoning = false;
+      # The module would symlink config.toml read-only into the /nix/store, which
+      # prevents Codex from writing at runtime. Disable that and install a writable
+      # copy of the module's own generated file instead; this is the single source of
+      # truth (so any module-generated plugin/marketplace tables flow through), and
+      # each activation overwrites it with declared state.
+      home.file."${homeFileConfigPath}".enable = lib.mkForce false;
 
-      tui.status_line = [
-        "model-with-reasoning"
-        "current-dir"
-        "context-remaining"
-        "context-used"
-        "five-hour-limit"
-      ];
-    };
-
-    # Written to a separate file so Codex's interactively-managed
-    # `default.rules` smart-approvals allow-list is left untouched.
-    rules.common = ai.permissions.codex.rules.common;
-  };
-
-  # The module would symlink config.toml read-only into the /nix/store, which
-  # prevents Codex from writing at runtime. Disable that and install a writable
-  # copy of the module's own generated file instead; this is the single source of
-  # truth (so any module-generated plugin/marketplace tables flow through), and
-  # each activation overwrites it with declared state.
-  home.file."${homeFileConfigPath}".enable = lib.mkForce false;
-
-  home.activation.codexSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD install -Dm600 ${config.home.file."${homeFileConfigPath}".source} ${configPath}
-  '';
+      home.activation.codexSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        $DRY_RUN_CMD install -Dm600 ${config.home.file."${homeFileConfigPath}".source} ${configPath}
+      '';
+    })
+  ];
 }

@@ -64,6 +64,8 @@ in {
     };
 
     programs = {
+      codex.enable = false;
+
       headroom = {
         enable = true;
         package = headroomBin;
@@ -79,6 +81,8 @@ in {
         enable = true;
         servers = ai.mcpServers;
       };
+
+      pi-coding-agent.enable = false;
 
       uv.tool.packages = [
         "headroom-ai[all]"

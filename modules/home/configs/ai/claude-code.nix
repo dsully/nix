@@ -76,53 +76,58 @@
 
   settingsPath = "${config.xdg.configHome}/claude/settings.json";
 in {
-  home = {
-    packages = with perSystem.llm-agents; [
-      # Used by codecompanion
-      claude-agent-acp
-    ];
+  config = lib.mkMerge [
+    {programs.claude-code.enable = lib.mkDefault true;}
 
-    # Point the legacy ~/.claude paths at the XDG location, which is the single
-    # source of truth (configDir below).
-    file = {
-      ".claude".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude";
-      ".claude.json".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude/.claude.json";
-    };
-  };
+    (lib.mkIf config.programs.claude-code.enable {
+      home = {
+        packages = with perSystem.llm-agents; [
+          # Used by codecompanion
+          claude-agent-acp
+        ];
 
-  programs.claude-code = {
-    enable = true;
-    package = perSystem.llm-agents.claude-code;
-    enableMcpIntegration = true;
+        # Point the legacy ~/.claude paths at the XDG location, which is the single
+        # source of truth (configDir below).
+        file = {
+          ".claude".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude";
+          ".claude.json".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude/.claude.json";
+        };
+      };
 
-    inherit (ai) agents commands;
-    inherit settings;
+      programs.claude-code = {
+        package = perSystem.llm-agents.claude-code;
+        enableMcpIntegration = true;
 
-    # context-mode is the only marketplace we enable a plugin from; the curated
-    # official-marketplace agents/commands are delivered through the native
-    # `agents`/`commands` options above rather than Claude's native loader.
-    marketplaces = {
-      inherit (inputs) context-mode;
-    };
+        inherit (ai) agents commands;
+        inherit settings;
 
-    configDir = "${config.xdg.configHome}/claude";
+        # context-mode is the only marketplace we enable a plugin from; the curated
+        # official-marketplace agents/commands are delivered through the native
+        # `agents`/`commands` options above rather than Claude's native loader.
+        marketplaces = {
+          inherit (inputs) context-mode;
+        };
 
-    context = ''
-      ${builtins.readFile ./AGENTS.md}
-      ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
-    '';
+        configDir = "${config.xdg.configHome}/claude";
 
-    lspServers = claudeCodeLsp;
-  };
+        context = ''
+          ${builtins.readFile ./AGENTS.md}
+          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
+        '';
 
-  # The module would symlink settings.json read-only into the /nix/store, which
-  # breaks runtime commands like /effort. Disable that and install a writable
-  # copy of the module's own generated file instead (it already merges $schema
-  # and extraKnownMarketplaces), so there's a single source of truth; each
-  # activation overwrites it with declared state.
-  home.file."${settingsPath}".enable = lib.mkForce false;
+        lspServers = claudeCodeLsp;
+      };
 
-  home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD install -Dm600 ${config.home.file."${settingsPath}".source} ${settingsPath}
-  '';
+      # The module would symlink settings.json read-only into the /nix/store, which
+      # breaks runtime commands like /effort. Disable that and install a writable
+      # copy of the module's own generated file instead (it already merges $schema
+      # and extraKnownMarketplaces), so there's a single source of truth; each
+      # activation overwrites it with declared state.
+      home.file."${settingsPath}".enable = lib.mkForce false;
+
+      home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        $DRY_RUN_CMD install -Dm600 ${config.home.file."${settingsPath}".source} ${settingsPath}
+      '';
+    })
+  ];
 }

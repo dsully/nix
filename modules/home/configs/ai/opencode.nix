@@ -34,159 +34,164 @@ in {
     description = "Additional opencode plugins appended to the base set.";
   };
 
-  config.home = {
-    # Link the notifier app bundle into ~/Applications and register it with
-    # LaunchServices, so notifications are delivered and the app appears in
-    # System Settings → Notifications. The plugin launches it from this stable
-    # path. (opencode-notifier is emptyFile off darwin.)
-    file = lib.mkIf pkgs.stdenv.isDarwin {
-      "Applications/OpenCodeNotifier.app".source = "${my.pkgs.opencode-notifier}/Applications/OpenCodeNotifier.app";
-    };
+  config = lib.mkMerge [
+    {programs.opencode.enable = lib.mkDefault true;}
 
-    activation.registerOpenCodeNotifierApp = lib.mkIf pkgs.stdenv.isDarwin (
-      lib.hm.dag.entryAfter ["linkGeneration"] ''
-
-        lsregister=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
-
-        $DRY_RUN_CMD "$lsregister" -f "$HOME/Applications/OpenCodeNotifier.app"
-      ''
-    );
-
-    sessionVariables = {
-      # https://opencode.ai/docs/cli/#environment-variables
-      OPENCODE_DISABLE_AUTOUPDATE = 1;
-
-      # https://opencode.ai/docs/rules/#claude-code-compatibility
-      OPENCODE_DISABLE_CLAUDE_CODE = 1;
-
-      OPENCODE_DISABLE_LSP_DOWNLOAD = 1;
-      OPENCODE_DISABLE_PRUNE = 1;
-
-      # https://opencode.ai/docs/cli/#experimental
-      OPENCODE_EXPERIMENTAL = 1;
-      OPENCODE_EXPERIMENTAL_FILEWATCHER = 1;
-      OPENCODE_EXPERIMENTAL_ICON_DISCOVERY = 1;
-      OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
-      OPENCODE_EXPERIMENTAL_LSP_TY = 1;
-      OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
-      OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
-    };
-  };
-
-  config.programs.opencode = {
-    enable = true;
-    package = perSystem.llm-agents.opencode;
-
-    enableMcpIntegration = true;
-    extraPlugins = [
-      "context-mode"
-    ];
-
-    inherit (ai) agents;
-
-    commands =
-      ai.commands
-      // {
-        autoresearch = "${aro}/commands/autoresearch.md";
-      };
-
-    context = ./AGENTS.md;
-
-    settings = {
-      autoupdate = lib.mkDefault true;
-      compaction = {
-        auto = true;
-        prune = true;
-      };
-
-      formatter = lib.mkDefault {
-        alejandra = {
-          command = [
-            "${lib.getExe pkgs.alejandra}"
-            "\$FILE"
-          ];
-          extensions = [".nix"];
+    (lib.mkIf config.programs.opencode.enable {
+      home = {
+        # Link the notifier app bundle into ~/Applications and register it with
+        # LaunchServices, so notifications are delivered and the app appears in
+        # System Settings → Notifications. The plugin launches it from this stable
+        # path. (opencode-notifier is emptyFile off darwin.)
+        file = lib.mkIf pkgs.stdenv.isDarwin {
+          "Applications/OpenCodeNotifier.app".source = "${my.pkgs.opencode-notifier}/Applications/OpenCodeNotifier.app";
         };
-        gofmt = {disabled = true;};
-        gofumpt = {
-          command = [
-            "${lib.getExe pkgs.gofumpt}"
-            "-w"
-            "\$FILE"
-          ];
-          extensions = [".go"];
-        };
-        nixfmt = {disabled = true;};
-        ruff-check = {
-          command = [
-            "${lib.getExe pkgs.ruff}"
-            "check"
-            "\$FILE"
-          ];
-          extensions = [".py" ".pyi"];
-        };
-        rustfmt = {
-          command = [
-            "rustfmt"
-            "+nightly"
-            "--edition=2024"
-            "\$FILE"
-          ];
-          extensions = [".rs"];
-        };
-        shfmt = {
-          command = [
-            "${lib.getExe pkgs.shfmt}"
-            "-i"
-            "4"
-            "-ci"
-            "-sr"
-            "-s"
-            "-bn"
-            "-w"
-            "\$FILE"
-          ];
-          extensions = [".sh" ".bash"];
-        };
-        stylua = {
-          command = [
-            "${lib.getExe pkgs.stylua}"
-            "\$FILE"
-          ];
-          extensions = [".lua"];
+
+        activation.registerOpenCodeNotifierApp = lib.mkIf pkgs.stdenv.isDarwin (
+          lib.hm.dag.entryAfter ["linkGeneration"] ''
+
+            lsregister=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+
+            $DRY_RUN_CMD "$lsregister" -f "$HOME/Applications/OpenCodeNotifier.app"
+          ''
+        );
+
+        sessionVariables = {
+          # https://opencode.ai/docs/cli/#environment-variables
+          OPENCODE_DISABLE_AUTOUPDATE = 1;
+
+          # https://opencode.ai/docs/rules/#claude-code-compatibility
+          OPENCODE_DISABLE_CLAUDE_CODE = 1;
+
+          OPENCODE_DISABLE_LSP_DOWNLOAD = 1;
+          OPENCODE_DISABLE_PRUNE = 1;
+
+          # https://opencode.ai/docs/cli/#experimental
+          OPENCODE_EXPERIMENTAL = 1;
+          OPENCODE_EXPERIMENTAL_FILEWATCHER = 1;
+          OPENCODE_EXPERIMENTAL_ICON_DISCOVERY = 1;
+          OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
+          OPENCODE_EXPERIMENTAL_LSP_TY = 1;
+          OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
+          OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
         };
       };
 
-      lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
+      programs.opencode = {
+        package = perSystem.llm-agents.opencode;
 
-      permission = lib.mkDefault ai.permissions.opencode.permission;
+        enableMcpIntegration = true;
+        extraPlugins = [
+          "context-mode"
+        ];
 
-      plugin =
-        lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
-        ++ lib.optional config.programs.rtk.enable "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
-        ++ [
-          "${aro}/plugins/autoresearch-context.ts"
-          "${inputs.superpowers}/.opencode/plugins/superpowers.js"
-        ]
-        ++ config.programs.opencode.extraPlugins;
+        inherit (ai) agents;
 
-      watcher.ignore = [
-        ".direnv/**"
-        ".git/**"
-        ".rumdl_cache/**"
-        "dist/**"
-        "node_modules/**"
-        "target/**"
-      ];
-    };
+        commands =
+          ai.commands
+          // {
+            autoresearch = "${aro}/commands/autoresearch.md";
+          };
 
-    skills = autoresearchSkills;
+        context = ./AGENTS.md;
 
-    tui = {
-      theme = "nord";
-      scroll_acceleration = {
-        enabled = true;
+        settings = {
+          autoupdate = lib.mkDefault true;
+          compaction = {
+            auto = true;
+            prune = true;
+          };
+
+          formatter = lib.mkDefault {
+            alejandra = {
+              command = [
+                "${lib.getExe pkgs.alejandra}"
+                "\$FILE"
+              ];
+              extensions = [".nix"];
+            };
+            gofmt = {disabled = true;};
+            gofumpt = {
+              command = [
+                "${lib.getExe pkgs.gofumpt}"
+                "-w"
+                "\$FILE"
+              ];
+              extensions = [".go"];
+            };
+            nixfmt = {disabled = true;};
+            ruff-check = {
+              command = [
+                "${lib.getExe pkgs.ruff}"
+                "check"
+                "\$FILE"
+              ];
+              extensions = [".py" ".pyi"];
+            };
+            rustfmt = {
+              command = [
+                "rustfmt"
+                "+nightly"
+                "--edition=2024"
+                "\$FILE"
+              ];
+              extensions = [".rs"];
+            };
+            shfmt = {
+              command = [
+                "${lib.getExe pkgs.shfmt}"
+                "-i"
+                "4"
+                "-ci"
+                "-sr"
+                "-s"
+                "-bn"
+                "-w"
+                "\$FILE"
+              ];
+              extensions = [".sh" ".bash"];
+            };
+            stylua = {
+              command = [
+                "${lib.getExe pkgs.stylua}"
+                "\$FILE"
+              ];
+              extensions = [".lua"];
+            };
+          };
+
+          lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
+
+          permission = lib.mkDefault ai.permissions.opencode.permission;
+
+          plugin =
+            lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
+            ++ lib.optional config.programs.rtk.enable "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
+            ++ [
+              "${aro}/plugins/autoresearch-context.ts"
+              "${inputs.superpowers}/.opencode/plugins/superpowers.js"
+            ]
+            ++ config.programs.opencode.extraPlugins;
+
+          watcher.ignore = [
+            ".direnv/**"
+            ".git/**"
+            ".rumdl_cache/**"
+            "dist/**"
+            "node_modules/**"
+            "target/**"
+          ];
+        };
+
+        skills = autoresearchSkills;
+
+        tui = {
+          theme = "nord";
+          scroll_acceleration = {
+            enabled = true;
+          };
+        };
       };
-    };
-  };
+    })
+  ];
 }
