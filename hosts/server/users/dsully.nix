@@ -35,7 +35,6 @@ in {
       [
         copilot-language-server
         iproute2
-        meridian
         nix-output-monitor
         pnpm
         qbittorrent-nox
@@ -57,8 +56,6 @@ in {
     };
   };
 
-  nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
-
   xdg.configFile."vopono/config.toml".source = (pkgs.formats.toml {}).generate "vopono-config" {
     interface = "eth0";
     protocol = "Wireguard";
@@ -73,9 +70,7 @@ in {
         builtins.readFile "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
     };
 
-    opencode.extraPlugins = [
-      "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
-    ];
+    meridian.enable = false;
 
     onepassword-secrets.secrets = {
       cachixAuthToken = {

@@ -63,7 +63,6 @@ in {
     packages = with pkgs;
       [
         copilot-language-server
-        meridian
         nix-output-monitor
         zls
         zuban
@@ -97,9 +96,7 @@ in {
       };
     };
 
-    opencode.extraPlugins = [
-      "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
-    ];
+    meridian.enable = false;
 
     onepassword-secrets.secrets = {
       sshPrivateKey = {
@@ -138,6 +135,4 @@ in {
       ];
     };
   };
-
-  nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
 }

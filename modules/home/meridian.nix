@@ -1,10 +1,13 @@
 {
   config,
+  flake,
   lib,
   perSystem,
   pkgs,
   ...
 }: let
+  cfg = config.programs.meridian;
+
   host = "127.0.0.1";
   port = 3456;
   baseUrl = "http://${host}:${toString port}";
@@ -67,46 +70,59 @@
     exec ${lib.getExe config.programs.opencode.package} "$@"
   '';
 in {
-  home.file."${config.xdg.binHome}/opencode" = {
-    force = true;
-    source = opencodeWrapper;
-  };
+  options.programs.meridian.enable =
+    lib.mkEnableOption "the Meridian Claude Code SDK proxy";
 
-  xdg.configFile."meridian/plugins.json".source = (pkgs.formats.json {}).generate "meridian-plugins" {
-    plugins = [
-      {
-        path = "${perSystem.self.meridian-plugin-opencode-scrub}/dist/index.js";
-        enabled = true;
-      }
+  config = lib.mkIf cfg.enable {
+    nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
+
+    home.packages = [pkgs.meridian];
+
+    programs.opencode.extraPlugins = [
+      "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
     ];
-  };
 
-  launchd.agents.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-    enable = true;
-    config = {
-      Label = "localhost.meridian";
-      ProgramArguments = [(lib.getExe pkgs.meridian)];
-      EnvironmentVariables = environment // {PATH = servicePath;};
-      RunAtLoad = true;
-      KeepAlive = true;
-      ProcessType = "Background";
-      StandardOutPath = "${config.xdg.cacheHome}/meridian.log";
-      StandardErrorPath = "${config.xdg.cacheHome}/meridian.log";
+    home.file."${config.xdg.binHome}/opencode" = {
+      force = true;
+      source = opencodeWrapper;
     };
-    domain = lib.mkDefault "gui";
-  };
 
-  systemd.user.services.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-    Unit = {
-      Description = "Meridian Claude Code SDK proxy";
-      After = ["network.target"];
+    xdg.configFile."meridian/plugins.json".source = (pkgs.formats.json {}).generate "meridian-plugins" {
+      plugins = [
+        {
+          path = "${perSystem.self.meridian-plugin-opencode-scrub}/dist/index.js";
+          enabled = true;
+        }
+      ];
     };
-    Service = {
-      ExecStart = lib.getExe pkgs.meridian;
-      Environment = lib.mapAttrsToList (n: v: "${n}=${v}") environment ++ ["PATH=${servicePath}"];
-      Restart = "always";
-      RestartSec = 2;
+
+    launchd.agents.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      enable = true;
+      config = {
+        Label = "localhost.meridian";
+        ProgramArguments = [(lib.getExe pkgs.meridian)];
+        EnvironmentVariables = environment // {PATH = servicePath;};
+        RunAtLoad = true;
+        KeepAlive = true;
+        ProcessType = "Background";
+        StandardOutPath = "${config.xdg.cacheHome}/meridian.log";
+        StandardErrorPath = "${config.xdg.cacheHome}/meridian.log";
+      };
+      domain = lib.mkDefault "gui";
     };
-    Install.WantedBy = ["default.target"];
+
+    systemd.user.services.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      Unit = {
+        Description = "Meridian Claude Code SDK proxy";
+        After = ["network.target"];
+      };
+      Service = {
+        ExecStart = lib.getExe pkgs.meridian;
+        Environment = lib.mapAttrsToList (n: v: "${n}=${v}") environment ++ ["PATH=${servicePath}"];
+        Restart = "always";
+        RestartSec = 2;
+      };
+      Install.WantedBy = ["default.target"];
+    };
   };
 }
