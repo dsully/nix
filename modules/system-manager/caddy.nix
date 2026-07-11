@@ -92,7 +92,7 @@ in {
       serviceConfig = {
         AmbientCapabilities = "CAP_NET_BIND_SERVICE";
         ExecReload = "${lib.getExe caddy-custom} reload --config ${caddyConfigDir}/Caddyfile --force";
-        ExecStart = "${lib.getExe caddy-custom} run --config ${caddyConfigDir}/Caddyfile --resume --environ";
+        ExecStart = "${lib.getExe caddy-custom} run --config ${caddyConfigDir}/Caddyfile --environ";
         ExecStartPre = "${lib.getExe caddy-custom} validate --config ${caddyConfigDir}/Caddyfile";
         Group = "caddy";
         LimitNOFILE = 1048576;

@@ -129,7 +129,7 @@
 
 	@invoke host invoke.sully.org
 	handle @invoke {
-		reverse_proxy 127.0.0.1:9090
+		reverse_proxy 127.0.0.1:9092
 	}
 
 	@pose host pose.sully.org
@@ -145,5 +145,20 @@
 	@train host train.sully.org
 	handle @train {
 		reverse_proxy 127.0.0.1:7861
+	}
+
+	@portainer host portainer.sully.org
+	handle @portainer {
+		reverse_proxy 127.0.0.1:9443 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
+
+		header {
+			Strict-Transport-Security "max-age=31536000; includeSubDomains"
+			X-Content-Type-Options nosniff
+			X-Frame-Options DENY
+		}
 	}
 }
