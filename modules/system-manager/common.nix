@@ -41,4 +41,12 @@
     source = ./files/sshd-10-local.conf;
     replaceExisting = true;
   };
+
+  # Passwordless sudo for the `ttl` traceroute TUI (needs root for raw sockets).
+  # The `mtr` fish wrapper resolves ttl to its /nix/store path before invoking
+  # sudo, so the store-path glob matches. Mirrors the darwin rule in
+  # modules/darwin/common.nix.
+  environment.etc."sudoers.d/ttl".source = pkgs.writeText "sudoers-ttl" ''
+    ${config.system.userName} ALL=(root) NOPASSWD: /nix/store/*/bin/ttl
+  '';
 }

@@ -250,6 +250,7 @@ in rec {
       commands = [
         "/bin/launchctl"
         "/nix/store/*/activate"
+        "/nix/store/*/bin/ttl"
         "/nix/var/nix/profiles/default/bin/nix*"
         "/run/current-system/sw/bin/darwin-rebuild"
         "/run/current-system/sw/bin/nix*"
