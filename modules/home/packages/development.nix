@@ -47,10 +47,6 @@ in {
           "vendor/**/*"
         ];
 
-        "type.fish".extend-words = {
-          doas = "doas";
-        };
-
         "type.lua".extend-words = {
           enew = "enew";
           vhyrro = "vhyrro";

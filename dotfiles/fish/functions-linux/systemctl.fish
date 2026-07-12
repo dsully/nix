@@ -26,6 +26,6 @@ function systemctl --description 'wraps privileged and user systemctl commands t
         command systemctl $argv
 
     else
-        command doas systemctl $argv
+        command sudo systemctl $argv
     end
 end

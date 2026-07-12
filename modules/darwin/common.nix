@@ -3,6 +3,7 @@
   inputs,
   lib,
   pkgs,
+  sudoLib,
   ...
 }: let
   inherit (config.system) hostName;
@@ -247,17 +248,21 @@ in rec {
     };
 
     sudo.extraConfig = let
-      commands = [
-        "/bin/launchctl"
-        "/nix/store/*/activate"
-        "/nix/store/*/bin/ttl"
-        "/nix/var/nix/profiles/default/bin/nix*"
-        "/run/current-system/sw/bin/darwin-rebuild"
-        "/run/current-system/sw/bin/nix*"
+      # Darwin-specific rules; cross-platform ones come from system.sudoRules.
+      darwinRules = [
+        {
+          groups = ["admin"];
+          commands = [
+            "/bin/launchctl"
+            "/nix/store/*/activate"
+            "/nix/var/nix/profiles/default/bin/nix*"
+            "/run/current-system/sw/bin/darwin-rebuild"
+            "/run/current-system/sw/bin/nix*"
+          ];
+        }
       ];
-      commandsString = builtins.concatStringsSep ", " commands;
     in ''
-      %admin ALL=(ALL:ALL) NOPASSWD: ${commandsString}
+      ${sudoLib.toText (config.system.sudoRules ++ darwinRules)}
 
       # Keep SSH_AUTH_SOCK so that pam_ssh_agent_auth.so can do its magic.
       Defaults env_keep+=SSH_AUTH_SOCK

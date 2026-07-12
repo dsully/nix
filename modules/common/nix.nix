@@ -73,6 +73,42 @@ in {
       type = lib.types.attrs;
       description = "Common nix settings shared across flavors";
     };
+
+    # Cross-platform passwordless-sudo rules, defined once and rendered
+    # natively per platform: nix-darwin only has `security.sudo.extraConfig`
+    # (a string), while system-manager exposes the full NixOS
+    # `security.sudo.extraRules`. `sudoLib` (below) adapts to both.
+    sudoRules = lib.mkOption {
+      type = lib.types.listOf (lib.types.submodule {
+        options = {
+          users = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [];
+          };
+          groups = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [];
+          };
+          runAs = lib.mkOption {
+            type = lib.types.str;
+            default = "ALL:ALL";
+          };
+          noPasswd = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+          };
+          setEnv = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
+          commands = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+          };
+        };
+      });
+      default = [];
+      description = "Cross-platform sudo rules, rendered per platform.";
+    };
   };
 
   config = {
@@ -117,5 +153,45 @@ in {
       };
 
     nixpkgs.config.allowUnfree = true;
+
+    # `ttl` (mtr replacement) needs root for raw sockets. The `mtr` fish
+    # wrapper resolves it to its /nix/store path before invoking sudo, so
+    # this store-path glob matches. Applies on every host.
+    system.sudoRules = [
+      {
+        users = [config.system.userName];
+        commands = ["/nix/store/*/bin/ttl"];
+      }
+    ];
+
+    # Adapters so a single `system.sudoRules` feeds both backends.
+    _module.args.sudoLib = {
+      # -> NixOS `security.sudo.extraRules` entries (system-manager).
+      toExtraRules = map (rule: {
+        inherit (rule) users groups runAs;
+        commands =
+          map (command: {
+            inherit command;
+            options = lib.optional rule.noPasswd "NOPASSWD" ++ lib.optional rule.setEnv "SETENV";
+          })
+          rule.commands;
+      });
+
+      # -> sudoers lines for nix-darwin `security.sudo.extraConfig`. Defaults
+      # are applied here so callers may pass minimal rule literals.
+      toText = rules:
+        lib.concatMapStringsSep "\n" (
+          rule: let
+            users = rule.users or [];
+            groups = rule.groups or [];
+            runAs = rule.runAs or "ALL:ALL";
+            noPasswd = rule.noPasswd or true;
+            setEnv = rule.setEnv or false;
+            who = lib.concatStringsSep ", " (users ++ map (g: "%${g}") groups);
+            tag = lib.optionalString noPasswd "NOPASSWD:" + lib.optionalString setEnv "SETENV:";
+          in "${who} ALL=(${runAs}) ${tag} ${lib.concatStringsSep ", " rule.commands}"
+        )
+        rules;
+    };
   };
 }

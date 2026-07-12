@@ -39,7 +39,7 @@ system +args="":
         --nix-option "accept-flake-config" "true" \
         --nix-option "trusted-users" "dsully" \
         --nix-option "warn-dirty" "false" \
-        switch --flake . --sudo --ask-sudo-password {{ args }}
+        switch --flake . --sudo {{ args }}
     @/bin/rm -f result
 
 [macos]
@@ -83,7 +83,7 @@ alias clean := gc
 [group('nix')]
 [linux]
 gc:
-    @doas {{ USER_HOME }}/.local/state/nix/profile/bin/nh {{ NH_CLEAN_ARGS }}
+    @sudo --preserve-env=HOME "$(realpath {{ USER_HOME }}/.local/state/nix/profile/bin/nh)" {{ NH_CLEAN_ARGS }}
 
 [group('nix')]
 [macos]

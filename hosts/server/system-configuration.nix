@@ -30,10 +30,6 @@ in {
         "cloudflared/config.yml".source = ./files/cloudflared-config.yml;
         "cockpit/cockpit.conf".source = ./files/cockpit.conf;
         "default/homebridge".source = ./files/homebridge.default;
-        "doas.conf" = {
-          source = ./files/doas.conf;
-          mode = "0400";
-        };
         "environment".source = ./files/environment;
         "modprobe.d/blacklist-dsully.conf".source = ./files/modprobe-blacklist-dsully.conf;
         "modprobe.d/i915.conf".source = ./files/modprobe-i915.conf;
