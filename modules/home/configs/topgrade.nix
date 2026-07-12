@@ -26,6 +26,7 @@
       git = {
         arguments = "--rebase --autostash";
         pull_predefined = false;
+        fallback_to_fetch_default = true;
       };
 
       commands = {};
