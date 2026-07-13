@@ -17,6 +17,11 @@
       args = [server.command] ++ (server.args or []);
     };
 
+  # Disable the flaky upstream test suite (tests/test_store.py scans /nix/store
+  # for an arbitrary text file and asserts "Error" is absent — nondeterministic).
+  # Matches the doCheck=false override in default.nix / flake.nix mkHome.
+  mcp-nixos = pkgs.mcp-nixos.overridePythonAttrs (_: {doCheck = false;});
+
   agentDescription = file: let
     text = builtins.readFile file;
     parts = lib.splitString "description: " text;
@@ -85,7 +90,7 @@
       enabled = false;
     };
     nixos = {
-      command = lib.getExe pkgs.mcp-nixos;
+      command = lib.getExe mcp-nixos;
       env = {
         PYTHON_GIL = "1";
       };
