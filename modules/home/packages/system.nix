@@ -45,7 +45,6 @@
       ]
       ++ (with my.pkgs; [
         clean-dev-dirs
-        mdv
         rip-go
         timecop
         xdg-open-svc
