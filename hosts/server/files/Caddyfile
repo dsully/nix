@@ -90,6 +90,7 @@
 		reverse_proxy 127.0.0.1:9696
 	}
 
+	# Bazaar
 	@subtitles host subtitles.sully.org
 	handle @subtitles {
 		reverse_proxy 127.0.0.1:6767
@@ -112,39 +113,14 @@
 		}
 	}
 
-	@breadboard host breadboard.sully.org
-	handle @breadboard {
-		reverse_proxy 127.0.0.1:4200
-	}
-
-	@captions host captions.sully.org
-	handle @captions {
-		reverse_proxy 127.0.0.1:1337
-	}
-
-	@comfy host comfy.sully.org
-	handle @comfy {
-		reverse_proxy 127.0.0.1:8188
-	}
-
 	@invoke host invoke.sully.org
 	handle @invoke {
 		reverse_proxy 127.0.0.1:9092
 	}
 
-	@pose host pose.sully.org
-	handle @pose {
-		reverse_proxy 127.0.0.1:5173
-	}
-
-	@sd host sd.sully.org
-	handle @sd {
-		reverse_proxy 127.0.0.1:7860
-	}
-
-	@train host train.sully.org
-	handle @train {
-		reverse_proxy 127.0.0.1:7861
+	@network-optimizer host network-optimizer.sully.org
+	handle @network-optimizer {
+		reverse_proxy 127.0.0.1:8042
 	}
 
 	@portainer host portainer.sully.org

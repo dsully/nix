@@ -15,6 +15,8 @@ in {
   imports = [
     flake.modules.system-manager.common
     flake.modules.system-manager.caddy
+    flake.modules.system-manager.docker
+    ./containers.nix
     ./options.nix
   ];
 
