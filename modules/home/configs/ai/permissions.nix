@@ -108,21 +108,13 @@
       allow = [
         "**/*.md"
         "/tmp/**"
+        "**/plans/**"
       ];
       ask = [];
       deny = [
         "*.env"
         "*.env.*"
       ];
-    };
-
-    write = {
-      allow = [
-        "/tmp/**"
-        "**/plans/**"
-      ];
-      ask = [];
-      deny = [];
     };
 
     directory = {
@@ -262,7 +254,6 @@ in rec {
         ++ taxonomy.tool.allow
         ++ (map (claudePath "Read") taxonomy.read.allow)
         ++ (map claudeSkill taxonomy.skill.allow)
-        ++ (map (claudePath "Write") taxonomy.write.allow)
         # Claude rejects a server-position glob (mcp__*); enumerate each
         # configured server as mcp__<name> to auto-allow all of its tools.
         ++ lib.optionals taxonomy.mcp.autoAllowServers (
