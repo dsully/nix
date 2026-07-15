@@ -5,13 +5,13 @@
 }:
 buildNpmPackage {
   pname = "meridian-plugin-opencode-scrub";
-  version = "0.2.0-f58fe939";
+  version = "0.2.0-59a1bfce";
 
   src = fetchFromGitHub {
     owner = "rynfar";
     repo = "meridian-plugin-opencode-scrub";
-    rev = "f58fe939b344bbc17b2ba1be34f686b9219792e6";
-    hash = "sha256-30ybLSP0hvaGI1V7BonjqYxOfzEq1Gd+vsledd0A+D0=";
+    rev = "59a1bfce767d1994a4bb6a700373e4c11aef3633";
+    hash = "sha256-OhIYu4aZP+6RvlnDxraXfbh3Fez0QZ9pkaekmHkfBzY=";
   };
 
   npmDepsHash = "sha256-Djxj21TH6FTZxwS9rY2vuYhJDpo2BvRCJ4N6nauDH9Q=";
