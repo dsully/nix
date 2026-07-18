@@ -10,11 +10,11 @@ buildGoModule rec {
   src = fetchFromGitHub {
     owner = "thebtf";
     repo = "mcp-mux";
-    rev = "1b91f54c1d517db352136c7d16949a2662c52b0e";
-    hash = "sha256-E0UhlxdcTuxI/hQ9xrwxnwMD2dZq1SKbuuBMWtgcL08=";
+    rev = "747374341187dce533d0feebf05e211420964532";
+    hash = "sha256-tparTN7C8v+iJW81+o14SQP3AC8oPRyjRoxRnMGBTZo=";
   };
 
-  vendorHash = "sha256-2L9JnDDkPw5U0hd4suLZF+KOz7HDB1VcMbgiu+tMJbU=";
+  vendorHash = "sha256-HOHzABSBJ5dYShx3P59bGPaXJWq2nIo2YqjmkU+M5tY=";
 
   subPackages = ["cmd/mcp-mux"];
 
