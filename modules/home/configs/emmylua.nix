@@ -54,13 +54,8 @@ in {
   # home.file.".emmyrc.json".source = emmyrc [];
 
   home.file."${config.xdg.configHome}/nvim/.emmyrc.json".source = emmyrc [
-    # "${config.xdg.dataHome}/nvim/lazy"
-    # mini.nvim triggers a quadratic flow-replay hang in emmylua_check 0.23.2
-    # (upstream EmmyLuaLs/emmylua-analyzer-rust#1100, fixed by #1101). Drop the
-    # ignoreDir once a release past 0.23.2 lands.
     {
       path = "${config.xdg.dataHome}/nvim/site/pack/core/opt";
-      ignoreDir = ["mini.nvim"];
     }
   ];
 }
