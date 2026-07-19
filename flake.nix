@@ -123,9 +123,10 @@
       };
 
       # Blueprint-compatible "perSystem" arg for a given system.
+      # llm-agents packages now flow through pkgs.llm-agents (shared-nixpkgs
+      # overlay applied in perSystem below), not this injection.
       mkPerSystem = system: {
         self = config.flake.packages.${system};
-        llm-agents = inputs.llm-agents.packages.${system};
         nix-auth = inputs.nix-auth.packages.${system};
         devshell = inputs.devshell.legacyPackages.${system};
       };
@@ -137,20 +138,15 @@
         perSystem = mkPerSystem system;
       };
 
-      # Standalone home-manager configuration builder.
+      # Standalone home-manager configuration builder. pkgs (from withSystem)
+      # already carries the shared-nixpkgs + nixpkgs-fixes overlays.
       mkHome = system: {
         user,
         userModule,
       }:
-        withSystem system ({pkgs, ...}: let
-          homePkgs = pkgs.extend (_: prev: {
-            mcp-nixos = prev.mcp-nixos.overridePythonAttrs (_: {
-              doCheck = false;
-            });
-          });
-        in
+        withSystem system ({pkgs, ...}:
           inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = homePkgs;
+            inherit pkgs;
             extraSpecialArgs = hmArgs system;
             modules = [
               userModule
@@ -197,6 +193,11 @@
 
         inherit homeModules;
 
+        # Consuming flakes apply this at their own pkgs construction (module-level
+        # nixpkgs.overlays is ignored when pkgs is passed in externally). Exposes
+        # pkgs.llm-agents.* and the mcp-nixos doCheck fix that homeModules expect.
+        overlays.default = inputs.nixpkgs.lib.composeManyExtensions (import ./overlays {inherit inputs;});
+
         # Reusable helper for consuming flakes. skillGroupsFrom turns a
         # marketplace's curated plugin list into `programs.ai.skills` groups —
         # see modules/home/configs/ai/skills/sources.nix.
@@ -231,11 +232,20 @@
       };
 
       perSystem = {
-        pkgs,
         system,
         lib,
         ...
       }: let
+        # Overlaid package set shared by every consumer (home-manager, darwin,
+        # system-manager) via withSystem, plus the packages/ builds below.
+        # shared-nixpkgs exposes pkgs.llm-agents.*; nixpkgs-fixes carries the
+        # mcp-nixos doCheck override.
+        pkgs = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          overlays = import ./overlays {inherit inputs;};
+        };
+
         selfPackages =
           lib.mapAttrs (
             name: path: pkgs.callPackage path (packageOverrides.${name} or {})
@@ -244,18 +254,14 @@
 
         fmt = pkgs.callPackage ./formatter.nix {};
 
-        llm-agents = inputs.llm-agents.packages.${system};
-
         # Overrides for packages that need flake input sources.
         packageOverrides = {
-          meridian = {
-            inherit (llm-agents) claude-code;
-            inherit (llm-agents) opencode;
-          };
           # nh wraps itself to use rom as its build output monitor.
           nh = {inherit (selfPackages) rom;};
         };
       in {
+        _module.args.pkgs = pkgs;
+
         packages = selfPackages // {formatter = fmt;};
 
         formatter = fmt;

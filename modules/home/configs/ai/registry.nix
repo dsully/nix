@@ -3,7 +3,6 @@
   inputs,
   lib,
   my,
-  perSystem,
   pkgs,
   ...
 }: let
@@ -16,11 +15,6 @@
       command = lib.getExe my.pkgs.mcp-mux;
       args = [server.command] ++ (server.args or []);
     };
-
-  # Disable the flaky upstream test suite (tests/test_store.py scans /nix/store
-  # for an arbitrary text file and asserts "Error" is absent — nondeterministic).
-  # Matches the doCheck=false override in default.nix / flake.nix mkHome.
-  mcp-nixos = pkgs.mcp-nixos.overridePythonAttrs (_: {doCheck = false;});
 
   agentDescription = file: let
     text = builtins.readFile file;
@@ -90,7 +84,7 @@
       enabled = false;
     };
     nixos = {
-      command = lib.getExe mcp-nixos;
+      command = lib.getExe pkgs.mcp-nixos;
       env = {
         PYTHON_GIL = "1";
       };
@@ -137,7 +131,7 @@
 
   descriptions = lib.mapAttrs (_: agentDescription) agents;
 
-  hooks = import ./hooks.nix {inherit config lib my perSystem pkgs;};
+  hooks = import ./hooks.nix {inherit config lib pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
   # workspace-scoped index from the client's CWD, so a shared mux process would

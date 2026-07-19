@@ -4,7 +4,6 @@
   inputs,
   lib,
   my,
-  perSystem,
   pkgs,
   ...
 }: let
@@ -78,7 +77,7 @@ in {
       };
 
       programs.opencode = {
-        package = perSystem.llm-agents.opencode;
+        package = pkgs.llm-agents.opencode;
 
         enableMcpIntegration = true;
         extraPlugins = [
@@ -166,7 +165,7 @@ in {
 
           plugin =
             lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
-            ++ lib.optional config.programs.rtk.enable "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
+            ++ lib.optional config.programs.rtk.enable "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
             ++ [
               "${aro}/plugins/autoresearch-context.ts"
               "${inputs.superpowers}/.opencode/plugins/superpowers.js"

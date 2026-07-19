@@ -1,8 +1,6 @@
 {
   config,
   lib,
-  my,
-  perSystem,
   pkgs,
 }: let
   command = attrs: attrs // {type = "command";};
@@ -40,7 +38,7 @@
       hooks = [
         (hook {
           name = "icm-compact";
-          command = "${lib.getExe my.pkgs.icm} hook compact";
+          command = "${lib.getExe pkgs.llm-agents.icm} hook compact";
         })
       ];
     });
@@ -80,12 +78,12 @@
           ]
           ++ lib.optional rtkEnabled (hook {
             name = "rtk-rewrite";
-            command = "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
+            command = "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
             targets = ["claude"];
           })
           ++ lib.optional icmEnabled (hook {
             name = "icm-pre";
-            command = "${lib.getExe my.pkgs.icm} hook pre";
+            command = "${lib.getExe pkgs.llm-agents.icm} hook pre";
           });
       })
     ];
@@ -119,7 +117,7 @@
         hooks = [
           (hook {
             name = "icm-post";
-            command = "${lib.getExe my.pkgs.icm} hook post";
+            command = "${lib.getExe pkgs.llm-agents.icm} hook post";
           })
         ];
       });
@@ -128,7 +126,7 @@
       hooks = [
         (hook {
           name = "icm-start";
-          command = "${lib.getExe my.pkgs.icm} hook start";
+          command = "${lib.getExe pkgs.llm-agents.icm} hook start";
         })
       ];
     });
@@ -137,7 +135,7 @@
       hooks = [
         (hook {
           name = "icm-prompt";
-          command = "${lib.getExe my.pkgs.icm} hook prompt";
+          command = "${lib.getExe pkgs.llm-agents.icm} hook prompt";
         })
       ];
     });

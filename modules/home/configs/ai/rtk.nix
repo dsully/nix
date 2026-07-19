@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  perSystem,
+  pkgs,
   ...
 }: {
   options.programs.rtk.enable =
@@ -15,7 +15,7 @@
   # gated on programs.rtk.enable. This module owns the binary and its env.
   config = lib.mkIf config.programs.rtk.enable {
     home = {
-      packages = [perSystem.llm-agents.rtk];
+      packages = [pkgs.llm-agents.rtk];
       sessionVariables.RTK_TELEMETRY_DISABLED = "1";
     };
   };

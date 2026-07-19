@@ -3,11 +3,10 @@
   inputs,
   lib,
   my,
-  perSystem,
   pkgs,
   ...
 }: let
-  ai = import ./registry.nix {inherit config inputs lib my perSystem pkgs;};
+  ai = import ./registry.nix {inherit config inputs lib my pkgs;};
 
   # headroom isn't in nixpkgs; it's installed via `uv tool` (headroom-ai[all])
   # into xdg.binHome. The programs.headroom module bakes ${package}/bin/headroom
@@ -16,11 +15,6 @@
   headroomBin = pkgs.writeShellScriptBin "headroom" ''
     exec ${config.xdg.binHome}/headroom "$@"
   '';
-
-  # On PATH so per-repo project configs (.mcp.json / opencode.jsonc) can launch
-  # the nixos MCP server by name. Tests are disabled to match flake.nix mkHome,
-  # since the unmodified pkgs (e.g. the jarvis darwin eval path) would run them.
-  mcp-nixos = pkgs.mcp-nixos.overridePythonAttrs (_: {doCheck = false;});
 in {
   imports = [
     ./ccstatusline.nix
@@ -47,7 +41,7 @@ in {
           ]
         )
         ++ (
-          with perSystem.llm-agents; [
+          with pkgs.llm-agents; [
             ralph-tui
           ]
         )
@@ -60,7 +54,7 @@ in {
           mcptools
           rust-mcp-server
         ])
-        ++ [mcp-nixos];
+        ++ [pkgs.mcp-nixos];
     };
 
     programs = {

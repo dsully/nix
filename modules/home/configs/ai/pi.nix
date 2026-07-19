@@ -2,7 +2,6 @@
   ai,
   config,
   lib,
-  perSystem,
   pkgs,
   ...
 }: let
@@ -77,7 +76,7 @@ in {
       };
 
       programs.pi-coding-agent = {
-        package = perSystem.llm-agents.pi;
+        package = pkgs.llm-agents.pi;
 
         context = ./AGENTS.md;
 

@@ -3,7 +3,7 @@
   config,
   inputs,
   lib,
-  perSystem,
+  pkgs,
   ...
 }: let
   lspLanguageIds = {
@@ -54,7 +54,7 @@
     hooks = lib.mkDefault ai.hooks.claude;
 
     statusLine = {
-      command = lib.getExe perSystem.llm-agents.ccstatusline;
+      command = lib.getExe pkgs.llm-agents.ccstatusline;
       padding = 0;
       type = "command";
     };
@@ -81,7 +81,7 @@ in {
 
     (lib.mkIf config.programs.claude-code.enable {
       home = {
-        packages = with perSystem.llm-agents; [
+        packages = with pkgs.llm-agents; [
           # Used by codecompanion
           claude-agent-acp
         ];
@@ -95,7 +95,8 @@ in {
       };
 
       programs.claude-code = {
-        package = perSystem.llm-agents.claude-code;
+        package = pkgs.llm-agents.claude-code;
+
         enableMcpIntegration = true;
 
         inherit (ai) agents commands;
@@ -112,7 +113,7 @@ in {
 
         context = ''
           ${builtins.readFile ./AGENTS.md}
-          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
+          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
         '';
 
         lspServers = claudeCodeLsp;

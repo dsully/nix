@@ -2,7 +2,6 @@
   ai,
   config,
   lib,
-  perSystem,
   pkgs,
   ...
 }: let
@@ -31,7 +30,7 @@ in {
 
     (lib.mkIf config.programs.codex.enable {
       home = {
-        packages = with perSystem.llm-agents; [
+        packages = with pkgs.llm-agents; [
           codex-acp
         ];
 
@@ -46,12 +45,13 @@ in {
       };
 
       programs.codex = {
-        package = perSystem.llm-agents.codex;
+        package = pkgs.llm-agents.codex;
+
         enableMcpIntegration = true;
 
         context = ''
           ${builtins.readFile ./AGENTS.md}
-          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${perSystem.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md")}
+          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md")}
         '';
 
         settings = {
