@@ -7,14 +7,14 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: rec {
   pname = "nh";
-  rev = "1fb50cf1e9156572bfbde11f4d18cabc9f9e2383";
+  rev = "1516b6370f4013a9a5fb03f1b87ac07c9b5e3642";
   version = "4.3.2-${rev}";
 
   src = fetchFromGitHub {
     owner = "nix-community";
     repo = "nh";
     inherit rev;
-    hash = "sha256-2S4Gm4twqI2cmmHc7naLqnLX04QHl2ogu4K48MkyFYk=";
+    hash = "sha256-EwPx2oDcxOmwmGeLwRnwybO0a1RQtz24iIIWop16/Ow=";
   };
 
   cargoHash = "sha256-3t2J4HtKApNdYVQRwAHPErOrYxfJN/YMbenbPd5OnM8=";
