@@ -1,4 +1,4 @@
-function gs -d "git sync: fetch, autorebase and trim branches that have been merged."
+function glr -d "git sync: fetch, autorebase and trim branches that have been merged."
 
     set current (command git branch --show-current)
 

@@ -52,6 +52,10 @@ in {
       interactiveShellInit =
         # fish
         ''
+          # Override plugin-git abbreviations that map to git-* wrappers.
+          abbr --erase gbd 2>/dev/null
+          abbr --erase glr 2>/dev/null
+
           function __magic_enter
               set -l cmd (commandline)
               commandline -f repaint
@@ -180,6 +184,7 @@ in {
         {
           dc = "cd";
           fgfg = "fg";
+          gs = "git st";
           lf = "pytest --lf";
           pt = "pytest";
           mkdir = "mkdir -p";

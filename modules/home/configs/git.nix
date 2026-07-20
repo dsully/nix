@@ -6,6 +6,7 @@
   ...
 }: let
   editor = lib.getExe my.pkgs.neovim;
+  gs = lib.getExe my.pkgs.gs;
   inherit (config.system) userName;
 
   exclude_bots = "--perl-regexp --author='^((?!dependabot|renovate).*)$'";
@@ -161,7 +162,7 @@ in {
         amend = "commit --amend";
         co = "checkout";
         dc = "diff --cached";
-        st = "status -sb";
+        st = "!${gs}";
         unadd = "restore --staged";
         unstage = "reset HEAD --";
         untrack = "rm --cached";
