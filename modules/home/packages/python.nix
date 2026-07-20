@@ -50,6 +50,10 @@ in {
       preview = true;
       python-preference = "only-managed";
     };
+
+    tool = {
+      prune = true;
+    };
   };
 
   xdg.configFile."ptpython/config.py".text = builtins.readFile ../../../dotfiles/ptpython/config.py;

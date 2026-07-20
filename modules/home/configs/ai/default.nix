@@ -7,14 +7,6 @@
   ...
 }: let
   ai = import ./registry.nix {inherit config inputs lib my pkgs;};
-
-  # headroom isn't in nixpkgs; it's installed via `uv tool` (headroom-ai[all])
-  # into xdg.binHome. The programs.headroom module bakes ${package}/bin/headroom
-  # into store-path launch wrappers, so hand it a store wrapper that execs the
-  # uv-managed binary by absolute path.
-  headroomBin = pkgs.writeShellScriptBin "headroom" ''
-    exec ${config.xdg.binHome}/headroom "$@"
-  '';
 in {
   imports = [
     ./ccstatusline.nix
@@ -61,8 +53,7 @@ in {
       codex.enable = false;
 
       headroom = {
-        enable = true;
-        package = headroomBin;
+        enable = false;
 
         integrations.claudeCode.enable = true;
       };
@@ -77,10 +68,6 @@ in {
       };
 
       pi-coding-agent.enable = false;
-
-      uv.tool.packages = [
-        "headroom-ai[all]"
-      ];
     };
   };
 }
