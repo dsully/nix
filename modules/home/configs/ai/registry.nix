@@ -148,6 +148,19 @@
     mcpServers;
 
   permissions = import ./permissions.nix {inherit config lib;};
+
+  # Language-specific rule files. Claude Code loads these natively from its
+  # rules/ dir (on-demand via `paths:` frontmatter) and opencode loads them via
+  # the `instructions` glob. Tools without a rules mechanism (codex, pi) embed
+  # `rulesMarkdown` directly into their context.
+  rulesDir = ./rules;
+
+  rulesMarkdown = lib.pipe (builtins.readDir rulesDir) [
+    (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name))
+    lib.attrNames
+    (map (name: builtins.readFile (rulesDir + "/${name}")))
+    (lib.concatStringsSep "\n")
+  ];
 in {
   inherit
     agentDescription
@@ -159,6 +172,8 @@ in {
     models
     muxWrap
     permissions
+    rulesDir
+    rulesMarkdown
     ;
 
   mcpServers = mcpServersMuxed;

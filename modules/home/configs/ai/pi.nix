@@ -78,7 +78,10 @@ in {
       programs.pi-coding-agent = {
         package = pkgs.llm-agents.pi;
 
-        context = ./AGENTS.md;
+        context = ''
+          ${builtins.readFile ./AGENTS.md}
+          ${ai.rulesMarkdown}
+        '';
 
         settings = {
           collapseChangelog = true;

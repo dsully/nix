@@ -101,6 +101,11 @@ in {
             prune = true;
           };
 
+          # opencode has no rules/ concept; load the shared language rule files
+          # via the instructions glob (absolute store path, works even with
+          # OPENCODE_DISABLE_CLAUDE_CODE=1).
+          instructions = ["${ai.rulesDir}/*.md"];
+
           formatter = lib.mkDefault {
             alejandra = {
               command = [
