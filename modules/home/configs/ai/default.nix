@@ -34,6 +34,7 @@ in {
         )
         ++ (
           with pkgs.llm-agents; [
+            agent-browser
             ralph-tui
           ]
         )
