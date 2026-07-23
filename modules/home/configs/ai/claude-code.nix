@@ -117,7 +117,7 @@ in {
         '';
 
         # Language-specific rules loaded on-demand via `paths:` frontmatter.
-        rulesDir = ai.rulesDir;
+        inherit (ai) rulesDir;
 
         lspServers = claudeCodeLsp;
       };
