@@ -97,6 +97,15 @@ in {
             dest = "${config.home.homeDirectory}/.pi/agent/skills";
             structure = "symlink-tree";
           };
+          # zaly discovers skills from $XDG_CONFIG_HOME/zaly/skills/**/SKILL.md,
+          # globbing with `follow: false` — it won't descend into symlinked skill
+          # dirs, so copy-tree (real files via `rsync -aL`) is required, not
+          # symlink-tree.
+          zaly = {
+            enable = true;
+            dest = "${config.xdg.configHome}/zaly/skills";
+            structure = "copy-tree";
+          };
         };
       };
 
