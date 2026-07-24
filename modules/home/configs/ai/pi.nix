@@ -75,65 +75,69 @@ in {
         };
       };
 
-      programs.pi-coding-agent = {
-        package = pkgs.llm-agents.pi;
+      programs = {
+        agent-skills.targets.pi.enable = true;
 
-        context = ''
-          ${builtins.readFile ./AGENTS.md}
-          ${ai.rulesMarkdown}
-        '';
+        pi-coding-agent = {
+          package = pkgs.llm-agents.pi;
 
-        settings = {
-          collapseChangelog = true;
-          defaultModel = ai.models.large.model;
-          defaultProvider = ai.models.large.provider;
-          defaultThinkingLevel = ai.models.large.reasoning_effort;
+          context = ''
+            ${builtins.readFile ./AGENTS.md}
+            ${ai.rulesMarkdown}
+          '';
 
-          enableInstallTelemetry = false;
-          enableSkillCommands = false;
-          hideThinkingBlock = true;
-          hooks = ai.hooks.pi;
-          quietStartup = true;
-          skipApprovals = true;
+          settings = {
+            collapseChangelog = true;
+            defaultModel = ai.models.large.model;
+            defaultProvider = ai.models.large.provider;
+            defaultThinkingLevel = ai.models.large.reasoning_effort;
 
-          npmCommand = [(lib.getExe config.programs.bun.package)];
-          packages = lib.unique (
-            [
-              "npm:@agnishc/edb-session-manager"
-              # "npm:@aliou/pi-processes"
-              "npm:@gotgenes/pi-subagents"
-              "npm:@hsingjui/pi-hooks"
-              "npm:@juicesharp/rpiv-ask-user-question"
-              "npm:@juicesharp/rpiv-btw"
-              "npm:@narumitw/pi-goal"
-              "npm:context-mode"
-              "npm:pi-continue"
-              # "npm:pi-fff"
-              "npm:pi-icm-hook"
-              "npm:pi-lens"
-              "npm:pi-mcp-adapter"
-              "npm:pi-mermaid"
-              "npm:pi-permission-system"
-              # "npm:pi-powerline"
-              # "npm:pi-powerline-melbourne"
-              "npm:pi-qq"
-              "npm:pi-session-exporter"
-              "npm:pi-simplify"
-              "npm:pi-sticky-input"
-              "npm:pi-sticky-prompt" # Has optional macOS/Swift companion
-              "npm:pi-tool-display"
-              # "npm:pi-vitals"
-              "npm:@pi-unipi/notify"
-              "npm:@vanillagreen/pi-skills-manager"
-            ]
-            ++ lib.optional config.programs.rtk.enable "npm:pi-rtk-optimizer"
-          );
+            enableInstallTelemetry = false;
+            enableSkillCommands = false;
+            hideThinkingBlock = true;
+            hooks = ai.hooks.pi;
+            quietStartup = true;
+            skipApprovals = true;
 
-          terminal = {
-            showTerminalProgress = true;
+            npmCommand = [(lib.getExe config.programs.bun.package)];
+            packages = lib.unique (
+              [
+                "npm:@agnishc/edb-session-manager"
+                # "npm:@aliou/pi-processes"
+                "npm:@gotgenes/pi-subagents"
+                "npm:@hsingjui/pi-hooks"
+                "npm:@juicesharp/rpiv-ask-user-question"
+                "npm:@juicesharp/rpiv-btw"
+                "npm:@narumitw/pi-goal"
+                "npm:context-mode"
+                "npm:pi-continue"
+                # "npm:pi-fff"
+                "npm:pi-icm-hook"
+                "npm:pi-lens"
+                "npm:pi-mcp-adapter"
+                "npm:pi-mermaid"
+                "npm:pi-permission-system"
+                # "npm:pi-powerline"
+                # "npm:pi-powerline-melbourne"
+                "npm:pi-qq"
+                "npm:pi-session-exporter"
+                "npm:pi-simplify"
+                "npm:pi-sticky-input"
+                "npm:pi-sticky-prompt" # Has optional macOS/Swift companion
+                "npm:pi-tool-display"
+                # "npm:pi-vitals"
+                "npm:@pi-unipi/notify"
+                "npm:@vanillagreen/pi-skills-manager"
+              ]
+              ++ lib.optional config.programs.rtk.enable "npm:pi-rtk-optimizer"
+            );
+
+            terminal = {
+              showTerminalProgress = true;
+            };
+
+            theme = "nord";
           };
-
-          theme = "nord";
         };
       };
     })

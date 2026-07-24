@@ -81,57 +81,61 @@ in {
 
     (lib.mkIf config.programs.claude-code.enable {
       home = {
-        packages = with pkgs.llm-agents; [
-          # Used by codecompanion
-          claude-agent-acp
-        ];
+        activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+          $DRY_RUN_CMD install -Dm600 ${config.home.file."${settingsPath}".source} ${settingsPath}
+        '';
 
         # Point the legacy ~/.claude paths at the XDG location, which is the single
         # source of truth (configDir below).
         file = {
           ".claude".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude";
           ".claude.json".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude/.claude.json";
-        };
-      };
 
-      programs.claude-code = {
-        package = pkgs.llm-agents.claude-code;
-
-        enableMcpIntegration = true;
-
-        inherit (ai) agents commands;
-        inherit settings;
-
-        # context-mode is the only marketplace we enable a plugin from; the curated
-        # official-marketplace agents/commands are delivered through the native
-        # `agents`/`commands` options above rather than Claude's native loader.
-        marketplaces = {
-          inherit (inputs) context-mode;
+          # The module would symlink settings.json read-only into the /nix/store, which
+          # breaks runtime commands like /effort. Disable that and install a writable
+          # copy of the module's own generated file instead (it already merges $schema
+          # and extraKnownMarketplaces), so there's a single source of truth; each
+          # activation overwrites it with declared state.
+          "${settingsPath}".enable = lib.mkForce false;
         };
 
-        configDir = "${config.xdg.configHome}/claude";
-
-        context = ''
-          ${builtins.readFile ./AGENTS.md}
-          ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
-        '';
-
-        # Language-specific rules loaded on-demand via `paths:` frontmatter.
-        inherit (ai) rulesDir;
-
-        lspServers = claudeCodeLsp;
+        packages = with pkgs.llm-agents; [
+          # Used by codecompanion
+          claude-agent-acp
+        ];
       };
 
-      # The module would symlink settings.json read-only into the /nix/store, which
-      # breaks runtime commands like /effort. Disable that and install a writable
-      # copy of the module's own generated file instead (it already merges $schema
-      # and extraKnownMarketplaces), so there's a single source of truth; each
-      # activation overwrites it with declared state.
-      home.file."${settingsPath}".enable = lib.mkForce false;
+      programs = {
+        agent-skills.targets.claude.enable = true;
 
-      home.activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        $DRY_RUN_CMD install -Dm600 ${config.home.file."${settingsPath}".source} ${settingsPath}
-      '';
+        claude-code = {
+          package = pkgs.llm-agents.claude-code;
+
+          enableMcpIntegration = true;
+
+          inherit (ai) agents commands;
+          inherit settings;
+
+          # context-mode is the only marketplace we enable a plugin from; the curated
+          # official-marketplace agents/commands are delivered through the native
+          # `agents`/`commands` options above rather than Claude's native loader.
+          marketplaces = {
+            inherit (inputs) context-mode;
+          };
+
+          configDir = "${config.xdg.configHome}/claude";
+
+          context = ''
+            ${builtins.readFile ./AGENTS.md}
+            ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
+          '';
+
+          # Language-specific rules loaded on-demand via `paths:` frontmatter.
+          inherit (ai) rulesDir;
+
+          lspServers = claudeCodeLsp;
+        };
+      };
     })
   ];
 }

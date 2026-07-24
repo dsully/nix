@@ -76,123 +76,129 @@ in {
         };
       };
 
-      programs.opencode = {
-        package = pkgs.llm-agents.opencode;
+      programs = {
+        agent-skills.targets.opencode.enable = true;
 
-        enableMcpIntegration = true;
-        extraPlugins = [
-          "context-mode"
-        ];
+        opencode = {
+          package = pkgs.llm-agents.opencode;
 
-        inherit (ai) agents;
-
-        commands =
-          ai.commands
-          // {
-            autoresearch = "${aro}/commands/autoresearch.md";
-          };
-
-        context = ./AGENTS.md;
-
-        settings = {
-          autoupdate = lib.mkDefault true;
-          compaction = {
-            auto = true;
-            prune = true;
-          };
-
-          # opencode has no rules/ concept; load the shared language rule files
-          # via the instructions glob (absolute store path, works even with
-          # OPENCODE_DISABLE_CLAUDE_CODE=1).
-          instructions = ["${ai.rulesDir}/*.md"];
-
-          formatter = lib.mkDefault {
-            alejandra = {
-              command = [
-                "${lib.getExe pkgs.alejandra}"
-                "\$FILE"
-              ];
-              extensions = [".nix"];
-            };
-            gofmt = {disabled = true;};
-            gofumpt = {
-              command = [
-                "${lib.getExe pkgs.gofumpt}"
-                "-w"
-                "\$FILE"
-              ];
-              extensions = [".go"];
-            };
-            nixfmt = {disabled = true;};
-            ruff-check = {
-              command = [
-                "${lib.getExe pkgs.ruff}"
-                "check"
-                "\$FILE"
-              ];
-              extensions = [".py" ".pyi"];
-            };
-            rustfmt = {
-              command = [
-                "rustfmt"
-                "+nightly"
-                "--edition=2024"
-                "\$FILE"
-              ];
-              extensions = [".rs"];
-            };
-            shfmt = {
-              command = [
-                "${lib.getExe pkgs.shfmt}"
-                "-i"
-                "4"
-                "-ci"
-                "-sr"
-                "-s"
-                "-bn"
-                "-w"
-                "\$FILE"
-              ];
-              extensions = [".sh" ".bash"];
-            };
-            stylua = {
-              command = [
-                "${lib.getExe pkgs.stylua}"
-                "\$FILE"
-              ];
-              extensions = [".lua"];
-            };
-          };
-
-          lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
-
-          permission = lib.mkDefault ai.permissions.opencode.permission;
-
-          plugin =
-            lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
-            ++ lib.optional config.programs.rtk.enable "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
-            ++ [
-              "${aro}/plugins/autoresearch-context.ts"
-              "${inputs.superpowers}/.opencode/plugins/superpowers.js"
-            ]
-            ++ config.programs.opencode.extraPlugins;
-
-          watcher.ignore = [
-            ".direnv/**"
-            ".git/**"
-            ".rumdl_cache/**"
-            "dist/**"
-            "node_modules/**"
-            "target/**"
+          enableMcpIntegration = true;
+          extraPlugins = [
+            "context-mode"
           ];
-        };
 
-        skills = autoresearchSkills;
+          inherit (ai) agents;
 
-        tui = {
-          theme = "nord";
-          scroll_acceleration = {
-            enabled = true;
+          commands =
+            ai.commands
+            // {
+              autoresearch = "${aro}/commands/autoresearch.md";
+            };
+
+          context = ./AGENTS.md;
+
+          settings = {
+            autoupdate = lib.mkDefault true;
+            compaction = {
+              auto = true;
+              prune = true;
+              # Reserved token limit
+              reserved = 850000;
+            };
+
+            # opencode has no rules/ concept; load the shared language rule files
+            # via the instructions glob (absolute store path, works even with
+            # OPENCODE_DISABLE_CLAUDE_CODE=1).
+            instructions = ["${ai.rulesDir}/*.md"];
+
+            formatter = lib.mkDefault {
+              alejandra = {
+                command = [
+                  "${lib.getExe pkgs.alejandra}"
+                  "\$FILE"
+                ];
+                extensions = [".nix"];
+              };
+              gofmt = {disabled = true;};
+              gofumpt = {
+                command = [
+                  "${lib.getExe pkgs.gofumpt}"
+                  "-w"
+                  "\$FILE"
+                ];
+                extensions = [".go"];
+              };
+              nixfmt = {disabled = true;};
+              ruff-check = {
+                command = [
+                  "${lib.getExe pkgs.ruff}"
+                  "check"
+                  "\$FILE"
+                ];
+                extensions = [".py" ".pyi"];
+              };
+              rustfmt = {
+                command = [
+                  "rustfmt"
+                  "+nightly"
+                  "--edition=2024"
+                  "\$FILE"
+                ];
+                extensions = [".rs"];
+              };
+              shfmt = {
+                command = [
+                  "${lib.getExe pkgs.shfmt}"
+                  "-i"
+                  "4"
+                  "-ci"
+                  "-sr"
+                  "-s"
+                  "-bn"
+                  "-w"
+                  "\$FILE"
+                ];
+                extensions = [".sh" ".bash"];
+              };
+              stylua = {
+                command = [
+                  "${lib.getExe pkgs.stylua}"
+                  "\$FILE"
+                ];
+                extensions = [".lua"];
+              };
+            };
+
+            lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
+
+            permission = lib.mkDefault ai.permissions.opencode.permission;
+
+            plugin =
+              lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
+              ++ lib.optional config.programs.rtk.enable "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/opencode/rtk.ts"
+              ++ [
+                "${aro}/plugins/autoresearch-context.ts"
+                "${inputs.superpowers}/.opencode/plugins/superpowers.js"
+              ]
+              ++ config.programs.opencode.extraPlugins;
+
+            watcher.ignore = [
+              ".direnv/**"
+              ".git/**"
+              ".rumdl_cache/**"
+              "dist/**"
+              "node_modules/**"
+              "target/**"
+            ];
+          };
+
+          skills = autoresearchSkills;
+
+          tui = {
+            theme = "nord";
+            scroll_acceleration = {
+              enabled = true;
+            };
           };
         };
       };

@@ -85,30 +85,6 @@ in {
 
   config = lib.mkMerge [
     {
-      programs.agent-skills = {
-        enable = true;
-        targets = {
-          agents.enable = false;
-          claude.enable = true;
-          codex.enable = true;
-          opencode.enable = true;
-          pi = {
-            enable = true;
-            dest = "${config.home.homeDirectory}/.pi/agent/skills";
-            structure = "symlink-tree";
-          };
-          # zaly discovers skills from $XDG_CONFIG_HOME/zaly/skills/**/SKILL.md,
-          # globbing with `follow: false` — it won't descend into symlinked skill
-          # dirs, so copy-tree (real files via `rsync -aL`) is required, not
-          # symlink-tree.
-          zaly = {
-            enable = true;
-            dest = "${config.xdg.configHome}/zaly/skills";
-            structure = "copy-tree";
-          };
-        };
-      };
-
       programs.ai.skills = {
         process = {
           name = "superpowers";
