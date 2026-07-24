@@ -34,10 +34,13 @@ in {
           ]
         )
         ++ (
-          with pkgs.llm-agents; [
-            agent-browser
-            ralph-tui
-          ]
+          with pkgs.llm-agents;
+            [
+              ralph-tui
+            ]
+            ++ lib.optionals pkgs.stdenv.isDarwin [
+              agent-browser
+            ]
         )
         ++ (with my.pkgs; [
           git-remote-mcp
