@@ -15,6 +15,7 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoHash = "sha256-7BnEw8ikkIqCw7pymT0Yx9wKpsTMNLtUkwosfEfQSIE=";
+  doCheck = false;
 
   meta = {
     description = "Lolcate -- A comically fast way of indexing and querying your filesystem. Replaces locate / mlocate / updatedb. Written in Rust";

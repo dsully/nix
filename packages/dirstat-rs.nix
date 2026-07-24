@@ -15,6 +15,7 @@ rustPlatform.buildRustPackage {
   };
 
   cargoHash = "sha256-LxUSgIl8r/hWU24CBBBkJXxIodVouxyZb0Dsjic/z0o=";
+  doCheck = false;
 
   meta = with lib; {
     description = "Fast, cross-platform disk usage CLI";

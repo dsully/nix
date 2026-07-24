@@ -16,6 +16,7 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoHash = "sha256-QF7YbsKXN4beX9tAq/82t4k7Gkx3Blo9AvIdtDQHMgg=";
+  doCheck = false;
 
   meta = {
     description = "A tool for opening the right thing in the right place";

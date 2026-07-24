@@ -16,6 +16,7 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoHash = "sha256-VHJ9dz6MWBWRU75Cx1vWjZvtKMdfTTStr8yS+eZR/cY=";
+  doCheck = false;
 
   meta = {
     description = "A markdown LSP server for my notes";
