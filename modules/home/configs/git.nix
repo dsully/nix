@@ -92,6 +92,7 @@ in {
 
       # AI
       ".claude"
+      ".claude/settings.local.json"
       ".indxr-cache"
       ".opencode/"
 
