@@ -122,6 +122,36 @@ in {
             "uv-package-manager"
           ];
         };
+        softaworks = {
+          name = "systems";
+          input = "softaworks";
+          subdir = "skills";
+          ids = [
+            "agent-md-refactor"
+            "backend-to-frontend-handoff-docs"
+            "c4-architecture"
+            "command-creator"
+            "commit-work"
+            "crafting-effective-readmes"
+            "database-schema-designer"
+            "feedback-mastery"
+            "frontend-to-backend-requirements"
+            "game-changing-features"
+            "gepetto"
+            "humanizer"
+            "mermaid-diagrams"
+            "naming-analyzer"
+            "plugin-forge"
+            "professional-communication"
+            "react-dev"
+            "react-useeffect"
+            "reducing-entropy"
+            "requirements-clarity"
+            "session-handoff"
+            "skill-judge"
+            "writing-clearly-and-concisely"
+          ];
+        };
         systems = {
           name = "systems";
           input = "wshobson-agents";

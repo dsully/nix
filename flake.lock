@@ -677,9 +677,26 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs_2",
         "opnix": "opnix",
+        "softaworks": "softaworks",
         "superpowers": "superpowers",
         "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
+      }
+    },
+    "softaworks": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772729184,
+        "narHash": "sha256-1q4IP55kvZhJibTLJct0SSifw46lBmAQhp9nSmDzYxs=",
+        "owner": "softaworks",
+        "repo": "agent-toolkit",
+        "rev": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+        "type": "github"
+      },
+      "original": {
+        "owner": "softaworks",
+        "repo": "agent-toolkit",
+        "type": "github"
       }
     },
     "superpowers": {

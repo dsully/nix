@@ -44,6 +44,9 @@
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 
+    softaworks.url = "github:softaworks/agent-toolkit";
+    softaworks.flake = false;
+
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
     agent-skills.inputs.nixpkgs.follows = "nixpkgs";
 
