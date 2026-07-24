@@ -131,21 +131,14 @@ in {
               # Escape --version and similar.
               set -f ext (string split "." -- $argv[1])[-1]
 
-              if contains $ext $markdown_extensions; and type -q mdv
-                  ${lib.getExe my.pkgs.mdv} --theme dark $argv[1]
-
-              else if contains $ext $markdown_extensions; and type -q mdterm
+              if contains $ext $markdown_extensions; and type -q mdterm
                   ${lib.getExe pkgs.mdterm} $argv[1]
-
-              else if contains $ext $markdown_extensions; and type -q glow
-                  ${lib.getExe pkgs.glow} --pager $argv[1]
 
               else if contains $ext $image_extensions; and type -q viu
                   ${lib.getExe pkgs.viu} $argv
 
-              else if type -q bat
-                  ${lib.getExe pkgs.bat} $argv
               else
+                  ${lib.getExe pkgs.bat} $argv
                   command cat $argv
               end
             '';

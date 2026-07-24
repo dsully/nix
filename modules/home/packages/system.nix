@@ -15,7 +15,6 @@
         dua
         dust
         fclones
-        glow
         gnutar
         hexyl
         inetutils
