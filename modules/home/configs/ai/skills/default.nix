@@ -85,6 +85,10 @@ in {
 
   config = lib.mkMerge [
     {
+      programs.agent-skills = {
+        enable = true;
+      };
+
       programs.ai.skills = {
         process = {
           name = "superpowers";
@@ -152,14 +156,14 @@ in {
             "writing-clearly-and-concisely"
           ];
         };
-        systems = {
-          name = "systems";
-          input = "wshobson-agents";
-          subdir = "plugins/systems-programming/skills";
-          ids = [
-            "memory-safety-patterns"
-          ];
-        };
+        # systems = {
+        #   name = "systems";
+        #   input = "wshobson-agents";
+        #   subdir = "plugins/systems-programming/skills";
+        #   ids = [
+        #     "memory-safety-patterns"
+        #   ];
+        # };
         local = {
           path = ./content;
           all = true;
