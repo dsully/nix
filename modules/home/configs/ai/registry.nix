@@ -59,38 +59,45 @@
     };
   };
 
-  mcpServers = {
-    codeloupe = {
-      command = lib.getExe my.pkgs.codeloupe-mcp;
-    };
-    git = {
-      command = lib.getExe my.pkgs.mcp-server-git-rs;
-      args = [
-        "--features"
-        "inspection,remotes,worktrees,notes"
-      ];
-      enabled = false;
-    };
-    git-remote = {
-      command = lib.getExe my.pkgs.git-remote-mcp;
-      enabled = false;
-    };
-    indxr = {
-      command = lib.getExe my.pkgs.indxr;
-      args = ["serve" "." "--all-tools"];
-    };
-    just = {
-      command = lib.getExe my.pkgs.just-mcp;
-      enabled = false;
-    };
-    nixos = {
-      command = lib.getExe pkgs.mcp-nixos;
-      env = {
-        PYTHON_GIL = "1";
+  mcpServers =
+    {
+      codeloupe = {
+        command = lib.getExe my.pkgs.codeloupe-mcp;
       };
-      enabled = false;
+      git = {
+        command = lib.getExe my.pkgs.mcp-server-git-rs;
+        args = [
+          "--features"
+          "inspection,remotes,worktrees,notes"
+        ];
+        enabled = false;
+      };
+      git-remote = {
+        command = lib.getExe my.pkgs.git-remote-mcp;
+        enabled = false;
+      };
+      indxr = {
+        command = lib.getExe my.pkgs.indxr;
+        args = ["serve" "." "--all-tools"];
+      };
+      just = {
+        command = lib.getExe my.pkgs.just-mcp;
+        enabled = false;
+      };
+      nixos = {
+        command = lib.getExe pkgs.mcp-nixos;
+        env = {
+          PYTHON_GIL = "1";
+        };
+        enabled = false;
+      };
+    }
+    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      safari-mcp = {
+        command = "/usr/bin/safaridriver";
+        args = ["--mcp"];
+      };
     };
-  };
 
   models = {
     large = {
