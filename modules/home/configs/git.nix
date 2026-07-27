@@ -38,7 +38,8 @@ in {
       git-trim
       git-who
       lazyworktree
-      worktrunk
+      # Currently broken.
+      # worktrunk
       my.pkgs.geil
     ];
   };
