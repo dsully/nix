@@ -7,17 +7,17 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: rec {
   pname = "nh";
-  rev = "beb4e4eb949f21e4186e2e2295cf1a74624f23f8";
+  rev = "fbdd2c9b8d81d8053b1b4f2dc82bc448a231e1a1";
   version = "4.3.2-${rev}";
 
   src = fetchFromGitHub {
     owner = "nix-community";
     repo = "nh";
     inherit rev;
-    hash = "sha256-APB3LPNwOgVYVdeKPSclDf4szM+kkxUna14Rj2Wjnzg=";
+    hash = "sha256-qt22yOhP+TXaJ3g6IuVLr6/JPEUVax8+8Wjc9Uekb+0=";
   };
 
-  cargoHash = "sha256-+1LgWVkeIQ1rt0bnzUx05cbr2GC0ky9IISjefbdnOhc=";
+  cargoHash = "sha256-PmaGe5KtyVaavBt9cwdacIocnuv1T7xoHhuTTK87ngc=";
   doCheck = false;
 
   # Make the build output monitor configurable via NH_MONITOR, then default it
