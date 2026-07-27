@@ -47,7 +47,7 @@
   in "shared_except ${quoted}";
 in {
   programs.zellij = {
-    enable = true;
+    enable = lib.mkDefault true;
     enableFishIntegration = false;
 
     settings = {

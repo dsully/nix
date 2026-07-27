@@ -25,6 +25,7 @@
     ./vivid.nix
     ./yamllint.nix
     ./zellij.nix
+    ./zmx.nix
     ./zoxide.nix
   ];
 }

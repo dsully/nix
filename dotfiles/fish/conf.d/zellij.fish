@@ -9,10 +9,8 @@ if status is-interactive; and command -q zellij
         end
     end
 
-    # Automatically attach if a session doesn't exist.
-    if not set -q ZELLIJ; and test -e "$XDG_CONFIG_HOME/zellij/auto"
-        command zellij attach -c $HOSTNAME
-    end
+    # Session auto-attach is handled by zmx (see conf.d/zmx.fish); zellij is
+    # launched manually when its window/pane management is wanted.
 
     # https://github.com/zellij-org/zellij/discussions/2889
     function zellij_update_tabname

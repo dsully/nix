@@ -174,6 +174,9 @@ in {
     };
 
     nix-index-database.comma.enable = false;
+
+    zellij.enable = false;
+    zmx.enable = false;
   };
 
   targets.darwin.linkApps.enable = false;
