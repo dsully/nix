@@ -96,6 +96,7 @@
       safari-mcp = {
         command = "/usr/bin/safaridriver";
         args = ["--mcp"];
+        enabled = false;
       };
     };
 
