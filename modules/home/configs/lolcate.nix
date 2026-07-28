@@ -33,6 +33,7 @@
     (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       launchd.agents.lolcate = {
         enable = true;
+        waitForNixStore = false;
         config = {
           Label = "localhost.lolcate";
 

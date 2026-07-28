@@ -98,6 +98,7 @@ in {
 
     launchd.agents.meridian = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       enable = true;
+      waitForNixStore = false;
       config = {
         Label = "localhost.meridian";
         ProgramArguments = [(lib.getExe pkgs.meridian)];

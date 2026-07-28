@@ -1,6 +1,7 @@
 {lib, ...}: {
   launchd.agents.pbcopy = {
     enable = true;
+    waitForNixStore = false;
     config = {
       Label = "localhost.pbcopy";
       ProgramArguments = ["/usr/bin/pbcopy"];
@@ -26,6 +27,7 @@
 
   launchd.agents.pbpaste = {
     enable = true;
+    waitForNixStore = false;
     config = {
       Label = "localhost.pbpaste";
       ProgramArguments = ["/usr/bin/pbpaste"];

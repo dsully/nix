@@ -6,6 +6,7 @@
 : {
   launchd.agents.xdg-open-svc = {
     enable = true;
+    waitForNixStore = false;
     config = {
       ProgramArguments = [
         "${lib.getExe my.pkgs.xdg-open-svc}"

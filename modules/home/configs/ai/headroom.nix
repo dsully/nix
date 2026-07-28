@@ -123,6 +123,7 @@ in {
       (lib.mkIf (claudeCodeCfg.enable && pkgs.stdenv.isDarwin) {
         launchd.agents.headroom-claude-code-proxy = {
           enable = true;
+          waitForNixStore = false;
           config = {
             ProgramArguments = ["${claudeLaunchWrapper}"];
             EnvironmentVariables = environment // {HEADROOM_EMBEDDER_RUNTIME = "pytorch_mps";};

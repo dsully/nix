@@ -19,6 +19,7 @@ in
 
     launchd.agents.cachix-watch-store = {
       enable = true;
+      waitForNixStore = false;
       config = {
         ProgramArguments = [
           "${pkgs.writeShellScript "cachix-watch" ''
