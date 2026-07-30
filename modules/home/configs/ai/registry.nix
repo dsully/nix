@@ -63,6 +63,9 @@
     {
       codeloupe = {
         command = lib.getExe my.pkgs.codeloupe-mcp;
+        env = {
+          codeloupe_mcp_TANTIVY_ENABLED = "false";
+        };
       };
       git = {
         command = lib.getExe my.pkgs.mcp-server-git-rs;
