@@ -201,11 +201,6 @@
         # pkgs.llm-agents.* and the mcp-nixos doCheck fix that homeModules expect.
         overlays.default = inputs.nixpkgs.lib.composeManyExtensions (import ./overlays {inherit inputs;});
 
-        # Reusable helper for consuming flakes. skillGroupsFrom turns a
-        # marketplace's curated plugin list into `programs.ai.skills` groups —
-        # see modules/home/configs/ai/skills/sources.nix.
-        lib.skillGroupsFrom = (import ./modules/home/configs/ai/skills/sources.nix {inherit lib;}).skillGroupsFrom;
-
         darwinConfigurations.jarvis = withSystem "aarch64-darwin" ({
           pkgs,
           system,

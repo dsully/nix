@@ -10,6 +10,7 @@ Generate standalone HTML pages with Mermaid.js diagrams and styled visual elemen
 ## When to activate
 
 **Use this skill for:**
+
 - Flow or sequence explanations (e.g., "how does git rebase work?")
 - Architecture overviews and system designs
 - Comparisons and decision trees
@@ -17,6 +18,7 @@ Generate standalone HTML pages with Mermaid.js diagrams and styled visual elemen
 - Any request containing "explain visually", "show me a diagram", or "visualize"
 
 **Skip this skill for:**
+
 - Quick answers, code fixes, one-liners
 - When the user says "briefly" or "in short"
 - Simple factual questions
@@ -177,6 +179,7 @@ open "$FILE"
 ```
 
 Detect the platform:
+
 ```bash
 if command -v xdg-open &>/dev/null; then
   xdg-open "$FILE" 2>/dev/null &
@@ -188,6 +191,7 @@ fi
 ## Final output
 
 After opening the browser, tell the user:
+
 - What was generated and the file path
 - A brief plain-text summary of the key points (2-3 sentences)
 - That they can find the file at the given path if they want to revisit it
