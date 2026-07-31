@@ -84,16 +84,19 @@ in {
         headers = {
           Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
         };
+        enabled = false;
       };
-      unifi = ai.muxWrap {
-        command = "${config.home.homeDirectory}/.local/bin/unifi-mcp-server";
-        env = {
-          UNIFI_API_TYPE = "local";
-          UNIFI_DEFAULT_SITE = "default";
-          UNIFI_LOCAL_HOST = "10.0.0.1";
-          UNIFI_LOCAL_VERIFY_SSL = "false";
+      unifi =
+        ai.muxWrap {
+          command = "${config.home.homeDirectory}/.local/bin/unifi-mcp-server";
+          env = {
+            UNIFI_API_TYPE = "local";
+            UNIFI_DEFAULT_SITE = "default";
+            UNIFI_LOCAL_HOST = "10.0.0.1";
+            UNIFI_LOCAL_VERIFY_SSL = "false";
+          };
+          enabled = false;
         };
-      };
     };
 
     meridian.enable = false;

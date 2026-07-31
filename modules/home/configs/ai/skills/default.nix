@@ -102,11 +102,15 @@ in {
           subdir = "plugins/developer-essentials/skills";
           ids = [
             "debugging-strategies"
-            "e2e-testing-patterns"
             "error-handling-patterns"
           ];
         };
+        # Every enabled skill's description sits in the system prompt for the
+        # whole session, so a group is only worth carrying globally if it fires
+        # on most repos. Language/framework groups are opt-in: turn them on in
+        # the host or user config when working in that stack.
         python = {
+          enable = lib.mkDefault false;
           name = "python";
           input = "wshobson-agents";
           subdir = "plugins/python-development/skills";
@@ -132,29 +136,28 @@ in {
           subdir = "skills";
           ids = [
             "agent-md-refactor"
-            "backend-to-frontend-handoff-docs"
             "c4-architecture"
             "command-creator"
             "commit-work"
             "crafting-effective-readmes"
-            "database-schema-designer"
-            "feedback-mastery"
-            "frontend-to-backend-requirements"
-            "game-changing-features"
             "gepetto"
-            "humanizer"
             "mermaid-diagrams"
             "naming-analyzer"
             "plugin-forge"
-            "professional-communication"
-            "react-dev"
-            "react-useeffect"
             "reducing-entropy"
             "requirements-clarity"
             "session-handoff"
             "skill-judge"
             "writing-clearly-and-concisely"
           ];
+          # Dropped from the global set (web/frontend and interpersonal writing —
+          # rarely relevant here, and each one's description is resident for the
+          # whole session). `ids` is a list option, so a host appends rather than
+          # replaces: programs.ai.skills.softaworks.ids = ["react-dev"];
+          #   backend-to-frontend-handoff-docs  frontend-to-backend-requirements
+          #   database-schema-designer          react-dev / react-useeffect
+          #   feedback-mastery                  professional-communication
+          #   game-changing-features            humanizer
         };
         # systems = {
         #   name = "systems";

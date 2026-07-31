@@ -61,11 +61,16 @@
 
   mcpServers =
     {
+      # codeloupe duplicates indxr almost tool-for-tool (text_search/read_file_range/
+      # get_symbols vs find/read/summarize) and a second "use me instead of Read"
+      # instruction block just splits the model's attention. indxr wins on
+      # get_diff_summary and symbol-level reads, so it's the one that stays.
       codeloupe = {
         command = lib.getExe my.pkgs.codeloupe-mcp;
         env = {
           codeloupe_mcp_TANTIVY_ENABLED = "false";
         };
+        enabled = false;
       };
       git = {
         command = lib.getExe my.pkgs.mcp-server-git-rs;
@@ -105,19 +110,19 @@
 
   models = {
     large = {
-      model = "claude-opus-4-8";
+      model = "claude-opus-5";
       provider = "anthropic";
       max_tokens = 1000000;
       reasoning_effort = "medium";
     };
     medium = {
-      model = "claude-sonnet-4-6";
+      model = "claude-sonnet-5";
       provider = "anthropic";
       max_tokens = 200000;
       reasoning_effort = "medium";
     };
     small = {
-      model = "claude-sonnet-4-5";
+      model = "claude-haiku-4-5-20251001";
       provider = "anthropic";
       max_tokens = 200000;
       reasoning_effort = "low";
@@ -127,7 +132,12 @@
   # Curated agents/commands pulled verbatim from pinned marketplace inputs and
   # handed to each tool's native `agents`/`commands` option. The `anthropic-`
   # prefix namespaces claude-plugins-official agents to avoid name clashes.
-  agents = {
+  #
+  # These are *sources*: interpolating a flake input yields a plain string, and
+  # the `agents`/`commands` options are `either lines path` — a string is taken
+  # as file content, so passing the interpolation directly writes the store path
+  # into the file instead of the agent. Read them (below) to get real content.
+  agentSources = {
     anthropic-code-explorer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-explorer.md";
     anthropic-code-reviewer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-reviewer.md";
     anthropic-code-simplifier = "${inputs.claude-plugins-official}/plugins/code-simplifier/agents/code-simplifier.md";
@@ -142,12 +152,14 @@
     softaworks-ui-ux-designer = "${inputs.softaworks}/agents/ui-ux-designer.md";
   };
 
-  commands = {
+  commandSources = {
     refactor-clean = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/refactor-clean.md";
     tech-debt = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/tech-debt.md";
   };
 
-  descriptions = lib.mapAttrs (_: agentDescription) agents;
+  agents = lib.mapAttrs (_: builtins.readFile) agentSources;
+  commands = lib.mapAttrs (_: builtins.readFile) commandSources;
+  descriptions = lib.mapAttrs (_: agentDescription) agentSources;
 
   hooks = import ./hooks.nix {inherit config lib pkgs;};
 

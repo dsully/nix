@@ -65,8 +65,7 @@ An MCP server called `indxr` is available.
 **Always use indxr tools before the Read tool.**
 
 Do NOT read full source files as a first step - use the MCP tools to explore,
-then read only what you need. (`codeloupe` is also available for local literal
-search and follows its own MCP guidance.)
+then read only what you need.
 
 ### Exploration workflow (follow this order)
 

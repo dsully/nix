@@ -53,19 +53,22 @@
     ${lib.trim (skillBody content)}
   '';
 
-  # Derive one slash command per selected skill for the tools with a native
-  # commands option (claude-code, opencode). agent-skills stays the only place
-  # skills are defined; codex/pi receive the skills themselves via agent-skills
-  # targets but have no commands option.
+  # Derive one slash command per selected skill, for opencode only — that's how
+  # opencode surfaces skills. Claude Code deliberately does *not* get these: it
+  # already makes every skill slash-invocable through the Skill tool, so mirroring
+  # them as commands listed each skill twice in the system prompt (~3.3k tokens of
+  # pure duplicate menu) and copied every skill body a second time on disk.
+  #
+  # agent-skills stays the only place skills are defined; codex/pi receive the
+  # skills themselves via agent-skills targets but have no commands option.
   #
   # The id carries any source idPrefix, so a namespaced skill `foo/bugs`
-  # becomes `/foo:bugs` in claude and `/foo/bugs` in opencode.
+  # becomes `/foo/bugs` in opencode.
   skillCommands = lib.listToAttrs (map
     (id: lib.nameValuePair id (renderCommand (builtins.readFile "${cfg.catalog.${id}.absPath}/SKILL.md")))
     (builtins.filter (id: cfg.catalog ? ${id}) allowlist));
 in {
   config = lib.mkIf cfg.enable {
-    programs.claude-code.commands = skillCommands;
     programs.opencode.commands = skillCommands;
   };
 }

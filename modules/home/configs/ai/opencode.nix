@@ -87,12 +87,18 @@ in {
             "context-mode"
           ];
 
-          inherit (ai) agents;
-
+          # `ai.agents` is deliberately NOT wired here. Those files are written in
+          # Claude Code's frontmatter dialect and opencode rejects them outright:
+          # `tools` is a comma-separated string where opencode wants an object,
+          # `model` is an alias (sonnet/opus/inherit/default) where opencode wants
+          # a provider/model ref, and softaworks' mermaid agent carries keys
+          # (category/usage/input/output) opencode doesn't know. Feeding them in
+          # fails config validation and opencode won't start. Translating the
+          # frontmatter is possible but needs a real build-time YAML rewrite.
           commands =
             ai.commands
             // {
-              autoresearch = "${aro}/commands/autoresearch.md";
+              autoresearch = builtins.readFile "${aro}/commands/autoresearch.md";
             };
 
           context = ./AGENTS.md;
@@ -102,8 +108,7 @@ in {
             compaction = {
               auto = true;
               prune = true;
-              # Reserved token limit
-              reserved = 850000;
+              reserved = 32000;
             };
 
             # opencode has no rules/ concept; load the shared language rule files

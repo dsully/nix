@@ -138,9 +138,7 @@
     };
 
     skill = {
-      allow = [
-        "ast-grep"
-      ];
+      allow = [];
       ask = [];
       deny = [];
     };
