@@ -34,16 +34,14 @@
       "monodraw"
       "processspy"
       "raindropio"
-      "rapidapi"
       "raycast"
       "rocket"
       "snapzy"
       "stay"
       "suspicious-package"
+      "syntax-highlight"
       "tower"
       "transmit"
-      "typora"
-      # Can this replace RapidAPI?
       "yaak"
     ];
 
@@ -56,9 +54,7 @@
       "Dato" = 1470584107;
       "DevCleaner" = 1388020431;
       "Devly" = 6759269801;
-      "Editorio" = 6759334075;
       "Hyperspace" = 6739505345;
-      "iPreview" = 1519213509;
       "JSONPeep" = 1458969831;
       "Kagi Search" = 1622835804;
       "MarkChart" = 6475648822;
