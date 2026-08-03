@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256-uoFBOwfkm3F7A+U66D9PdnsZaBpmqEl85gBPnSpVXHA=";
+      hash = "sha256-7fC7lXWD4jmvHj2WJqNj8zwv9TLAfWFZ2CFVOHe9UgM=";
     };
     x86_64-linux = {
       suffix = "x86_64-unknown-linux-gnu";
-      hash = "sha256-9bLCA7MsT4tMsejIsXssGQCdR+SmkL36ra4alag0AAQ=";
+      hash = "sha256-8YcrArKNTzOk9BezGGB29vvVy22MA5U2Gt6HweL/nW0=";
     };
   };
   source =
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "rust-mcp-server";
-    version = "0.4.0";
+    version = "0.4.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/Vaiz/${pname}/releases/download/v${version}/${pname}-${source.suffix}.tar.gz";

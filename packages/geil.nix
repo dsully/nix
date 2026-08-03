@@ -4,7 +4,7 @@
   fetchFromGitHub,
 }:
 rustPlatform.buildRustPackage rec {
-  rev = "6e375374338be3f27f0a2e3995abcc41a3b0ae75";
+  rev = "acff259b15cac4592a0f24b175d1057c34b2cbce";
   pname = "geil";
   version = "0.0.1-alpha.1-${rev}";
 
@@ -12,7 +12,7 @@ rustPlatform.buildRustPackage rec {
     inherit rev;
     owner = "Nukesor";
     repo = pname;
-    hash = "sha256-1lqk+/3kSMMYvz55d9W5fMPeWPHavPyz2EnbiCBywjA=";
+    hash = "sha256-A8XVIZ8ZufYoPJPYAzeqqsTG6xTcYDdZSAwq3c/m31E=";
   };
 
   cargoHash = "sha256-/Ei+Mfyla5tKuAWhDgyoEZOPHp1tN5ry3GlZLHh0aVE=";
