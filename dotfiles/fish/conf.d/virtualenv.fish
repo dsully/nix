@@ -1,5 +1,9 @@
 if status is-interactive
 
+    # activate.fish otherwise replaces fish_prompt with a wrapper that prefixes
+    # "($VIRTUAL_ENV_PROMPT) ". fish_prompt shows the venv via its own icon instead.
+    set -gx VIRTUAL_ENV_DISABLE_PROMPT 1
+
     function __auto_venv_walk
         set -l current_venv $VIRTUAL_ENV
         set -l check_dir $PWD
