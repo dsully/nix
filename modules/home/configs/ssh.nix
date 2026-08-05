@@ -129,6 +129,16 @@
   # Match override must appear before its corresponding Host block.
   tsMatches = lib.mapAttrs' (n: s: lib.nameValuePair "0-ts-${n}" (mkTsMatch n s)) dual;
 in {
+  # The `Host *` block below sets ControlPath under ~/.ssh/sockets, but
+  # home-manager never creates that directory. Any ssh invocation inheriting
+  # `Host *` (e.g. iOS Toolbox's ssh_to_device.expect connecting to
+  # root@localhost) then dies with "unix_listener: cannot bind ... No such
+  # file or directory". Create it here so multiplexing works everywhere.
+  home.activation.sshSockets = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    run mkdir -p "${homeDirectory}/.ssh/sockets"
+    run chmod 700 "${homeDirectory}/.ssh/sockets"
+  '';
+
   programs.ssh = {
     enable = true;
 
