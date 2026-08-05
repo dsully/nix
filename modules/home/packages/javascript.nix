@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   bunInstallPath = "${config.home.homeDirectory}/.bun";
@@ -19,11 +18,12 @@ in {
     apply = lib.unique;
   };
 
-  config = lib.mkIf (config.packageTools.javascript != [] && pkgs.stdenv.isDarwin) {
-    programs = {
-      bun.enable = true;
-
-      npm = {
+  config = lib.mkMerge [
+    # npm and bun base config apply unconditionally, independent of whether any
+    # global tools are installed. Consumers layer registry overrides on top via
+    # programs.npm.settings.
+    {
+      programs.npm = {
         enable = true;
         settings = {
           audit = false;
@@ -32,22 +32,27 @@ in {
           prefix = npmCacheDir;
         };
       };
-    };
 
-    home = {
-      activation.npmTools = lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-        ${installScript}
-      '';
+      programs.bun.enable = true;
 
-      sessionPath = [
-        "${bunInstallPath}/bin"
-        "${npmCacheDir}/bin"
-      ];
-
-      sessionVariables = {
+      home.sessionVariables = {
         BUN_INSTALL = bunInstallPath;
         NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
       };
-    };
-  };
+    }
+
+    # Global tool installation only makes sense once tools are listed.
+    (lib.mkIf (config.packageTools.javascript != []) {
+      home = {
+        activation.npmTools = lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
+          ${installScript}
+        '';
+
+        sessionPath = [
+          "${bunInstallPath}/bin"
+          "${npmCacheDir}/bin"
+        ];
+      };
+    })
+  ];
 }
