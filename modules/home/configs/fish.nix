@@ -139,7 +139,6 @@ in {
 
               else
                   ${lib.getExe pkgs.bat} $argv
-                  command cat $argv
               end
             '';
         };
