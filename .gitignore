@@ -1,4 +1,3 @@
-.github/
 access-tokens.conf
 build-results/
 nix.conf

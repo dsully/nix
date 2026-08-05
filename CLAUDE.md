@@ -17,6 +17,8 @@ All day-to-day operations go through the `Justfile` (run `just` for the list):
 - `just push-cache` — build every package in `packages/` and push to the `dsully` cachix cache.
 - `just init-from-url <github-url>` — scaffold a new `packages/<name>.nix` via `nix-package-add` (nurl-based).
 
+`.github/workflows/update.yml` runs the CI equivalent weekly (and on manual dispatch): it updates `flake.lock`, runs `nix-package-updater --cache` on Linux + macOS to bump `packages/*.nix` and push builds to the `dsully` cachix cache, then commits both back to `main`. Requires the `CACHIX_AUTH_TOKEN` repo secret.
+
 Building / checking individual outputs (system is inferred):
 
 - `nix build .#<pkg-name>` — build one package from `packages/`.

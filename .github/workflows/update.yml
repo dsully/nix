@@ -1,0 +1,95 @@
+name: auto-update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: auto-update
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update-lock:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.commit.outputs.commit_hash || github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Update flake.lock
+        run: nix flake update
+
+      - name: Commit flake.lock
+        id: commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update lockfile and versions"
+          file_pattern: flake.lock
+
+  update-packages:
+    needs: update-lock
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.update-lock.outputs.sha }}
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: dsully
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Update and cache packages
+        run: nix run .#nix-package-updater -- --cache
+
+      - name: Capture package diff
+        run: git diff HEAD -- packages/ > packages.patch
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.os }}
+          path: packages.patch
+          if-no-files-found: error
+
+  commit-bumps:
+    needs: [update-lock, update-packages]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.update-lock.outputs.sha }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: patches
+
+      - name: Apply package patches
+        run: |
+          shopt -s nullglob
+          applied=0
+          for patch in patches/*/packages.patch; do
+            if [ -s "$patch" ]; then
+              git apply --3way "$patch"
+              applied=1
+            fi
+          done
+          echo "applied=$applied" >> "$GITHUB_ENV"
+
+      - name: Commit package bumps
+        if: env.applied == '1'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update lockfile and versions"
+          file_pattern: packages/
