@@ -161,7 +161,7 @@
   commands = lib.mapAttrs (_: builtins.readFile) commandSources;
   descriptions = lib.mapAttrs (_: agentDescription) agentSources;
 
-  hooks = import ./hooks.nix {inherit config lib pkgs;};
+  hooks = import ./hooks.nix {inherit config lib my pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
   # workspace-scoped index from the client's CWD, so a shared mux process would

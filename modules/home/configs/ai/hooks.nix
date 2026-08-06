@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  my,
   pkgs,
 }: let
   command = attrs: attrs // {type = "command";};
@@ -32,6 +33,10 @@
 
   icmEnabled = config.programs.icm.enable or true;
   rtkEnabled = config.programs.rtk.enable;
+
+  llmtrimGuardEnabled =
+    config.programs.llmtrim.enable
+    && config.programs.llmtrim.integrations.claudeCode.guard;
 
   events = {
     PreCompact = lib.optional icmEnabled (group {
@@ -122,13 +127,20 @@
       ];
     });
 
-    UserPromptSubmit = lib.optional icmEnabled (group {
-      hooks = [
-        (hook {
+    UserPromptSubmit = lib.optional (icmEnabled || llmtrimGuardEnabled) (group {
+      hooks =
+        lib.optional icmEnabled (hook {
           name = "icm-prompt";
           command = "${lib.getExe pkgs.llm-agents.icm} hook prompt";
         })
-      ];
+        # Cold-cache guard: blocks one turn when resuming a large session after
+        # the prompt cache expired, so the full-context rewrite isn't silent.
+        # Claude Code only, and `sub`-style local slash commands pass through.
+        ++ lib.optional llmtrimGuardEnabled (hook {
+          name = "llmtrim-guard";
+          command = "${lib.getExe my.pkgs.llmtrim} guard";
+          targets = ["claude"];
+        });
     });
   };
 

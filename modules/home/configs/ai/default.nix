@@ -14,6 +14,7 @@ in {
     ./codex.nix
     ./headroom.nix
     ./icm.nix
+    ./llmtrim.nix
     ./opencode.nix
     ./pi.nix
     ./rtk.nix
@@ -66,6 +67,10 @@ in {
       icm = {
         enable = false;
       };
+
+      # Mutually exclusive with programs.headroom (asserted in llmtrim.nix).
+      # mkDefault so a downstream flake can enable it with a plain assignment.
+      llmtrim.enable = lib.mkDefault false;
 
       mcp = {
         enable = true;

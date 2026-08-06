@@ -3,9 +3,17 @@
   config,
   inputs,
   lib,
+  llmtrimWrap,
+  my,
   pkgs,
   ...
 }: let
+  # llmtrim's status line replaces ccstatusline rather than composing with it —
+  # Claude Code allows exactly one `statusLine.command`. It adds live trim %,
+  # rate-limit windows, and prompt-cache warm/cold on top of model + context.
+  llmtrimStatusLine =
+    config.programs.llmtrim.enable
+    && config.programs.llmtrim.integrations.claudeCode.statusLine;
   lspLanguageIds = {
     bash = {
       ".sh" = "shellscript";
@@ -54,7 +62,10 @@
     hooks = lib.mkDefault ai.hooks.claude;
 
     statusLine = {
-      command = lib.getExe pkgs.llm-agents.ccstatusline;
+      command =
+        if llmtrimStatusLine
+        then "${lib.getExe my.pkgs.llmtrim} statusline"
+        else lib.getExe pkgs.llm-agents.ccstatusline;
       padding = 0;
       type = "command";
     };
@@ -109,7 +120,10 @@ in {
         agent-skills.targets.claude.enable = true;
 
         claude-code = {
-          package = pkgs.llm-agents.claude-code;
+          package =
+            if config.programs.llmtrim.enable
+            then llmtrimWrap "claude" pkgs.llm-agents.claude-code
+            else pkgs.llm-agents.claude-code;
 
           enableMcpIntegration = true;
 
