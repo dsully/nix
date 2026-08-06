@@ -1,21 +1,23 @@
 {
   lib,
   rustPlatform,
-  fetchCrate,
+  fetchFromGitHub,
   pkg-config,
   nix-update-script,
 }:
-rustPlatform.buildRustPackage (finalAttrs: rec {
+rustPlatform.buildRustPackage (finalAttrs: {
   pname = "llmtrim";
-  version = "0.12.5";
+  version = "0.12.6-dev";
   __structuredAttrs = true;
 
-  src = fetchCrate {
-    inherit (finalAttrs) pname version;
-    hash = "sha256-2rVe3ilIyzdxBPFDmg5TciS+dH5GnMUG6NZXsTM6Koo=";
+  src = fetchFromGitHub {
+    owner = "fkiene";
+    repo = "llmtrim";
+    rev = "d7fd2c4e3ec4a9e354f98227546e3f75b5c0f1c6";
+    hash = "sha256-ilTVx+TNEDxEfGJVM4WH1EEoCQ0ALNR983tkxUyncZA=";
   };
 
-  cargoHash = "sha256-ckamaoalEuDocuYzsgXaCUiXW1pQ0YQNigejnSMU+YU=";
+  cargoHash = "sha256-NMp0QbzK22OS2mgB2sSEbvRTRjcJi+29yScJKgWquXE=";
   doCheck = false;
 
   nativeBuildInputs = [
@@ -26,8 +28,8 @@ rustPlatform.buildRustPackage (finalAttrs: rec {
 
   meta = {
     description = "Static, deterministic LLM prompt/payload compressor — cut input tokens 30-90% with zero extra model calls";
-    homepage = "https://crates.io/crates/llmtrim";
+    homepage = "https://github.com/fkiene/llmtrim";
     license = lib.licenses.mpl20;
-    mainProgram = pname;
+    mainProgram = finalAttrs.pname;
   };
 })

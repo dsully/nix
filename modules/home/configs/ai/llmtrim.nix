@@ -161,6 +161,34 @@ in {
 
           home = {
             packages = [my.pkgs.llmtrim];
+
+            # `guard` and `/sub` are Claude Code integrations `llmtrim ensure`
+            # would install by writing store-path-pinned hooks into
+            # ~/.claude/settings.json — which this repo owns declaratively, so any
+            # such write goes stale on the next switch and `doctor` re-flags it.
+            # We deliberately don't use those integrations, so record the opt-out
+            # in llmtrim's own state to silence the warnings. Merged (not
+            # symlinked) because llmtrim rewrites integrations.json at runtime
+            # (last_ensured_version, nudge state); a read-only file would make it
+            # log "could not save integrations.json". Idempotent.
+            #
+            # NOTE (opencode sessions): llmtrim's `status` sessions view stays
+            # empty/"unknown" for opencode. It fingerprints the client from the
+            # system-prompt "system text" (opencode's marker is "You are
+            # OpenCode,") but keys the session ledger on a session-id header only
+            # Claude Code emits (x-claude-code-session-id). opencode sends no such
+            # header, so its traffic is compressed but not attributed to a
+            # session. This is an upstream limitation, not a wiring gap here.
+            activation.llmtrimOptOut = lib.hm.dag.entryAfter ["writeBoundary"] ''
+              state="${stateDir}/integrations.json"
+              run mkdir -p "${stateDir}"
+              if [ -f "$state" ]; then
+                merged=$(${lib.getExe pkgs.jq} '.opt_out.guard = true | .opt_out.window_sub = true' "$state") \
+                  && printf '%s\n' "$merged" > "$state"
+              else
+                printf '%s\n' '{"opt_out":{"guard":true,"window_sub":true}}' > "$state"
+              fi
+            '';
           };
         }
 
