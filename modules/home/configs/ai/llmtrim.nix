@@ -189,7 +189,11 @@ in {
             };
             Install.WantedBy = ["default.target"];
             Service = {
-              ExecStart = ["${llmtrimBin}" "serve"];
+              # `--supervised` makes `serve` write ~/.llmtrim/serve.pid; without it
+              # `doctor`/`status` see the listener but report "not running /
+              # degraded — no pidfile" because their ownership check keys off that
+              # file. `--port` pins the listener to the configured port.
+              ExecStart = ["${llmtrimBin}" "serve" "--port" (toString cfg.port) "--supervised"];
               Restart = "on-failure";
               RestartSec = 5;
             };
@@ -201,7 +205,10 @@ in {
             enable = true;
             waitForNixStore = false;
             config = {
-              ProgramArguments = ["${llmtrimBin}" "serve"];
+              # `--supervised` makes `serve` write ~/.llmtrim/serve.pid so
+              # `doctor`/`status` can confirm daemon ownership; bare `serve`
+              # leaves them reporting "not running" despite a live listener.
+              ProgramArguments = ["${llmtrimBin}" "serve" "--port" (toString cfg.port) "--supervised"];
               KeepAlive = {
                 Crashed = true;
                 SuccessfulExit = false;
