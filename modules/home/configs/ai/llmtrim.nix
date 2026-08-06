@@ -27,7 +27,14 @@
   # to bound it is to bound which processes see these. Exporting them globally
   # would route every HTTPS client on the machine through the proxy and swap its
   # trust store for llmtrim's snapshot bundle.
-  noProxy = "localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,fd00::/8,*.local";
+  #
+  # `fd00::/8` is deliberately omitted: httpx's URLPattern proxy-map parser
+  # accepts IPv4 CIDRs and bare/bracketed IPv6 addresses but rejects IPv6 *CIDR*
+  # notation, raising `InvalidURL: Invalid port: ':'` at Client init. That
+  # crashes any httpx-based MCP server that honors HTTPS_PROXY (e.g. FastMCP
+  # startup version check hits the proxy). Unique-local IPv6 traffic to the loopback
+  # proxy is not a real path here.
+  noProxy = "localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,*.local";
 
   environment = {
     HTTPS_PROXY = proxyUrl;
