@@ -56,6 +56,10 @@
   llmtrimWrap = mainProgram: pkg:
     pkgs.symlinkJoin {
       name = "${lib.getName pkg}-llmtrim";
+      # symlinkJoin's name carries no version, so `lib.getVersion` on the wrapper
+      # would return "". Home Manager's claude-code module version-gates on that
+      # and falls back to the legacy `--plugin-dir` wrapper when it can't tell.
+      version = lib.getVersion pkg;
       paths = [pkg];
       nativeBuildInputs = [pkgs.makeWrapper];
       postBuild = ''
@@ -67,26 +71,6 @@
       # Preserved so `lib.getExe` and the agent modules keep resolving.
       meta = (pkg.meta or {}) // {inherit mainProgram;};
     };
-
-  # --force because `serve` refuses to start when another daemon already holds
-  # the port; on a service restart a stale one would otherwise wedge it.
-  serveArgs =
-    [
-      llmtrimBin
-      "serve"
-      "--port"
-      (toString cfg.port)
-      "--force"
-    ]
-    ++ cfg.extraArgs;
-
-  # The daemon must not inherit `environment` — it *is* the proxy, so pointing
-  # HTTPS_PROXY at itself would loop, and SSL_CERT_FILE would pin it to a bundle
-  # it may not have generated yet.
-  launchWrapper = pkgs.writeShellScript "llmtrim-serve-launch" ''
-    set -eu
-    exec ${lib.escapeShellArgs serveArgs}
-  '';
 in {
   options.programs.llmtrim = {
     enable = lib.mkEnableOption "llmtrim LLM payload-compressing HTTPS interceptor";
@@ -95,12 +79,6 @@ in {
       type = lib.types.port;
       default = 43117;
       description = "Loopback port for the llmtrim interceptor to listen on.";
-    };
-
-    extraArgs = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [];
-      description = "Additional arguments passed to `llmtrim serve`.";
     };
 
     settings = lib.mkOption {
@@ -161,6 +139,10 @@ in {
               message = "programs.llmtrim and programs.headroom both proxy Anthropic traffic; enable at most one.";
             }
             {
+              assertion = !config.programs.rtk.enable;
+              message = "programs.llmtrim and programs.rtk both compress agent payloads; enable at most one.";
+            }
+            {
               assertion = !(claudeCodeCfg.statusLine || claudeCodeCfg.guard) || config.programs.claude-code.enable;
               message = "programs.llmtrim.integrations.claudeCode.{statusLine,guard} require programs.claude-code.enable.";
             }
@@ -172,21 +154,25 @@ in {
 
           home = {
             packages = [my.pkgs.llmtrim];
-
-            # No sessionVariables: the interceptor env reaches agents through
-            # `llmtrimWrap` only. Nothing else on the machine is proxied, and the
-            # system trust store is left alone.
-
-            # Both certs must exist before `serve` can intercept anything and
-            # before any wrapped agent starts. `ca` alone writes only ca.pem;
-            # `setup --env` also writes ca-bundle.pem and — verified against an
-            # isolated HOME — touches nothing outside the state dir: no shell
-            # profile, no autostart, no daemon. Idempotent.
-            activation.llmtrimCA = lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-              run ${llmtrimBin} setup --env > /dev/null
-            '';
           };
         }
+
+        # `llmtrim doctor` and the `status` health chain decide whether the proxy
+        # env is wired by scanning the shell profiles it knows about for the first
+        # literal `127.0.0.1:<port>` substring (setup.rs `configured_port_in` ->
+        # `parse_proxy_port`). It is a byte match with no shell parsing, so a
+        # comment satisfies it. That is exactly what we want here: the real env
+        # stays scoped to the wrapped agents (see `environment` above), while this
+        # marker keeps both commands from reporting "env not wired". Caveat: it
+        # also makes them report "degraded" rather than "stopped" when the daemon
+        # is down, since they now believe a live shell env points at a dead port.
+        (lib.mkIf config.programs.fish.enable {
+          programs.fish.shellInit = lib.mkAfter ''
+            # llmtrim: marker only, deliberately inert — the interceptor env is set
+            # per-agent by llmtrimWrap, not exported into the login shell.
+            # ${proxyUrl}
+          '';
+        })
 
         (lib.mkIf pkgs.stdenv.isLinux {
           systemd.user.services.llmtrim = {
@@ -196,7 +182,7 @@ in {
             };
             Install.WantedBy = ["default.target"];
             Service = {
-              ExecStart = "${launchWrapper}";
+              ExecStart = ["${llmtrimBin}" "serve"];
               Restart = "on-failure";
               RestartSec = 5;
             };
@@ -208,7 +194,7 @@ in {
             enable = true;
             waitForNixStore = false;
             config = {
-              ProgramArguments = ["${launchWrapper}"];
+              ProgramArguments = ["${llmtrimBin}" "serve"];
               KeepAlive = {
                 Crashed = true;
                 SuccessfulExit = false;
