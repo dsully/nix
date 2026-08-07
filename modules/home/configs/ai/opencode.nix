@@ -80,6 +80,47 @@ in {
       programs = {
         agent-skills.targets.opencode.enable = true;
 
+        # opencode only discovers configs at/below the git worktree root. Walk up
+        # from $PWD to $HOME for an opencode.json living above it and inject it.
+        fish.functions.opencode = {
+          description = "Run opencode with the nearest opencode.json found above the git worktree";
+          body =
+            # fish
+            ''
+              set -l dir $PWD
+              set -l found_config
+              set -l git_root (${lib.getExe pkgs.git} -C $PWD rev-parse --show-toplevel 2>/dev/null)
+
+              while test "$dir" != "$HOME" -a "$dir" != /
+                  # Skip dirs inside the worktree — opencode already handles those natively.
+                  if test -n "$git_root"; and string match -q -- "$git_root*" $dir
+                      set dir (path dirname $dir)
+                      continue
+                  end
+
+                  if test -f $dir/opencode.json
+                      set found_config $dir/opencode.json
+                      break
+                  end
+
+                  set dir (path dirname $dir)
+              end
+
+              # An empty git_root makes the pattern `*`, so this is also the "no worktree" case.
+              if test -z "$found_config"
+                  and not string match -q -- "$git_root*" $HOME
+                  and test -f $HOME/opencode.json
+                  set found_config $HOME/opencode.json
+              end
+
+              if test -n "$found_config"
+                  OPENCODE_CONFIG=$found_config ${lib.getExe config.programs.opencode.package} $argv
+              else
+                  ${lib.getExe config.programs.opencode.package} $argv
+              end
+            '';
+        };
+
         opencode = {
           package =
             if config.programs.llmtrim.enable
