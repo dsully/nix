@@ -26,6 +26,31 @@
   autoresearchSkills = {
     autoresearch = "${aro}/skills/autoresearch";
   };
+
+  # opencode-output-styles discovers styles by filename and parses the Claude
+  # Code frontmatter, so the files are linked verbatim. Activation stays manual
+  # (`/output-style <id>`); the plugin persists it per-project in
+  # `.opencode/active-style.json` and has no global default.
+  outputStyleFiles =
+    lib.mapAttrs' (name: path: {
+      name = "opencode/output-styles/${name}.md";
+      value.source = path;
+    })
+    ai.outputStyles;
+
+  # `instructions` injects files verbatim, so drop the frontmatter that would
+  # otherwise land in the system prompt as literal YAML.
+  stripFrontmatter = text: let
+    parts = lib.splitString "\n---\n" text;
+  in
+    if lib.hasPrefix "---\n" text && lib.length parts > 1
+    then lib.concatStringsSep "\n---\n" (lib.drop 1 parts)
+    else text;
+
+  # Always-on counterpart to Claude Code's `settings.outputStyle`.
+  defaultOutputStyleFile =
+    pkgs.writeText "opencode-output-style-${ai.defaultOutputStyle}.md"
+    (stripFrontmatter (builtins.readFile ai.outputStyles.${ai.defaultOutputStyle}));
 in {
   # Allow host specific overrides.
   options.programs.opencode.extraPlugins = lib.mkOption {
@@ -76,6 +101,8 @@ in {
           OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
         };
       };
+
+      xdg.configFile = outputStyleFiles;
 
       programs = {
         agent-skills.targets.opencode.enable = true;
@@ -128,7 +155,12 @@ in {
             else pkgs.llm-agents.opencode;
 
           enableMcpIntegration = true;
+
           extraPlugins = [
+            "@capybearista/opencode-adversarial-review@latest"
+            # "@capybearista/opencode-agents-loader@latest"
+            "@capybearista/opencode-output-styles@latest"
+            "cc-safety-net" # https://ccsafetynet.com/
             "context-mode"
           ];
 
@@ -159,7 +191,10 @@ in {
             # opencode has no rules/ concept; load the shared language rule files
             # via the instructions glob (absolute store path, works even with
             # OPENCODE_DISABLE_CLAUDE_CODE=1).
-            instructions = ["${ai.rulesDir}/*.md"];
+            instructions = [
+              "${ai.rulesDir}/*.md"
+              "${defaultOutputStyleFile}"
+            ];
 
             formatter = lib.mkDefault {
               alejandra = {

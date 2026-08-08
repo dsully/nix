@@ -53,6 +53,8 @@
     # Never commit
     includeGitInstructions = false;
 
+    outputStyle = ai.defaultOutputStyle;
+
     # Keys below are mkDefault, so a downstream flake can override them with a
     # plain assignment.
     enabledPlugins = {
@@ -127,7 +129,7 @@ in {
 
           enableMcpIntegration = true;
 
-          inherit (ai) agents commands;
+          inherit (ai) agents commands outputStyles;
           inherit settings;
 
           # context-mode is the only marketplace we enable a plugin from; the curated

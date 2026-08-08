@@ -179,6 +179,21 @@
 
   permissions = import ./permissions.nix {inherit config lib;};
 
+  # Output styles, in Claude Code's format (frontmatter + system-prompt body).
+  # The attribute name is the style id: Claude Code writes it to
+  # `output-styles/<id>.md` and matches `settings.outputStyle` against it, and
+  # opencode-output-styles derives its `/output-style <id>` id from the same
+  # filename. Each file's frontmatter `name` is kept equal to its id so both
+  # tools agree on one identifier.
+  outputStyles = {
+    asd-ste-100 = ./output-styles/asd-ste-100.md;
+  };
+
+  # The style every tool starts in. Claude Code applies it declaratively via
+  # `settings.outputStyle`; opencode has no declarative equivalent, so
+  # opencode.nix loads the same file through `instructions`.
+  defaultOutputStyle = "asd-ste-100";
+
   # Language-specific rule files. Claude Code loads these natively from its
   # rules/ dir (on-demand via `paths:` frontmatter) and opencode loads them via
   # the `instructions` glob. Tools without a rules mechanism (codex, pi) embed
@@ -196,11 +211,13 @@ in {
     agentDescription
     agents
     commands
+    defaultOutputStyle
     descriptions
     hooks
     lsp
     models
     muxWrap
+    outputStyles
     permissions
     rulesDir
     rulesMarkdown
