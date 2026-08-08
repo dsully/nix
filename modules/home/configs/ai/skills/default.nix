@@ -96,6 +96,12 @@ in {
           subdir = "skills";
           all = true;
         };
+        improve = {
+          name = "improve";
+          input = "improve";
+          subdir = "skills";
+          all = true;
+        };
         essentials = {
           name = "essentials";
           input = "wshobson-agents";

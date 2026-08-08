@@ -57,6 +57,11 @@
       url = "github:obra/superpowers";
       flake = false;
     };
+
+    improve = {
+      url = "github:shadcn/improve";
+      flake = false;
+    };
   };
 
   outputs = inputs:
