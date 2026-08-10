@@ -36,6 +36,7 @@
       "raindropio"
       "raycast"
       "rocket"
+      "skulkworks/tap/riffle"
       "snapzy"
       "stay"
       "suspicious-package"
@@ -80,7 +81,7 @@
     };
 
     taps = [
-      "steipete/tap" # repobar
+      "skulkworks/tap"
     ];
   };
 }
