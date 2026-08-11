@@ -30,6 +30,13 @@ in
     cargoHash = "sha256-5KS36YG3A35eHNmSHdyBmfkwYhf5BRCHHvRsIUaxSTU=";
     doCheck = false;
 
+    # Fix agent fingerprinting: the claude-code marker was the bare substring
+    # "Claude Code", which opencode's injected skill descriptions mention, so
+    # opencode sessions were mislabeled `claude-code` in `llmtrim status`.
+    # Anchor on Claude Code's identity phrase ("You are Claude Code"). Drop once
+    # upstream ships an equivalent fix.
+    patches = [./llmtrim-claude-code-marker.patch];
+
     # buildRustPackage builds the workspace default-members, which omit the tray.
     # Name both crates so the CLI and the tray land in $out/bin together.
     cargoBuildFlags =

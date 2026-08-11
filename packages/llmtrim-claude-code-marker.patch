@@ -1,0 +1,37 @@
+Anchor the Claude Code fingerprint on its identity phrase, not the bare brand.
+
+llmtrim identifies the calling agent by matching registered markers against the
+system prompt (crates/llmtrim-core/src/attribution.rs). The claude-code entry
+used the loose substring "Claude Code" and is checked before opencode. opencode
+injects its loaded skill descriptions into its own system prompt, and several of
+them mention "Claude Code" verbatim (e.g. "creating a Claude Code slash
+command", "generating a CLAUDE.md"). Every such opencode session therefore
+matched the claude-code marker first and was mislabeled `claude-code` in
+`llmtrim status`.
+
+Claude Code's own identity line is "You are Claude Code, Anthropic's CLI..."
+(see the crate's attribution tests). Anchor the marker on that phrase — the
+same "You are <Agent>," shape every other agent uses — so a prose mention of
+the product name no longer wins over opencode's own "You are OpenCode," marker.
+
+Verified: all attribution unit tests pass, real Claude Code still fingerprints
+as claude-code, and an opencode prompt containing "Claude Code" prose now
+fingerprints as opencode.
+diff --git a/crates/llmtrim-core/src/attribution.rs b/crates/llmtrim-core/src/attribution.rs
+index 2f58d16..d00c3f5 100644
+--- a/crates/llmtrim-core/src/attribution.rs
++++ b/crates/llmtrim-core/src/attribution.rs
+@@ -684,7 +684,12 @@ struct AgentFingerprint {
+ static AGENTS: &[AgentFingerprint] = &[
+     AgentFingerprint {
+         label: "claude-code",
+-        markers: &["Claude Code"],
++        // Claude Code's identity line is "You are Claude Code, Anthropic's CLI...". The bare
++        // brand string "Claude Code" also appears in unrelated prose — opencode injects skill
++        // descriptions like "creating a Claude Code slash command" into its own system prompt,
++        // and claude-code is checked before opencode, so the loose substring mislabeled every
++        // such opencode session as claude-code. Anchor on the identity phrase instead.
++        markers: &["You are Claude Code"],
+     },
+     AgentFingerprint {
+         label: "codex",
