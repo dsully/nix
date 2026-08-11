@@ -1,10 +1,8 @@
-{ pkgs, ... }:
-let
-  tomlFormat = pkgs.formats.toml { };
-in
-{
+{pkgs, ...}: let
+  tomlFormat = pkgs.formats.toml {};
+in {
   xdg.configFile."tombi/config.toml".source = tomlFormat.generate "tombi-config.toml" {
-    format = { };
+    format = {};
 
     lint.rules = {
       dotted-keys-out-of-order = "warn";
@@ -37,7 +35,7 @@ in
       {
         root = "tool.uv";
         path = "https://raw.githubusercontent.com/astral-sh/uv/refs/heads/main/uv.schema.json";
-        include = [ "pyproject.toml" ];
+        include = ["pyproject.toml"];
       }
     ];
   };
