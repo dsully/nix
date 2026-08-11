@@ -1,4 +1,3 @@
 function lf --wraps=pytest
-
-    pt --lf $argv
+    command pytest --lf $argv
 end
