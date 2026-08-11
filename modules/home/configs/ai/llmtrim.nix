@@ -28,13 +28,23 @@
   # would route every HTTPS client on the machine through the proxy and swap its
   # trust store for llmtrim's snapshot bundle.
   #
+  # `localhost` is deliberately omitted: another local llm is addressed as
+  # `proxy.localhost` so llmtrim can intercept it (a dotted name widens llmtrim's
+  # name-constrained CA; a bare loopback literal would not). A `localhost` entry
+  # in NO_PROXY suffix-matches `proxy.localhost`, so every proxy-aware client
+  # (opencode's Node undici, curl, Go) would bypass the interceptor and talk to
+  # the bridge directly — the request is never compressed and never metered, so
+  # `llmtrim status` shows no opencode data. Dropping `localhost` routes
+  # proxy.localhost through the proxy; literal-IP loopback (127.0.0.1, ::1) still
+  # bypasses, so services reached by IP are unaffected.
+  #
   # `fd00::/8` is deliberately omitted: httpx's URLPattern proxy-map parser
   # accepts IPv4 CIDRs and bare/bracketed IPv6 addresses but rejects IPv6 *CIDR*
   # notation, raising `InvalidURL: Invalid port: ':'` at Client init. That
   # crashes any httpx-based MCP server that honors HTTPS_PROXY (e.g. FastMCP
   # startup version check hits the proxy). Unique-local IPv6 traffic to the loopback
   # proxy is not a real path here.
-  noProxy = "localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,*.local";
+  noProxy = "127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,169.254.0.0/16,*.local";
 
   environment = {
     HTTPS_PROXY = proxyUrl;
@@ -76,7 +86,11 @@
         )}
       '';
       # Preserved so `lib.getExe` and the agent modules keep resolving.
-      meta = (pkg.meta or {}) // {inherit mainProgram;};
+      meta =
+        (pkg.meta or {})
+        // {
+          inherit mainProgram;
+        };
     };
 in {
   options.programs.llmtrim = {
@@ -122,7 +136,10 @@ in {
 
       compactModels = lib.mkOption {
         type = lib.types.listOf lib.types.str;
-        default = ["haiku" "sonnet"];
+        default = [
+          "haiku"
+          "sonnet"
+        ];
         description = ''
           Ordered cheaper models tried for `/compact` once the prompt cache has
           gone cold. Claude Code's selected model is always the implicit final
@@ -150,7 +167,8 @@ in {
               message = "programs.llmtrim and programs.rtk both compress agent payloads; enable at most one.";
             }
             {
-              assertion = !(claudeCodeCfg.statusLine || claudeCodeCfg.guard) || config.programs.claude-code.enable;
+              assertion =
+                !(claudeCodeCfg.statusLine || claudeCodeCfg.guard) || config.programs.claude-code.enable;
               message = "programs.llmtrim.integrations.claudeCode.{statusLine,guard} require programs.claude-code.enable.";
             }
           ];
@@ -172,13 +190,15 @@ in {
             # (last_ensured_version, nudge state); a read-only file would make it
             # log "could not save integrations.json". Idempotent.
             #
-            # NOTE (opencode sessions): llmtrim's `status` sessions view stays
-            # empty/"unknown" for opencode. It fingerprints the client from the
-            # system-prompt "system text" (opencode's marker is "You are
-            # OpenCode,") but keys the session ledger on a session-id header only
-            # Claude Code emits (x-claude-code-session-id). opencode sends no such
-            # header, so its traffic is compressed but not attributed to a
-            # session. This is an upstream limitation, not a wiring gap here.
+            # NOTE (opencode sessions): the per-session view stays sparse for
+            # opencode because the session ledger keys on `x-claude-code-session-id`,
+            # which opencode does not send — an upstream limitation. Agent-level
+            # attribution (the `status` BY MODEL / agent grouping) does work: llmtrim
+            # fingerprints opencode from its "You are OpenCode," system marker and
+            # `provider::detect` re-derives the Anthropic shape from the body, so the
+            # proxy.localhost endpoint attributes correctly once the traffic actually
+            # reaches the proxy. Before this file dropped `localhost` from NO_PROXY,
+            # opencode bypassed the interceptor entirely and nothing was recorded.
             activation.llmtrimOptOut = lib.hm.dag.entryAfter ["writeBoundary"] ''
               state="${stateDir}/integrations.json"
               run mkdir -p "${stateDir}"
@@ -221,7 +241,13 @@ in {
               # `doctor`/`status` see the listener but report "not running /
               # degraded — no pidfile" because their ownership check keys off that
               # file. `--port` pins the listener to the configured port.
-              ExecStart = ["${llmtrimBin}" "serve" "--port" (toString cfg.port) "--supervised"];
+              ExecStart = [
+                "${llmtrimBin}"
+                "serve"
+                "--port"
+                (toString cfg.port)
+                "--supervised"
+              ];
               Restart = "on-failure";
               RestartSec = 5;
             };
@@ -236,7 +262,13 @@ in {
               # `--supervised` makes `serve` write ~/.llmtrim/serve.pid so
               # `doctor`/`status` can confirm daemon ownership; bare `serve`
               # leaves them reporting "not running" despite a live listener.
-              ProgramArguments = ["${llmtrimBin}" "serve" "--port" (toString cfg.port) "--supervised"];
+              ProgramArguments = [
+                "${llmtrimBin}"
+                "serve"
+                "--port"
+                (toString cfg.port)
+                "--supervised"
+              ];
               KeepAlive = {
                 Crashed = true;
                 SuccessfulExit = false;
@@ -245,6 +277,32 @@ in {
               RunAtLoad = true;
               ThrottleInterval = 5;
             };
+            domain = lib.mkDefault "gui";
+          };
+
+          # Menu-bar companion built alongside the CLI (see packages/llmtrim.nix,
+          # darwin-only). Nix owns this login item declaratively; the tray's own
+          # `set_tray_autostart`/`set_proxy_autostart` (which shell out to
+          # `llmtrim autostart` and write their own LaunchAgents) are left unused
+          # so there is one owner and no duplicate `serve` listener.
+          launchd.agents.llmtrim-tray = {
+            enable = true;
+            waitForNixStore = false;
+            config = {
+              ProgramArguments = ["${lib.getExe' my.pkgs.llmtrim "llmtrim-tray"}"];
+              # Relaunch on crash, but honor the tray's own Quit menu item
+              # (a clean exit must not be restarted).
+              KeepAlive = {
+                Crashed = true;
+                SuccessfulExit = false;
+              };
+              # A menu-bar (LSUIElement) GUI process, not a background daemon;
+              # ProcessType Background would deprioritize the UI.
+              ProcessType = "Interactive";
+              RunAtLoad = true;
+              ThrottleInterval = 5;
+            };
+            # Must land in the Aqua session for the menu-bar icon to appear.
             domain = lib.mkDefault "gui";
           };
         })
