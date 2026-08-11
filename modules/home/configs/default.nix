@@ -21,6 +21,7 @@
     ./ripgrep.nix
     ./ruff.nix
     ./ssh.nix
+    ./tombi.nix
     ./topgrade.nix
     ./vivid.nix
     ./yamllint.nix
