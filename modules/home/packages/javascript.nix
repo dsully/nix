@@ -37,7 +37,6 @@ in {
 
       home.sessionVariables = {
         BUN_INSTALL = bunInstallPath;
-        NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
       };
     }
 
