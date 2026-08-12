@@ -128,11 +128,11 @@
     "claude-plugins-official": {
       "flake": false,
       "locked": {
-        "lastModified": 1786454723,
-        "narHash": "sha256-8MaLj/NEjyWztMDRF60rq1I7iTJPbA8+O5pKPyyd5a0=",
+        "lastModified": 1786493475,
+        "narHash": "sha256-h4q/O9Ndfh9fUUuGFdhg+CVkiE/njx8bkRnZx/plvsY=",
         "owner": "anthropics",
         "repo": "claude-plugins-official",
-        "rev": "76e1fd77f727b593f5bb19873d5b5fde21fd2db1",
+        "rev": "f838b0fbda718de69d84e909a85cf9668995eb64",
         "type": "github"
       },
       "original": {
@@ -144,11 +144,11 @@
     "context-mode": {
       "flake": false,
       "locked": {
-        "lastModified": 1786450473,
-        "narHash": "sha256-hq/4hNHnAZDwl7Qftu8/8CT8T45eetrvYxfA9hdoJZU=",
+        "lastModified": 1786472165,
+        "narHash": "sha256-Xc/2KarKgrdfLh4tw+oS1C2G04MxCkcTVwPKPbGA2e8=",
         "owner": "mksglu",
         "repo": "context-mode",
-        "rev": "8d2dddadc60f1c3aae0154b0b71fa7281f835238",
+        "rev": "a5d4a3da0187ce348aa992c82369ed92f37d92c0",
         "type": "github"
       },
       "original": {
@@ -362,11 +362,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786356609,
-        "narHash": "sha256-ou8fYz5w9yhXC8YbvvExybFIa19MyW5G/8dEPqa90hM=",
+        "lastModified": 1786487128,
+        "narHash": "sha256-ad60hrRVhH/bo3Jl1YLzO+QcS3mUNZr9LNJdzhMO2P4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c30c7955cec30d664a9baced6bc0112e263d4647",
+        "rev": "f404edbfa4117810c96b97048299242fc50e5362",
         "type": "github"
       },
       "original": {
@@ -438,11 +438,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1786433226,
-        "narHash": "sha256-Zx48z1oEduqC5jUwYfgKCSkYI3vQx7f0NQXUuRvnvlo=",
+        "lastModified": 1786495143,
+        "narHash": "sha256-/0OFZcRY41YHk794w6pJavOy+8sXXWhp6LPVJUoX3kY=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "84f2e24c315ed510b4c16990408d8a5f98aff475",
+        "rev": "f1d6b2bd89815e9e1f5511989a750053ea3ec778",
         "type": "github"
       },
       "original": {
@@ -465,11 +465,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1786438108,
-        "narHash": "sha256-rxLafAP0ORfML69TQ+M+45F41h4aI55Ybu6EUZNc7og=",
+        "lastModified": 1786480934,
+        "narHash": "sha256-GFf6jZstFAN5jPvJgTNca8e7UDsBBngXMetSLSorhrw=",
         "owner": "rynfar",
         "repo": "meridian",
-        "rev": "128d87df0502ffca947a85b114d022638e7db764",
+        "rev": "8ad4b2db5f9f70240ade09bc1a6d87075334ca8b",
         "type": "github"
       },
       "original": {
