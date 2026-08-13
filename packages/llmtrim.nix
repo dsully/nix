@@ -17,14 +17,14 @@
 in
   rustPlatform.buildRustPackage (finalAttrs: {
     pname = "llmtrim";
-    version = "0.12.7-dev";
+    version = "0.12.6";
     __structuredAttrs = true;
 
     src = fetchFromGitHub {
       owner = "fkiene";
       repo = "llmtrim";
-      rev = "4736b39e9b68905ed414e98c3bc989485f465c32";
-      hash = "sha256-fktDXkKTPdm5UUYXykHw+wdVNxOZ7e8lYc7opjTCiqw=";
+      rev = "abdd8e0533bd5f0268825e2dedcdefd8410b05e2";
+      hash = "sha256-zFFs0osKHHBZ7MFDXfjxoOaaSgACYeOrWgbIh1PPUwY=";
     };
 
     cargoHash = "sha256-5KS36YG3A35eHNmSHdyBmfkwYhf5BRCHHvRsIUaxSTU=";
