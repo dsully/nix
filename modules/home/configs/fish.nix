@@ -156,7 +156,9 @@ in {
               end
 
               switch "$file"
-                  case '*.tar' '*.tar.*' '*.tbz2' '*.tgz' '*.txz' '*.bz2' '*.gz' '*.zip' '*.rar' '*.7z' '*.xz'
+                  case '*.tar' '*.tar.*' '*.tbz2' '*.tgz' '*.txz'
+                      ${lib.getExe pkgs.gnutar} xvf $file
+                  case '*.bz2' '*.gz' '*.zip' '*.rar' '*.7z' '*.xz'
                       ${lib.getExe pkgs.p7zip} x $file
                   case '*'
                       echo "'$file' cannot be extracted via x()"
