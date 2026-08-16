@@ -8,6 +8,13 @@ license: MIT
 metadata:
   category: technique
   triggers: [typescript, javascript, refactoring, simplify, DRY, duplicate-code, React, Next.js, Express, code-review]
+paths:
+  - "**/*.ts"
+  - "**/*.tsx"
+  - "**/*.js"
+  - "**/*.jsx"
+  - "**/*.mjs"
+  - "**/*.cjs"
 ---
 
 # TypeScript/JavaScript Code Simplifier

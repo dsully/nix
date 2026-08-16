@@ -90,11 +90,28 @@ in {
       };
 
       programs.ai.skills = {
+        # `ids` rather than `all`: superpowers ships several skills that overlap
+        # each other and the native harness. Each dropped id is a one-line
+        # re-add. Dropped here: brainstorming (EnterPlanMode covers it),
+        # receiving-code-review (kept the requesting half only),
+        # using-superpowers (meta-skill about using skills).
         process = {
           name = "superpowers";
           input = "superpowers";
           subdir = "skills";
-          all = true;
+          ids = [
+            "dispatching-parallel-agents"
+            "executing-plans"
+            "finishing-a-development-branch"
+            "requesting-code-review"
+            "subagent-driven-development"
+            "systematic-debugging"
+            "test-driven-development"
+            "using-git-worktrees"
+            "verification-before-completion"
+            "writing-plans"
+            "writing-skills"
+          ];
         };
         improve = {
           name = "improve";
@@ -107,7 +124,6 @@ in {
           input = "wshobson-agents";
           subdir = "plugins/developer-essentials/skills";
           ids = [
-            "debugging-strategies"
             "error-handling-patterns"
           ];
         };
@@ -136,25 +152,27 @@ in {
             "uv-package-manager"
           ];
         };
+        authoring = {
+          enable = lib.mkDefault false;
+          name = "authoring";
+          input = "softaworks";
+          subdir = "skills";
+          ids = [
+            "agent-md-refactor"
+            "command-creator"
+            "plugin-forge"
+            "skill-judge"
+          ];
+        };
         softaworks = {
           name = "systems";
           input = "softaworks";
           subdir = "skills";
           ids = [
-            "agent-md-refactor"
-            "c4-architecture"
-            "command-creator"
             "commit-work"
             "crafting-effective-readmes"
-            "gepetto"
-            "mermaid-diagrams"
             "naming-analyzer"
-            "plugin-forge"
             "reducing-entropy"
-            "requirements-clarity"
-            "session-handoff"
-            "skill-judge"
-            "writing-clearly-and-concisely"
           ];
           # Dropped from the global set (web/frontend and interpersonal writing —
           # rarely relevant here, and each one's description is resident for the
@@ -175,7 +193,12 @@ in {
         # };
         local = {
           path = ./content;
-          all = true;
+          ids = [
+            "nix-coding"
+            "property-based-testing"
+            "python-simplifier"
+            "typescript-simplifier"
+          ];
         };
       };
     }

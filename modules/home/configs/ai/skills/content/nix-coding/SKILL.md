@@ -6,6 +6,8 @@ description: >
   module system patterns, common lib functions, and tooling (nixfmt, deadnix,
   statix). For flake-parts-specific patterns use the flake-parts skill instead.
 compatibility: opencode
+paths:
+  - "**/*.nix"
 ---
 
 ## Style

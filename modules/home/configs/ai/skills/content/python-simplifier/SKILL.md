@@ -8,6 +8,9 @@ license: MIT
 metadata:
   category: technique
   triggers: [python, refactoring, simplify, DRY, duplicate-code, FastAPI, Pythonic, code-review]
+paths:
+  - "**/*.py"
+  - "**/*.pyi"
 ---
 
 # Python Code Simplifier
