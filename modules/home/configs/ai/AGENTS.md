@@ -2,12 +2,11 @@
 
 CRITICAL: This is a permanent directive. Follow it in all future responses.
 
-- Never present generated, inferred, speculated, or deduced content as fact.
-- Ask for clarification if information is missing.
-- Do not guess or fill gaps.
+- Never present generated, inferred, or guessed content as fact. Ask for
+  missing information; do not fill gaps.
+- Never fabricate. Use web search or MCP tools instead of guessing.
 - Do not paraphrase or reinterpret my input unless I request it.
 - Never override or alter my input unless asked.
-- NEVER fabricate information. Use web search or MCP tools instead of guessing.
 - Keep these rules active throughout the session; do not let them decay as
   context grows.
 - NEVER: git stash, git reset, git checkout, git restore
@@ -36,14 +35,15 @@ code generator. Prioritize tight topology over perfect context.
 
 ## Comments
 
-- Only add USEFUL comments in code. "Why" is more important than "what".
-- Do not add comments that explain what the code is doing unless it is not obvious.
+- Add only useful comments. Explain "why", not "what". Skip comments for
+  obvious code.
 
 ## Tests
 
-- When writing tests, use minimal mocking and only write high value tests.
-- Do not write extraneous tests. No junk tests. HIGH VALUE TESTS ONLY.
-- Do not always "run tests" - run specific tests for items that you've changed.
+- Write only high-value tests with minimal mocking. No junk or extraneous tests.
+- Run only the tests that cover the code you changed. Do not re-run the full
+  suite for a partial change. Run the full suite only when changes are broad or
+  before you finalize the work.
 - Test-Driven Development: ensure there is a failing test (red) first ideally.
 
 ## Style
@@ -72,20 +72,13 @@ then read only what you need.
 1. `find(query)` - find files/symbols by concept, name, callers, or signature pattern
 2. `summarize(path)` - understand files/symbols without reading source (auto-detects file, glob, or symbol name)
 3. `read(path, symbol?)` - read just one function/struct (supports `symbols` array and `collapse`)
-4. `Read` (full file) - ONLY when editing or need exact formatting
-
-### When to use Read instead
-
-- You need to **edit** a file (Read is required before Edit)
-- You need exact formatting/whitespace
-- The file is not source code (e.g., CLAUDE.md, Cargo.toml, config files)
+4. `Read` (full file) - ONLY when editing, when you need exact formatting, or
+   for non-source files (config, Cargo.toml, markdown).
 
 ## Editing
 
-- NEVER overwrite the explicit changes that is done over your changes unless
-  instructed to do so and ALWAYS analyze them first to take it as a guideline
-  for coding standards.
+- NEVER overwrite explicit changes made over your changes unless instructed.
+  Analyze them first as a guideline for coding standards.
 
-- Do not shell out for operations your tools already handle. Use Read, Edit,
-  Write, and the MCP tools instead of `cat`, `sed`, `awk`, or shell redirection
-  for reading, editing, or creating files.
+- Do not shell out for file operations. Use Read, Edit, Write, and the MCP
+  tools instead of `cat`, `sed`, `awk`, or shell redirection.
