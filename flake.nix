@@ -161,7 +161,7 @@
               {
                 home.username = user;
                 home.homeDirectory =
-                  if pkgs.stdenv.isDarwin
+                  if pkgs.stdenv.hostPlatform.isDarwin
                   then "/Users/${user}"
                   else "/home/${user}";
               }

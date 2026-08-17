@@ -47,7 +47,7 @@ in {
         if [ -f "$token_file" ] && [ -f "$zone_file" ]; then
           cat > "${homeDir}/.config/zoned/config.toml" <<TOML
         hostname = "${config.system.hostName}.sully.org"
-        ${lib.optionalString pkgs.stdenv.isDarwin ''ssid = "sully"''}
+        ${lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''ssid = "sully"''}
         token = "$(cat "$token_file")"
         zoneid = "$(cat "$zone_file")"
         TOML

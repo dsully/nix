@@ -45,7 +45,7 @@
     ];
   };
 
-  programs.fish.functions.gh = lib.mkIf pkgs.stdenv.isDarwin {
+  programs.fish.functions.gh = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     wraps = "gh";
     description = "Wrap gh with 1Password";
     body = "${pkgs.lib.getExe pkgs._1password-cli} plugin run -- gh $argv";

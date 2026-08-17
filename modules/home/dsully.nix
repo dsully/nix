@@ -62,11 +62,11 @@ in {
     };
 
     file = {
-      "iCloud" = lib.mkIf pkgs.stdenv.isDarwin {
+      "iCloud" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/Library/Mobile Documents/com~apple~CloudDocs";
       };
 
-      "Downloads" = lib.mkIf pkgs.stdenv.isDarwin {
+      "Downloads" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/iCloud/Downloads";
       };
 
@@ -99,7 +99,7 @@ in {
 
     sessionVariables =
       # These are here instead of homebrew.nix so they belong to home-manager instead of nix-darwin
-      lib.optionalAttrs pkgs.stdenv.isDarwin {
+      lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
         HOMEBREW_NO_ANALYTICS = "1";
         HOMEBREW_NO_ASK = "1";
         HOMEBREW_NO_COMPAT = "1";

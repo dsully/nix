@@ -5,7 +5,7 @@
     # cctools ld (1010.6) segfaults linking the AppKit/Foundation frameworks
     # pulled in via mac-notification-sys; force the LLVM linker on Darwin.
     package =
-      if pkgs.stdenv.isDarwin
+      if pkgs.stdenv.hostPlatform.isDarwin
       then
         pkgs.topgrade.overrideAttrs (old: {
           nativeBuildInputs = (old.nativeBuildInputs or []) ++ [pkgs.lld];

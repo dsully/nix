@@ -68,11 +68,11 @@ in {
         # LaunchServices, so notifications are delivered and the app appears in
         # System Settings → Notifications. The plugin launches it from this stable
         # path. (opencode-notifier is emptyFile off darwin.)
-        file = lib.mkIf pkgs.stdenv.isDarwin {
+        file = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
           "Applications/OpenCodeNotifier.app".source = "${my.pkgs.opencode-notifier}/Applications/OpenCodeNotifier.app";
         };
 
-        activation.registerOpenCodeNotifierApp = lib.mkIf pkgs.stdenv.isDarwin (
+        activation.registerOpenCodeNotifierApp = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
           lib.hm.dag.entryAfter ["linkGeneration"] ''
 
             lsregister=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister

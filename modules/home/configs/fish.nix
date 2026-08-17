@@ -90,7 +90,7 @@ in {
           end
 
         ''
-        + lib.optionalString pkgs.stdenv.isDarwin
+        + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin
         # fish
         ''
           ulimit -n unlimited
@@ -187,7 +187,7 @@ in {
           vim = "nvim";
           view = "nvim -R";
         }
-        // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
           ldd = "otool -L";
         }
         // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
@@ -202,7 +202,7 @@ in {
         ''
           set -g HOSTNAME ${config.system.hostName}
           set -g OS ${
-            if pkgs.stdenv.isDarwin
+            if pkgs.stdenv.hostPlatform.isDarwin
             then "Darwin"
             else "Linux"
           }

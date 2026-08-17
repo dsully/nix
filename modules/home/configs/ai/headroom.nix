@@ -120,7 +120,7 @@ in {
         };
       })
 
-      (lib.mkIf (claudeCodeCfg.enable && pkgs.stdenv.isDarwin) {
+      (lib.mkIf (claudeCodeCfg.enable && pkgs.stdenv.hostPlatform.isDarwin) {
         launchd.agents.headroom-claude-code-proxy = {
           enable = true;
           waitForNixStore = false;

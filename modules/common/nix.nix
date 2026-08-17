@@ -31,7 +31,7 @@
   trusted_users =
     ["root" "dsully"]
     ++ (
-      if pkgs.stdenv.isDarwin
+      if pkgs.stdenv.hostPlatform.isDarwin
       then ["@admin"]
       else ["@wheel"]
     );

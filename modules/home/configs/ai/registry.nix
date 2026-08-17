@@ -100,7 +100,7 @@
         enabled = false;
       };
     }
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       safari-mcp = {
         command = "/usr/bin/safaridriver";
         args = ["--mcp"];

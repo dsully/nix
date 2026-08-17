@@ -14,7 +14,7 @@
   flakeDotfiles = ../../dotfiles;
 
   platformFunctions =
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then [
       "fix-locationd-permissions.fish"
       "open-reading-list-items-in-tabs.fish"
@@ -28,7 +28,7 @@
     ];
 
   platformDir =
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then "fish/functions-darwin"
     else "fish/functions-linux";
 in {
