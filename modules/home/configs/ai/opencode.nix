@@ -264,6 +264,7 @@ in {
               ++ [
                 "${aro}/plugins/autoresearch-context.ts"
                 "${inputs.superpowers}/.opencode/plugins/superpowers.js"
+                "${./plugins/indxr-reminders.js}"
               ]
               ++ config.programs.opencode.extraPlugins;
 
