@@ -271,7 +271,7 @@
 
         checks =
           lib.mapAttrs' (name: lib.nameValuePair "pkg-${name}") selfPackages
-          // lib.optionalAttrs pkgs.stdenv.isLinux {
+          // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
             formatting = fmt.passthru.tests.check;
           };
 

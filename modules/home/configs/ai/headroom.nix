@@ -104,7 +104,7 @@ in {
         ];
       }
 
-      (lib.mkIf (claudeCodeCfg.enable && pkgs.stdenv.isLinux) {
+      (lib.mkIf (claudeCodeCfg.enable && pkgs.stdenv.hostPlatform.isLinux) {
         systemd.user.services.headroom-claude-code-proxy = {
           Unit = {
             Description = "Headroom Claude Code optimization proxy";

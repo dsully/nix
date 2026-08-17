@@ -229,7 +229,7 @@ in {
           '';
         })
 
-        (lib.mkIf pkgs.stdenv.isLinux {
+        (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
           systemd.user.services.llmtrim = {
             Unit = {
               Description = "llmtrim LLM payload-compressing HTTPS interceptor";

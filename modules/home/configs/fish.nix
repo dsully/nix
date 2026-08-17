@@ -190,7 +190,7 @@ in {
         // lib.optionalAttrs pkgs.stdenv.isDarwin {
           ldd = "otool -L";
         }
-        // lib.optionalAttrs pkgs.stdenv.isLinux {
+        // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
           sc = "sudo systemctl";
           uc = "systemctl --user";
           sj = "journalctl --all --follow --unit";
