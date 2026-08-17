@@ -1,5 +1,6 @@
 {
   config,
+  my,
   pkgs,
   ...
 }: let
@@ -64,35 +65,45 @@ in {
       };
     };
 
-    packages = with pkgs; [
-      ast-grep
-      codebook
-      cyme
-      difftastic
-      dive
-      gibo
-      gnused
-      go
-      hyperfine
-      jq
-      nodejs
-      scc
-      sq
-      sqlite
-      tree-sitter
-      typos
-      xan
-      yarn
-      yq-go
-    ];
+    packages = with pkgs;
+      [
+        ast-grep
+        codebook
+        cyme
+        difftastic
+        dive
+        gibo
+        gnused
+        go
+        hyperfine
+        jq
+        nodejs
+        scc
+        sq
+        sqlite
+        tree-sitter
+        typos
+        xan
+        yarn
+        yq-go
+      ]
+      ++ (with my.pkgs; [
+        debtmap
+      ]);
 
     sessionVariables = {
       GOPATH = "${config.xdg.dataHome}/go";
     };
   };
 
-  programs.go = {
-    enable = true;
-    env.GOPATH = "${config.xdg.dataHome}/go";
+  programs = {
+    go = {
+      enable = true;
+      env.GOPATH = "${config.xdg.dataHome}/go";
+    };
+
+    uv.tool.packages = [
+      "big-code-analysis-cli"
+    ];
   };
 }
