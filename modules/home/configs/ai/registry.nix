@@ -86,7 +86,7 @@
       };
       indxr = {
         command = lib.getExe my.pkgs.indxr;
-        args = ["serve" "." "--all-tools"];
+        args = ["serve" "."];
       };
       just = {
         command = lib.getExe my.pkgs.just-mcp;
