@@ -194,6 +194,7 @@ in {
         local = {
           path = ./content;
           ids = [
+            "caveman"
             "nix-coding"
             "property-based-testing"
             "python-simplifier"
