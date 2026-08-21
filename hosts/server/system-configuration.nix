@@ -1,4 +1,5 @@
 {
+  config,
   flake,
   lib,
   pkgs,
@@ -102,6 +103,56 @@ in {
           Type = "notify";
           ExecStart = "${pkgs.samba}/bin/nmbd --foreground --no-process-group";
           Restart = "on-failure";
+        };
+      };
+
+      # Runs from the uv-managed .venv symlink (not the cache-hash path, which
+      # changes on `uv sync`). Must run as ${config.system.userName} since the
+      # venv lives in that user's ~/.cache/uv.
+      comfyui = smService {
+        description = "ComfyUI";
+        wants = ["network-online.target"];
+        after = ["network-online.target"];
+        serviceConfig = {
+          Type = "simple";
+          User = config.system.userName;
+          SupplementaryGroups = ["media"];
+          WorkingDirectory = "/ai/apps/ComfyUI";
+          ExecStart = "/ai/apps/ComfyUI/.venv/bin/python main.py --gpu-only --listen 0.0.0.0 --enable-manager --cuda-malloc --enable-triton-backend --enable-assets";
+          Restart = "on-failure";
+          RestartSec = "5s";
+          # PID1 (root) opens these before dropping to User=, so /var/log stays
+          # root-owned and writable. truncate: resets the file on each start.
+          StandardOutput = "truncate:/var/log/comfyui.log";
+          StandardError = "truncate:/var/log/comfyui.log";
+          Environment = [
+            "HOME=/home/${config.system.userName}"
+            "PATH=/run/system-manager/sw/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          ];
+        };
+      };
+
+      # invokeai-web resolves its root via INVOKEAI_ROOT, else the VIRTUAL_ENV
+      # parent, else ~/invokeai. Launching the venv binary directly sets neither
+      # env var, so without INVOKEAI_ROOT it would default to ~/invokeai and
+      # ignore /ai/apps/InvokeAI/invokeai.yaml. Pin the root explicitly. Same
+      # user/venv-symlink rationale as comfyui above.
+      invokeai = smService {
+        description = "InvokeAI";
+        wants = ["network-online.target"];
+        after = ["network-online.target"];
+        serviceConfig = {
+          Type = "simple";
+          User = config.system.userName;
+          WorkingDirectory = "/ai/apps/InvokeAI";
+          ExecStart = "/ai/apps/InvokeAI/.venv/bin/invokeai-web";
+          Restart = "on-failure";
+          RestartSec = "5s";
+          Environment = [
+            "HOME=/home/${config.system.userName}"
+            "INVOKEAI_ROOT=/ai/apps/InvokeAI"
+            "PATH=/run/system-manager/sw/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          ];
         };
       };
     };
