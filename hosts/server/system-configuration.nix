@@ -50,7 +50,9 @@ in {
         "sudoers.d/dsully".source = pkgs.replaceVars ./files/sudoers-dsully {liquidctl = lib.getExe pkgs.liquidctl;};
         "sudoers.d/homebridge".source = ./files/sudoers-homebridge;
         "sudoers.d/netdata".source = ./files/sudoers-netdata;
-        "sudoers.d/vopono".source = ./files/sudoers-vopono;
+        "sudoers.d/vopono".source = pkgs.replaceVars ./files/sudoers-vopono {
+          ip = lib.getExe' pkgs.iproute2 "ip";
+        };
         "sysctl.d/90-local.conf".source = ./files/sysctl-90-local.conf;
         "sysctl.d/99-tailscale.conf".source = ./files/sysctl-99-tailscale.conf;
         "udev/rules.d/71-liquidctl.rules".source = "${pkgs.liquidctl}/lib/udev/rules.d/71-liquidctl.rules";
@@ -79,7 +81,13 @@ in {
           RestartSec = "2s";
           Environment = [
             "RUST_LOG=info"
-            "PATH=/usr/sbin:/usr/bin:/sbin:/bin"
+            # Nix helpers must precede the Ubuntu directories. Ubuntu's
+            # /usr/bin/wg (1.0.20250521) fails openat() on every regular file
+            # ("fopen: Permission denied"), so `wg setconf` silently skips the
+            # [Peer] block. The tunnel then has no handshake, natpmpc gets no
+            # answer, and vopono aborts with a misleading "server does not
+            # support port forwarding".
+            "PATH=${lib.makeBinPath [pkgs.wireguard-tools pkgs.iproute2 pkgs.libnatpmp]}:/usr/sbin:/usr/bin:/sbin:/bin"
           ];
         };
       };

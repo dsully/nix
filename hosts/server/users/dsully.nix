@@ -11,6 +11,25 @@
   homeDir = config.home.homeDirectory;
   voponoConfigPath = ".config/vopono/protonvpn-us-ca52.conf";
   voponoConfig = "${homeDir}/${voponoConfigPath}";
+
+  # vopono unwinds the namespace only when it exits cleanly. A crash or a
+  # SIGKILL leaves the netns, its veth pair, and the lock directory behind.
+  # The namespace name is fixed ("vpn"), so those leftovers collide with the
+  # next start. Delete them on every stop. Each command matches a literal
+  # NOPASSWD rule in hosts/server/files/sudoers-vopono.
+  # sudo matches the command path literally, so both spellings below need a rule
+  # in hosts/server/files/sudoers-vopono. The pinned path is the real target;
+  # /sbin/ip covers the window where `just system` and `just switch` disagree on
+  # the store path. Every delete is idempotent, so running both is harmless.
+  voponoCleanup = pkgs.writeShellScript "vopono-cleanup" ''
+    for ip in ${lib.getExe' pkgs.iproute2 "ip"} /sbin/ip; do
+      for link in vpn_s vpn_d vpn; do
+        sudo -n "$ip" link delete "$link" 2>/dev/null || true
+      done
+      sudo -n "$ip" netns delete vpn 2>/dev/null || true
+    done
+    rm -rf ${homeDir}/.config/vopono/locks/vpn
+  '';
 in {
   imports = [
     flake.homeModules.dsully
@@ -172,6 +191,12 @@ in {
         # Note: vopono-daemon.service is a system service so cross-boundary ordering
         # doesn't work. The user service relies on RestartSec to retry until the daemon is ready.
         After = ["local-fs.target" "network-online.target" "nss-lookup.target"];
+        # The old RestartSec (10s) equalled the default StartLimitIntervalSec,
+        # so the rate limiter never tripped and a broken tunnel looped every
+        # 10s forever without surfacing. With the backoff below, 12 starts take
+        # about 40 minutes; after that the unit stays failed and is visible.
+        StartLimitIntervalSec = 3600;
+        StartLimitBurst = 12;
       };
       Service = {
         WorkingDirectory = "%h/.config/vopono";
@@ -185,7 +210,8 @@ in {
           "exec"
           "--interface=eth0"
           "--provider=custom"
-          "--forward=9091"
+          # No --forward here: it makes vopono spawn its own host-side socat on
+          # 9091, which collides with vopono-qbit-forward.service below.
           "--protocol=Wireguard"
           "--custom-netns-name=vpn"
           "--custom=${voponoConfig}"
@@ -195,9 +221,14 @@ in {
           "--port-forwarding-callback=${lib.getExe perSystem.self.qbit-port-update}"
           "'${lib.getExe pkgs.qbittorrent-nox} --webui-port=9091 --profile=/bits/media/torrents'"
         ];
+        ExecStopPost = "-${voponoCleanup}";
         PrivateTmp = false;
         Restart = "on-failure";
+        # Exponential backoff: 10s, then longer, capped at 5 minutes. A tunnel
+        # that cannot come up no longer hammers the daemon every 10 seconds.
         RestartSec = "10s";
+        RestartSteps = 6;
+        RestartMaxDelaySec = "300s";
         # Give qBittorrent time to save resume data and remove its instance
         # socket on stop, rather than hitting the 90s default and getting SIGKILLed.
         TimeoutStopSec = "180s";
@@ -212,14 +243,21 @@ in {
     vopono-qbit-forward = {
       Unit = {
         Description = "qBittorrent port forwarder";
+        # The target address only exists inside the vopono netns. Without
+        # BindsTo this unit stayed active while that netns was gone, so port
+        # 9091 accepted connections and then dropped them. It also kept the
+        # port bound, which blocked the next vopono start.
+        BindsTo = ["vopono.service"];
         After = ["vopono.service"];
       };
       Service = {
         ExecStart = "${lib.getExe pkgs.socat} TCP-LISTEN:9091,fork,reuseaddr TCP:10.200.1.2:9091";
         Restart = "on-failure";
+        RestartSec = "5s";
       };
       Install = {
-        WantedBy = ["default.target"];
+        # Start and stop together with vopono, not with the session.
+        WantedBy = ["vopono.service"];
       };
     };
   };

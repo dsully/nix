@@ -1,9 +1,20 @@
-dsully ALL=(root) NOPASSWD: /sbin/ip link delete vpn_s
-dsully ALL=(root) NOPASSWD: /sbin/ip link delete vpn_d
-dsully ALL=(root) NOPASSWD: /sbin/ip link delete vpn
-dsully ALL=(root) NOPASSWD: /sbin/ip netns delete vpn
-dsully ALL=(root) NOPASSWD: /sbin/ip netns exec vpn *
-dsully ALL=(root) NOPASSWD: /usr/sbin/ip netns exec vpn *
+# @ip@ is the pinned iproute2 from this flake. The /sbin/ip rules stay as a
+# fallback: sudoers.d/vopono is applied by `just system` but the cleanup script
+# in users/dsully.nix is applied by `just switch`, so the two can disagree on
+# the store path for a short window.
+Cmnd_Alias VOPONO_NETNS = @ip@ link delete vpn_s, \
+                          @ip@ link delete vpn_d, \
+                          @ip@ link delete vpn, \
+                          @ip@ netns delete vpn, \
+                          @ip@ netns exec vpn *, \
+                          /sbin/ip link delete vpn_s, \
+                          /sbin/ip link delete vpn_d, \
+                          /sbin/ip link delete vpn, \
+                          /sbin/ip netns delete vpn, \
+                          /sbin/ip netns exec vpn *, \
+                          /usr/sbin/ip netns exec vpn *
+
+dsully ALL=(root) NOPASSWD: VOPONO_NETNS
 
 dsully ALL=(ALL) NOPASSWD:SETENV: /usr/bin/vopono
 dsully ALL=(ALL) NOPASSWD:SETENV: /home/dsully/.local/state/nix/profile/bin/vopono
