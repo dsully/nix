@@ -21,6 +21,7 @@
 
 	tls {
 		dns cloudflare {file./run/secrets/caddy/cloudflare-token}
+		resolvers 1.1.1.1 1.0.0.1
 	}
 
 	@syncthing host syncthing.sully.org
@@ -113,7 +114,7 @@
 		}
 	}
 
-	@invoke host invoke.sully.org
+	@invoke host invoke.sully.org invokeai.sully.org
 	handle @invoke {
 		reverse_proxy 127.0.0.1:9092
 	}
@@ -121,6 +122,11 @@
 	@network-optimizer host network-optimizer.sully.org
 	handle @network-optimizer {
 		reverse_proxy 127.0.0.1:8042
+	}
+
+	@comfy host comfy.sully.org comfyui.sully.org
+	handle @comfy {
+		reverse_proxy 127.0.0.1:8188
 	}
 
 	@portainer host portainer.sully.org
