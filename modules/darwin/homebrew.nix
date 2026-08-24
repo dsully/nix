@@ -16,7 +16,6 @@
     };
 
     brews = [
-      "mactop"
       "mas"
     ];
 
