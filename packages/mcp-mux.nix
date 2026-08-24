@@ -10,8 +10,8 @@ buildGoModule rec {
   src = fetchFromGitHub {
     owner = "thebtf";
     repo = "mcp-mux";
-    rev = "f13cee8f62027eaa375637f1fd4537e5ff102580";
-    hash = "sha256-iy7im7DrZoiOSPJAhN719XXca2FNCRt/dHZlsDubPRc=";
+    rev = "cee544497feede0df1d5f8dcc8d2d99b59770b5f";
+    hash = "sha256-FIAq7ibRfQ2cnTNLLyLbOjy/eciXrnlpx6jwnB3zQTg=";
   };
 
   vendorHash = "sha256-PrMbpUqk0x0gdiZXDa3vz/GK8Wce/vXZDEryktTblQg=";

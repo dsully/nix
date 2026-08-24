@@ -5,17 +5,17 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "rust-markdown-lsp-server";
-  rev = "bf69c4bba4a7fd2e828f35e494a667c032b6ab05";
+  rev = "35b667e8923ad4e7a4a419d834093fd607e8b953";
   version = "0.1.0-${rev}";
 
   src = fetchFromGitHub {
     inherit rev;
     owner = "dougrocha";
     repo = "rust_markdown_lsp_server";
-    hash = "sha256-UR1D6+hlzxI5n5JKhmBGYHbsusDo44G1JDpUrskMFRk=";
+    hash = "sha256-r+nROcSZw+mveJf3jdGRpSqGKd4o9DQGfDouqfz/+Sc=";
   };
 
-  cargoHash = "sha256-VHJ9dz6MWBWRU75Cx1vWjZvtKMdfTTStr8yS+eZR/cY=";
+  cargoHash = "sha256-juGXpBNwmZjk5uTesykwaxbnWTI90xrsFZNEI2KLG8c=";
   doCheck = false;
 
   meta = {
