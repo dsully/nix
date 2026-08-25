@@ -105,6 +105,14 @@ in {
       xdg.configFile = outputStyleFiles;
 
       programs = {
+        # opencode surfaces skills through the derived slash commands
+        # (commands.nix), not through its native skill menu. Writing the skills
+        # into opencode's discovery dir too would list every skill twice in the
+        # system prompt — the description in `<available_skills>` (~13k tokens)
+        # plus the same body as a `/command`. Keep the commands, drop the menu.
+        # Trade-off: the model can no longer auto-invoke these skills via the
+        # `skill` tool; they are reachable via `/<skill>`. Superpowers is
+        # unaffected — its plugin registers its own skills via config.skills.paths.
         agent-skills.targets.opencode.enable = true;
 
         # opencode only discovers configs at/below the git worktree root. Walk up
