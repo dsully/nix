@@ -144,11 +144,11 @@
     "context-mode": {
       "flake": false,
       "locked": {
-        "lastModified": 1787659609,
-        "narHash": "sha256-FMIvwTc488afwF1YqcJNA6odwmwhdVnrrivr/Ai/yZw=",
+        "lastModified": 1787746008,
+        "narHash": "sha256-ceJUJfDFa6Ud/ZsdxdhnfI8UrO+BoNAlfC0+3FNiyRk=",
         "owner": "mksglu",
         "repo": "context-mode",
-        "rev": "a0d0322687205251d466fdf35d7de6e9b5be4aca",
+        "rev": "64c338814123e5326acdd7ae6fbaffff70fe6f9b",
         "type": "github"
       },
       "original": {
@@ -362,11 +362,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787661347,
-        "narHash": "sha256-THmnBAdAIV+jT348f3r/vyoeb6ilhcVLwVXkBU7Pai8=",
+        "lastModified": 1787750582,
+        "narHash": "sha256-FfIAV44k33i+IjC1+new2KyjyVGUzGtV89VHVP4eK1U=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "52c3a5881c821ad7367bbde075e52b76cdb378ab",
+        "rev": "0a364342a66bcecfc8a00d2fc38c6c29eee7bc5e",
         "type": "github"
       },
       "original": {
@@ -438,11 +438,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787660833,
-        "narHash": "sha256-4R2DeS9btVaawjYmkfA9c1QHYCwg0TM2PjlFOSlKk0Y=",
+        "lastModified": 1787719661,
+        "narHash": "sha256-FLBOjXOSh2WvMG6id+ks018WQ7HiA4yPPlIagpTc0DM=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "60e7fc4eab599ae19f53818784955f2f5aab72ec",
+        "rev": "76b78a399417964e9133aed0c0a9493616c3508e",
         "type": "github"
       },
       "original": {
@@ -637,11 +637,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1787424095,
-        "narHash": "sha256-dWLO5AHhKaw6rdWCtTes8hnntT1r0/J5yhQGm0f0ZgU=",
+        "lastModified": 1787631388,
+        "narHash": "sha256-vMiXptXarfSdJb1Gkc+FYVOAibuBRj7qxGa8z68q1Uw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "174eb786fb68e3a13e4e535a3deea479a0c07a6a",
+        "rev": "ac6b2166e7a9375683b8e98f860f273222337b16",
         "type": "github"
       },
       "original": {
@@ -945,11 +945,11 @@
     "wshobson-agents": {
       "flake": false,
       "locked": {
-        "lastModified": 1787528467,
-        "narHash": "sha256-7hQ7ckfIhoRHEOwfd08eqGXiqQ9eeffM16+o7dqGBF8=",
+        "lastModified": 1787746448,
+        "narHash": "sha256-QiRuhAJflKylpj5UW8ySyUz29K3Y34Vx4sCMfGl23Bg=",
         "owner": "wshobson",
         "repo": "agents",
-        "rev": "d82998e7df393c671ede2387a8435075f0b633f5",
+        "rev": "38e19c20d2b154510b0e624a2e3e186b19b5c527",
         "type": "github"
       },
       "original": {
