@@ -144,11 +144,11 @@
     "context-mode": {
       "flake": false,
       "locked": {
-        "lastModified": 1787932882,
-        "narHash": "sha256-Mp2MuA1vOsz/k3fKbxf+d9fxj3l2ngWcxHK2HjSvc5g=",
+        "lastModified": 1788005160,
+        "narHash": "sha256-kT7z+ELy/LQk6pVsv586cfID2cHoqdON+nhg0QvDcHM=",
         "owner": "mksglu",
         "repo": "context-mode",
-        "rev": "6b2741f9a538c71ed89c050c99751eb22da6b02c",
+        "rev": "8a3536796dee356de146700856a210aa60191e73",
         "type": "github"
       },
       "original": {
@@ -438,11 +438,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787952939,
-        "narHash": "sha256-U+RAMBwwqf07waypHLihCZOUcIpHkqw/+WMUg+ge43Q=",
+        "lastModified": 1788012048,
+        "narHash": "sha256-Ja0btchPlXVw5XVEIe5N8DhNZJE8LKiBG1x0jZcNjTU=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5b8ede7f14a79303a654265eba4cdc05b49aa1ff",
+        "rev": "952d31f9337df4799f22aa067d1075822d024ecc",
         "type": "github"
       },
       "original": {
@@ -465,11 +465,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1787862828,
-        "narHash": "sha256-aQfLk4SE7hKNGrAHjuk4FYEiLEUtWUrWpwLoP0W2m1k=",
+        "lastModified": 1788019011,
+        "narHash": "sha256-ElaZvLr5+odcpCc5amsxJRaElJSnHYg+otSJDaWL+Ns=",
         "owner": "rynfar",
         "repo": "meridian",
-        "rev": "099741dd7a341daa767b08e20649456c51675b62",
+        "rev": "a53e83e65c9f0b5cdb5559b4996341c9f1795f52",
         "type": "github"
       },
       "original": {
