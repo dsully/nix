@@ -13,7 +13,7 @@ then
       "github.com/abiosoft/caddy-inspect@v0.0.0-20250214103948-96cdb1dfb122"
       "github.com/abiosoft/caddy-json-schema@v0.0.0-20220621031927-c4d6e132f3af"
     ];
-    hash = "sha256-4ijxYxoZ4rspQpq9yeTENHLc4MOHHx7H/WgPe9mPLLc=";
+    hash = "sha256-fb383WjN2HNR8zmCA1ffaInC9+VIt+rofU9VfELBXYE=";
   }).overrideAttrs {
     doCheck = false;
   }
