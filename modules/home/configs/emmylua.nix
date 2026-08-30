@@ -56,6 +56,8 @@ in {
   home.file."${config.xdg.configHome}/nvim/.emmyrc.json".source = emmyrc [
     {
       path = "${config.xdg.dataHome}/nvim/site/pack/core/opt";
+      ignoreDir = ["test" "tests" "spec"];
+      ignoreGlobs = ["**/*_spec.lua" "**/*.spec.lua" "**/*_test.lua" "**/plenary/busted.lua"];
     }
   ];
 }
