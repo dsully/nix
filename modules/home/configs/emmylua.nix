@@ -40,8 +40,19 @@
           "debug"
           "templates"
         ];
+        # `ignoreDir` only excludes one specific directory relative to a
+        # workspace root; it cannot match a directory name recursively
+        # anywhere in the tree. Plugin test/spec dirs (which mock globals
+        # like `assert`, `vim.deepcopy`, `vim.notify`) have to be excluded
+        # via recursive globs instead.
         ignoreGlobs = [
           "**/*_spec.lua"
+          "**/*.spec.lua"
+          "**/*_test.lua"
+          "**/test/**"
+          "**/tests/**"
+          "**/spec/**"
+          "**/plenary/busted.lua"
         ];
         library =
           [
@@ -54,10 +65,6 @@ in {
   # home.file.".emmyrc.json".source = emmyrc [];
 
   home.file."${config.xdg.configHome}/nvim/.emmyrc.json".source = emmyrc [
-    {
-      path = "${config.xdg.dataHome}/nvim/site/pack/core/opt";
-      ignoreDir = ["test" "tests" "spec"];
-      ignoreGlobs = ["**/*_spec.lua" "**/*.spec.lua" "**/*_test.lua" "**/plenary/busted.lua"];
-    }
+    "${config.xdg.dataHome}/nvim/site/pack/core/opt"
   ];
 }
