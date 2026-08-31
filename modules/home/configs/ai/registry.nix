@@ -61,17 +61,6 @@
 
   mcpServers =
     {
-      # codeloupe duplicates indxr almost tool-for-tool (text_search/read_file_range/
-      # get_symbols vs find/read/summarize) and a second "use me instead of Read"
-      # instruction block just splits the model's attention. indxr wins on
-      # get_diff_summary and symbol-level reads, so it's the one that stays.
-      codeloupe = {
-        command = lib.getExe my.pkgs.codeloupe-mcp;
-        env = {
-          codeloupe_mcp_TANTIVY_ENABLED = "false";
-        };
-        enabled = false;
-      };
       git = {
         command = lib.getExe my.pkgs.mcp-server-git-rs;
         args = [
