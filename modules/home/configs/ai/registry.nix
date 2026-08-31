@@ -127,18 +127,12 @@
   # as file content, so passing the interpolation directly writes the store path
   # into the file instead of the agent. Read them (below) to get real content.
   agentSources = {
-    anthropic-code-explorer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-explorer.md";
-    anthropic-code-reviewer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-reviewer.md";
-    anthropic-code-simplifier = "${inputs.claude-plugins-official}/plugins/code-simplifier/agents/code-simplifier.md";
-    anthropic-comment-analyzer = "${inputs.claude-plugins-official}/plugins/pr-review-toolkit/agents/comment-analyzer.md";
+    codebase-pattern-finder = "${inputs.softaworks}/agents/codebase-pattern-finder.md";
+    code-explorer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-explorer.md";
+    code-reviewer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-reviewer.md";
+    code-simplifier = "${inputs.claude-plugins-official}/plugins/code-simplifier/agents/code-simplifier.md";
+    comment-analyzer = "${inputs.claude-plugins-official}/plugins/pr-review-toolkit/agents/comment-analyzer.md";
     debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
-
-    softaworks-ascii-ui-mockup-generator = "${inputs.softaworks}/agents/ascii-ui-mockup-generator.md";
-    softaworks-codebase-pattern-finder = "${inputs.softaworks}/agents/codebase-pattern-finder.md";
-    softaworks-communication-excellence-coach = "${inputs.softaworks}/agents/communication-excellence-coach.md";
-    softaworks-general-purpose = "${inputs.softaworks}/agents/general-purpose.md";
-    softaworks-mermaid-diagram-specialist = "${inputs.softaworks}/agents/mermaid-diagram-specialist.md";
-    softaworks-ui-ux-designer = "${inputs.softaworks}/agents/ui-ux-designer.md";
   };
 
   commandSources = {
