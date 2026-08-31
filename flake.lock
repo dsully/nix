@@ -144,11 +144,11 @@
     "context-mode": {
       "flake": false,
       "locked": {
-        "lastModified": 1788156595,
-        "narHash": "sha256-2R5KBeytNIUUfIhZz/K+b2DZZWk3qXAmrTjaZHBjDG0=",
+        "lastModified": 1788178043,
+        "narHash": "sha256-ePcNDJScBCLkAeBkJ1UQEWi9IGmWSj4Vwtqda5Qd/u8=",
         "owner": "mksglu",
         "repo": "context-mode",
-        "rev": "b43308699aa6a9ffbb5fcb2c4809a4414426e178",
+        "rev": "6b8bf61f83abed6c3faf4e7c3ba02c162fadfedf",
         "type": "github"
       },
       "original": {
@@ -465,11 +465,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1788171044,
-        "narHash": "sha256-oKZVA10/wHfdbvtHe/ygCwL0ao9AYX41aB9oiXHt/ms=",
+        "lastModified": 1788187521,
+        "narHash": "sha256-RkNq1D670LJErIz1IcnRbeiNBmXooJzwsFqq1gioz5g=",
         "owner": "rynfar",
         "repo": "meridian",
-        "rev": "9127f3869a5a57e94a440856db151d8875f1798f",
+        "rev": "49e04d131a6b168986cef53b99780ef624a092ff",
         "type": "github"
       },
       "original": {
