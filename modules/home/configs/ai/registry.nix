@@ -76,6 +76,7 @@
       indxr = {
         command = lib.getExe my.pkgs.indxr;
         args = ["serve" "."];
+        enabled = false;
       };
       just = {
         command = lib.getExe my.pkgs.just-mcp;
