@@ -209,6 +209,16 @@ in {
           set -g fish_greeting ""
 
           fish_config theme choose Nordish
+        ''
+        + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin
+        # fish
+        ''
+          # macOS keeps section 2/3 man pages in the Xcode/CLT SDK only.
+          # Apple's /usr/bin/man adds these via xcode-select; man-db does not.
+          # Trailing empty entry keeps man-db merging its own config paths.
+          if test -x /usr/bin/xcode-select
+              set -gx --path MANPATH (/usr/bin/xcode-select --show-manpaths 2>/dev/null) $MANPATH ""
+          end
         '';
     };
 
