@@ -50,17 +50,6 @@ in {
         wordnet
         write-good
         yaml-language-server
-        # (pkgs.yaml-language-server.overrideAttrs (oldAttrs: {
-        #   # Apply patch to source before build
-        #   postPatch =
-        #     (oldAttrs.postPatch or "")
-        #     + ''
-        #       # Patch the TypeScript source
-        #       substituteInPlace src/languageservice/services/yamlValidation.ts \
-        #         --replace "if (isKubernetes && err.message === this.MATCHES_MULTIPLE)" \
-        #                   "if (err.message === this.MATCHES_MULTIPLE)"
-        #     '';
-        # }))
         yamllint
       ]
       ++ [
