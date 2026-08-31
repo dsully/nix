@@ -9,8 +9,6 @@ in {
   home = {
     packages = with pkgs;
       [
-        actionlint
-        basedpyright
         bash-language-server
         commitlint-rs
         crates-lsp
@@ -31,24 +29,19 @@ in {
         oxlint
         pyrefly
         revive
-        rstcheck
         ruff
         rumdl
         shellharden
         shfmt
-        sphinx-lint
         stylelint
         stylua
         superhtml
-        systemd-lsp
         tombi
         ts_query_ls
         ty
         typescript-go
         vimdoc-language-server
         vscode-langservers-extracted
-        wordnet
-        write-good
         yaml-language-server
         yamllint
       ]
