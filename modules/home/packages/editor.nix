@@ -69,7 +69,6 @@ in {
         luajitPackages.nlua
       ]
       ++ (with my.pkgs; [
-        codesort
         neovim
         rust-markdown-lsp-server
         version-lsp
