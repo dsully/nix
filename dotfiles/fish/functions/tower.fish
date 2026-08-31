@@ -17,5 +17,5 @@ function tower -d "Open Tower for directory (default: Git root)"
         return
     end
 
-    command /usr/bin/open -a Tower $paths
+    command "$HOMEBREW_PREFIX/bin/gittower" --new-window $paths
 end
