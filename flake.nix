@@ -28,7 +28,6 @@
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs";
 
-    # https://github.com/rynfar/meridian/pull/406 needs to be committed;
     meridian.url = "github:rynfar/meridian";
     meridian.inputs.nixpkgs.follows = "nixpkgs";
 

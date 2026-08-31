@@ -98,7 +98,7 @@ in {
       };
     };
 
-    meridian.enable = false;
+    meridian.enable = true;
 
     onepassword-secrets.secrets = {
       sshPrivateKey = {

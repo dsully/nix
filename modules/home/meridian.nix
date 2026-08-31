@@ -60,31 +60,50 @@
   headroom = config.programs.headroom;
   routeMeridianViaHeadroom = headroom.enable && headroom.integrations.claudeCode.enable;
   headroomClaudeUrl = "http://${headroom.integrations.claudeCode.host}:${toString headroom.integrations.claudeCode.port}";
-
-  # OpenCode reads ANTHROPIC_BASE_URL/ANTHROPIC_API_KEY from its environment.
-  # Scope them to OpenCode via a wrapper rather than home.sessionVariables, so
-  # Claude Code (which also honors ANTHROPIC_BASE_URL) is left untouched.
-  opencodeWrapper = pkgs.writeShellScript "opencode" ''
-    export ANTHROPIC_API_KEY="meridian"
-    export ANTHROPIC_BASE_URL="${baseUrl}"
-    exec ${lib.getExe config.programs.opencode.package} "$@"
-  '';
 in {
   options.programs.meridian.enable =
     lib.mkEnableOption "the Meridian Claude Code SDK proxy";
 
   config = lib.mkIf cfg.enable {
-    nixpkgs.overlays = [flake.inputs.meridian.overlays.default];
+    nixpkgs.overlays = [
+      flake.inputs.meridian.overlays.default
+
+      # On Darwin bun installs with the clonefile backend by default. The Nix
+      # sandbox denies clonefile, so `bun install` cannot create the nested
+      # node_modules directories and the build fails with AccessDenied. Copy
+      # the files instead.
+      (_: prev:
+        lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
+          meridian = prev.meridian.overrideAttrs (old: {
+            bunInstallFlags = old.bunInstallFlags ++ ["--backend=copyfile"];
+          });
+        })
+    ];
 
     home.packages = [pkgs.meridian];
 
-    programs.opencode.extraPlugins = [
-      "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
-    ];
+    programs.opencode = {
+      extraPlugins = [
+        "${pkgs.meridian}/lib/meridian/plugin/meridian.ts"
+      ];
 
-    home.file."${config.xdg.binHome}/opencode" = {
-      force = true;
-      source = opencodeWrapper;
+      settings = {
+        # Meridian maps any id containing "opus" to the opus tier and upgrades
+        # primary agents to opus[1m], which Max includes at no Extra Usage cost.
+        # The meridian.ts plugin marks subagents, which stay on the 200k tier.
+        model = "anthropic/claude-opus-5";
+        small_model = "anthropic/claude-haiku-4-5";
+
+        # Point OpenCode at Meridian here rather than through
+        # ANTHROPIC_BASE_URL, so the fish `opencode` function and any other
+        # launch path reach the proxy, and Claude Code (which also honors
+        # ANTHROPIC_BASE_URL) is left untouched. Meridian authenticates through
+        # the Claude Code SDK, so the key is a placeholder.
+        provider.anthropic.options = {
+          apiKey = "meridian";
+          baseURL = baseUrl;
+        };
+      };
     };
 
     xdg.configFile."meridian/plugins.json".source = (pkgs.formats.json {}).generate "meridian-plugins" {
