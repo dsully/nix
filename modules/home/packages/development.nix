@@ -47,21 +47,6 @@ in {
           "typos.toml"
           "vendor/**/*"
         ];
-
-        "type.lua".extend-words = {
-          enew = "enew";
-          vhyrro = "vhyrro";
-          "}," = "},";
-        };
-
-        "type.rust".extend-words = {
-          juxt = "juxt";
-          ratatui = "ratatui";
-        };
-
-        "type.toml" = {};
-        "type.toml.pyproject" = {};
-        "type.toml.pyproject.extend-words"."]" = "]";
       };
     };
 
