@@ -65,7 +65,7 @@ This flake's own packages are exposed to home-manager modules two ways:
 
 ### Program configs and dotfiles
 
-- `modules/home/configs/` — per-tool home-manager config (`git.nix`, `fish.nix`, `ssh.nix`, `zellij.nix`, …), aggregated by `configs/default.nix`.
+- `modules/home/configs/` — per-tool home-manager config (`git.nix`, `fish.nix`, `ssh.nix`, …), aggregated by `configs/default.nix`.
 - `modules/home/dotfiles.nix` — links `dotfiles/` into `~/.config`. **Recursive directories** (fish conf.d/functions/completions) use the **flake-relative path** so they copy into the store; **live-editable single files** use `mkOutOfStoreSymlink` pointing at `~/.config/nix/dotfiles/...` so edits apply without a rebuild (note the comment explaining why recursive + out-of-store symlink breaks in sandbox builds).
 
 ### AI tooling (`modules/home/configs/ai/`)

@@ -37,11 +37,6 @@ function fish_prompt
         echo -n -s (set_color white --bold) "$hostname:" (set_color normal)
     end
 
-    # zmx session indicator
-    if set -q ZMX_SESSION
-        echo -n -s (set_color magenta --bold) " $ZMX_SESSION " (set_color normal)
-    end
-
     # Directory
     echo -n (set_color white)"["(set_color cyan)(prompt_pwd)(set_color white)"]"(set_color normal)
 
