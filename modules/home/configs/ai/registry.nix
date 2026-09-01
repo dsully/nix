@@ -149,6 +149,7 @@
   # body also feeds opencode via `opencodeAgents` below.
   localAgentSources = {
     comment-sicko = ./agents/comment-sicko.md;
+    dead-code-finder = ./agents/dead-code-finder.md;
   };
 
   allAgentSources = agentSources // localAgentSources;

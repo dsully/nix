@@ -60,5 +60,8 @@ in {
   # Live-symlinked scripts: edits to the working tree are reflected immediately,
   # no rebuild needed. Target must remain executable in the source tree.
   home.file."${config.xdg.binHome}/remove-unicode".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/remove-unicode.py";
+    config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/remove-unicode.py";
+
+  home.file."${config.xdg.binHome}/deadcode".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/deadcode.py";
 }
