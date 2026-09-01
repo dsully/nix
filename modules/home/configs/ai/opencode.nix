@@ -172,14 +172,16 @@ in {
             "context-mode"
           ];
 
-          # `ai.agents` is deliberately NOT wired here. Those files are written in
-          # Claude Code's frontmatter dialect and opencode rejects them outright:
-          # `tools` is a comma-separated string where opencode wants an object,
-          # `model` is an alias (sonnet/opus/inherit/default) where opencode wants
-          # a provider/model ref, and softaworks' mermaid agent carries keys
+          # `ai.agents` (Claude-format full files) is deliberately NOT wired here.
+          # Those marketplace files use Claude Code's frontmatter dialect and
+          # opencode rejects them outright: `tools` is a comma-separated string
+          # where opencode wants an object, `model` is an alias
+          # (sonnet/opus/inherit/default) where opencode wants a provider/model
+          # ref, and softaworks' mermaid agent carries keys
           # (category/usage/input/output) opencode doesn't know. Feeding them in
-          # fails config validation and opencode won't start. Translating the
-          # frontmatter is possible but needs a real build-time YAML rewrite.
+          # fails config validation and opencode won't start. In-tree agents flow
+          # instead through `settings.agent = ai.opencodeAgents` (see below),
+          # which emits opencode-native entries from their body.
           commands =
             ai.commands
             // {
@@ -189,6 +191,7 @@ in {
           context = ./AGENTS.md;
 
           settings = {
+            agent = ai.opencodeAgents;
             autoupdate = lib.mkDefault true;
             compaction = {
               auto = true;

@@ -24,6 +24,14 @@
     then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
     else "Specialized development agent";
 
+  # Drop a leading `---\n...\n---\n` frontmatter block and return the body.
+  # opencode agents take the prompt as a plain string, not a Claude-format file,
+  # so local agent files feed their body here instead of their whole content.
+  agentBody = file: let
+    parts = lib.splitString "---\n" (builtins.readFile file);
+  in
+    lib.trim (lib.concatStringsSep "---\n" (lib.drop 2 parts));
+
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
@@ -136,14 +144,34 @@
     debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
   };
 
+  # Agents authored in-tree (Claude frontmatter dialect). Unlike the marketplace
+  # sources above, these carry minimal frontmatter (name + description), so their
+  # body also feeds opencode via `opencodeAgents` below.
+  localAgentSources = {
+    comment-sicko = ./agents/comment-sicko.md;
+  };
+
+  allAgentSources = agentSources // localAgentSources;
+
   commandSources = {
     refactor-clean = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/refactor-clean.md";
     tech-debt = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/tech-debt.md";
   };
 
-  agents = lib.mapAttrs (_: builtins.readFile) agentSources;
+  agents = lib.mapAttrs (_: builtins.readFile) allAgentSources;
   commands = lib.mapAttrs (_: builtins.readFile) commandSources;
-  descriptions = lib.mapAttrs (_: agentDescription) agentSources;
+  descriptions = lib.mapAttrs (_: agentDescription) allAgentSources;
+
+  # opencode-native agent entries for `settings.agent`. Only in-tree agents are
+  # opencode-compatible; the marketplace sources use Claude frontmatter opencode
+  # rejects (see opencode.nix), so they are excluded here.
+  opencodeAgents =
+    lib.mapAttrs (_: file: {
+      description = agentDescription file;
+      mode = "subagent";
+      prompt = agentBody file;
+    })
+    localAgentSources;
 
   hooks = import ./hooks.nix {inherit config lib my pkgs;};
 
@@ -201,6 +229,7 @@ in {
     lsp
     models
     muxWrap
+    opencodeAgents
     outputStyles
     permissions
     rulesDir
