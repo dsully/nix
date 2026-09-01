@@ -58,9 +58,6 @@ in {
   };
 
   programs.uv.tool.packages = [
-    "lizard"
-    "ptpython"
-    "pyproject"
     "pyproject-fmt"
     "pytest-language-server"
     "python-code-splitter"

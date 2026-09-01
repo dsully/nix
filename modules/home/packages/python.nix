@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  my,
   pkgs,
   ...
 }: let
@@ -20,6 +21,16 @@ in {
         export PATH="/usr/bin:$PATH"
       ''
     );
+
+    packages = with pkgs;
+      [
+        python314Packages.lizard
+        python314Packages.ptpython
+        python314Packages.vulture
+      ]
+      ++ (with my.pkgs; [
+        pyproject
+      ]);
 
     sessionVariables = {
       PIP_CACHE_DIR = "${config.xdg.cacheHome}/pip";
