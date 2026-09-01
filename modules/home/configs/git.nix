@@ -30,18 +30,21 @@ in {
       };
     };
 
-    packages = with pkgs; [
-      git-dive
-      git-ignore
-      git-quick-stats
-      git-sizer
-      git-trim
-      git-who
-      lazyworktree
-      # Currently broken.
-      # worktrunk
-      my.pkgs.geil
-    ];
+    packages = with pkgs;
+      [
+        git-dive
+        git-ignore
+        git-quick-stats
+        git-sizer
+        git-trim
+        git-who
+        lazyworktree
+        worktrunk
+      ]
+      ++ (with my.pkgs; [
+        autorebase
+        geil
+      ]);
   };
 
   programs.git = {

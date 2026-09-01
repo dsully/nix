@@ -27,6 +27,7 @@ in {
         python314Packages.lizard
         python314Packages.ptpython
         python314Packages.vulture
+        zuban
       ]
       ++ (with my.pkgs; [
         pyproject

@@ -3,7 +3,6 @@
   pkgs,
   ...
 }: let
-  jsonFormat = pkgs.formats.json {};
   yamlFormat = pkgs.formats.yaml {};
 in {
   home = {
@@ -102,10 +101,6 @@ in {
       };
 
       Index.StandardLibrary = "Yes";
-    };
-
-    "github-copilot/terms.json".source = jsonFormat.generate "copilot-terms" {
-      dsully.version = "2021-10-14";
     };
   };
 }

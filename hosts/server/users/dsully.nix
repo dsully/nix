@@ -52,7 +52,6 @@ in {
 
     packages = with pkgs;
       [
-        copilot-language-server
         iproute2
         nix-output-monitor
         pnpm
@@ -63,7 +62,6 @@ in {
         zuban
       ]
       ++ (with perSystem.self; [
-        autorebase
         qbit-port-update
         qbit-tools
       ]);
