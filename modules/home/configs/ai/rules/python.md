@@ -7,7 +7,7 @@ paths: "**/*.{py,pyi}"
 - Modern, Python 3.14+ - NEVER add deferred imports.
 - Use TYPE_CHECKING only when necessary. DO NOT use it otherwise.
 - Never use pip, always use uv.
-- You MUST add newlines for horizontal whitespace for readability.
+- You MUST add newlines / vertical whitespace for readability.
 - Prefer static or class methods to free functions.
 - Avoid temporary variables unless for performance.
 - Always use type hints.
