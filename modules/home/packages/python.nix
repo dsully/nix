@@ -22,16 +22,12 @@ in {
       ''
     );
 
-    packages = with pkgs;
-      [
-        python314Packages.lizard
-        python314Packages.ptpython
-        python314Packages.vulture
-        zuban
-      ]
-      ++ (with my.pkgs; [
-        pyproject
-      ]);
+    packages = with pkgs; [
+      python314Packages.lizard
+      python314Packages.ptpython
+      python314Packages.vulture
+      zuban
+    ];
 
     sessionVariables = {
       PIP_CACHE_DIR = "${config.xdg.cacheHome}/pip";
