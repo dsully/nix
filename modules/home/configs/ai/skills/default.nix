@@ -90,29 +90,14 @@ in {
       };
 
       programs.ai.skills = {
-        # `ids` rather than `all`: superpowers ships several skills that overlap
-        # each other and the native harness. Each dropped id is a one-line
-        # re-add. Dropped here: brainstorming (EnterPlanMode covers it),
-        # receiving-code-review (kept the requesting half only),
-        # using-superpowers (meta-skill about using skills).
-        process = {
-          name = "superpowers";
-          input = "superpowers";
-          subdir = "skills";
-          ids = [
-            "dispatching-parallel-agents"
-            "executing-plans"
-            "finishing-a-development-branch"
-            "requesting-code-review"
-            "subagent-driven-development"
-            "systematic-debugging"
-            "test-driven-development"
-            "using-git-worktrees"
-            "verification-before-completion"
-            "writing-plans"
-            "writing-skills"
-          ];
-        };
+        # Superpowers skills are intentionally NOT registered here. The
+        # superpowers plugin (see opencode.nix) already registers them itself via
+        # config.skills.paths, so adding them through agent-skills too would write
+        # them into opencode's discovery dir a second time and trigger a
+        # "duplicate skill name" warning for every one at startup. Let the plugin
+        # be the single owner. Trade-off: the plugin exposes superpowers' full
+        # skill set (including brainstorming / receiving-code-review /
+        # using-superpowers), not the curated subset this group used to select.
         improve = {
           name = "improve";
           input = "improve";

@@ -89,7 +89,6 @@ in {
           OPENCODE_DISABLE_CLAUDE_CODE = 1;
 
           OPENCODE_DISABLE_LSP_DOWNLOAD = 1;
-          OPENCODE_DISABLE_PRUNE = 1;
 
           # https://opencode.ai/docs/cli/#experimental
           OPENCODE_EXPERIMENTAL = 1;
@@ -98,6 +97,7 @@ in {
           OPENCODE_EXPERIMENTAL_LSP_TOOL = 1;
           OPENCODE_EXPERIMENTAL_LSP_TY = 1;
           OPENCODE_EXPERIMENTAL_MARKDOWN = 1;
+          OPENCODE_EXPERIMENTAL_OXFMT = 1;
           OPENCODE_EXPERIMENTAL_PLAN_MODE = 1;
         };
       };
@@ -164,12 +164,16 @@ in {
 
           enableMcpIntegration = true;
 
+          # Pin exact versions. A bare name or `@latest` makes opencode re-resolve
+          # the version against the npm registry on the first launch after any
+          # config change, which stalls startup for several seconds. Bump these
+          # deliberately when you want a newer plugin.
           extraPlugins = [
-            "@capybearista/opencode-adversarial-review@latest"
+            "@capybearista/opencode-adversarial-review@1.0.0"
             # "@capybearista/opencode-agents-loader@latest"
-            "@capybearista/opencode-output-styles@latest"
-            "cc-safety-net" # https://ccsafetynet.com/
-            "context-mode"
+            "@capybearista/opencode-output-styles@1.0.1"
+            "cc-safety-net@2.3.2" # https://ccsafetynet.com/
+            "context-mode@1.0.169"
           ];
 
           # Every agent (marketplace + in-tree) is written into
