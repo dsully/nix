@@ -278,6 +278,7 @@ in {
                 "${aro}/plugins/autoresearch-context.ts"
                 "${inputs.superpowers}/.opencode/plugins/superpowers.js"
                 "${./plugins/indxr-reminders.js}"
+                "opencode-ascii@0.1.8"
               ]
               ++ config.programs.opencode.extraPlugins;
 
