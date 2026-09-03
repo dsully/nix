@@ -300,6 +300,10 @@ in {
             };
           };
         };
+
+        uv.tool.packages = [
+          "ocgc"
+        ];
       };
     })
   ];
