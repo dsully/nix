@@ -172,16 +172,15 @@ in {
             "context-mode"
           ];
 
-          # `ai.agents` (Claude-format full files) is deliberately NOT wired here.
-          # Those marketplace files use Claude Code's frontmatter dialect and
-          # opencode rejects them outright: `tools` is a comma-separated string
-          # where opencode wants an object, `model` is an alias
-          # (sonnet/opus/inherit/default) where opencode wants a provider/model
-          # ref, and softaworks' mermaid agent carries keys
-          # (category/usage/input/output) opencode doesn't know. Feeding them in
-          # fails config validation and opencode won't start. In-tree agents flow
-          # instead through `settings.agent = ai.opencodeAgents` (see below),
-          # which emits opencode-native entries from their body.
+          # Every agent (marketplace + in-tree) is written into
+          # ~/.config/opencode/agents/<name>.md via `programs.opencode.agents`.
+          # `ai.opencodeAgents` holds the sanitized markdown for each source:
+          # opencode rejects the raw Claude files (`tools` as a comma-separated
+          # string, `color` as a free word) and would refuse to start, so
+          # `sanitizeAgent` (see registry.nix) rewrites the frontmatter first. The
+          # attribute key is the filename, which opencode uses as the agent name.
+          agents = ai.opencodeAgents;
+
           commands =
             ai.commands
             // {
@@ -191,7 +190,6 @@ in {
           context = ./AGENTS.md;
 
           settings = {
-            agent = ai.opencodeAgents;
             autoupdate = lib.mkDefault true;
             compaction = {
               auto = true;

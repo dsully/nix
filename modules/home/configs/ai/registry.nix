@@ -24,13 +24,32 @@
     then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
     else "Specialized development agent";
 
-  # Drop a leading `---\n...\n---\n` frontmatter block and return the body.
-  # opencode agents take the prompt as a plain string, not a Claude-format file,
-  # so local agent files feed their body here instead of their whole content.
-  agentBody = file: let
-    parts = lib.splitString "---\n" (builtins.readFile file);
+  # Rewrite a Claude-format agent file into opencode's markdown agent dialect.
+  # opencode derives the agent name from the filename and rejects several Claude
+  # frontmatter keys: `tools` is a comma-separated string where opencode wants an
+  # object, `color` is a free word where opencode wants a hex code or a fixed
+  # enum, and `model` is a Claude alias (sonnet/opus/inherit) that does not
+  # resolve under the genai provider. Drop those, plus `name` (the filename wins,
+  # so a `name` here would only override it with the plugin-namespaced value) and
+  # `mode`. We do NOT re-add `mode`: opencode's agent switcher (the `/agents`
+  # picker and Tab cycle) filters out `mode: subagent` (see tui local.tsx), so a
+  # forced `subagent` would hide these from the list. Without a mode they default
+  # to `all` and show up, matching the in-tree and marketplace agents. Files with
+  # no frontmatter block pass through unchanged.
+  sanitizeAgent = file: let
+    text = builtins.readFile file;
+    parts = lib.splitString "---\n" text;
+    drop = line: let
+      l = lib.toLower line;
+    in
+      lib.any (k: lib.hasPrefix k l) ["name:" "tools:" "color:" "model:" "mode:"];
   in
-    lib.trim (lib.concatStringsSep "---\n" (lib.drop 2 parts));
+    if lib.hasPrefix "---\n" text && builtins.length parts >= 3
+    then let
+      fm = lib.filter (l: l != "" && !drop l) (lib.splitString "\n" (builtins.elemAt parts 1));
+      body = lib.trim (lib.concatStringsSep "---\n" (lib.drop 2 parts));
+    in "---\n${lib.concatStringsSep "\n" fm}\n---\n${body}\n"
+    else text;
 
   lsp = {
     bash = {
@@ -144,9 +163,10 @@
     debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
   };
 
-  # Agents authored in-tree (Claude frontmatter dialect). Unlike the marketplace
-  # sources above, these carry minimal frontmatter (name + description), so their
-  # body also feeds opencode via `opencodeAgents` below.
+  # Agents authored in-tree (Claude frontmatter dialect). These carry minimal
+  # frontmatter (name + description); the marketplace sources above add tools,
+  # color, and model keys. Both sets feed opencode through `opencodeAgents`
+  # below, which rewrites the frontmatter into opencode's dialect and keeps the body.
   localAgentSources = {
     comment-sicko = ./agents/comment-sicko.md;
     dead-code-finder = ./agents/dead-code-finder.md;
@@ -163,16 +183,12 @@
   commands = lib.mapAttrs (_: builtins.readFile) commandSources;
   descriptions = lib.mapAttrs (_: agentDescription) allAgentSources;
 
-  # opencode-native agent entries for `settings.agent`. Only in-tree agents are
-  # opencode-compatible; the marketplace sources use Claude frontmatter opencode
-  # rejects (see opencode.nix), so they are excluded here.
-  opencodeAgents =
-    lib.mapAttrs (_: file: {
-      description = agentDescription file;
-      mode = "subagent";
-      prompt = agentBody file;
-    })
-    localAgentSources;
+  # opencode markdown agent files, one per source (marketplace + in-tree). They
+  # are handed to `programs.opencode.agents`, which writes each into
+  # ~/.config/opencode/agents/<name>.md. `sanitizeAgent` rewrites every Claude
+  # file into opencode's dialect first, so the raw `tools`/`color`/`model` keys
+  # never reach opencode's config validation.
+  opencodeAgents = lib.mapAttrs (_: sanitizeAgent) allAgentSources;
 
   hooks = import ./hooks.nix {inherit config lib my pkgs;};
 
@@ -233,6 +249,7 @@ in {
     opencodeAgents
     outputStyles
     permissions
+    sanitizeAgent
     rulesDir
     rulesMarkdown
     ;
