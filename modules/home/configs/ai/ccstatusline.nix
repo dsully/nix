@@ -53,6 +53,10 @@ in {
       startCaps = [];
       theme = "nord";
     };
-    version = 3;
+    # Must match ccstatusline's CURRENT_VERSION. A lower value triggers a
+    # migration, which tries to rewrite settings.json in place. The file is a
+    # read-only /nix/store path, so the write fails and the status line falls
+    # back to defaults with "⚠ invalid config".
+    version = 4;
   };
 }
