@@ -52,6 +52,7 @@
     includeCoAuthoredBy = false;
     # Never commit
     includeGitInstructions = false;
+    skipDangerousModePermissionPrompt = true;
 
     outputStyle = ai.defaultOutputStyle;
 
