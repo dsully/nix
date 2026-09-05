@@ -19,7 +19,6 @@
       "anylist"
       "backblaze-restore"
       "boltai"
-      "chatgpt"
       "claude"
       "discord"
       "downie"
@@ -43,6 +42,7 @@
       "tailscale-app"
       "telegram"
       "unifi-identity-endpoint"
+      "vorssaint"
       "whatsapp"
       "zipic"
     ];

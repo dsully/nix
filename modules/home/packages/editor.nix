@@ -38,6 +38,7 @@ in {
         tombi
         ts_query_ls
         ty
+        typos-lsp
         typescript-go
         vimdoc-language-server
         vscode-langservers-extracted

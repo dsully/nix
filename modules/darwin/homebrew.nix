@@ -21,6 +21,7 @@
 
     casks = [
       "1password"
+      "agent-sessions"
       "cotypist"
       "daisydisk"
       "dash"
@@ -32,6 +33,7 @@
       "lunar"
       "monodraw"
       "processspy"
+      "purge"
       "raindropio"
       "raycast"
       "rocket"
@@ -80,6 +82,8 @@
     };
 
     taps = [
+      "jazzyalex/agent-sessions"
+      "jithin-sabu/tap"
       "skulkworks/tap"
     ];
   };
