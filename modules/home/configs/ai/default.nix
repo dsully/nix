@@ -19,7 +19,6 @@ in {
     ./pi.nix
     ./rtk.nix
     ./skills
-    ./zaly.nix
   ];
 
   config = {
