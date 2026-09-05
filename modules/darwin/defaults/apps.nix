@@ -34,7 +34,7 @@
           showCost = 0;
           showSuggestedPrompt = 0;
           sidebarFontSize = 13;
-          systemInstruction = "You are BoltAI, an expert progammer in Python, Lua, Rust, Nix, TypeScript, JavaScript and Swift";
+          systemInstruction = "You are BoltAI, an expert programmer in Python, Lua, Rust, Nix, TypeScript, JavaScript and Swift";
           textSizeAdjustment = 0;
           useLaTeX = 0;
           useMarkdown = 1;

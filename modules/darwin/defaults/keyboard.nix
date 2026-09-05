@@ -116,7 +116,7 @@ in {
             # Decrease Contrast - Command, Control, Option, ','
             "26" = {enabled = false;};
 
-            # Move focus to the next window in application - Command, backtic
+            # Move focus to the next window in application - Command, backtick
             "27" = {enabled = true;};
 
             # Save picture of screen as file - Command, Shift, 3
