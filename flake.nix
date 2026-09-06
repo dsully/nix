@@ -91,6 +91,26 @@
       # Internal files (imported directly by dsully.nix) are excluded.
       homeModulesDir = ./modules/home;
       homeModulesInternal = ["colors.nix" "dotfiles.nix"];
+
+      # Every config listed in configs/default.nix is already imported by
+      # dsully.nix. This attrset exposes the rest for per-host opt-in.
+      homeConfigsDir = ./modules/home/configs;
+      homeConfigs = lib.pipe (builtins.readDir homeConfigsDir) [
+        (lib.filterAttrs (
+          name: type:
+            name
+            != "default.nix"
+            && (
+              (type == "regular" && lib.hasSuffix ".nix" name)
+              || type == "directory"
+            )
+        ))
+        (lib.mapAttrs' (name: _:
+          lib.nameValuePair
+          (lib.removeSuffix ".nix" name)
+          (homeConfigsDir + "/${name}")))
+      ];
+
       homeModules =
         (lib.pipe (builtins.readDir homeModulesDir) [
           (lib.filterAttrs (
@@ -107,6 +127,7 @@
         ])
         // {
           ai = ./modules/home/configs/ai;
+          configs = homeConfigs;
         };
 
       darwinModules = {

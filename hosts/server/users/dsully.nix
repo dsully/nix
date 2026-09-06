@@ -35,6 +35,7 @@ in {
     flake.homeModules.dsully
     flake.homeModules.ai
     flake.homeModules.copypaste
+    flake.homeModules.configs.rumdl
     ../options.nix
   ];
 
