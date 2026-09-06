@@ -20,6 +20,9 @@
     nix-auth.url = "github:numtide/nix-auth";
     nix-auth.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-wrapper-modules.url = "github:nix-community/nix-wrapper-modules";
+    nix-wrapper-modules.inputs.nixpkgs.follows = "nixpkgs";
+
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     devshell.url = "github:numtide/devshell";
@@ -279,8 +282,14 @@
 
         # Overrides for packages that need flake input sources.
         packageOverrides = {
-          # nh wraps itself to use rom as its build output monitor.
-          nh = {inherit (selfPackages) rom;};
+          # nh wraps itself to use rom as its build output monitor. `pkgs` and
+          # `wrapperLib` are explicit because nix-wrapper-modules evaluates the
+          # wrapper against a whole package set, which callPackage does not scope.
+          nh = {
+            inherit pkgs;
+            inherit (selfPackages) rom;
+            wrapperLib = inputs.nix-wrapper-modules.lib;
+          };
         };
       in {
         _module.args.pkgs = pkgs;

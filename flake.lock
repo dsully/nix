@@ -590,6 +590,26 @@
         "type": "github"
       }
     },
+    "nix-wrapper-modules": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788673063,
+        "narHash": "sha256-sObhprEmDGi619oKrMABttOxynff4D7+qHJTYRkCVMI=",
+        "owner": "nix-community",
+        "repo": "nix-wrapper-modules",
+        "rev": "7cdab92c8392910a64dfe90933448f54ee18fb22",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-wrapper-modules",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1770107345,
@@ -716,6 +736,7 @@
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
+        "nix-wrapper-modules": "nix-wrapper-modules",
         "nixpkgs": "nixpkgs_2",
         "opnix": "opnix",
         "softaworks": "softaworks",

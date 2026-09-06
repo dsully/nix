@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   my,
   pkgs,
@@ -70,27 +71,18 @@
   # the session untouched. Call sites gate this on programs.llmtrim.enable.
   # `--set` rather than `--set-default`: a stale HTTPS_PROXY inherited from the
   # shell would otherwise silently send the agent somewhere else.
+  # nix-wrapper-modules carries pname, version, and meta (including mainProgram)
+  # over from `package`, so `lib.getExe`, `lib.getVersion`, and the agent modules
+  # keep resolving. Home Manager's claude-code module version-gates on
+  # `lib.getVersion` and falls back to the legacy `--plugin-dir` wrapper when it
+  # reads "", which a bare symlinkJoin would produce.
   llmtrimWrap = mainProgram: pkg:
-    pkgs.symlinkJoin {
-      name = "${lib.getName pkg}-llmtrim";
-      # symlinkJoin's name carries no version, so `lib.getVersion` on the wrapper
-      # would return "". Home Manager's claude-code module version-gates on that
-      # and falls back to the legacy `--plugin-dir` wrapper when it can't tell.
-      version = lib.getVersion pkg;
-      paths = [pkg];
-      nativeBuildInputs = [pkgs.makeWrapper];
-      postBuild = ''
-        wrapProgram $out/bin/${mainProgram} \
-          ${lib.concatStringsSep " \\\n  " (
-          lib.mapAttrsToList (k: v: "--set ${k} ${lib.escapeShellArg v}") environment
-        )}
-      '';
-      # Preserved so `lib.getExe` and the agent modules keep resolving.
-      meta =
-        (pkg.meta or {})
-        // {
-          inherit mainProgram;
-        };
+    inputs.nix-wrapper-modules.lib.wrapPackage {
+      inherit pkgs;
+
+      package = pkg;
+      binName = mainProgram;
+      env = environment;
     };
 in {
   options.programs.llmtrim = {
