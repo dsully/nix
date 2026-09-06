@@ -79,6 +79,8 @@
       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
       CLAUDE_CODE_ENABLE_TODO_TOOLS = "1";
       CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
+      # https://code.claude.com/docs/en/fullscreen
+      CLAUDE_CODE_NO_FLICKER = "1";
       DISABLE_AUTOUPDATER = "1";
       DISABLE_BUG_COMMAND = "1";
       DISABLE_ERROR_REPORTING = "1";

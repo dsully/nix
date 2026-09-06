@@ -2,7 +2,7 @@
   lib,
   rustPlatform,
 }:
-rustPlatform.buildRustPackage {
+rustPlatform.buildRustPackage rec {
   pname = "herdr-recall";
   version = "0.1.0";
 
@@ -24,5 +24,8 @@ rustPlatform.buildRustPackage {
     install -Dm644 shell/hook.fish $out/shell/hook.fish
   '';
 
-  meta.mainProgram = "herdr-recall";
+  meta = {
+    homepage = "";
+    mainProgram = pname;
+  };
 }

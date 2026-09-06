@@ -2,7 +2,7 @@
   lib,
   rustPlatform,
 }:
-rustPlatform.buildRustPackage {
+rustPlatform.buildRustPackage rec {
   pname = "herdr-autoname";
   version = "0.5.0";
 
@@ -24,5 +24,8 @@ rustPlatform.buildRustPackage {
     install -Dm644 shell/hook.fish $out/shell/hook.fish
   '';
 
-  meta.mainProgram = "herdr-autoname";
+  meta = {
+    homepage = "";
+    mainProgram = pname;
+  };
 }
