@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "addyosmani-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788680637,
+        "narHash": "sha256-GA9xc5vN8TTs4K8HBhBBGibA/dzgkLLNEu00pUvuMjc=",
+        "owner": "addyosmani",
+        "repo": "agent-skills",
+        "rev": "48cb1168aeaaa70dfc2bbf709eddfa2a8ed8129a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "addyosmani",
+        "repo": "agent-skills",
+        "type": "github"
+      }
+    },
     "agent-skills": {
       "inputs": {
         "blueprint": "blueprint",
@@ -672,6 +688,22 @@
         "type": "github"
       }
     },
+    "no-ai-slop": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788322740,
+        "narHash": "sha256-l/BZaNnPvFKTUN7jVs5p5aEtRvOUbwMElu37cnP+k8E=",
+        "owner": "petergyang",
+        "repo": "no-ai-slop",
+        "rev": "000650b156983f5159695b441477f4e63b25dc85",
+        "type": "github"
+      },
+      "original": {
+        "owner": "petergyang",
+        "repo": "no-ai-slop",
+        "type": "github"
+      }
+    },
     "opnix": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -723,6 +755,7 @@
     },
     "root": {
       "inputs": {
+        "addyosmani-skills": "addyosmani-skills",
         "agent-skills": "agent-skills",
         "autoresearch-opencode": "autoresearch-opencode",
         "claude-plugins-official": "claude-plugins-official",
@@ -738,6 +771,7 @@
         "nix-index-database": "nix-index-database",
         "nix-wrapper-modules": "nix-wrapper-modules",
         "nixpkgs": "nixpkgs_2",
+        "no-ai-slop": "no-ai-slop",
         "opnix": "opnix",
         "softaworks": "softaworks",
         "superpowers": "superpowers",

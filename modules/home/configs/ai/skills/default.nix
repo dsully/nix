@@ -112,6 +112,24 @@ in {
             "error-handling-patterns"
           ];
         };
+        practices = {
+          name = "practices";
+          input = "addyosmani-skills";
+          subdir = "skills";
+          ids = [
+            "constraint-driven-development"
+            "doubt-driven-development"
+            "interview-me"
+            "source-driven-development"
+          ];
+        };
+        writing = {
+          enable = lib.mkDefault false;
+          name = "writing";
+          input = "no-ai-slop";
+          subdir = "skills";
+          ids = ["no-ai-slop"];
+        };
         # Every enabled skill's description sits in the system prompt for the
         # whole session, so a group is only worth carrying globally if it fires
         # on most repos. Language/framework groups are opt-in: turn them on in
