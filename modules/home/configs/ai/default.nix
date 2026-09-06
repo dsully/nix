@@ -13,6 +13,7 @@ in {
     ./claude-code.nix
     ./codex.nix
     ./headroom.nix
+    ./herdr.nix
     ./icm.nix
     ./llmtrim.nix
     ./opencode.nix

@@ -34,6 +34,16 @@
   icmEnabled = config.programs.icm.enable or true;
   rtkEnabled = config.programs.rtk.enable;
 
+  # `herdr integration install claude` writes this hook into settings.json
+  # itself, but claudeCodeSettings rewrites that file from the store on every
+  # activation. Declaring the same entry here is what makes it survive; herdr
+  # matches on the command string and does not add a duplicate.
+  herdrClaudeEnabled =
+    config.programs.herdr.enable
+    && builtins.elem "claude" config.programs.herdr.integrations;
+
+  herdrClaudeHook = "${config.programs.claude-code.configDir}/hooks/herdr-agent-state.sh";
+
   llmtrimGuardEnabled =
     config.programs.llmtrim.enable
     && config.programs.llmtrim.integrations.claudeCode.guard;
@@ -118,14 +128,26 @@
         ];
       });
 
-    SessionStart = lib.optional icmEnabled (group {
-      hooks = [
-        (hook {
-          name = "icm-start";
-          command = "${lib.getExe pkgs.llm-agents.icm} hook start";
-        })
-      ];
-    });
+    SessionStart =
+      lib.optional icmEnabled (group {
+        hooks = [
+          (hook {
+            name = "icm-start";
+            command = "${lib.getExe pkgs.llm-agents.icm} hook start";
+          })
+        ];
+      })
+      ++ lib.optional herdrClaudeEnabled (group {
+        matcher = "*";
+        hooks = [
+          (hook {
+            name = "herdr-session";
+            command = "bash '${herdrClaudeHook}' session";
+            targets = ["claude"];
+            timeout = 10;
+          })
+        ];
+      });
 
     UserPromptSubmit = lib.optional (icmEnabled || llmtrimGuardEnabled) (group {
       hooks =
