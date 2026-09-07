@@ -163,32 +163,21 @@
     debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
   };
 
-  # Agents authored in-tree (Claude frontmatter dialect). These carry minimal
-  # frontmatter (name + description); the marketplace sources above add tools,
-  # color, and model keys. Both sets feed opencode through `opencodeAgents`
-  # below, which rewrites the frontmatter into opencode's dialect and keeps the body.
-  localAgentSources = {
-    comment-sicko = ./agents/comment-sicko.md;
-    dead-code-finder = ./agents/dead-code-finder.md;
-  };
-
-  allAgentSources = agentSources // localAgentSources;
-
   commandSources = {
     refactor-clean = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/refactor-clean.md";
     tech-debt = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/tech-debt.md";
   };
 
-  agents = lib.mapAttrs (_: builtins.readFile) allAgentSources;
+  agents = lib.mapAttrs (_: builtins.readFile) agentSources;
   commands = lib.mapAttrs (_: builtins.readFile) commandSources;
-  descriptions = lib.mapAttrs (_: agentDescription) allAgentSources;
+  descriptions = lib.mapAttrs (_: agentDescription) agentSources;
 
-  # opencode markdown agent files, one per source (marketplace + in-tree). They
-  # are handed to `programs.opencode.agents`, which writes each into
+  # opencode markdown agent files, one per marketplace source. They are handed
+  # to `programs.opencode.agents`, which writes each into
   # ~/.config/opencode/agents/<name>.md. `sanitizeAgent` rewrites every Claude
   # file into opencode's dialect first, so the raw `tools`/`color`/`model` keys
   # never reach opencode's config validation.
-  opencodeAgents = lib.mapAttrs (_: sanitizeAgent) allAgentSources;
+  opencodeAgents = lib.mapAttrs (_: sanitizeAgent) agentSources;
 
   hooks = import ./hooks.nix {inherit config lib my pkgs;};
 
