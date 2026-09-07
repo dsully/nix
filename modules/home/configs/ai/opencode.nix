@@ -303,7 +303,7 @@ in {
         };
 
         uv.tool.packages = [
-          "ocgc"
+          "ocman"
         ];
       };
     })
