@@ -89,7 +89,7 @@
       ];
     };
     typescript = {
-      command = lib.getExe pkgs.typescript-go;
+      command = lib.getExe pkgs.typescript;
       args = [
         "--lsp"
         "--stdio"

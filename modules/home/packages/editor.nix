@@ -39,7 +39,7 @@ in {
         ts_query_ls
         ty
         typos-lsp
-        typescript-go
+        typescript
         vimdoc-language-server
         vscode-langservers-extracted
         yaml-language-server
