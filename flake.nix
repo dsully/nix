@@ -173,6 +173,7 @@
         inherit inputs;
         flake = flakeAttr;
         perSystem = mkPerSystem system;
+        wrapperLib = inputs.nix-wrapper-modules.lib;
       };
 
       # Standalone home-manager configuration builder. pkgs (from withSystem)

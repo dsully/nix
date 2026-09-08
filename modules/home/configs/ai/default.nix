@@ -17,6 +17,7 @@ in {
     ./icm.nix
     ./llmtrim.nix
     ./meridian.nix
+    ./omp.nix
     ./opencode.nix
     ./pi.nix
     ./rtk.nix

@@ -24,7 +24,24 @@
     then builtins.head (lib.splitString "\n" (builtins.elemAt parts 1))
     else "Specialized development agent";
 
-  # Rewrite a Claude-format agent file into opencode's markdown agent dialect.
+  # Rewrite a Claude-format agent file, dropping the frontmatter keys named in
+  # `dropKeys` (lowercase, with the trailing colon). Files with no frontmatter
+  # block pass through unchanged.
+  sanitizeAgentWith = dropKeys: file: let
+    text = builtins.readFile file;
+    parts = lib.splitString "---\n" text;
+    drop = line: let
+      l = lib.toLower line;
+    in
+      lib.any (k: lib.hasPrefix k l) dropKeys;
+  in
+    if lib.hasPrefix "---\n" text && builtins.length parts >= 3
+    then let
+      fm = lib.filter (l: l != "" && !drop l) (lib.splitString "\n" (builtins.elemAt parts 1));
+      body = lib.trim (lib.concatStringsSep "---\n" (lib.drop 2 parts));
+    in "---\n${lib.concatStringsSep "\n" fm}\n---\n${body}\n"
+    else text;
+
   # opencode derives the agent name from the filename and rejects several Claude
   # frontmatter keys: `tools` is a comma-separated string where opencode wants an
   # object, `color` is a free word where opencode wants a hex code or a fixed
@@ -34,22 +51,16 @@
   # `mode`. We do NOT re-add `mode`: opencode's agent switcher (the `/agents`
   # picker and Tab cycle) filters out `mode: subagent` (see tui local.tsx), so a
   # forced `subagent` would hide these from the list. Without a mode they default
-  # to `all` and show up, matching the in-tree and marketplace agents. Files with
-  # no frontmatter block pass through unchanged.
-  sanitizeAgent = file: let
-    text = builtins.readFile file;
-    parts = lib.splitString "---\n" text;
-    drop = line: let
-      l = lib.toLower line;
-    in
-      lib.any (k: lib.hasPrefix k l) ["name:" "tools:" "color:" "model:" "mode:"];
-  in
-    if lib.hasPrefix "---\n" text && builtins.length parts >= 3
-    then let
-      fm = lib.filter (l: l != "" && !drop l) (lib.splitString "\n" (builtins.elemAt parts 1));
-      body = lib.trim (lib.concatStringsSep "---\n" (lib.drop 2 parts));
-    in "---\n${lib.concatStringsSep "\n" fm}\n---\n${body}\n"
-    else text;
+  # to `all` and show up, matching the in-tree and marketplace agents.
+  sanitizeAgent = sanitizeAgentWith ["name:" "tools:" "color:" "model:" "mode:"];
+
+  # omp keys agents by their frontmatter `name`, and `parseAgentFields` rejects a
+  # file that has no `name` or `description`, so both are kept. `tools` is
+  # dropped: omp normalizes only names that match its own tool ids
+  # (read/grep/glob/...), so a Claude list such as `LS, NotebookRead, WebFetch`
+  # would restrict the subagent to the two or three names that happen to match.
+  # `model`, `color`, and `mode` are dropped for the same reasons as opencode.
+  sanitizeOmpAgent = sanitizeAgentWith ["tools:" "color:" "model:" "mode:"];
 
   lsp = {
     bash = {
@@ -179,6 +190,10 @@
   # never reach opencode's config validation.
   opencodeAgents = lib.mapAttrs (_: sanitizeAgent) agentSources;
 
+  # The same marketplace agents in omp's dialect, written to
+  # ~/.omp/agent/agents/<name>.md by omp.nix.
+  ompAgents = lib.mapAttrs (_: sanitizeOmpAgent) agentSources;
+
   hooks = import ./hooks.nix {inherit config lib my pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
@@ -235,10 +250,12 @@ in {
     lsp
     models
     muxWrap
+    ompAgents
     opencodeAgents
     outputStyles
     permissions
     sanitizeAgent
+    sanitizeAgentWith
     rulesDir
     rulesMarkdown
     ;
