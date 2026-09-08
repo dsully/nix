@@ -286,16 +286,19 @@ in {
           statusLine = {
             preset = "custom";
             separator = "powerline-thin";
-            sessionAccent = true;
+            sessionAccent = false;
+            transparent = true;
 
+            # Mirror opencode's layout: model + path on the left, context on the
+            # right alongside the session's live counters.
             leftSegments = [
               "model"
-              "context_pct"
               "path"
               "git"
             ];
 
             rightSegments = [
+              "context_pct"
               "subagents"
               "time_spent"
             ];

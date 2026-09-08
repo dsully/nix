@@ -45,6 +45,10 @@
       nord15 = config.colors.magenta.base;
       # opencode's dark textMuted/diffContext/comment tone; no Nord-palette equivalent.
       nordMuted = "#8b95a7";
+      # Subtle Nord-tinted panel backgrounds (blend.* in colors.nix), replacing
+      # omp's off-palette defaults for the custom-message and tool-error blocks.
+      nordCustomBg = config.colors.blend.blue;
+      nordErrorBg = config.colors.blend.red;
     };
 
     colors = {
@@ -62,12 +66,12 @@
       selectedBg = "nord1";
       userMessageBg = "nord1";
       userMessageText = "";
-      customMessageBg = "#3c384f";
+      customMessageBg = "nordCustomBg";
       customMessageText = "";
       customMessageLabel = "nord15";
       toolPendingBg = "nord1";
       toolSuccessBg = "nord0";
-      toolErrorBg = "#3b2f31";
+      toolErrorBg = "nordErrorBg";
       toolText = "";
       toolTitle = "nord8";
       toolOutput = "nord3";
@@ -101,21 +105,24 @@
       thinkingHigh = "nord15";
       thinkingXhigh = "nord7";
       bashMode = "nord8";
+      # Status line mirrors opencode's flat footer: muted labels/metrics
+      # (nordMuted), the model name emphasized in nord6, and green/yellow only
+      # for git state. Kept subdued rather than the vivid per-segment defaults.
       statusLineBg = "nord0";
       statusLineSep = "nord3";
-      statusLineModel = "nord8";
-      statusLinePath = "nord7";
+      statusLineModel = "nord6";
+      statusLinePath = "nordMuted";
       statusLineGitClean = "nord14";
       statusLineGitDirty = "nord13";
-      statusLineContext = "nord9";
-      statusLineSpend = "nord8";
+      statusLineContext = "nord8";
+      statusLineSpend = "nordMuted";
       statusLineStaged = "nord14";
       statusLineDirty = "nord13";
-      statusLineUntracked = "nord8";
-      statusLineOutput = "nord12";
-      statusLineCost = "nord12";
-      statusLineSubagents = "nord8";
-      pythonMode = "#f0c040";
+      statusLineUntracked = "nordMuted";
+      statusLineOutput = "nordMuted";
+      statusLineCost = "nordMuted";
+      statusLineSubagents = "nordMuted";
+      pythonMode = "nord13";
     };
 
     export = {
