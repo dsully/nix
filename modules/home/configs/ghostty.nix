@@ -59,6 +59,10 @@
       #
       # https://gist.github.com/mitchellh/1c5be5c083a2315f22f1cb8f239e9dcd
       keybind = [
+        # https://acchapm1.github.io/tutorials/Oh-My-Pi/omp-deep-dive#23-terminal-keyboard-protocol-requirement
+        "ctrl+j=text:\\x0a"
+        "ctrl+shift+j=text:\\x0a"
+
         # Entry point
         "alt+v=activate_key_table:vim"
 
