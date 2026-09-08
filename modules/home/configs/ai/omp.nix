@@ -59,16 +59,22 @@
     then map rewriteMcpValue value
     else value;
 
+  # Force every MCP server on regardless of its declared `enabled`/`disabled`.
+  # transformMcpServer resolves the flag first, then folds extraTransforms over
+  # the attrs, so this runs last and wins; the trailing null/empty filter then
+  # keeps `enabled = true` (a resolved `null` would otherwise be dropped).
+  forceEnableMcpServer = server: server // {enabled = true;};
+
   # Normalize via lib.hm.mcp.transformMcpServer to drop the typed schema's null
-  # and empty-default fields. omp reads the `enabled` flag directly, so it is
-  # kept. `addType` writes the explicit `stdio`/`http` transport tag that omp
-  # validates against `command`/`url`.
+  # and empty-default fields. `addType` writes the explicit `stdio`/`http`
+  # transport tag that omp validates against `command`/`url`.
   ompMcpServer = server:
     lib.hm.mcp.transformMcpServer {
       inherit server;
       extraTransforms = [
         lib.hm.mcp.addType
         rewriteMcpValue
+        forceEnableMcpServer
       ];
     };
 
@@ -386,8 +392,16 @@ in {
             preset = "custom";
             separator = "powerline-thin";
             sessionAccent = false;
-            leftSegments = ["model" "context_pct" "context_total" "git"];
-            rightSegments = [];
+            leftSegments = [
+              "model"
+              "context_pct"
+              "path"
+              "git"
+            ];
+            rightSegments = [
+              "subagents"
+              "time_spent"
+            ];
             segmentOptions = {
               model.showThinkingLevel = false;
               git = {
