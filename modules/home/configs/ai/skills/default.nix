@@ -155,37 +155,29 @@ in {
             "uv-package-manager"
           ];
         };
-        authoring = {
-          enable = lib.mkDefault false;
-          name = "authoring";
-          input = "softaworks";
-          subdir = "skills";
-          ids = [
-            "agent-md-refactor"
-            "command-creator"
-            "plugin-forge"
-            "skill-judge"
-          ];
-        };
-        softaworks = {
-          name = "systems";
-          input = "softaworks";
-          subdir = "skills";
-          ids = [
-            "commit-work"
-            "crafting-effective-readmes"
-            "naming-analyzer"
-            "reducing-entropy"
-          ];
-          # Dropped from the global set (web/frontend and interpersonal writing —
-          # rarely relevant here, and each one's description is resident for the
-          # whole session). `ids` is a list option, so a host appends rather than
-          # replaces: programs.ai.skills.softaworks.ids = ["react-dev"];
-          #   backend-to-frontend-handoff-docs  frontend-to-backend-requirements
-          #   database-schema-designer          react-dev / react-useeffect
-          #   feedback-mastery                  professional-communication
-          #   game-changing-features            humanizer
-        };
+        # authoring = {
+        #   enable = lib.mkDefault false;
+        #   name = "authoring";
+        #   input = "softaworks";
+        #   subdir = "skills";
+        #   ids = [
+        #     "agent-md-refactor"
+        #     "command-creator"
+        #     "plugin-forge"
+        #     "skill-judge"
+        #   ];
+        # };
+        # softaworks = {
+        #   name = "systems";
+        #   input = "softaworks";
+        #   subdir = "skills";
+        #   ids = [
+        #     "commit-work"
+        #     "crafting-effective-readmes"
+        #     "naming-analyzer"
+        #     "reducing-entropy"
+        #   ];
+        # };
         # systems = {
         #   name = "systems";
         #   input = "wshobson-agents";
@@ -197,7 +189,8 @@ in {
         local = {
           path = ./content;
           ids = [
-            "caveman"
+            "cleanup"
+            "comment-sicko"
             "nix-coding"
             "property-based-testing"
             "python-simplifier"

@@ -277,6 +277,7 @@ in {
               ++ [
                 "${aro}/plugins/autoresearch-context.ts"
                 "${inputs.superpowers}/.opencode/plugins/superpowers.js"
+                "${inputs.ponytail}/.opencode/plugins/ponytail.mjs"
                 "${./plugins/indxr-reminders.js}"
                 "opencode-ascii@0.1.8"
               ]

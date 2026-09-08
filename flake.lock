@@ -725,6 +725,22 @@
         "type": "github"
       }
     },
+    "ponytail": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788798420,
+        "narHash": "sha256-LPNMyHsri3+eeDmphEAKL1JgoRE4dLIPfZ4XZ+xu5UY=",
+        "owner": "DietrichGebert",
+        "repo": "ponytail",
+        "rev": "356918eba965ee1eac64bd3a7f0dd02108350de5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DietrichGebert",
+        "repo": "ponytail",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks-nix": {
       "inputs": {
         "flake-compat": [
@@ -773,6 +789,7 @@
         "nixpkgs": "nixpkgs_2",
         "no-ai-slop": "no-ai-slop",
         "opnix": "opnix",
+        "ponytail": "ponytail",
         "softaworks": "softaworks",
         "superpowers": "superpowers",
         "system-manager": "system-manager",

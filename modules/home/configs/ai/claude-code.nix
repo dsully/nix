@@ -60,6 +60,7 @@
     # plain assignment.
     enabledPlugins = {
       "context-mode@context-mode" = lib.mkDefault true;
+      "ponytail@ponytail" = lib.mkDefault true;
     };
 
     hooks = lib.mkDefault ai.hooks.claude;
@@ -140,7 +141,7 @@ in {
           # official-marketplace agents/commands are delivered through the native
           # `agents`/`commands` options above rather than Claude's native loader.
           marketplaces = {
-            inherit (inputs) context-mode;
+            inherit (inputs) context-mode ponytail;
           };
 
           configDir = "${config.xdg.configHome}/claude";

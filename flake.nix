@@ -43,6 +43,9 @@
     context-mode.url = "github:mksglu/context-mode";
     context-mode.flake = false;
 
+    ponytail.url = "github:DietrichGebert/ponytail";
+    ponytail.flake = false;
+
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
 
