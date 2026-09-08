@@ -223,7 +223,7 @@
       bashMode = "nord8";
       statusLineBg = "nord0";
       statusLineSep = "nord3";
-      statusLineModel = "nord15";
+      statusLineModel = "nord8";
       statusLinePath = "nord7";
       statusLineGitClean = "nord14";
       statusLineGitDirty = "nord13";
@@ -346,43 +346,74 @@ in {
         omp.settings = {
           setupVersion = 2;
 
-          modelRoles.default = "${ai.models.large.provider}/${ai.models.large.model}";
-          defaultThinkingLevel = ai.models.large.reasoning_effort;
-          hideThinkingBlock = true;
-
           astGrep.enabled = true;
+          autolearn.enabled = true;
+          commands.enableClaudeUser = true;
           composer.shape = "pi";
+          defaultThinkingLevel = ai.models.large.reasoning_effort;
+          dev.autoqa = false;
           display.showTokenUsage = false;
-          edit.mode = "hashline";
+
+          edit = {
+            mode = "hashline";
+            autoRepair.enabled = true;
+          };
+
+          error.notify = "on";
+          extendedContext = true;
+          hideThinkingBlock = true;
           lsp.formatOnWrite = true;
-          symbolPreset = "nerd";
-          terminal.showProgress = true;
+
+          marketplace.autoUpdate = "off";
+          memory.backend = "mnemopi";
+          modelRoles.default = "${ai.models.large.provider}/${ai.models.large.model}";
+
+          personality = "pragmatic";
+          providers.memoryModel = "qwen3-1.7b";
+
+          retry.waitForUsageReset = true;
+          skills.enableSkillCommands = false;
+          spelling.typoDetection = false;
+
+          startup = {
+            checkUpdate = false;
+            quiet = true;
+            setupWizard = false;
+            changelogMode = "hidden";
+          };
 
           statusLine = {
-            preset = "nerd";
-            separator = "powerline";
-            sessionAccent = true;
+            preset = "custom";
+            separator = "powerline-thin";
+            sessionAccent = false;
+            leftSegments = ["model" "context_pct" "context_total" "git"];
+            rightSegments = [];
+            segmentOptions = {
+              model.showThinkingLevel = false;
+              git = {
+                showBranch = true;
+                showStaged = false;
+                showUnstaged = false;
+                showUntracked = false;
+              };
+            };
           };
+
+          steeringMode = "one-at-a-time";
+          symbolPreset = "nerd";
+          terminal.showProgress = true;
 
           theme = {
             dark = "nord";
             light = "light";
           };
 
-          # Nix owns the config, so onboarding and the update check have
-          # nothing to change; autoqa reports tool issues to qa.omp.sh.
-          dev.autoqa = false;
-          startup = {
-            checkUpdate = false;
-            quiet = true;
-            setupWizard = false;
-          };
-
           tools.approvalMode = "yolo";
 
-          # Every skill description already sits in the system prompt; a
-          # slash command per skill lists them a second time.
-          skills.enableSkillCommands = false;
+          tui = {
+            textSizing = true;
+            reactions = false;
+          };
         };
       };
     })
