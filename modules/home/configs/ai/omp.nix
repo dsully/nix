@@ -66,7 +66,10 @@
   ompMcpServer = server:
     lib.hm.mcp.transformMcpServer {
       inherit server;
-      extraTransforms = [lib.hm.mcp.addType rewriteMcpValue];
+      extraTransforms = [
+        lib.hm.mcp.addType
+        rewriteMcpValue
+      ];
     };
 
   ompMcpServers = lib.mapAttrs (_: ompMcpServer) config.programs.mcp.servers;
@@ -106,13 +109,26 @@
     emmylua-ls = {
       inherit (ai.lsp.lua) command;
       fileTypes = [".lua"];
-      rootMarkers = [".emmyrc.json" ".luarc.json" ".luarc.jsonc" ".stylua.toml" "stylua.toml"];
+      rootMarkers = [
+        ".emmyrc.json"
+        ".luarc.json"
+        ".luarc.jsonc"
+        ".stylua.toml"
+        "stylua.toml"
+      ];
     };
 
     tombi = {
       inherit (ai.lsp.toml) command args;
       fileTypes = [".toml"];
-      rootMarkers = ["tombi.toml" "Cargo.toml" "pyproject.toml" ".git"];
+      rootMarkers = [
+        "tombi.toml"
+        "Cargo.toml"
+        "pyproject.toml"
+        ".git"
+      ];
+    };
+  };
     };
   };
 in {
@@ -168,10 +184,12 @@ in {
         # target file. A `home.file` store symlink is read-only and lives under
         # /nix/store, so both the lock and the atomic rewrite fail with EACCES
         # and break every launch. Copy a writable regular file instead.
-        activation.ompConfig = lib.mkIf (cfg.settings != null) (lib.hm.dag.entryAfter ["writeBoundary"] ''
-          run mkdir -p ${lib.escapeShellArgs ([ompPath] ++ xdgRoots)}
-          run install -m 600 ${configFile} "${ompPath}/config.yml"
-        '');
+        activation.ompConfig = lib.mkIf (cfg.settings != null) (
+          lib.hm.dag.entryAfter ["writeBoundary"] ''
+            run mkdir -p ${lib.escapeShellArgs ([ompPath] ++ xdgRoots)}
+            run install -m 600 ${configFile} "${ompPath}/config.yml"
+          ''
+        );
 
         sessionVariables.PI_CONFIG_DIR = ompConfigDir;
 
