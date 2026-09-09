@@ -9,11 +9,20 @@
   # Wrap an MCP stdio server definition so it is launched via mcp-mux, which
   # shares one upstream process across all concurrent MCP client sessions.
   # See https://github.com/thebtf/mcp-mux.
-  muxWrap = server:
-    server
+  #
+  # A server may set `stateless = true` when its behavior does not depend on the
+  # client's working directory (e.g. a network/API server). That drops cwd from
+  # mcp-mux's server-identity hash (`--stateless`), so one upstream is shared
+  # globally instead of one per project directory. The marker is stripped here;
+  # it is not a valid key on the typed `programs.mcp.servers` option.
+  muxWrap = server: let
+    stateless = server.stateless or false;
+    base = removeAttrs server ["stateless"];
+  in
+    base
     // {
       command = lib.getExe my.pkgs.mcp-mux;
-      args = [server.command] ++ (server.args or []);
+      args = lib.optional stateless "-stateless" ++ [base.command] ++ (base.args or []);
     };
 
   agentDescription = file: let

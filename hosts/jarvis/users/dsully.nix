@@ -83,6 +83,7 @@ in {
           Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
         };
         enabled = false;
+        stateless = true;
       };
       unifi = ai.muxWrap {
         command = "${config.home.homeDirectory}/.local/bin/unifi-mcp-server";
@@ -93,6 +94,7 @@ in {
           UNIFI_LOCAL_VERIFY_SSL = "false";
         };
         enabled = false;
+        stateless = true;
       };
     };
 
