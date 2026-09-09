@@ -33,11 +33,10 @@ in {
       PIP_CONFIG_FILE = "${config.xdg.configHome}/pip/pip.conf";
       PIP_DISABLE_PIP_VERSION_CHECK = "1";
       PIP_REQUIRE_VIRTUALENV = "1";
-      POETRY_CACHE_DIR = "${config.xdg.cacheHome}/poetry";
-      POETRY_CONFIG_DIR = "${config.xdg.configHome}/poetry";
-      POETRY_DATA_DIR = "${config.xdg.dataHome}/poetry";
-      PYTHONDONTWRITEBYTECODE = "1";
       PTPYTHON_CONFIG_HOME = "${config.xdg.configHome}/ptpython";
+      PYTHONDONTWRITEBYTECODE = "1";
+      UV_PREVIEW = "1";
+      UV_PREVIEW_FEATURES = "content-addressed-cache";
       VIRTUAL_ENV_DISABLE_PROMPT = "1";
     };
   };
