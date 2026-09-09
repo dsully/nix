@@ -53,7 +53,6 @@ in {
           mcp-mux
           mcp-server-git-rs
           mcptools
-          rust-mcp-server
         ])
         ++ [pkgs.mcp-nixos];
     };

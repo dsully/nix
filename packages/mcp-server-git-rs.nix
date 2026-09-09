@@ -29,7 +29,6 @@ in
     dontConfigure = true;
     dontBuild = true;
     dontStrip = true;
-    # sourceRoot = ".";
 
     installPhase = ''
       runHook preInstall
