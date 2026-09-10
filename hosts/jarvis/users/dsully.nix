@@ -92,6 +92,7 @@ in {
           UNIFI_DEFAULT_SITE = "default";
           UNIFI_LOCAL_HOST = "10.0.0.1";
           UNIFI_LOCAL_VERIFY_SSL = "false";
+          UNIFI_SITE_MANAGER_ENABLED = "true";
         };
         enabled = false;
         stateless = true;
