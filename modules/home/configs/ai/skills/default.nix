@@ -113,18 +113,35 @@ in {
             "error-handling-patterns"
           ];
         };
-        # Process skills: valuable, but they fire on a minority of sessions and
-        # their descriptions are long. Opt in per-host/project instead.
-        practices = {
-          enable = lib.mkDefault false;
-          name = "practices";
-          input = "addyosmani-skills";
-          subdir = "skills";
+        # mattpocock/skills (MIT) nests skills one level deep, and a source takes
+        # a single `subdir`, so each category is its own group. Only skills that
+        # need no per-repo scaffolding are selected: everything under `triage`,
+        # `to-tickets`, `to-spec`, `wayfinder`, `ask-matt`, and `code-review`
+        # expects `docs/agents/issue-tracker.md` from that repo's
+        # `setup-matt-pocock-skills`, and the `misc` + `in-progress` categories
+        # are TypeScript/husky-specific or unstable upstream.
+        #
+        # Append per-host from the same categories with e.g.
+        # `programs.ai.skills.mattpocock-engineering.ids = ["diagnosing-bugs"];`
+        # (also available: prototype, improve-codebase-architecture, wizard).
+        mattpocock-engineering = {
+          name = "mattpocock-engineering";
+          input = "mattpocock-skills";
+          subdir = "skills/engineering";
           ids = [
-            "constraint-driven-development"
-            "doubt-driven-development"
-            "interview-me"
-            "source-driven-development"
+            "codebase-design"
+            "resolving-merge-conflicts"
+          ];
+        };
+        # `grilling` replaces the addyosmani interview-me/doubt-driven pair: same
+        # job, a fraction of the prompt.
+        mattpocock-productivity = {
+          name = "mattpocock-productivity";
+          input = "mattpocock-skills";
+          subdir = "skills/productivity";
+          ids = [
+            "grilling"
+            "writing-for-agents"
           ];
         };
         writing = {

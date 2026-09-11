@@ -3,6 +3,7 @@ build-results/
 nix.conf
 result
 result-*
+.pi/
 
 AGENTS.md
 INDEX.md

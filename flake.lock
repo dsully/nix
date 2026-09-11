@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "addyosmani-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1788852116,
-        "narHash": "sha256-26aWgnw92KcA4b6bqpbWvs6aSCwBmIsANffUI445B8U=",
-        "owner": "addyosmani",
-        "repo": "agent-skills",
-        "rev": "6ca0cd7db39b41b1c37e26d335c507ee92382c6d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "addyosmani",
-        "repo": "agent-skills",
-        "type": "github"
-      }
-    },
     "agent-skills": {
       "inputs": {
         "blueprint": "blueprint",
@@ -468,6 +452,22 @@
         "type": "github"
       }
     },
+    "mattpocock-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788511407,
+        "narHash": "sha256-dF5i37jHnqfcXD1IRSVzSSm/pfCYSUmOsEhhs5Zx340=",
+        "owner": "mattpocock",
+        "repo": "skills",
+        "rev": "3cca18b368ae95cdbdebbff572ccafa662551015",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattpocock",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "meridian": {
       "inputs": {
         "bun2nix": "bun2nix_2",
@@ -771,7 +771,6 @@
     },
     "root": {
       "inputs": {
-        "addyosmani-skills": "addyosmani-skills",
         "agent-skills": "agent-skills",
         "autoresearch-opencode": "autoresearch-opencode",
         "claude-plugins-official": "claude-plugins-official",
@@ -781,6 +780,7 @@
         "home-manager": "home-manager_2",
         "improve": "improve",
         "llm-agents": "llm-agents",
+        "mattpocock-skills": "mattpocock-skills",
         "meridian": "meridian",
         "nix-auth": "nix-auth",
         "nix-darwin": "nix-darwin",

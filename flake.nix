@@ -52,8 +52,8 @@
     softaworks.url = "github:softaworks/agent-toolkit";
     softaworks.flake = false;
 
-    addyosmani-skills.url = "github:addyosmani/agent-skills";
-    addyosmani-skills.flake = false;
+    mattpocock-skills.url = "github:mattpocock/skills";
+    mattpocock-skills.flake = false;
 
     no-ai-slop.url = "github:petergyang/no-ai-slop";
     no-ai-slop.flake = false;
