@@ -105,6 +105,7 @@ in {
           all = true;
         };
         essentials = {
+          enable = lib.mkDefault false;
           name = "essentials";
           input = "wshobson-agents";
           subdir = "plugins/developer-essentials/skills";
@@ -112,7 +113,10 @@ in {
             "error-handling-patterns"
           ];
         };
+        # Process skills: valuable, but they fire on a minority of sessions and
+        # their descriptions are long. Opt in per-host/project instead.
         practices = {
+          enable = lib.mkDefault false;
           name = "practices";
           input = "addyosmani-skills";
           subdir = "skills";
@@ -186,15 +190,17 @@ in {
         #     "memory-safety-patterns"
         #   ];
         # };
+        # Only skills that fire on most repos live here. The rest
+        # (property-based-testing, python-simplifier, typescript-simplifier)
+        # stay in ./content unselected; enable them where they apply with
+        # `programs.ai.skills.local.ids = ["python-simplifier"];` — list
+        # options merge, so the host config appends to this set.
         local = {
           path = ./content;
           ids = [
             "cleanup"
             "comment-sicko"
             "nix-coding"
-            "property-based-testing"
-            "python-simplifier"
-            "typescript-simplifier"
           ];
         };
       };
