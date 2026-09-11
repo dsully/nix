@@ -80,7 +80,7 @@ in {
         servers = ai.mcpServers;
       };
 
-      pi-coding-agent.enable = false;
+      pi-coding-agent.enable = lib.mkDefault false;
     };
   };
 }
