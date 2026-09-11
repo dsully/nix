@@ -17,8 +17,11 @@
     system-manager.url = "github:numtide/system-manager";
     system-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-auth.url = "github:numtide/nix-auth";
-    nix-auth.inputs.nixpkgs.follows = "nixpkgs";
+    nix-auth = {
+      url = "github:numtide/nix-auth";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
 
     nix-wrapper-modules.url = "github:nix-community/nix-wrapper-modules";
     nix-wrapper-modules.inputs.nixpkgs.follows = "nixpkgs";
@@ -28,14 +31,36 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
 
-    llm-agents.url = "github:numtide/llm-agents.nix";
-    llm-agents.inputs.nixpkgs.follows = "nixpkgs";
-
-    meridian.url = "github:rynfar/meridian";
-    meridian.inputs.nixpkgs.follows = "nixpkgs";
-
     opnix.url = "github:brizzbuzz/opnix";
     opnix.inputs.nixpkgs.follows = "nixpkgs";
+
+    llm-agents = {
+      # Agent tooling. `bun2nix` is deliberately left un-followed:
+      # llm-agents and meridian pin different versions of it on purpose.
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
+    meridian = {
+      url = "github:rynfar/meridian";
+
+      inputs = {
+        # We consume meridian's package, never its homeManagerModules, so its own
+        # home-manager copy is dead weight in the lock.
+        home-manager.follows = "home-manager";
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    agent-skills.url = "github:Kyure-A/agent-skills-nix";
+    agent-skills.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Agent content: skills, plugins, and prompt collections consumed as plain
+    # file trees. All `flake = false`, all churn far faster than the rest.
+    autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
+    autoresearch-opencode.flake = false;
 
     claude-plugins-official.url = "github:anthropics/claude-plugins-official";
     claude-plugins-official.flake = false;
@@ -43,14 +68,8 @@
     context-mode.url = "github:mksglu/context-mode";
     context-mode.flake = false;
 
-    ponytail.url = "github:DietrichGebert/ponytail";
-    ponytail.flake = false;
-
-    wshobson-agents.url = "github:wshobson/agents";
-    wshobson-agents.flake = false;
-
-    softaworks.url = "github:softaworks/agent-toolkit";
-    softaworks.flake = false;
+    improve.url = "github:shadcn/improve";
+    improve.flake = false;
 
     mattpocock-skills.url = "github:mattpocock/skills";
     mattpocock-skills.flake = false;
@@ -58,21 +77,17 @@
     no-ai-slop.url = "github:petergyang/no-ai-slop";
     no-ai-slop.flake = false;
 
-    agent-skills.url = "github:Kyure-A/agent-skills-nix";
-    agent-skills.inputs.nixpkgs.follows = "nixpkgs";
+    ponytail.url = "github:DietrichGebert/ponytail";
+    ponytail.flake = false;
 
-    autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
-    autoresearch-opencode.flake = false;
+    softaworks.url = "github:softaworks/agent-toolkit";
+    softaworks.flake = false;
 
-    superpowers = {
-      url = "github:obra/superpowers";
-      flake = false;
-    };
+    superpowers.url = "github:obra/superpowers";
+    superpowers.flake = false;
 
-    improve = {
-      url = "github:shadcn/improve";
-      flake = false;
-    };
+    wshobson-agents.url = "github:wshobson/agents";
+    wshobson-agents.flake = false;
   };
 
   outputs = inputs:
@@ -83,64 +98,7 @@
     }: let
       inherit (inputs.nixpkgs) lib;
 
-      # Auto-discover packages from packages/ as { name = pathToCallPackage; }.
-      packageDir = ./packages;
-      packagePaths = lib.pipe (builtins.readDir packageDir) [
-        (lib.filterAttrs (name: type:
-          (type == "regular" && lib.hasSuffix ".nix" name)
-          || type == "directory"))
-        (lib.mapAttrs' (name: type:
-          lib.nameValuePair
-          (
-            if type == "regular"
-            then lib.removeSuffix ".nix" name
-            else name
-          )
-          (packageDir + "/${name}")))
-      ];
-
-      # Auto-discover public home modules from modules/home/*.nix.
-      # Internal files (imported directly by dsully.nix) are excluded.
-      homeModulesDir = ./modules/home;
-      homeModulesInternal = ["colors.nix" "dotfiles.nix"];
-
-      # Every config listed in configs/default.nix is already imported by
-      # dsully.nix. This attrset exposes the rest for per-host opt-in.
-      homeConfigsDir = ./modules/home/configs;
-      homeConfigs = lib.pipe (builtins.readDir homeConfigsDir) [
-        (lib.filterAttrs (
-          name: type:
-            name
-            != "default.nix"
-            && (
-              (type == "regular" && lib.hasSuffix ".nix" name)
-              || type == "directory"
-            )
-        ))
-        (lib.mapAttrs' (name: _:
-          lib.nameValuePair
-          (lib.removeSuffix ".nix" name)
-          (homeConfigsDir + "/${name}")))
-      ];
-
-      homeModules =
-        (lib.pipe (builtins.readDir homeModulesDir) [
-          (lib.filterAttrs (
-            name: type:
-              type
-              == "regular"
-              && lib.hasSuffix ".nix" name
-              && !(builtins.elem name homeModulesInternal)
-          ))
-          (lib.mapAttrs' (name: _:
-            lib.nameValuePair
-            (lib.removeSuffix ".nix" name)
-            (homeModulesDir + "/${name}")))
-        ])
-        // {
-          ai = ./modules/home/configs/ai;
-          configs = homeConfigs;
-        };
+      inherit (import ./lib/discovery.nix {inherit lib;}) homeModules packagePaths;
 
       darwinModules = {
         common = ./modules/darwin/common.nix;
@@ -304,7 +262,7 @@
       in {
         _module.args.pkgs = pkgs;
 
-        packages = selfPackages // {formatter = fmt;};
+        packages = selfPackages;
 
         formatter = fmt;
 
