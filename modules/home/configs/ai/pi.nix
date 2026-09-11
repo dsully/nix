@@ -156,7 +156,7 @@ in {
                 "npm:@juicesharp/rpiv-todo@2.9.0"
                 "npm:pi-agent-browser-native@0.6.10"
                 "npm:pi-background-tasks@2.5.0"
-                "npm:pi-browser-use@0.11.3"
+                # "npm:pi-browser-use@0.11.3"
                 "npm:pi-claude-marketplace@0.18.3"
                 "npm:pi-mcp-adapter@2.32.1"
                 "npm:pi-powerline-footer@0.17.0"
