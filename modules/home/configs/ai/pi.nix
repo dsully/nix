@@ -107,6 +107,13 @@ in {
 
           settings = {
             collapseChangelog = true;
+
+            compaction = {
+              enabled = true;
+              reserveTokens = 16384;
+              keepRecentTokens = 20000;
+            };
+
             defaultModel = ai.models.large.model;
             defaultProvider = ai.models.large.provider;
             defaultThinkingLevel = ai.models.large.reasoning_effort;
