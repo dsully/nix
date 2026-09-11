@@ -130,18 +130,16 @@ in {
           subdir = "skills/engineering";
           ids = [
             "codebase-design"
-            "resolving-merge-conflicts"
+            # "resolving-merge-conflicts"
           ];
         };
-        # `grilling` replaces the addyosmani interview-me/doubt-driven pair: same
-        # job, a fraction of the prompt.
         mattpocock-productivity = {
           name = "mattpocock-productivity";
           input = "mattpocock-skills";
           subdir = "skills/productivity";
           ids = [
             "grilling"
-            "writing-for-agents"
+            # "writing-for-agents"
           ];
         };
         writing = {
@@ -217,7 +215,6 @@ in {
           ids = [
             "cleanup"
             "comment-sicko"
-            "nix-coding"
           ];
         };
       };
