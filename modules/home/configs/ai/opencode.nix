@@ -172,6 +172,7 @@ in {
             "@capybearista/opencode-adversarial-review@1.0.0"
             # "@capybearista/opencode-agents-loader@latest"
             "@capybearista/opencode-output-styles@1.0.1"
+            "@tianhuil/opencode-hashlines@0.1.0"
             "cc-safety-net@2.3.2" # https://ccsafetynet.com/
             "context-mode@1.0.169"
           ];
@@ -270,6 +271,10 @@ in {
             lsp = lib.mkDefault (lib.removeAttrs opencodeLsp ["rust"]);
 
             permission = lib.mkDefault ai.permissions.opencode.permission;
+
+            # opencode-hashlines replaces the built-in edit tool with hash-anchored
+            # hashread/hashedit. Disable the native edit tool so the model uses it.
+            tools.edit = false;
 
             plugin =
               lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
