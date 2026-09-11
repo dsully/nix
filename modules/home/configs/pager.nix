@@ -1,4 +1,3 @@
-# https://github.com/sharkdp/bat
 {
   lib,
   pkgs,
@@ -17,6 +16,7 @@ in {
     PAGER = pager;
   };
 
+  # https://github.com/sharkdp/bat
   programs.bat = {
     enable = true;
     config = {
