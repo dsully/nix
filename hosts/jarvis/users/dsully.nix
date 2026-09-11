@@ -114,6 +114,8 @@ in {
       };
     };
 
+    pi-coding-agent.enable = true;
+
     topgrade = {
       settings = lib.mkMerge [
         {

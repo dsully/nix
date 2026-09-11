@@ -92,7 +92,7 @@ in {
     '';
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     xdg.configFile."omp/plugins/package.json".source = packageJson;
     xdg.configFile."omp/plugins/omp-plugins.lock.json".source = pluginsLock;
 

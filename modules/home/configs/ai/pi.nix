@@ -142,8 +142,10 @@ in {
             npmCommand = [(lib.getExe config.programs.bun.package)];
             packages = lib.unique (
               [
+                "git:github.com/paoloanzn/pi-black@v0.84.1-cc2.1.258.1"
+
                 # https://github.com/YuGiMob/pi-hashline-edit-pro
-                "npm:pi-hashline-edit-pro@4.2.3"
+                # "npm:pi-hashline-edit-pro@4.2.3"
 
                 "npm:pi-mcp-adapter@2.32.1"
                 "npm:pi-subagents@0.67.0"

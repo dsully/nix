@@ -175,7 +175,7 @@ in {
   };
 
   config = lib.mkMerge [
-    {programs.omp.enable = lib.mkDefault true;}
+    {programs.omp.enable = lib.mkDefault false;}
 
     (lib.mkIf cfg.enable {
       assertions = [
