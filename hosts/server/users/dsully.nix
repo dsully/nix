@@ -237,7 +237,11 @@ in {
         # Give qBittorrent time to save resume data and remove its instance
         # socket on stop, rather than hitting the 90s default and getting SIGKILLed.
         TimeoutStopSec = "180s";
-        KillSignal = "SIGINT";
+        # SIGINT makes the vopono daemon inject a 0x03 byte into the child PTY
+        # instead of signalling it, so shutdown depends on qBittorrent reading
+        # its terminal. SIGTERM takes the daemon's other branch, which calls
+        # kill() on the child process group directly.
+        KillSignal = "SIGTERM";
         Type = "simple";
       };
       Install = {
