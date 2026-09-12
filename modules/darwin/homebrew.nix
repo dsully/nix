@@ -80,11 +80,5 @@
       "WordService" = 899972312;
       "Yoink" = 457622435;
     };
-
-    taps = [
-      "jazzyalex/agent-sessions"
-      "jithin-sabu/tap"
-      "skulkworks/tap"
-    ];
   };
 }

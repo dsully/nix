@@ -7,10 +7,6 @@
       ];
     };
 
-    taps = [
-      "haukesomm/repo"
-    ];
-
     brews = [
       "haukesomm/repo/apple-photos-export"
     ];
