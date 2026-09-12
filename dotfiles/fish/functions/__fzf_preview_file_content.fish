@@ -23,8 +23,7 @@ function __fzf_preview_file_content --description 'Preview file content'
 
     switch $path
         case "*.md"
-            # Use 'see' instead?
-            command glow -s dark $path
+            command mdterm -s dark $path
 
         case "*.plist"
             command plutil -p $path
@@ -37,7 +36,7 @@ function __fzf_preview_file_content --description 'Preview file content'
                     command bat $bat_args -l json $path
 
                 case image/{gif,jpeg,png,svg+xml,webp}
-                    set -l TERM xterm-kitty
+                    set -x TERM xterm-kitty
                     command viu $path
 
                 case application/{gzip,java-archive,x-{7z-compressed,bzip2,chrome-extension,rar,tar,xar},zip}
