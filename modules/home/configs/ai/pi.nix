@@ -151,7 +151,7 @@ in {
               [
                 # "npm:pi-hashline-edit-pro@4.2.3" # https://github.com/YuGiMob/pi-hashline-edit-pro
                 # "npm:pi-lens@4.1.5"
-                "npm:context-mode@1.0.169"
+                "npm:context-mode@${ai.contextModeVersion}"
                 "npm:@juicesharp/rpiv-ask-user-question@2.9.0"
                 "npm:@juicesharp/rpiv-todo@2.9.0"
                 "npm:pi-agent-browser-native@0.6.10"

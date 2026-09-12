@@ -118,22 +118,6 @@
         "type": "github"
       }
     },
-    "context-mode": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1789214758,
-        "narHash": "sha256-I+PQP/DT7cob3XdFNGwor2EAp2sMAtvlx5Li/2oPoZQ=",
-        "owner": "mksglu",
-        "repo": "context-mode",
-        "rev": "4d4dbf6b9ef3f183414997f431e92c9a159b0f75",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mksglu",
-        "repo": "context-mode",
-        "type": "github"
-      }
-    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -641,7 +625,6 @@
         "agent-skills": "agent-skills",
         "autoresearch-opencode": "autoresearch-opencode",
         "claude-plugins-official": "claude-plugins-official",
-        "context-mode": "context-mode",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",

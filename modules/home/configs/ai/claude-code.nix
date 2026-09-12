@@ -59,7 +59,6 @@
     # Keys below are mkDefault, so a downstream flake can override them with a
     # plain assignment.
     enabledPlugins = {
-      "context-mode@context-mode" = lib.mkDefault true;
       "ponytail@ponytail" = lib.mkDefault true;
     };
 
@@ -137,11 +136,11 @@ in {
           inherit (ai) agents commands outputStyles;
           inherit settings;
 
-          # context-mode is the only marketplace we enable a plugin from; the curated
-          # official-marketplace agents/commands are delivered through the native
-          # `agents`/`commands` options above rather than Claude's native loader.
+          # The curated official-marketplace agents/commands are delivered through
+          # the native `agents`/`commands` options above rather than Claude's
+          # native loader.
           marketplaces = {
-            inherit (inputs) context-mode ponytail;
+            inherit (inputs) ponytail;
           };
 
           configDir = "${config.xdg.configHome}/claude";

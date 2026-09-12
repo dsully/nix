@@ -226,6 +226,10 @@
     )
     mcpServers;
 
+  # pi and opencode each install context-mode from npm as a plugin; pin the one
+  # version here so they cannot drift apart.
+  contextModeVersion = "1.0.169";
+
   permissions = import ./permissions.nix {inherit config lib;};
 
   # Output styles, in Claude Code's format (frontmatter + system-prompt body).
@@ -260,6 +264,7 @@ in {
     agentDescription
     agents
     commands
+    contextModeVersion
     defaultOutputStyle
     descriptions
     hooks

@@ -174,7 +174,7 @@ in {
             "@capybearista/opencode-output-styles@1.0.1"
             "@tianhuil/opencode-hashlines@0.1.0"
             "cc-safety-net@2.3.2" # https://ccsafetynet.com/
-            "context-mode@1.0.169"
+            "context-mode@${ai.contextModeVersion}"
           ];
 
           # Every agent (marketplace + in-tree) is written into
