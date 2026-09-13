@@ -156,6 +156,11 @@ in {
           lspServers = claudeCodeLsp;
         };
       };
+
+      worktrunk = {
+        enable = true;
+        claudeCodeIntegration = true;
+      };
     })
   ];
 }
