@@ -2,11 +2,10 @@
   config,
   lib,
   pkgs,
+  piPath,
   ...
 }: let
   jsonFormat = pkgs.formats.json {};
-
-  piPath = "${config.home.homeDirectory}/.pi/agent";
 
   nordTheme = {
     "$schema" = "https://raw.githubusercontent.com/badlogic/pi-mono/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json";

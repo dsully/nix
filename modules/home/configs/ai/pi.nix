@@ -60,7 +60,10 @@ in {
   ];
 
   config = lib.mkMerge [
-    {programs.pi-coding-agent.enable = lib.mkDefault true;}
+    {
+      _module.args.piPath = piPath;
+      programs.pi-coding-agent.enable = lib.mkDefault true;
+    }
 
     (lib.mkIf config.programs.pi-coding-agent.enable {
       home = {
