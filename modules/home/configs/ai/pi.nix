@@ -157,6 +157,7 @@ in {
                 "npm:@juicesharp/rpiv-ask-user-question@2.9.0"
                 "npm:@juicesharp/rpiv-todo@2.9.0"
                 "npm:pi-agent-browser-native@0.6.10"
+                "npm:pi-autoresearch@1.8.1"
                 "npm:pi-background-tasks@2.5.0"
                 # "npm:pi-browser-use@0.11.3"
                 "npm:pi-claude-marketplace@0.18.3"
