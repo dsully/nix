@@ -7,7 +7,7 @@
   ...
 }: let
   jsonFormat = pkgs.formats.json {};
-  piPath = "${config.home.homeDirectory}/.pi/agent";
+  piPath = "${config.xdg.configHome}/pi/agent";
 
   rewriteEnvPlaceholders = lib.replaceStrings ["{env:"] ["\${"];
   rewriteMcpValue = value:
@@ -65,6 +65,8 @@ in {
     (lib.mkIf config.programs.pi-coding-agent.enable {
       home = {
         file = {
+          ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
+
           "${piPath}/mcp.json" = lib.mkIf (piMcpServers != {}) {
             source = jsonFormat.generate "pi-mcp.json" {
               mcpServers = piMcpServers;
@@ -77,10 +79,10 @@ in {
           # --fix. Turn both off so the hook is the single formatter of record;
           # LSP, lint dispatch, and diagnostics stay on. Read-only file is fine —
           # pi-lens only reads this, never rewrites it.
-          ".pi-lens/config.json".source = jsonFormat.generate "pi-lens-config.json" {
-            format.enabled = false;
-            autofix.enabled = false;
-          };
+          # ".pi-lens/config.json".source = jsonFormat.generate "pi-lens-config.json" {
+          #   format.enabled = false;
+          #   autofix.enabled = false;
+          # };
         };
       };
 
@@ -99,6 +101,8 @@ in {
               POWERLINE_NERD_FONTS = "1";
             };
           };
+
+          configDir = piPath;
 
           context = ''
             ${builtins.readFile ./AGENTS.md}
@@ -160,7 +164,7 @@ in {
                 "npm:pi-claude-marketplace@0.18.3"
                 "npm:pi-mcp-adapter@2.32.1"
                 "npm:pi-powerline-footer@0.17.0"
-                "npm:pi-subagents@0.67.0"
+                "npm:@tintinweb/pi-subagents"
                 "npm:pi-tool-display@0.5.0" # https://github.com/MasuRii/pi-tool-display
                 "npm:@pi-unipi/notify@2.16.0"
                 "npm:pi-web-access@0.28.0"
