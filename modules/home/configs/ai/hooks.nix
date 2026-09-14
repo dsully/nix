@@ -31,8 +31,6 @@
     }
     // lib.optionalAttrs (matcher != null) {inherit matcher;};
 
-  icmEnabled = config.programs.icm.enable or true;
-
   # `herdr integration install claude` writes this hook into settings.json
   # itself, but claudeCodeSettings rewrites that file from the store on every
   # activation. Declaring the same entry here is what makes it survive; herdr
@@ -48,111 +46,73 @@
     && config.programs.llmtrim.integrations.claudeCode.guard;
 
   events = {
-    PreCompact = lib.optional icmEnabled (group {
-      hooks = [
-        (hook {
-          name = "icm-compact";
-          command = "${lib.getExe pkgs.llm-agents.icm} hook compact";
-        })
-      ];
-    });
-
     PreToolUse = [
       (group {
         matcher = "Bash";
-        hooks =
-          [
-            (hook {
-              name = "prefer-indxr-diff-summary";
-              command = ''
-                # $TOOL_INPUT is never set — the payload is JSON on stdin, so this
-                # matched nothing and the hint never fired.
-                if ${lib.getExe pkgs.jq} -r '.tool_input.command // ""' | grep -qE 'git[[:space:]]+diff'; then
-                  echo 'IMPORTANT: Use indxr get_diff_summary MCP tool instead of git diff (requires --all-tools). It shows structural changes (added/removed/modified declarations) at ~200-500 tokens vs thousands for raw diffs. Example: get_diff_summary(since_ref: "main")'
-                fi
-              '';
-            })
-            (hook {
-              name = "enforce-uv";
-              command = "${./hooks/enforce-uv.fish}";
-            })
-          ]
-          ++ lib.optional icmEnabled (hook {
-            name = "icm-pre";
-            command = "${lib.getExe pkgs.llm-agents.icm} hook pre";
-          });
+        hooks = [
+          (hook {
+            name = "prefer-indxr-diff-summary";
+            command = ''
+              # $TOOL_INPUT is never set — the payload is JSON on stdin, so this
+              # matched nothing and the hint never fired.
+              if ${lib.getExe pkgs.jq} -r '.tool_input.command // ""' | grep -qE 'git[[:space:]]+diff'; then
+                echo 'IMPORTANT: Use indxr get_diff_summary MCP tool instead of git diff (requires --all-tools). It shows structural changes (added/removed/modified declarations) at ~200-500 tokens vs thousands for raw diffs. Example: get_diff_summary(since_ref: "main")'
+              fi
+            '';
+          })
+          (hook {
+            name = "enforce-uv";
+            command = "${./hooks/enforce-uv.fish}";
+          })
+        ];
       })
     ];
 
-    PostToolUse =
-      [
-        (group {
-          matcher = "Edit|Write|MultiEdit";
-          hooks = [
-            (hook {
-              name = "format-written-file";
-              command =
-                # bash
-                ''
-                  # Hook payload arrives as JSON on stdin, not argv — reading "$1"
-                  # here silently formatted nothing at all.
-                  file_path="$(${lib.getExe pkgs.jq} -r '.tool_input.file_path // empty')"
-                  [ -n "$file_path" ] || exit 0
+    PostToolUse = [
+      (group {
+        matcher = "Edit|Write|MultiEdit";
+        hooks = [
+          (hook {
+            name = "format-written-file";
+            command =
+              # bash
+              ''
+                # Hook payload arrives as JSON on stdin, not argv — reading "$1"
+                # here silently formatted nothing at all.
+                file_path="$(${lib.getExe pkgs.jq} -r '.tool_input.file_path // empty')"
+                [ -n "$file_path" ] || exit 0
 
-                  case "$file_path" in
-                    *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
-                    *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
-                    *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
-                  esac
-                '';
-              targets = ["claude"];
-              timeout = 10;
-            })
-          ];
-        })
-      ]
-      # icm extracts facts from *all* tool output every N calls, so it must not
-      # be scoped to file-mutation tools. No matcher = fires on every tool.
-      ++ lib.optional icmEnabled (group {
-        hooks = [
-          (hook {
-            name = "icm-post";
-            command = "${lib.getExe pkgs.llm-agents.icm} hook post";
-          })
-        ];
-      });
-
-    SessionStart =
-      lib.optional icmEnabled (group {
-        hooks = [
-          (hook {
-            name = "icm-start";
-            command = "${lib.getExe pkgs.llm-agents.icm} hook start";
-          })
-        ];
-      })
-      ++ lib.optional herdrClaudeEnabled (group {
-        matcher = "*";
-        hooks = [
-          (hook {
-            name = "herdr-session";
-            command = "bash '${herdrClaudeHook}' session";
+                case "$file_path" in
+                  *.nix)   ${lib.getExe pkgs.alejandra} "$file_path" 2>/dev/null || true ;;
+                  *.py)    ${lib.getExe pkgs.ruff} format "$file_path" 2>/dev/null || true ;;
+                  *.rs)    rustfmt +nightly "$file_path" 2>/dev/null || true ;;
+                esac
+              '';
             targets = ["claude"];
             timeout = 10;
           })
         ];
-      });
+      })
+    ];
 
-    UserPromptSubmit = lib.optional (icmEnabled || llmtrimGuardEnabled) (group {
-      hooks =
-        lib.optional icmEnabled (hook {
-          name = "icm-prompt";
-          command = "${lib.getExe pkgs.llm-agents.icm} hook prompt";
+    SessionStart = lib.optional herdrClaudeEnabled (group {
+      matcher = "*";
+      hooks = [
+        (hook {
+          name = "herdr-session";
+          command = "bash '${herdrClaudeHook}' session";
+          targets = ["claude"];
+          timeout = 10;
         })
+      ];
+    });
+
+    UserPromptSubmit = lib.optional llmtrimGuardEnabled (group {
+      hooks =
         # Cold-cache guard: blocks one turn when resuming a large session after
         # the prompt cache expired, so the full-context rewrite isn't silent.
         # Claude Code only, and `sub`-style local slash commands pass through.
-        ++ lib.optional llmtrimGuardEnabled (hook {
+        lib.optional llmtrimGuardEnabled (hook {
           name = "llmtrim-guard";
           command = "${lib.getExe my.pkgs.llmtrim} guard";
           targets = ["claude"];
@@ -162,7 +122,7 @@
 
   supportsTarget = target: hookDef:
     builtins.elem target hookDef.targets
-    && !(target == "pi" && lib.hasPrefix "icm-" hookDef.name);
+    && target != "pi";
 
   renderHook = hookDef:
     command (

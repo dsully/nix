@@ -14,7 +14,6 @@ in {
     ./codex.nix
     ./headroom.nix
     ./herdr.nix
-    ./icm.nix
     ./llmtrim.nix
     ./mcp-mux.nix
     ./meridian.nix
@@ -64,10 +63,6 @@ in {
         enable = false;
 
         integrations.claudeCode.enable = true;
-      };
-
-      icm = {
-        enable = false;
       };
 
       # Mutually exclusive with programs.headroom (asserted in llmtrim.nix).

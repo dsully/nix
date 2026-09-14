@@ -154,29 +154,26 @@ in {
             };
 
             npmCommand = [(lib.getExe config.programs.bun.package)];
-            packages = lib.unique (
-              [
-                "npm:context-mode@${ai.contextModeVersion}"
-                "npm:@juicesharp/rpiv-ask-user-question@2.9.0"
-                "npm:@juicesharp/rpiv-todo@2.9.0"
-                "npm:pi-agent-browser-native@0.6.10"
-                "npm:pi-autoresearch@1.8.1"
-                "npm:pi-background-tasks@2.5.0"
-                # "npm:pi-browser-use@0.11.3"
-                "npm:pi-claude-marketplace@0.18.3"
-                # "npm:pi-hashline-edit-pro@4.2.3" # https://github.com/YuGiMob/pi-hashline-edit-pro
-                # "npm:pi-lens@4.1.5"
-                "npm:pi-mcp-adapter@2.32.1"
-                "npm:pi-powerline-footer@0.17.0"
-                "npm:pi-tool-display@0.5.0" # https://github.com/MasuRii/pi-tool-display
-                "npm:@pi-unipi/notify@2.16.0"
-                "npm:pi-web-access@0.28.0"
-                "npm:@sting8k/pi-vcc@0.7.2"
-                "npm:@tintinweb/pi-subagents"
-                "npm:@vanillagreen/pi-skills-manager@2.0.1"
-              ]
-              ++ lib.optional config.programs.icm.enable "npm:pi-icm-hook@0.1.2"
-            );
+            packages = lib.unique [
+              "npm:context-mode@${ai.contextModeVersion}"
+              "npm:@juicesharp/rpiv-ask-user-question@2.9.0"
+              "npm:@juicesharp/rpiv-todo@2.9.0"
+              "npm:pi-agent-browser-native@0.6.10"
+              "npm:pi-autoresearch@1.8.1"
+              "npm:pi-background-tasks@2.5.0"
+              # "npm:pi-browser-use@0.11.3"
+              "npm:pi-claude-marketplace@0.18.3"
+              # "npm:pi-hashline-edit-pro@4.2.3" # https://github.com/YuGiMob/pi-hashline-edit-pro
+              # "npm:pi-lens@4.1.5"
+              "npm:pi-mcp-adapter@2.32.1"
+              "npm:pi-powerline-footer@0.17.0"
+              "npm:pi-tool-display@0.5.0" # https://github.com/MasuRii/pi-tool-display
+              "npm:@pi-unipi/notify@2.16.0"
+              "npm:pi-web-access@0.28.0"
+              "npm:@sting8k/pi-vcc@0.7.2"
+              "npm:@tintinweb/pi-subagents"
+              "npm:@vanillagreen/pi-skills-manager@2.0.1"
+            ];
 
             terminal = {
               showTerminalProgress = true;
