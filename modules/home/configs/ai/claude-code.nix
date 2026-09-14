@@ -14,6 +14,7 @@
   llmtrimStatusLine =
     config.programs.llmtrim.enable
     && config.programs.llmtrim.integrations.claudeCode.statusLine;
+
   lspLanguageIds = {
     bash = {
       ".sh" = "shellscript";
@@ -154,11 +155,6 @@ in {
 
           lspServers = claudeCodeLsp;
         };
-      };
-
-      worktrunk = {
-        enable = true;
-        claudeCodeIntegration = true;
       };
     })
   ];
