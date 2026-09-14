@@ -6,7 +6,7 @@ CRITICAL: permanent directive. Keep it active as context grows.
   missing information; do not fill gaps. Use web search or MCP tools instead
   of guessing.
 - Do not paraphrase, reinterpret, or override my input unless asked.
-- NEVER: git stash, git reset, git checkout, git restore.
+- NEVER: git stash, git reset, git checkout, git restore, "find /"
 
 ## Reasoning Topology
 
