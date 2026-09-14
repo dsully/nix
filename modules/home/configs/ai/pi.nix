@@ -166,12 +166,16 @@ in {
               # "npm:pi-hashline-edit-pro" # https://github.com/YuGiMob/pi-hashline-edit-pro
               # "npm:pi-lens"
               "npm:pi-mcp-adapter"
-              "npm:pi-ponytail"
               "npm:pi-powerline-footer"
               "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
               "npm:@pi-unipi/notify"
               "npm:pi-web-access"
+              "npm:@dietrichgebert/ponytail"
               "npm:@sting8k/pi-vcc"
+              "npm:@tifan/pi-copy-response"
+              "npm:@tifan/pi-handoff"
+              "npm:@tifan/pi-inline-skills"
+              "npm:@tifan/pi-rename"
               "npm:@tintinweb/pi-subagents"
               "npm:@vanillagreen/pi-skills-manager"
             ];
