@@ -23,7 +23,7 @@ function __fzf_preview_file_content --description 'Preview file content'
 
     switch $path
         case "*.md"
-            command mdterm -s dark $path
+            command mdterm --theme dark $path
 
         case "*.plist"
             command plutil -p $path
