@@ -21,7 +21,6 @@ in {
     ./omp.nix
     ./opencode.nix
     ./pi.nix
-    ./rtk.nix
     ./skills
   ];
 

@@ -68,7 +68,6 @@ in {
           context = ''
             ${builtins.readFile ./AGENTS.md}
             ${ai.rulesMarkdown}
-            ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/codex/rtk-awareness.md")}
           '';
 
           settings = {

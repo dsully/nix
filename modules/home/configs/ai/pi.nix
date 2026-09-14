@@ -175,7 +175,6 @@ in {
                 "npm:@tintinweb/pi-subagents"
                 "npm:@vanillagreen/pi-skills-manager@2.0.1"
               ]
-              ++ lib.optional config.programs.rtk.enable "npm:pi-rtk-optimizer@0.9.0"
               ++ lib.optional config.programs.icm.enable "npm:pi-icm-hook@0.1.2"
             );
 

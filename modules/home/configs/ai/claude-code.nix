@@ -147,7 +147,6 @@ in {
 
           context = ''
             ${builtins.readFile ./AGENTS.md}
-            ${lib.optionalString config.programs.rtk.enable (builtins.readFile "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-awareness.md")}
           '';
 
           # Language-specific rules loaded on-demand via `paths:` frontmatter.

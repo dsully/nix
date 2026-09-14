@@ -155,10 +155,6 @@ in {
               message = "programs.llmtrim and programs.headroom both proxy Anthropic traffic; enable at most one.";
             }
             {
-              assertion = !config.programs.rtk.enable;
-              message = "programs.llmtrim and programs.rtk both compress agent payloads; enable at most one.";
-            }
-            {
               assertion =
                 !(claudeCodeCfg.statusLine || claudeCodeCfg.guard) || config.programs.claude-code.enable;
               message = "programs.llmtrim.integrations.claudeCode.{statusLine,guard} require programs.claude-code.enable.";

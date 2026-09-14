@@ -32,7 +32,6 @@
     // lib.optionalAttrs (matcher != null) {inherit matcher;};
 
   icmEnabled = config.programs.icm.enable or true;
-  rtkEnabled = config.programs.rtk.enable;
 
   # `herdr integration install claude` writes this hook into settings.json
   # itself, but claudeCodeSettings rewrites that file from the store on every
@@ -78,11 +77,6 @@
               command = "${./hooks/enforce-uv.fish}";
             })
           ]
-          ++ lib.optional rtkEnabled (hook {
-            name = "rtk-rewrite";
-            command = "${pkgs.llm-agents.rtk}/libexec/rtk/hooks/claude/rtk-rewrite.sh";
-            targets = ["claude"];
-          })
           ++ lib.optional icmEnabled (hook {
             name = "icm-pre";
             command = "${lib.getExe pkgs.llm-agents.icm} hook pre";
