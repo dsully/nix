@@ -91,6 +91,7 @@ in {
 
       programs = {
         agent-skills.targets.pi.enable = true;
+        ai.superpowers.agents = ["pi"];
 
         pi-coding-agent = {
           package = wrapperLib.wrapPackage {

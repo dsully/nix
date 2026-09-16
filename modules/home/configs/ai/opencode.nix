@@ -280,7 +280,10 @@ in {
               lib.optional pkgs.stdenv.hostPlatform.isDarwin my.pkgs.opencode-notifier.passthru.plugin
               ++ [
                 "${aro}/plugins/autoresearch-context.ts"
-                "${inputs.superpowers}/.opencode/plugins/superpowers.js"
+              ]
+              ++ lib.optional (lib.elem "opencode" config.programs.ai.superpowers.agents)
+              "${inputs.superpowers}/.opencode/plugins/superpowers.js"
+              ++ [
                 "${inputs.ponytail}/.opencode/plugins/ponytail.mjs"
                 "${./plugins/indxr-reminders.js}"
                 "opencode-ascii@0.1.8"

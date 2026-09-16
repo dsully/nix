@@ -125,6 +125,7 @@ in {
 
       programs = {
         agent-skills.targets.claude.enable = true;
+        ai.superpowers.agents = ["claude"];
 
         claude-code = {
           package =

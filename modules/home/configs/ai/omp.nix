@@ -232,6 +232,7 @@ in {
           dest = "${ompPath}/skills";
           structure = "symlink-tree";
         };
+        ai.superpowers.agents = ["omp"];
 
         omp.settings = {
           setupVersion = 2;

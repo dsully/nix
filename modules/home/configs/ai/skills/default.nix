@@ -70,6 +70,7 @@ in {
   imports = [
     inputs.agent-skills.homeManagerModules.default
     ./commands.nix
+    ./superpowers.nix
   ];
 
   # Toggleable skill groups. Each group owns one agent-skills source plus its
@@ -90,14 +91,6 @@ in {
       };
 
       programs.ai.skills = {
-        # Superpowers skills are intentionally NOT registered here. The
-        # superpowers plugin (see opencode.nix) already registers them itself via
-        # config.skills.paths, so adding them through agent-skills too would write
-        # them into opencode's discovery dir a second time and trigger a
-        # "duplicate skill name" warning for every one at startup. Let the plugin
-        # be the single owner. Trade-off: the plugin exposes superpowers' full
-        # skill set (including brainstorming / receiving-code-review /
-        # using-superpowers), not the curated subset this group used to select.
         improve = {
           name = "improve";
           input = "improve";

@@ -74,7 +74,7 @@ pointing at a tracked issue.
 - A justified comment is one line. If it needs a paragraph, it is a commit
   message.
 
-```
+```text
 Good: Upstream returns naive datetimes; see #412.
 Bad:  We parsed this as UTC before, which caused duplicate rows in prod, so...
 ```
