@@ -3,7 +3,7 @@ function glr -d "git sync: fetch, autorebase and trim branches that have been me
     set current (command git branch --show-current)
 
     echo "Pulling ..."
-    command git fetch --all --prune
+    command git -c gc.autoDetach=false fetch --all --prune
 
     # Loop through all remotes and attempt fast-forward
     for r in (command git remote)
