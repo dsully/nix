@@ -8,17 +8,17 @@
 }: let
   unwrapped = rustPlatform.buildRustPackage (finalAttrs: rec {
     pname = "nh";
-    rev = "d49f2365f1ca3dafdca978541f02abb523f2c417";
+    rev = "d2a7aa0c40cb0d2e1c433789e369c61fe63e1a76";
     version = "4.3.2-${rev}";
 
     src = fetchFromGitHub {
       owner = "nix-community";
       repo = "nh";
       inherit rev;
-      hash = "sha256-EIAXZh7U5AOZEzFA9IjRgErwEIlNsnAs+3HNAJLjJJo=";
+      hash = "sha256-ft0eSHTwEN/3Uf7GHt+uTsKKtweFpHDPtXqG5QNElf0=";
     };
 
-    cargoHash = "sha256-wTwZhlPyYUBO07b2wTRZw9SAtjxMzy24bqIwx3YeXKo=";
+    cargoHash = "sha256-WkTJ8pMNljzYBD1iPAgWqs3C9V+Ugvcjhpl4n7ULBCs=";
     doCheck = false;
 
     # Make the build output monitor configurable via NH_MONITOR. The wrapper

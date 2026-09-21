@@ -17,17 +17,17 @@
 in
   rustPlatform.buildRustPackage (finalAttrs: {
     pname = "llmtrim";
-    version = "0.13.3";
+    version = "0.13.7";
     __structuredAttrs = true;
 
     src = fetchFromGitHub {
       owner = "fkiene";
       repo = "llmtrim";
-      rev = "0555a6acb9339ce0b88ec13fbfb05ce9a11ceddc";
-      hash = "sha256-aeclpcf3O/uFZ3VuR5fVHhJPbAIU1ezWiBl+jLFk13A=";
+      rev = "1b0dadece1a80790830d4fb6d0bc92d881aaed8d";
+      hash = "sha256-1TK1jzYN1wLWlEDz4LcFAUJvIT+r5ntKDDC8JWHBtag=";
     };
 
-    cargoHash = "sha256-vmMhWqDvy5Q/2M+A5Ur0jat7zVz1CarGXGu1zVBredo=";
+    cargoHash = "sha256-XlhMC7z63vxlOmPxiUVYQRRpiewb2FFigl+Rz5OeVKY=";
     doCheck = false;
 
     # Fix agent fingerprinting: the claude-code marker was the bare substring

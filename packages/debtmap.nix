@@ -6,7 +6,7 @@
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256-U5t8udyL3dp2BwzDC5wlBI6ZKfR4tMTTTE8TeZT3LqQ=";
+      hash = "sha256-0eJObf+TnLZfWky/ErGPfYuHsKiRwQmsIPIMjmEpGtg=";
     };
     x86_64-linux = {
       suffix = "x86_64-unknown-linux-gnu";
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "debtmap";
-    version = "0.23.0";
+    version = "0.24.0";
 
     src = pkgs.fetchurl {
       url = "https://github.com/iepathos/debtmap/releases/download/${version}/debtmap-${source.suffix}.tar.gz";
