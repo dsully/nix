@@ -170,13 +170,12 @@ in {
                 "npm:pi-agent-browser-native"
                 # "npm:pi-autoresearch"
                 "npm:pi-background-tasks"
-                # "npm:pi-browser-use"
                 "npm:pi-claude-marketplace"
-                # "npm:pi-hashline-edit-pro" # https://github.com/YuGiMob/pi-hashline-edit-pro
+                "npm:pi-hashline-readmap"
                 # "npm:pi-lens"
                 "npm:pi-mcp-adapter"
                 "npm:pi-powerline-footer"
-                "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
+                # "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display, Conflicts with pi-hashline-readmap
                 # "npm:@pi-unipi/notify@2.20.1"
                 "npm:pi-web-access"
                 "npm:@sting8k/pi-vcc"
