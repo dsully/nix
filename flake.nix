@@ -210,6 +210,7 @@
               ./hosts/jarvis/darwin-configuration.nix
               {
                 home-manager = {
+                  backupFileExtension = "bak";
                   useGlobalPkgs = true;
                   useUserPackages = true;
                   extraSpecialArgs = hmArgs system;

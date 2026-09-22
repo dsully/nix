@@ -118,16 +118,16 @@ in {
         allow-dirty = true;
         allow-symlinked-store = true;
         allowed-users = ["*"];
-        always-allow-substitutes = true;
+        always-allow-substitutes = false;
         builders-use-substitutes = true;
-        connect-timeout = 5;
+        connect-timeout = 10;
         cores = 0;
         experimental-features = [
           "daemon-trust-override"
           "flakes"
           "nix-command"
         ];
-        http-connections = 0;
+        http-connections = 128;
         keep-derivations = true;
         keep-going = true;
         keep-outputs = false;

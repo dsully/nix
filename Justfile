@@ -59,7 +59,7 @@ switch +args="":
         extra_args="--impure"
         nix_args="--refresh"
     fi
-    {{ NH }} home switch {{ NH_ARGS }} -b backup . $extra_args {{ args }} -- --substitute --no-warn-dirty $nix_args
+    {{ NH }} home switch {{ NH_ARGS }} --backup-extension bak . $extra_args {{ args }} -- --substitute --no-warn-dirty $nix_args
 
 # Update all the flake inputs
 [group('nix')]
