@@ -54,6 +54,11 @@
     transformed // lib.optionalAttrs (server.enabled == false) {disabled = true;};
 
   piMcpServers = lib.mapAttrs (_: piMcpServer) config.programs.mcp.servers;
+
+  # tintinweb/pi-subagents and teelicht/pi-superagents both own
+  # extensions/subagent/; install exactly one. Superpowers integrates with the
+  # teelicht fork, so track its enable state for pi.
+  piSuperpowers = lib.elem "pi" config.programs.ai.superpowers.agents;
 in {
   imports = [
     ./pi/theme.nix
@@ -155,31 +160,35 @@ in {
             };
 
             npmCommand = [(lib.getExe config.programs.bun.package)];
-            packages = lib.unique [
-              "npm:context-mode"
-              "npm:@juicesharp/rpiv-ask-user-question"
-              "npm:@juicesharp/rpiv-todo"
-              "npm:pi-agent-browser-native"
-              "npm:pi-autoresearch"
-              "npm:pi-background-tasks"
-              # "npm:pi-browser-use"
-              "npm:pi-claude-marketplace"
-              # "npm:pi-hashline-edit-pro" # https://github.com/YuGiMob/pi-hashline-edit-pro
-              # "npm:pi-lens"
-              "npm:pi-mcp-adapter"
-              "npm:pi-powerline-footer"
-              "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
-              "npm:@pi-unipi/notify"
-              "npm:pi-web-access"
-              "npm:@dietrichgebert/ponytail"
-              "npm:@sting8k/pi-vcc"
-              "npm:@tifan/pi-copy-response"
-              "npm:@tifan/pi-handoff"
-              "npm:@tifan/pi-inline-skills"
-              "npm:@tifan/pi-rename"
-              "npm:@tintinweb/pi-subagents"
-              "npm:@vanillagreen/pi-skills-manager"
-            ];
+            packages = lib.unique (
+              [
+                "npm:context-mode"
+                "npm:@dietrichgebert/ponytail"
+                "npm:@juicesharp/rpiv-ask-user-question"
+                "npm:@juicesharp/rpiv-todo"
+                "npm:@melihmucuk/pi-crew"
+                "npm:pi-agent-browser-native"
+                # "npm:pi-autoresearch"
+                "npm:pi-background-tasks"
+                # "npm:pi-browser-use"
+                "npm:pi-claude-marketplace"
+                # "npm:pi-hashline-edit-pro" # https://github.com/YuGiMob/pi-hashline-edit-pro
+                # "npm:pi-lens"
+                "npm:pi-mcp-adapter"
+                "npm:pi-powerline-footer"
+                "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
+                # "npm:@pi-unipi/notify@2.20.1"
+                "npm:pi-web-access"
+                "npm:@sting8k/pi-vcc"
+                "npm:@tifan/pi-copy-response@0.2.6"
+                "npm:@tifan/pi-handoff"
+                "npm:@tifan/pi-inline-skills"
+                "npm:@tifan/pi-rename"
+                "npm:@vanillagreen/pi-skills-manager"
+              ]
+              ++ lib.optional (!piSuperpowers) "npm:@tintinweb/pi-subagents"
+              ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
+            );
 
             terminal = {
               showTerminalProgress = true;
