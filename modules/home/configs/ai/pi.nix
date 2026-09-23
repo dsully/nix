@@ -62,6 +62,36 @@ in {
           #   autofix.enabled = false;
           # };
         };
+
+        activation = {
+          # Install/update the extensions listed in settings.json. Runs after
+          # onFilesChange so settings.json is written and any bunfig onChange
+          # hook has already run.
+          # context-mode pulls better-sqlite3, a native module bun builds from
+          # source (bun disables prebuild-install), so node-gyp needs Python and
+          # the system toolchain. Activation runs with a stripped PATH, so add
+          # Python here; clang/make come from the inherited PATH (Xcode CLT).
+          # Retry a few times to ride out transient registry failures.
+          # Non-fatal: a persistent failure warns, never aborts the switch.
+          piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange"] ''
+            export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.python3 pkgs.git]}:$PATH"
+            export PYTHON="${lib.getExe pkgs.python3}"
+            export PI_CODING_AGENT_DIR="${piPath}"
+            _ok=
+
+            for _try in 1 2 3; do
+              if run ${config.programs.pi-coding-agent.package}/bin/pi update --extensions; then
+                _ok=1
+                break
+              fi
+
+              echo "pi update --extensions attempt $_try failed; retrying in 5s..."
+              sleep 5
+            done
+
+            [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
+          '';
+        };
       };
 
       programs = {
@@ -74,7 +104,8 @@ in {
             package = pkgs.llm-agents.pi;
 
             envDefault = {
-              # PI_CONFIG_DIR = ;
+              PI_CODING_AGENT_DIR = piPath;
+              PI_OFFLINE = "1";
               PI_SKIP_VERSION_CHECK = "1";
               PI_TELEMETRY = "0";
               POWERLINE_NERD_FONTS = "1";
