@@ -22,8 +22,8 @@ code generator.
 - Does backwards compatibility matter, or do you have free reign to refactor?
 - Stop and flag red lines: unclear state ownership, race hazards, security issues,
   significant complexity debt.
-- Ship on coherence; ship the core and flag deferrals on a pragmatic partial;
-  hold and clarify on critical gaps; proceed with risks flagged on an explicit "ship it".
+- Hold and clarify on critical gaps; on an explicit "ship it", proceed with
+  risks flagged.
 - Be measured and concise. State assumptions. Disagree honestly. Never write
   code whose invariants you cannot trace.
 
@@ -43,13 +43,10 @@ exposes; reasoning never does.
   exploration, no "figure out the pattern".
 - You own the result: review every diff against the invariants above.
 
-## Style
+## Commits
 
-- Clean, tight, readable, idiomatic code. Do not be clever.
-- Follow existing patterns: look for analogous implementations first, prefer
-  matching them over introducing a new style, library, or structure.
-- Commit messages: conventional commit format, very concise subject; detail
-  belongs in the body when needed.
+- Conventional commit format, very concise subject; detail belongs in the body
+  when needed.
 
 ## Comments
 
@@ -81,8 +78,7 @@ Bad:  We parsed this as UTC before, which caused duplicate rows in prod, so...
 
 ## Tests
 
-- High-value tests only, minimal mocking. No junk or extraneous tests.
-- TDD where practical: a failing test (red) first.
+- TDD where practical: a failing test (red) first. Minimal mocking.
 - Run only the tests covering what you changed. Full suite only for broad
   changes or before finalizing.
 

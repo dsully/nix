@@ -148,13 +148,13 @@
 
   models = {
     large-high = {
-      model = "claude-opus-5";
+      model = "claude-opus-5-5";
       provider = "anthropic";
       max_tokens = 1000000;
       reasoning_effort = "high";
     };
     large = {
-      model = "claude-opus-5";
+      model = "claude-opus-5-5";
       provider = "anthropic";
       max_tokens = 1000000;
       reasoning_effort = "medium";

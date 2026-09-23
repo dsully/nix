@@ -59,6 +59,21 @@
   # extensions/subagent/; install exactly one. Superpowers integrates with the
   # teelicht fork, so track its enable state for pi.
   piSuperpowers = lib.elem "pi" config.programs.ai.superpowers.agents;
+
+  rulesSkills = pkgs.linkFarm "pi-rules-skills" (lib.mapAttrsToList (file: _: let
+    id = "${lib.removeSuffix ".md" file}-rules";
+    parsed = builtins.match "---\npaths: \"([^\"]*)\"\n---\n+(.*)" (builtins.readFile (ai.rulesDir + "/${file}"));
+  in {
+    name = "${id}/SKILL.md";
+    path = pkgs.writeText "${id}-SKILL.md" ''
+      ---
+      name: ${id}
+      description: House coding rules. Load before reading or writing files matching ${builtins.elemAt parsed 0}.
+      ---
+
+      ${builtins.elemAt parsed 1}
+    '';
+  }) (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) (builtins.readDir ai.rulesDir)));
 in {
   imports = [
     ./pi/theme.nix
@@ -113,10 +128,7 @@ in {
 
           configDir = piPath;
 
-          context = ''
-            ${builtins.readFile ./AGENTS.md}
-            ${ai.rulesMarkdown}
-          '';
+          context = builtins.readFile ./AGENTS.md;
 
           settings = {
             collapseChangelog = true;
@@ -133,6 +145,9 @@ in {
 
             enableInstallTelemetry = false;
             enableSkillCommands = false;
+
+            # pi has no path-scoped rules; ship them as on-demand skills instead of always-on context.
+            skills = ["${rulesSkills}"];
             hideThinkingBlock = true;
             hooks = ai.hooks.pi;
             quietStartup = true;
@@ -162,8 +177,12 @@ in {
             npmCommand = [(lib.getExe config.programs.bun.package)];
             packages = lib.unique (
               [
-                "npm:context-mode"
-                "npm:@dietrichgebert/ponytail"
+                # "npm:context-mode"
+                # Core skill only; the audit/debt/gain/help/review extras cost prompt tokens every turn.
+                {
+                  source = "npm:@dietrichgebert/ponytail";
+                  skills = ["./skills/ponytail"];
+                }
                 "npm:@juicesharp/rpiv-ask-user-question"
                 "npm:@juicesharp/rpiv-todo"
                 "npm:@melihmucuk/pi-crew"

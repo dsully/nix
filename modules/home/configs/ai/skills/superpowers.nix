@@ -17,6 +17,13 @@
   # so it must never appear here — doing both would install every skill twice
   # in opencode's discovery dir and warn at startup.
   agents = lib.subtractLists ["opencode"] (lib.unique cfg.agents);
+  otherAgents = lib.subtractLists ["pi"] agents;
+
+  # pi-superagents drives these via /sp-* and finds them by frontmatter name, so pi
+  # gets copies hidden from the model's skill list (saves prompt tokens every turn).
+  hideFromModel = {original, ...}:
+    assert lib.hasPrefix "---\n" original;
+      "---\ndisable-model-invocation: true\n" + lib.removePrefix "---\n" original;
 in {
   options.programs.ai.superpowers.agents = lib.mkOption {
     type = lib.types.listOf lib.types.str;
@@ -35,11 +42,20 @@ in {
         input = "superpowers";
         subdir = "skills";
       };
-      skills.explicit = lib.genAttrs skillIds (id: {
-        from = "superpowers";
-        path = id;
-        inherit agents;
-      });
+      skills.explicit =
+        lib.optionalAttrs (otherAgents != []) (lib.genAttrs skillIds (id: {
+          from = "superpowers";
+          path = id;
+          agents = otherAgents;
+        }))
+        // lib.optionalAttrs (lib.elem "pi" agents) (lib.listToAttrs (map (id:
+          lib.nameValuePair "pi-${id}" {
+            from = "superpowers";
+            path = id;
+            agents = ["pi"];
+            transform = hideFromModel;
+          })
+        skillIds));
     };
   };
 }
