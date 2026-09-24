@@ -83,12 +83,12 @@
       syntaxType = "nord7";
       syntaxOperator = "nord9";
       syntaxPunctuation = "nord4";
-      thinkingOff = "nord2";
-      thinkingMinimal = "nord3";
-      thinkingLow = "nord10";
+      thinkingOff = "nord9";
+      thinkingMinimal = "nord9";
+      thinkingLow = "nord9";
       thinkingMedium = "nord9";
-      thinkingHigh = "nord15";
-      thinkingXhigh = "nord7";
+      thinkingHigh = "nord9";
+      thinkingXhigh = "nord9";
       bashMode = "nord8";
     };
 
