@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256-0eJObf+TnLZfWky/ErGPfYuHsKiRwQmsIPIMjmEpGtg=";
+      hash = "sha256-w/Di+zHB5KvxG3w7keuBE1i/3jhGjeX2qv2G9xcWTNU=";
     };
     x86_64-linux = {
       suffix = "x86_64-unknown-linux-gnu";
-      hash = "sha256-6EWonhNL2w/uEHfM8HX9zqTDGe4RSWuoprYRIJvST40=";
+      hash = "sha256-m7H33AXtEZMn9ilX0mspG0UBmQ8ixTPfJiuGqCkkR1Y=";
     };
   };
   source =
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "debtmap";
-    version = "0.24.0";
+    version = "0.24.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/iepathos/debtmap/releases/download/${version}/debtmap-${source.suffix}.tar.gz";
