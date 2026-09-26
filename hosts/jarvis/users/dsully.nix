@@ -65,7 +65,7 @@
       };
     };
 
-    meridian.enable = true;
+    meridian.enable = false;
 
     onepassword-secrets.secrets = {
       sshPrivateKey = {
@@ -79,6 +79,8 @@
         mode = "0600";
       };
     };
+
+    opencode.enable = false;
 
     pi-coding-agent = {
       enable = true;
