@@ -9,7 +9,6 @@
       [
         (lib.hiPrio uutils-coreutils-noprefix) # Rust versions of coreutils.
         _1password-cli
-        checkip
         croc
         curl
         dua

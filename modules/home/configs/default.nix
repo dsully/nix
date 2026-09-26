@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ./btop.nix
+    ./checkip.nix
     ./delta.nix
     ./direnv.nix
     ./editorconfig.nix
@@ -26,6 +27,7 @@
     ./topgrade.nix
     ./vivid.nix
     ./yamllint.nix
+    ./zoned.nix
     ./zoxide.nix
   ];
 }

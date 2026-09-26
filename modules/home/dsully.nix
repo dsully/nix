@@ -114,35 +114,7 @@ in {
   manual.manpages.enable = false;
 
   programs = {
-    onepassword-secrets = {
-      enable = true;
-      secrets = {
-        checkipMaxmind = {
-          reference = "op://Services/MaxMind API/credential";
-          path = ".config/checkip/maxmind-key";
-          mode = "0600";
-          group = config.system.primaryGroup;
-        };
-        checkipUrlscan = {
-          reference = "op://Services/URLScan API/credential";
-          path = ".config/checkip/urlscan-key";
-          mode = "0600";
-          group = config.system.primaryGroup;
-        };
-        zonedCloudflareToken = {
-          reference = "op://Services/Cloudflare DNS Token/credential";
-          path = ".config/zoned/cloudflare-token";
-          mode = "0600";
-          group = config.system.primaryGroup;
-        };
-        zonedCloudflareZoneId = {
-          reference = "op://Services/Cloudflare DNS Token/zoneid";
-          path = ".config/zoned/cloudflare-zone-id";
-          mode = "0600";
-          group = config.system.primaryGroup;
-        };
-      };
-    };
+    onepassword-secrets.enable = true;
 
     home-manager.enable = true;
 
