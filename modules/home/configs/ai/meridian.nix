@@ -22,44 +22,28 @@
     pkgs.coreutils
   ]}:/usr/bin:/bin";
 
-  environment =
-    {
-      # launchd inherits none of these; `claude auth status` derives the Keychain
-      # account from $USER/$LOGNAME and reads config under $HOME, so set them.
-      HOME = config.home.homeDirectory;
-      USER = config.home.username;
-      LOGNAME = config.home.username;
+  environment = {
+    # launchd inherits none of these; `claude auth status` derives the Keychain
+    # account from $USER/$LOGNAME and reads config under $HOME, so set them.
+    HOME = config.home.homeDirectory;
+    USER = config.home.username;
+    LOGNAME = config.home.username;
 
-      # The real OAuth credentials live in the non-default config dir. The
-      # claude-code wrapper exports this for interactive use, but launchd execs
-      # meridian directly — without it the SDK falls back to ~/.claude/Keychain,
-      # whose stale credential reads as logged-in (so /health is green) but 401s
-      # on a real query ("Run 'claude login'"). Point the SDK at the right dir.
-      CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
+    # The real OAuth credentials live in the non-default config dir. The
+    # claude-code wrapper exports this for interactive use, but launchd execs
+    # meridian directly — without it the SDK falls back to ~/.claude/Keychain,
+    # whose stale credential reads as logged-in (so /health is green) but 401s
+    # on a real query ("Run 'claude login'"). Point the SDK at the right dir.
+    CLAUDE_CONFIG_DIR = "${config.xdg.configHome}/claude";
 
-      MERIDIAN_HOST = host;
-      MERIDIAN_PORT = toString port;
-      # One shared proxy backs every OpenCode terminal; the plugin's per-session
-      # affinity headers keep them from colliding, but the SDK pool must be wide
-      # enough to serve them in parallel (default is 10).
-      MERIDIAN_MAX_CONCURRENT = "24";
-      MERIDIAN_WORKDIR = config.home.homeDirectory;
-    }
-    // lib.optionalAttrs routeMeridianViaHeadroom {
-      # Meridian drives the Claude Code SDK for its upstream; point that at the
-      # shared Headroom Claude proxy so OpenCode's context is optimized just
-      # before Anthropic. Headroom sits DOWNSTREAM of Meridian.
-      ANTHROPIC_BASE_URL = headroomClaudeUrl;
-    };
-
-  # Headroom sits downstream of Meridian (OpenCode → Meridian → Headroom →
-  # Anthropic). OpenCode talks to Meridian directly, so the meridian.ts plugin's
-  # per-session/agent headers reach Meridian natively; Meridian's own SDK
-  # upstream is redirected through Headroom via ANTHROPIC_BASE_URL above. Reuses
-  # the same Headroom Claude proxy that Claude Code uses.
-  headroom = config.programs.headroom;
-  routeMeridianViaHeadroom = headroom.enable && headroom.integrations.claudeCode.enable;
-  headroomClaudeUrl = "http://${headroom.integrations.claudeCode.host}:${toString headroom.integrations.claudeCode.port}";
+    MERIDIAN_HOST = host;
+    MERIDIAN_PORT = toString port;
+    # One shared proxy backs every OpenCode terminal; the plugin's per-session
+    # affinity headers keep them from colliding, but the SDK pool must be wide
+    # enough to serve them in parallel (default is 10).
+    MERIDIAN_MAX_CONCURRENT = "24";
+    MERIDIAN_WORKDIR = config.home.homeDirectory;
+  };
 in {
   options.programs.meridian.enable =
     lib.mkEnableOption "the Meridian Claude Code SDK proxy";

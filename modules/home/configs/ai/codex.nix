@@ -13,17 +13,6 @@
   mcpServersAutoApprove = ai.permissions.codex.mcpServers config.programs.mcp.servers;
   configPath = "${config.xdg.configHome}/codex/config.toml";
   homeFileConfigPath = lib.removePrefix config.home.homeDirectory configPath;
-
-  # Route Codex's OpenAI-compatible traffic through the Headroom Claude proxy,
-  # which serves OpenAI format on the same port under /v1. Scoped to Codex via a
-  # wrapper so OPENAI_BASE_URL doesn't leak to every other OpenAI client.
-  headroom = config.programs.headroom;
-  routeCodexViaHeadroom = headroom.enable && headroom.integrations.claudeCode.enable;
-  codexBaseUrl = "http://${headroom.integrations.claudeCode.host}:${toString headroom.integrations.claudeCode.port}/v1";
-  codexWrapper = pkgs.writeShellScript "codex" ''
-    export OPENAI_BASE_URL="${codexBaseUrl}"
-    exec ${lib.getExe config.programs.codex.package} "$@"
-  '';
 in {
   config = lib.mkMerge [
     {programs.codex.enable = lib.mkDefault true;}
@@ -45,11 +34,6 @@ in {
           # truth (so any module-generated plugin/marketplace tables flow through), and
           # each activation overwrites it with declared state.
           "${homeFileConfigPath}".enable = lib.mkForce false;
-
-          "${config.xdg.binHome}/codex" = lib.mkIf routeCodexViaHeadroom {
-            force = true;
-            source = codexWrapper;
-          };
         };
 
         packages = with pkgs.llm-agents; [

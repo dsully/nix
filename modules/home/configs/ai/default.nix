@@ -12,7 +12,6 @@ in {
     ./ccstatusline.nix
     ./claude-code.nix
     ./codex.nix
-    ./headroom.nix
     ./herdr.nix
     ./mcp-mux.nix
     ./meridian.nix
@@ -58,11 +57,6 @@ in {
     programs = {
       codex.enable = false;
 
-      headroom = {
-        enable = false;
-
-        integrations.claudeCode.enable = true;
-      };
 
       mcp = {
         enable = true;

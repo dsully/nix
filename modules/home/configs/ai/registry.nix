@@ -210,7 +210,7 @@
   # ~/.omp/agent/agents/<name>.md by omp.nix.
   ompAgents = lib.mapAttrs (_: sanitizeOmpAgent) agentSources;
 
-  hooks = import ./hooks.nix {inherit config lib my pkgs;};
+  hooks = import ./hooks.nix {inherit config lib pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
   # workspace-scoped index from the client's CWD, so a shared mux process would
