@@ -160,7 +160,7 @@
       reasoning_effort = "medium";
     };
     medium = {
-      model = "claude-sonnet-5";
+      model = "claude-sonnet-5-5";
       provider = "anthropic";
       max_tokens = 200000;
       reasoning_effort = "medium";
