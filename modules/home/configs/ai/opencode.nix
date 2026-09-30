@@ -3,7 +3,6 @@
   config,
   inputs,
   lib,
-  llmtrimWrap,
   my,
   pkgs,
   ...
@@ -157,10 +156,7 @@ in {
         };
 
         opencode = {
-          package =
-            if config.programs.llmtrim.enable
-            then llmtrimWrap "opencode" pkgs.llm-agents.opencode
-            else pkgs.llm-agents.opencode;
+          package = pkgs.llm-agents.opencode;
 
           enableMcpIntegration = true;
 

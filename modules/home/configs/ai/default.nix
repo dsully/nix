@@ -14,7 +14,6 @@ in {
     ./codex.nix
     ./headroom.nix
     ./herdr.nix
-    ./llmtrim.nix
     ./mcp-mux.nix
     ./meridian.nix
     ./omp.nix
@@ -64,10 +63,6 @@ in {
 
         integrations.claudeCode.enable = true;
       };
-
-      # Mutually exclusive with programs.headroom (asserted in llmtrim.nix).
-      # mkDefault so a downstream flake can enable it with a plain assignment.
-      llmtrim.enable = lib.mkDefault false;
 
       mcp = {
         enable = true;

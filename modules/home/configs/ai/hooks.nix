@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  my,
   pkgs,
 }: let
   command = attrs: attrs // {type = "command";};
@@ -40,10 +39,6 @@
     && builtins.elem "claude" config.programs.herdr.integrations;
 
   herdrClaudeHook = "${config.programs.claude-code.configDir}/hooks/herdr-agent-state.sh";
-
-  llmtrimGuardEnabled =
-    config.programs.llmtrim.enable
-    && config.programs.llmtrim.integrations.claudeCode.guard;
 
   events = {
     PreToolUse = [
@@ -105,18 +100,6 @@
           timeout = 10;
         })
       ];
-    });
-
-    UserPromptSubmit = lib.optional llmtrimGuardEnabled (group {
-      hooks =
-        # Cold-cache guard: blocks one turn when resuming a large session after
-        # the prompt cache expired, so the full-context rewrite isn't silent.
-        # Claude Code only, and `sub`-style local slash commands pass through.
-        lib.optional llmtrimGuardEnabled (hook {
-          name = "llmtrim-guard";
-          command = "${lib.getExe my.pkgs.llmtrim} guard";
-          targets = ["claude"];
-        });
     });
   };
 
