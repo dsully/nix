@@ -71,8 +71,9 @@ _: {
         ];
       };
 
-      jellyseerr = {
-        image = "fallenbagel/jellyseerr";
+      seerr = {
+        image = "ghcr.io/seerr-team/seerr:latest";
+        extraOptions = ["--init"];
         ports = [
           "5055:5055"
         ];
@@ -80,7 +81,7 @@ _: {
           LOG_LEVEL = "error";
           PORT = "5055";
         };
-        volumes = ["/opt/docker/jellyseerr:/app/config"];
+        volumes = ["/opt/docker/seerr:/app/config"];
       };
 
       network-optimizer = {
@@ -95,6 +96,7 @@ _: {
           OPENSPEEDTEST_HTTPS = "false";
           OPENSPEEDTEST_HTTPS_PORT = "443";
           OPENSPEEDTEST_PORT = "3005";
+          REVERSE_PROXIED_HOST_NAME = "network-optimizer.sully.org";
         };
         volumes = [
           "/opt/docker/network-optimizer/data:/app/data"

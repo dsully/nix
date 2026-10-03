@@ -89,6 +89,7 @@ in {
       documentation = ["https://caddyserver.com/docs/"];
       wants = ["network-online.target" "opnix-secrets.service"];
       after = ["network-online.target" "opnix-secrets.service"];
+      reloadTriggers = [config.environment.etc."caddy/Caddyfile".source];
       serviceConfig = {
         AmbientCapabilities = "CAP_NET_BIND_SERVICE";
         ExecReload = "${lib.getExe caddy-custom} reload --config ${caddyConfigDir}/Caddyfile --force";

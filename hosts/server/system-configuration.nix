@@ -12,16 +12,47 @@
       wantedBy = ["system-manager.target"];
     }
     attrs;
+
+  tunnelId = "8ce51aaf-f033-42aa-88b6-002af8e4dec6";
+  tunnelCreds = "/var/lib/opnix/cloudflared-${tunnelId}.json";
+
+  cloudflaredConfig = (pkgs.formats.yaml {}).generate "cloudflared.yml" {
+    tunnel = tunnelId;
+    metrics = "0.0.0.0:2000";
+    no-autoupdate = true;
+    ingress = [
+      {
+        hostname = "wizarr.sully.org";
+        service = "http://localhost:5690";
+      }
+      {
+        hostname = "seerr.sully.org";
+        service = "http://localhost:5055";
+      }
+      {service = "http_status:404";}
+    ];
+  };
 in {
   imports = [
     flake.modules.system-manager.common
     flake.modules.system-manager.caddy
     flake.modules.system-manager.docker
+    flake.modules.system-manager.opnix
     ./containers.nix
     ./options.nix
   ];
 
   config = {
+    services.opnix = {
+      enable = true;
+      secrets = [
+        {
+          path = tunnelCreds;
+          reference = "op://Services/Cloudflare Tunnel/credential";
+        }
+      ];
+    };
+
     services.caddy = {
       enable = true;
       caddyfile = ./files/Caddyfile;
@@ -30,7 +61,6 @@ in {
     environment = {
       etc = lib.mapAttrs (_: v: v // {replaceExisting = true;}) {
         "avahi/smb.service".source = ./files/avahi-smb.service;
-        "cloudflared/config.yml".source = ./files/cloudflared-config.yml;
         "cockpit/cockpit.conf".source = ./files/cockpit.conf;
         "default/homebridge".source = ./files/homebridge.default;
         "environment".source = ./files/environment;
@@ -69,6 +99,25 @@ in {
     };
 
     systemd.services = {
+      # LoadCredential lets the DynamicUser read the root-only opnix file.
+      cloudflared = smService {
+        description = "Cloudflare Tunnel";
+        wants = ["network-online.target"];
+        requires = ["opnix-secrets.service"];
+        after = ["network-online.target" "opnix-secrets.service"];
+        serviceConfig = {
+          Type = "simple";
+          DynamicUser = true;
+          AmbientCapabilities = ["CAP_NET_BIND_SERVICE"];
+          CapabilityBoundingSet = ["CAP_NET_BIND_SERVICE"];
+          LoadCredential = ["creds.json:${tunnelCreds}"];
+          ExecStart = "${lib.getExe pkgs.cloudflared} tunnel --config ${cloudflaredConfig} run --credentials-file %d/creds.json";
+          Restart = "on-failure";
+          RestartSec = "5s";
+          TimeoutStartSec = 0;
+        };
+      };
+
       vopono-daemon = smService {
         description = "Vopono root daemon";
         wants = ["network-online.target"];

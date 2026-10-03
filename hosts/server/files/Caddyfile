@@ -56,8 +56,8 @@
 		}
 	}
 
-	@overseerr host overseerr.sully.org
-	handle @overseerr {
+	@seerr host seerr.sully.org
+	handle @seerr {
 		reverse_proxy 127.0.0.1:5055
 	}
 
