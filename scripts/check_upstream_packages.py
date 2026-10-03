@@ -106,6 +106,7 @@ def search_nixpkgs(pkg: LocalPackage) -> Match | None:
         ["nh", "search", "--json", "--platforms", pkg.pname],
         capture_output=True,
         text=True,
+        check=True,
     )
 
     if result.returncode != 0:
