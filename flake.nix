@@ -247,16 +247,7 @@
         fmt = pkgs.callPackage ./formatter.nix {};
 
         # Overrides for packages that need flake input sources.
-        packageOverrides = {
-          # nh wraps itself to use rom as its build output monitor. `pkgs` and
-          # `wrapperLib` are explicit because nix-wrapper-modules evaluates the
-          # wrapper against a whole package set, which callPackage does not scope.
-          nh = {
-            inherit pkgs;
-            inherit (selfPackages) rom;
-            wrapperLib = inputs.nix-wrapper-modules.lib;
-          };
-        };
+        packageOverrides = {};
       in {
         _module.args.pkgs = pkgs;
 
