@@ -166,7 +166,7 @@ in {
 
           "github.com" = {
             User = "git";
-            HostName = "github.com.";
+            HostName = "github.com";
             IdentitiesOnly = true;
             ControlMaster = "no";
             ControlPersist = "no";
