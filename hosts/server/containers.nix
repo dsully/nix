@@ -1,11 +1,12 @@
 # hosts/server/containers.nix
 #
 # Each entry becomes a `docker-<name>` systemd unit.
-_: {
+_: let
   # On kernel 7.3, docker-default denies signals to the stacked peer label
   # docker-default//&unconfined, which breaks containers that signal their own
   # processes or threads.
   noAppArmor = ["--security-opt" "apparmor=unconfined"];
+in {
   local.docker = {
     enable = true;
 
@@ -127,7 +128,7 @@ _: {
 
       network-optimizer = {
         image = "ghcr.io/ozark-connect/network-optimizer:latest";
-        extraOptions = ["--network" "host"];
+        extraOptions = ["--network" "host"] ++ noAppArmor;
         environment = {
           BIND_LOCALHOST_ONLY = "false";
           HOST_NAME = "server.sully.org";
