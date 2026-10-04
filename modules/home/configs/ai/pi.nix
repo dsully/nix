@@ -103,6 +103,22 @@ in {
 
             [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
           '';
+
+          # @pi-unipi/footer delays the glance editor 3.5s as a grace period for
+          # unipi's info-screen (not installed); drop it. sed -i replaces the file,
+          # so bun's cache is untouched. Warns if upstream changes the line.
+          piPatchUnipiFooter = lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
+            _f="${piPath}/npm/node_modules/@pi-unipi/footer/src/index.ts"
+            _from='installGlanceEditor(state, ctx), 3500)'
+
+            if [ -f "$_f" ]; then
+              if ${lib.getExe pkgs.gnugrep} -qF "$_from" "$_f"; then
+                run ${lib.getExe pkgs.gnused} -i 's/installGlanceEditor(state, ctx), 3500)/installGlanceEditor(state, ctx), 0)/' "$_f"
+              elif ! ${lib.getExe pkgs.gnugrep} -qF 'installGlanceEditor(state, ctx), 0)' "$_f"; then
+                echo "piPatchUnipiFooter: pattern not found in $_f; glance delay patch not applied"
+              fi
+            fi
+          '';
         };
       };
 
@@ -117,7 +133,6 @@ in {
 
             envDefault = {
               PI_CODING_AGENT_DIR = piPath;
-              PI_OFFLINE = "1";
               PI_SKIP_VERSION_CHECK = "1";
               PI_TELEMETRY = "0";
               POWERLINE_NERD_FONTS = "1";
@@ -181,22 +196,23 @@ in {
                   source = "npm:@dietrichgebert/ponytail";
                   skills = ["./skills/ponytail"];
                 }
-                "npm:@juicesharp/rpiv-ask-user-question"
-                "npm:@juicesharp/rpiv-todo"
-                # "npm:@melihmucuk/pi-crew"
                 # "npm:pi-agent-browser-native"
                 # "npm:pi-autoresearch"
-                "npm:pi-background-tasks"
-                # "npm:pi-claude-marketplace"
-                # "npm:pi-hashline-readmap"
+                # "npm:pi-blackhole"
                 "npm:pi-hashline-edit"
-                # "npm:pi-lens"
-                "npm:pi-mcp-adapter"
-                "npm:pi-powerline-footer"
+                # "npm:pi-mcp-adapter"
+                # "npm:pi-powerline-footer"
                 "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
-                # "npm:@pi-unipi/notify"
-                # "npm:pi-web-access"
-                "npm:@sting8k/pi-vcc"
+                "npm:@pi-unipi/ask-user"
+                "npm:@pi-unipi/background-tasks"
+                "npm:@pi-unipi/btw"
+                "npm:@pi-unipi/compactor"
+                "npm:@pi-unipi/footer"
+                "npm:@pi-unipi/memory"
+                "npm:@pi-unipi/milestone"
+                "npm:@pi-unipi/notify"
+                "npm:@pi-unipi/subagents"
+                "npm:@pi-unipi/workflow"
                 "npm:@tifan/pi-copy-response@0.2.6"
                 "npm:@tifan/pi-handoff"
                 "npm:@tifan/pi-inline-skills"
