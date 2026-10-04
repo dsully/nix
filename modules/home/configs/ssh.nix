@@ -77,29 +77,30 @@
   # Hosts reachable on both a non-tailscale address (LAN or public) and
   # via MagicDNS. The Host block sets the default; a sibling Match block
   # overrides HostName to the ts.net name when tailscaled is up.
+  # Trailing dots stop a MagicDNS miss from falling through to the *.sully.org wildcard (zap).
   dual = {
     zap = {
       ip = "172.104.194.233";
-      ts = "zap.tail2ca1.ts.net";
+      ts = "zap.tail2ca1.ts.net.";
       forward = true;
       mux = true;
       aliases = ["er"];
     };
     ca = {
       ip = "192.46.222.69";
-      ts = "ca.tail2ca1.ts.net";
+      ts = "ca.tail2ca1.ts.net.";
       forward = false;
       mux = false;
     };
     tnt = {
       ip = "172.236.14.101";
-      ts = "tnt.tail2ca1.ts.net";
+      ts = "tnt.tail2ca1.ts.net.";
       forward = false;
       mux = false;
     };
     server = {
       ip = "10.0.0.100";
-      ts = "server.tail2ca1.ts.net";
+      ts = "server.tail2ca1.ts.net.";
       forward = true;
       mux = true;
     };
@@ -196,7 +197,7 @@ in {
 
         "0-ts-gateway" = {
           header = ''Match originalhost gateway exec "${tsExec "gateway" "10.0.0.1"}"'';
-          HostName = "gateway.tail2ca1.ts.net";
+          HostName = "gateway.tail2ca1.ts.net.";
         };
 
         "nvr" = {
