@@ -53,17 +53,19 @@ in rec {
 
   nix = lib.mkMerge [
     {
-      nixPath = lib.mapAttrsToList (name: _: "${name}=flake:${name}") (
-        lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
-      );
-
       optimise.automatic = lib.mkIf (config.system.nixFlavor == "cppnix") true;
 
       registry = lib.mapAttrs (_: value: {flake = value;}) (
         lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
       );
 
-      settings = config.system.nixSettings;
+      settings =
+        config.system.nixSettings
+        // {
+          nix-path = lib.mapAttrsToList (name: _: "${name}=flake:${name}") (
+            lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
+          );
+        };
     }
 
     (lib.mkIf (config.system.nixFlavor == "cppnix") {
