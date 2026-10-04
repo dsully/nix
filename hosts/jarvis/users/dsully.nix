@@ -1,5 +1,4 @@
 {
-  ai,
   config,
   flake,
   lib,
@@ -11,6 +10,7 @@
     flake.homeModules.dsully
     flake.homeModules.ai
     flake.homeModules.paste
+    flake.homeModules.unifi
     flake.homeModules.configs.rumdl
     flake.homeModules.xdg-open-svc
     ../options.nix
@@ -18,7 +18,6 @@
 
   fishSecrets = {
     HOMEKIT_MCP_TOKEN = "op://Services/HomeBar MCP/credential";
-    UNIFI_API_KEY = "op://Services/UniFi API/credential";
   };
 
   home = {
@@ -36,10 +35,6 @@
       ]);
   };
 
-  programs.uv.tool.packages = [
-    "unifi-mcp-server"
-  ];
-
   programs = {
     mcp.servers = {
       homekit = {
@@ -47,18 +42,6 @@
         url = "http://127.0.0.1:5333/mcp";
         headers = {
           Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
-        };
-        enabled = false;
-        stateless = true;
-      };
-      unifi = ai.muxWrap {
-        command = "${config.home.homeDirectory}/.local/bin/unifi-mcp-server";
-        env = {
-          UNIFI_API_TYPE = "local";
-          UNIFI_DEFAULT_SITE = "default";
-          UNIFI_LOCAL_HOST = "10.0.0.1";
-          UNIFI_LOCAL_VERIFY_SSL = "false";
-          UNIFI_SITE_MANAGER_ENABLED = "true";
         };
         enabled = false;
         stateless = true;

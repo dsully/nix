@@ -14,7 +14,7 @@
   piMcpServers = lib.mapAttrs (_: server:
     lib.hm.mcp.transformMcpServer {inherit server;}
     // {exposure = "deferred";}
-    // lib.optionalAttrs (!(server.enabled or true)) {disabled = true;})
+    // lib.optionalAttrs (server.enabled == false) {disabled = true;})
   config.programs.mcp.servers;
 
   # tintinweb/pi-subagents and teelicht/pi-superagents both own
