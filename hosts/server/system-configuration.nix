@@ -13,6 +13,31 @@
     }
     attrs;
 
+  arrService = name: group: let
+    pkg = pkgs.${name};
+    envPrefix = lib.toUpper name;
+  in
+    smService {
+      description = "${pkg.meta.mainProgram} daemon";
+      wants = ["network-online.target"];
+      after = ["network-online.target"];
+      serviceConfig = {
+        Type = "simple";
+        User = name;
+        Group = group;
+        UMask = "0002";
+        ExecStart = "${lib.getExe pkg} -nobrowser -data=/var/lib/${name}/";
+        TimeoutStopSec = 20;
+        KillMode = "process";
+        Restart = "on-failure";
+        # The built-in updater would try to write into the read-only store.
+        Environment = [
+          "${envPrefix}__UPDATE__MECHANISM=External"
+          "${envPrefix}__UPDATE__AUTOMATICALLY=false"
+        ];
+      };
+    };
+
   tunnelId = "8ce51aaf-f033-42aa-88b6-002af8e4dec6";
   tunnelCreds = "/var/lib/opnix/cloudflared-${tunnelId}.json";
 
@@ -45,18 +70,21 @@ in {
 
   config = {
     services = {
-      enable = true;
-      secrets = [
-        {
-          path = tunnelCreds;
-          reference = "op://Services/Cloudflare Tunnel/credential";
-        }
-      ];
-    };
+      opnix = {
+        enable = true;
+        secrets = [
+          {
+            path = tunnelCreds;
+            reference = "op://Services/Cloudflare Tunnel/credential";
+          }
+        ];
+      };
 
-    services.caddy = {
-      enable = true;
-      caddyfile = ./files/Caddyfile;
+      caddy = {
+        enable = true;
+        caddyfile = ./files/Caddyfile;
+      };
+
       beszel-agent = {
         enable = true;
         extraFilesystems = ["/bits/media" "/bits/stuff" "/ai/models"];
@@ -146,6 +174,10 @@ in {
           ];
         };
       };
+
+      sonarr = arrService "sonarr" "media";
+      radarr = arrService "radarr" "media";
+      prowlarr = arrService "prowlarr" "prowlarr";
 
       beszel-hub = smService {
         description = "Beszel hub";

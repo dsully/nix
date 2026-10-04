@@ -66,16 +66,6 @@
 		reverse_proxy 127.0.0.1:8581
 	}
 
-	@resilio host resilio.sully.org
-	handle @resilio {
-		reverse_proxy 127.0.0.1:8888 {
-			transport http {
-				tls
-				tls_insecure_skip_verify
-			}
-		}
-	}
-
 	@radarr host radarr.sully.org
 	handle @radarr {
 		reverse_proxy 127.0.0.1:7878
@@ -127,6 +117,30 @@
 	@comfy host comfy.sully.org comfyui.sully.org
 	handle @comfy {
 		reverse_proxy 127.0.0.1:8188
+	}
+
+	@beszel host beszel.sully.org
+	handle @beszel {
+		reverse_proxy 127.0.0.1:8090
+	}
+
+	@crashplan host crashplan.sully.org
+	handle @crashplan {
+		reverse_proxy 127.0.0.1:5800
+	}
+
+	@backblaze host backblaze.sully.org
+	handle @backblaze {
+		reverse_proxy 127.0.0.1:8082
+	}
+
+	@cockpit host cockpit.sully.org
+	handle @cockpit {
+		reverse_proxy 127.0.0.1:9090 {
+			transport http {
+				tls_insecure_skip_verify
+			}
+		}
 	}
 
 	@portainer host portainer.sully.org
