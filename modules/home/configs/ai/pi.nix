@@ -199,6 +199,7 @@ in {
                 # "npm:pi-agent-browser-native"
                 # "npm:pi-autoresearch"
                 # "npm:pi-blackhole"
+                "npm:pi-context-view"
                 "npm:pi-hashline-edit"
                 # "npm:pi-mcp-adapter"
                 # "npm:pi-powerline-footer"
