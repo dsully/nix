@@ -34,6 +34,7 @@
   };
 in {
   imports = [
+    flake.modules.system-manager.beszel-agent
     flake.modules.system-manager.common
     flake.modules.system-manager.caddy
     flake.modules.system-manager.docker
@@ -43,7 +44,7 @@ in {
   ];
 
   config = {
-    services.opnix = {
+    services = {
       enable = true;
       secrets = [
         {
@@ -56,6 +57,10 @@ in {
     services.caddy = {
       enable = true;
       caddyfile = ./files/Caddyfile;
+      beszel-agent = {
+        enable = true;
+        extraFilesystems = ["/bits/media" "/bits/stuff" "/ai/models"];
+      };
     };
 
     environment = {
@@ -141,6 +146,22 @@ in {
           ];
         };
       };
+
+      beszel-hub = smService {
+        description = "Beszel hub";
+        wants = ["network-online.target"];
+        after = ["network-online.target"];
+        serviceConfig = {
+          Type = "simple";
+          User = "beszel";
+          ExecStart = "${lib.getExe' pkgs.beszel "beszel-hub"} serve --http 0.0.0.0:8090 --dir /opt/beszel/beszel_data";
+          Restart = "always";
+          RestartSec = "5s";
+        };
+      };
+
+      # Docker container stats read /var/run/docker.sock.
+      beszel-agent.serviceConfig.SupplementaryGroups = ["docker"];
 
       smbd = smService {
         description = "Samba SMB daemon";

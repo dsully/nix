@@ -107,6 +107,7 @@
         modules = {
           darwin = darwinModules;
           system-manager = {
+            beszel-agent = ./modules/system-manager/beszel-agent.nix;
             common = ./modules/system-manager/common.nix;
             opnix = ./modules/system-manager/opnix.nix;
             caddy = ./modules/system-manager/caddy.nix;
