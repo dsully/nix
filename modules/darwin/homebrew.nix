@@ -31,6 +31,7 @@
       "keka"
       "little-snitch"
       "lunar"
+      "markdown-preview"
       "monodraw"
       "processspy"
       "raindropio"
@@ -53,8 +54,6 @@
       "Color Picker" = 1545870783;
       "CotEditor" = 1024640650;
       "Dato" = 1470584107;
-      "DevCleaner" = 1388020431;
-      "Devly" = 6759269801;
       "Hyperspace" = 6739505345;
       "JSONPeep" = 1458969831;
       "Kagi Search" = 1622835804;
@@ -71,7 +70,7 @@
       "Text Lens" = 6743369285;
       "Trackless Links Pro" = 6754613166;
       "TrashMe 3" = 1490879410;
-      "Tuneful" = 6739804295;
+      "Unforgetful" = 6785630295;
       "USB Connection Info" = 6747853674;
       "Userscripts" = 1463298887;
       "wBlock" = 6746388723;

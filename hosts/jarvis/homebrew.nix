@@ -22,11 +22,8 @@
       "google-chrome"
       "iina"
       "insta360-studio"
-      "latest"
       "macdive"
-      "mist"
       "ogdesign-eagle"
-      # "osaurus"
       "protonvpn"
       "proxyman"
       "quicken"
@@ -40,7 +37,6 @@
       "unifi-identity-endpoint"
       "vorssaint"
       "whatsapp"
-      "zipic"
     ];
 
     masApps = {
@@ -70,20 +66,13 @@
       "Play" = 1596506190;
       "Prime Video" = 545519333;
       "QR Studio" = 6740007834;
-      "Radiance" = 1573366225;
       "Reeder" = 6475002485;
       "Rules" = 6461118886;
-      "SD Gallery" = 6445901857;
       "Screens 5" = 1663047912;
       "Secret Inbox" = 6462335670;
-      # "SmugMug" = 1115348888;
       "Sogni" = 6450021857;
-      "Sortio" = 6737292062;
       "Starship" = 1530665887;
-      "Tampermonkey" = 6738342400;
       "Tripsy" = 1429967544;
-      "UnTrap" = 1637438059;
-      "Zero Loss Compress" = 6738362427;
     };
   };
 }
