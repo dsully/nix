@@ -2,6 +2,10 @@
 #
 # Each entry becomes a `docker-<name>` systemd unit.
 _: {
+  # On kernel 7.3, docker-default denies signals to the stacked peer label
+  # docker-default//&unconfined, which breaks containers that signal their own
+  # processes or threads.
+  noAppArmor = ["--security-opt" "apparmor=unconfined"];
   local.docker = {
     enable = true;
 
@@ -11,7 +15,7 @@ _: {
     containers = {
       backblaze = {
         image = "docker.io/tessypowder/backblaze-personal-wine:latest";
-        extraOptions = ["--init"];
+        extraOptions = ["--init"] ++ noAppArmor;
         ports = [
           "5901:5900"
           "8082:5800"
@@ -48,7 +52,7 @@ _: {
 
       crashplan = {
         image = "docker.io/jlesage/crashplan-pro:latest";
-        extraOptions = ["--network" "host"];
+        extraOptions = ["--network" "host"] ++ noAppArmor;
         environment = {
           CRASHPLAN_SRV_MAX_MEM = "16G";
           DISPLAY_HEIGHT = "1200";
@@ -71,6 +75,17 @@ _: {
         ];
       };
 
+      # Host network so it can reach Sonarr, which listens on 127.0.0.1 only.
+      maintainerr = {
+        image = "ghcr.io/maintainerr/maintainerr:latest";
+        extraOptions = ["--network" "host"];
+        environment = {
+          TELEMETRY = "off";
+          UI_HOSTNAME = "127.0.0.1";
+        };
+        volumes = ["/opt/docker/maintainerr:/opt/data"];
+      };
+
       seerr = {
         image = "ghcr.io/seerr-team/seerr:latest";
         extraOptions = ["--init"];
@@ -82,6 +97,32 @@ _: {
           PORT = "5055";
         };
         volumes = ["/opt/docker/seerr:/app/config"];
+      };
+
+      # All-in-one image: bundles TimescaleDB and Redis, and generates its own secrets.
+      tracearr = {
+        image = "ghcr.io/connorgallopo/tracearr:supervised";
+        extraOptions =
+          [
+            # Upstream sizes PostgreSQL from the memory limit; 3g is its documented minimum.
+            "--memory"
+            "3g"
+            "--shm-size"
+            "512m"
+            "--ulimit"
+            "nofile=65536:65536"
+            # Give the bundled PostgreSQL time for a clean shutdown.
+            "--stop-timeout"
+            "60"
+          ]
+          ++ noAppArmor;
+        ports = ["127.0.0.1:3000:3000"];
+        volumes = [
+          "tracearr_postgres:/data/postgres"
+          "tracearr_redis:/data/redis"
+          "tracearr_data:/data/tracearr"
+          "tracearr_backups:/data/backup"
+        ];
       };
 
       network-optimizer = {

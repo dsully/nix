@@ -56,6 +56,16 @@
 		}
 	}
 
+	@maintainerr host maintainerr.sully.org
+	handle @maintainerr {
+		reverse_proxy 127.0.0.1:6246
+	}
+
+	@tracearr host tracearr.sully.org
+	handle @tracearr {
+		reverse_proxy 127.0.0.1:3000
+	}
+
 	@seerr host seerr.sully.org
 	handle @seerr {
 		reverse_proxy 127.0.0.1:5055
