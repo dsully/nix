@@ -65,6 +65,7 @@ switch +args="":
 [group('nix')]
 up:
     @nix flake update
+    @nix flake update llm-agents
 
 # List all generations of the system profile
 [group('nix')]

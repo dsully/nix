@@ -25,6 +25,10 @@ jobs:
       - name: Update flake.lock
         run: nix flake update
 
+      # Re-pins llm-agents/nixpkgs from llm-agents' own lock. See `just up`.
+      - name: Re-sync llm-agents
+        run: nix flake update llm-agents
+
       - name: Commit flake.lock
         id: commit
         uses: stefanzweifel/git-auto-commit-action@v5

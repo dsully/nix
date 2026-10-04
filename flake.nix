@@ -35,8 +35,6 @@
     opnix.inputs.nixpkgs.follows = "nixpkgs";
 
     llm-agents = {
-      # Agent tooling. `bun2nix` is deliberately left un-followed:
-      # llm-agents and meridian pin different versions of it on purpose.
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
@@ -118,8 +116,8 @@
       };
 
       # Blueprint-compatible "perSystem" arg for a given system.
-      # llm-agents packages now flow through pkgs.llm-agents (shared-nixpkgs
-      # overlay applied in perSystem below), not this injection.
+      # llm-agents packages flow through pkgs.llm-agents (overlay applied in
+      # perSystem below), not this injection.
       mkPerSystem = system: {
         self = config.flake.packages.${system};
         nix-auth = inputs.nix-auth.packages.${system};
@@ -135,7 +133,7 @@
       };
 
       # Standalone home-manager configuration builder. pkgs (from withSystem)
-      # already carries the shared-nixpkgs + nixpkgs-fixes overlays.
+      # already carries the llm-agents + nixpkgs-fixes overlays.
       mkHome = system: {
         user,
         userModule,
@@ -230,7 +228,7 @@
       }: let
         # Overlaid package set shared by every consumer (home-manager, darwin,
         # system-manager) via withSystem, plus the packages/ builds below.
-        # shared-nixpkgs exposes pkgs.llm-agents.*; nixpkgs-fixes carries the
+        # The first overlay exposes pkgs.llm-agents.*; the second carries the
         # mcp-nixos doCheck override.
         pkgs = import inputs.nixpkgs {
           inherit system;
