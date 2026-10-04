@@ -9,6 +9,14 @@
   jsonFormat = pkgs.formats.json {};
   piPath = "${config.xdg.configHome}/pi/agent";
 
+  # Normalize via lib.hm.mcp.transformMcpServer to drop the typed schema's null
+  # and empty-default fields and add the exposure key/value.
+  piMcpServers = lib.mapAttrs (_: server:
+    lib.hm.mcp.transformMcpServer {inherit server;}
+    // {exposure = "deferred";}
+    // lib.optionalAttrs (!(server.enabled or true)) {disabled = true;})
+  config.programs.mcp.servers;
+
   # tintinweb/pi-subagents and teelicht/pi-superagents both own
   # extensions/subagent/; install exactly one. Superpowers integrates with the
   # teelicht fork, so track its enable state for pi.
@@ -45,6 +53,10 @@ in {
           ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
 
           "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
+            mcpServers = piMcpServers;
+          };
+
+          "${piPath}/mcp-adapter.json".source = jsonFormat.generate "pi-mcp-adapter.json" {
             settings = {
               deferWithMissingMetadata = true;
               namespaceProxyTools = false;
