@@ -12,7 +12,7 @@
 	encode zstd gzip
 
 	log {
-		output file @logDir@/access.log {
+		output file /var/log/caddy/access.log {
 			roll_size 64mb
 			roll_keep 5
 			roll_keep_for 720h

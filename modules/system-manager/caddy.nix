@@ -2,7 +2,6 @@
   config,
   flake,
   lib,
-  pkgs,
   ...
 }: let
   cfg = config.services.caddy;
@@ -11,6 +10,8 @@
 
   caddyConfigDir = "/etc/caddy";
   caddyDataDir = "/var/lib/caddy";
+  # Each host's Caddyfile writes its access log here as a literal path. Change
+  # this and the per-host Caddyfiles go stale.
   caddyLogDir = "/var/log/caddy";
 
   # Cloudflare DNS-01 token for the *.sully.org wildcard cert. Lives on tmpfs
@@ -27,8 +28,8 @@ in {
     caddyfile = lib.mkOption {
       type = lib.types.path;
       description = ''
-        Caddyfile source. @logDir@ is substituted with the log directory, and
-        the Cloudflare token is available at {file.${cloudflareTokenPath}}.
+        Caddyfile source. The Cloudflare token is available at
+        {file.${cloudflareTokenPath}}, and the log directory is ${caddyLogDir}.
       '';
     };
 
@@ -70,7 +71,7 @@ in {
 
     environment = {
       etc."caddy/Caddyfile" = {
-        source = pkgs.replaceVars cfg.caddyfile {logDir = caddyLogDir;};
+        source = cfg.caddyfile;
         replaceExisting = true;
       };
 
