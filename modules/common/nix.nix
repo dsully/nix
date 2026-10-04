@@ -116,9 +116,10 @@ in {
       {
         accept-flake-config = true;
         allow-dirty = true;
-        allow-symlinked-store = true;
         allowed-users = ["*"];
+        allow-symlinked-store = true;
         always-allow-substitutes = false;
+        auto-optimise-store = true;
         builders-use-substitutes = true;
         connect-timeout = 10;
         cores = 0;

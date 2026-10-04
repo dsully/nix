@@ -146,6 +146,11 @@ in {
     nix-index-database.comma.enable = false;
   };
 
+  # nh shells out to `nix`, which isn't on the systemd user PATH.
+  systemd.user.services.nh-clean = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    Service.Environment = ["PATH=/run/system-manager/sw/bin:${homeDir}/.nix-profile/bin:/usr/bin:/bin"];
+  };
+
   targets.darwin.linkApps.enable = false;
   xdg = {
     enable = true;
