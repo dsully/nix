@@ -2,17 +2,19 @@
 # fallback: sudoers.d/vopono is applied by `just system` but the cleanup script
 # in users/dsully.nix is applied by `just switch`, so the two can disagree on
 # the store path for a short window.
-Cmnd_Alias VOPONO_NETNS = @ip@ link delete vpn_s, \
-                          @ip@ link delete vpn_d, \
-                          @ip@ link delete vpn, \
-                          @ip@ netns delete vpn, \
-                          @ip@ netns exec vpn *, \
-                          /sbin/ip link delete vpn_s, \
-                          /sbin/ip link delete vpn_d, \
-                          /sbin/ip link delete vpn, \
-                          /sbin/ip netns delete vpn, \
-                          /sbin/ip netns exec vpn *, \
-                          /usr/sbin/ip netns exec vpn *
+# vopono appends "-u<uid>" to the namespace name in daemon mode, so
+# --custom-netns-name=vpn yields vpn-u1000.
+Cmnd_Alias VOPONO_NETNS = @ip@ link delete vpn-u1000_s, \
+                          @ip@ link delete vpn-u1000_d, \
+                          @ip@ link delete vpn-u1000, \
+                          @ip@ netns delete vpn-u1000, \
+                          @ip@ netns exec vpn-u1000 *, \
+                          /sbin/ip link delete vpn-u1000_s, \
+                          /sbin/ip link delete vpn-u1000_d, \
+                          /sbin/ip link delete vpn-u1000, \
+                          /sbin/ip netns delete vpn-u1000, \
+                          /sbin/ip netns exec vpn-u1000 *, \
+                          /usr/sbin/ip netns exec vpn-u1000 *
 
 dsully ALL=(root) NOPASSWD: VOPONO_NETNS
 

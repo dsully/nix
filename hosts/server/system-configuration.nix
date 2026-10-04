@@ -125,7 +125,8 @@ in {
         serviceConfig = {
           Type = "simple";
           ExecStart = "${lib.getExe pkgs.vopono} daemon";
-          ExecStopPost = "-/bin/sh -c '/sbin/ip link delete vpn_s 2>/dev/null; /sbin/ip netns delete vpn 2>/dev/null; true'";
+          # vopono appends "-u<uid>" to the namespace name in daemon mode.
+          ExecStopPost = "-/bin/sh -c '/sbin/ip link delete vpn-u1000_s 2>/dev/null; /sbin/ip netns delete vpn-u1000 2>/dev/null; true'";
           Restart = "on-failure";
           RestartSec = "2s";
           Environment = [

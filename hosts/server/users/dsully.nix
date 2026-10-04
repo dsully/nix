@@ -12,23 +12,30 @@
   voponoConfigPath = ".config/vopono/protonvpn-us-ca52.conf";
   voponoConfig = "${homeDir}/${voponoConfigPath}";
 
+  # In daemon mode vopono appends "-u<uid>" to the requested namespace name
+  # (namespace_ownership::name_for_uid), so --custom-netns-name=vpn yields the
+  # namespace, the WireGuard interface, and the veth pair below. dsully is uid
+  # 1000. Keep this in step with hosts/server/files/sudoers-vopono and with
+  # Session\Interface in qBittorrent.conf.
+  voponoNetns = "vpn-u1000";
+
   # vopono unwinds the namespace only when it exits cleanly. A crash or a
-  # SIGKILL leaves the netns, its veth pair, and the lock directory behind.
-  # The namespace name is fixed ("vpn"), so those leftovers collide with the
-  # next start. Delete them on every stop. Each command matches a literal
-  # NOPASSWD rule in hosts/server/files/sudoers-vopono.
+  # SIGKILL leaves the netns, its veth pair, and the lock directory behind. The
+  # namespace name is fixed, so those leftovers collide with the next start:
+  # vopono reuses the dead namespace, skips the port forwarder, and qBittorrent
+  # sees no route out. Delete them on every stop.
   # sudo matches the command path literally, so both spellings below need a rule
   # in hosts/server/files/sudoers-vopono. The pinned path is the real target;
   # /sbin/ip covers the window where `just system` and `just switch` disagree on
   # the store path. Every delete is idempotent, so running both is harmless.
   voponoCleanup = pkgs.writeShellScript "vopono-cleanup" ''
     for ip in ${lib.getExe' pkgs.iproute2 "ip"} /sbin/ip; do
-      for link in vpn_s vpn_d vpn; do
+      for link in ${voponoNetns}_s ${voponoNetns}_d ${voponoNetns}; do
         sudo -n "$ip" link delete "$link" 2>/dev/null || true
       done
-      sudo -n "$ip" netns delete vpn 2>/dev/null || true
+      sudo -n "$ip" netns delete ${voponoNetns} 2>/dev/null || true
     done
-    rm -rf ${homeDir}/.config/vopono/locks/vpn
+    rm -rf ${homeDir}/.config/vopono/locks/${voponoNetns}
   '';
 in {
   imports = [

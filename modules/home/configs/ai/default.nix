@@ -57,7 +57,6 @@ in {
     programs = {
       codex.enable = false;
 
-
       mcp = {
         enable = true;
         servers = ai.mcpServers;
