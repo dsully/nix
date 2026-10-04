@@ -4,7 +4,7 @@
 
     extraOptions = [
       "--follow"
-      "--full-path"
+      "--absolute-path"
       "--one-file-system"
     ];
 
