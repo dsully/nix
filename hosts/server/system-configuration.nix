@@ -47,10 +47,6 @@
     no-autoupdate = true;
     ingress = [
       {
-        hostname = "wizarr.sully.org";
-        service = "http://localhost:5690";
-      }
-      {
         hostname = "seerr.sully.org";
         service = "http://localhost:5055";
       }
@@ -158,8 +154,18 @@ in {
         serviceConfig = {
           Type = "simple";
           ExecStart = "${lib.getExe pkgs.vopono} daemon";
-          # vopono appends "-u<uid>" to the namespace name in daemon mode.
-          ExecStopPost = "-/bin/sh -c '/sbin/ip link delete vpn-u1000_s 2>/dev/null; /sbin/ip netns delete vpn-u1000 2>/dev/null; true'";
+          # A restart here drops the socket that a running `vopono exec` client
+          # holds. The client then falls back to sudo, which names the namespace
+          # "vpn" instead of "vpn-u1000" and takes the next free 10.200.x.0/24
+          # subnet, so qBittorrent binds to a missing interface and the host
+          # forwarder points at the wrong address. try-restart puts the client
+          # back on the daemon path; it does nothing when the unit is inactive,
+          # so boot is unaffected. Use the host systemctl, which matches the
+          # running manager.
+          ExecStartPost = "-/bin/systemctl --user --machine=dsully@.host try-restart vopono.service";
+          # The name takes two spellings: "vpn-u1000" through the daemon,
+          # "vpn" through the sudo fallback.
+          ExecStopPost = "-/bin/sh -c 'for ns in vpn-u1000 vpn; do /sbin/ip link delete \"$ns\"_s 2>/dev/null; /sbin/ip netns delete \"$ns\" 2>/dev/null; done; true'";
           Restart = "on-failure";
           RestartSec = "2s";
           Environment = [

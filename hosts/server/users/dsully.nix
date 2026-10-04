@@ -12,30 +12,57 @@
   voponoConfigPath = ".config/vopono/protonvpn-us-ca52.conf";
   voponoConfig = "${homeDir}/${voponoConfigPath}";
 
-  # In daemon mode vopono appends "-u<uid>" to the requested namespace name
-  # (namespace_ownership::name_for_uid), so --custom-netns-name=vpn yields the
-  # namespace, the WireGuard interface, and the veth pair below. dsully is uid
-  # 1000. Keep this in step with hosts/server/files/sudoers-vopono and with
-  # Session\Interface in qBittorrent.conf.
-  voponoNetns = "vpn-u1000";
+  # The namespace name depends on how vopono escalates. Through the root daemon
+  # it appends "-u<uid>" (namespace_ownership::name_for_uid), so
+  # --custom-netns-name=vpn yields "vpn-u1000"; dsully is uid 1000. Through the
+  # sudo fallback daemon_uid is None and the name stays "vpn". vopono 1.0.1 has
+  # no flag to refuse the fallback, so both names can exist and both need
+  # cleanup and sudoers rules. ExecStartPre below keeps the daemon name the
+  # only one in normal use. Session\Interface in qBittorrent.conf names the
+  # WireGuard interface, which takes the same two spellings.
+  voponoNetnsNames = ["vpn-u1000" "vpn"];
 
   # vopono unwinds the namespace only when it exits cleanly. A crash or a
   # SIGKILL leaves the netns, its veth pair, and the lock directory behind. The
-  # namespace name is fixed, so those leftovers collide with the next start:
-  # vopono reuses the dead namespace, skips the port forwarder, and qBittorrent
-  # sees no route out. Delete them on every stop.
+  # names are fixed, so those leftovers collide with the next start: vopono
+  # reuses the dead namespace, skips the port forwarder, and qBittorrent sees no
+  # route out. A surviving namespace also holds its 10.200.x.0/24 subnet, so the
+  # next start moves to the next free subnet. Delete them on every stop.
   # sudo matches the command path literally, so both spellings below need a rule
   # in hosts/server/files/sudoers-vopono. The pinned path is the real target;
   # /sbin/ip covers the window where `just system` and `just switch` disagree on
   # the store path. Every delete is idempotent, so running both is harmless.
   voponoCleanup = pkgs.writeShellScript "vopono-cleanup" ''
     for ip in ${lib.getExe' pkgs.iproute2 "ip"} /sbin/ip; do
-      for link in ${voponoNetns}_s ${voponoNetns}_d ${voponoNetns}; do
-        sudo -n "$ip" link delete "$link" 2>/dev/null || true
+      for ns in ${lib.concatStringsSep " " voponoNetnsNames}; do
+        for link in "$ns"_s "$ns"_d "$ns"; do
+          sudo -n "$ip" link delete "$link" 2>/dev/null || true
+        done
+        sudo -n "$ip" netns delete "$ns" 2>/dev/null || true
       done
-      sudo -n "$ip" netns delete ${voponoNetns} 2>/dev/null || true
     done
-    rm -rf ${homeDir}/.config/vopono/locks/${voponoNetns}
+    for ns in ${lib.concatStringsSep " " voponoNetnsNames}; do
+      rm -rf "${homeDir}/.config/vopono/locks/$ns"
+    done
+  '';
+
+  # vopono assigns the host end of the veth pair 10.200.<subnet>.1 and the
+  # namespace end 10.200.<subnet>.2 (netns.rs add_routing). The subnet is the
+  # first free one, so it moves whenever a previous namespace outlives its run.
+  # Read it from the host interface instead of pinning an address.
+  voponoForward = pkgs.writeShellScript "vopono-qbit-forward" ''
+    addr=$(${lib.getExe' pkgs.iproute2 "ip"} -4 -oneline addr show \
+      | ${lib.getExe pkgs.gawk} '$2 ~ /^vpn(-u[0-9]+)?_d$/ {
+          split($4, cidr, "/"); split(cidr[1], octet, ".");
+          print octet[1] "." octet[2] "." octet[3] ".2"; exit
+        }')
+
+    if [ -z "$addr" ]; then
+      echo "no vopono veth interface on the host" >&2
+      exit 1
+    fi
+
+    exec ${lib.getExe pkgs.socat} TCP-LISTEN:9091,fork,reuseaddr "TCP:$addr:9091"
   '';
 in {
   imports = [
@@ -200,8 +227,10 @@ in {
         Description = "Vopono qBittorrent";
         Wants = ["network-online.target"];
         X-SwitchMethod = "keep-old";
-        # Note: vopono-daemon.service is a system service so cross-boundary ordering
-        # doesn't work. The user service relies on RestartSec to retry until the daemon is ready.
+        # vopono-daemon.service is a system service, so cross-boundary ordering
+        # does not work. ExecStartPre tests the daemon socket and RestartSec
+        # retries until the daemon answers. The daemon restarts this unit from
+        # its own ExecStartPost in hosts/server/system-configuration.nix.
         After = ["local-fs.target" "network-online.target" "nss-lookup.target"];
         # The old RestartSec (10s) equalled the default StartLimitIntervalSec,
         # so the rate limiter never tripped and a broken tunnel looped every
@@ -213,10 +242,18 @@ in {
       Service = {
         WorkingDirectory = "%h/.config/vopono";
         Environment = "RUST_LOG=info";
-        # An unclean shutdown (SIGKILL) leaves qBittorrent's single-instance
-        # socket behind, which makes the next start silently exit 0 without
-        # launching. Clear it so a crashed previous run can't wedge startup.
-        ExecStartPre = "${pkgs.coreutils}/bin/rm -f /bits/media/torrents/qBittorrent/config/ipc-socket /bits/media/torrents/qBittorrent/config/lockfile";
+        ExecStartPre = [
+          # An unclean shutdown (SIGKILL) leaves qBittorrent's single-instance
+          # socket behind, which makes the next start silently exit 0 without
+          # launching. Clear it so a crashed previous run can't wedge startup.
+          "${pkgs.coreutils}/bin/rm -f /bits/media/torrents/qBittorrent/config/ipc-socket /bits/media/torrents/qBittorrent/config/lockfile"
+          # Refuse to start without the daemon. vopono silently falls back to
+          # sudo when the socket is gone, and that path names the namespace
+          # "vpn" instead of "vpn-u1000", which leaves qBittorrent bound to an
+          # interface that does not exist. Failing here makes Restart retry
+          # with the backoff above until the daemon answers.
+          "${pkgs.coreutils}/bin/test -S /run/vopono.sock"
+        ];
         ExecStart = lib.concatStringsSep " " [
           "${lib.getExe pkgs.vopono}"
           "exec"
@@ -267,7 +304,7 @@ in {
         After = ["vopono.service"];
       };
       Service = {
-        ExecStart = "${lib.getExe pkgs.socat} TCP-LISTEN:9091,fork,reuseaddr TCP:10.200.1.2:9091";
+        ExecStart = "${voponoForward}";
         Restart = "on-failure";
         RestartSec = "5s";
       };
