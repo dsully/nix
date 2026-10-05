@@ -15,7 +15,6 @@ in {
     ./herdr.nix
     ./mcp-mux.nix
     ./meridian.nix
-    ./omp.nix
     ./opencode.nix
     ./pi.nix
     ./skills

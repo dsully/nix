@@ -63,14 +63,6 @@
   # to `all` and show up, matching the in-tree and marketplace agents.
   sanitizeAgent = sanitizeAgentWith ["name:" "tools:" "color:" "model:" "mode:"];
 
-  # omp keys agents by their frontmatter `name`, and `parseAgentFields` rejects a
-  # file that has no `name` or `description`, so both are kept. `tools` is
-  # dropped: omp normalizes only names that match its own tool ids
-  # (read/grep/glob/...), so a Claude list such as `LS, NotebookRead, WebFetch`
-  # would restrict the subagent to the two or three names that happen to match.
-  # `model`, `color`, and `mode` are dropped for the same reasons as opencode.
-  sanitizeOmpAgent = sanitizeAgentWith ["tools:" "color:" "model:" "mode:"];
-
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
@@ -206,10 +198,6 @@
   # never reach opencode's config validation.
   opencodeAgents = lib.mapAttrs (_: sanitizeAgent) agentSources;
 
-  # The same marketplace agents in omp's dialect, written to
-  # ~/.omp/agent/agents/<name>.md by omp.nix.
-  ompAgents = lib.mapAttrs (_: sanitizeOmpAgent) agentSources;
-
   hooks = import ./hooks.nix {inherit config lib pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
@@ -271,7 +259,6 @@ in {
     lsp
     models
     muxWrap
-    ompAgents
     opencodeAgents
     outputStyles
     permissions
