@@ -186,6 +186,7 @@ in {
     syncthing = {
       enable = true;
       guiAddress = "0.0.0.0:8384";
+      extraOptions = ["--log-level=WARN"];
     };
   };
 

@@ -18,6 +18,7 @@
   services = {
     syncthing = {
       enable = true;
+      extraOptions = ["--log-level=WARN"];
     };
   };
 }
