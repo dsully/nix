@@ -82,23 +82,22 @@
   };
 
   settingsPath = "${config.xdg.configHome}/claude/settings.json";
-
-  # context-mode npm-installs into its plugin dir (store is read-only), and HM `marketplaces` overwrites settings.extraKnownMarketplaces.
-  settingsFile = pkgs.runCommand "claude-code-settings.json" {nativeBuildInputs = [pkgs.jq];} ''
-    jq '.extraKnownMarketplaces["context-mode"].source = {
-      source: "github",
-      repo: "mksglu/context-mode",
-      ref: "v${ai.contextModeVersion}"
-    }' ${config.home.file."${settingsPath}".source} > $out
-  '';
 in {
   config = lib.mkMerge [
     {programs.claude-code.enable = lib.mkDefault true;}
 
     (lib.mkIf config.programs.claude-code.enable {
       home = {
-        activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          $DRY_RUN_CMD install -Dm600 ${settingsFile} ${settingsPath}
+        # context-mode npm-installs into its plugin dir (store is read-only), and HM `marketplaces` overwrites settings.extraKnownMarketplaces.
+        activation.claudeContextModeMarketplace = lib.hm.dag.entryAfter ["claudeCodeSettings"] ''
+          tmp=$(mktemp)
+          ${lib.getExe pkgs.jq} '.extraKnownMarketplaces["context-mode"].source = {
+            source: "github",
+            repo: "mksglu/context-mode",
+            ref: "v${ai.contextModeVersion}"
+          }' ${settingsPath} > "$tmp"
+          run install -m600 "$tmp" ${settingsPath}
+          rm -f "$tmp"
         '';
 
         # Point the legacy ~/.claude paths at the XDG location, which is the single
@@ -106,13 +105,6 @@ in {
         file = {
           ".claude".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude";
           ".claude.json".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/claude/.claude.json";
-
-          # The module would symlink settings.json read-only into the /nix/store, which
-          # breaks runtime commands like /effort. Disable that and install a writable
-          # copy of the module's own generated file instead (it already merges $schema
-          # and extraKnownMarketplaces), so there's a single source of truth; each
-          # activation overwrites it with declared state.
-          "${settingsPath}".enable = lib.mkForce false;
         };
 
         packages = with pkgs.llm-agents; [
@@ -127,6 +119,7 @@ in {
 
         claude-code = {
           package = pkgs.llm-agents.claude-code;
+          mutableSettings = true;
 
           enableMcpIntegration = true;
 
