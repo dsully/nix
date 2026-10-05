@@ -46,6 +46,31 @@ system +args="":
 system +args="":
     @{{ NH }} darwin switch {{ NH_ARGS }} . {{ args }} -- --no-warn-dirty
 
+# Build a host's system configuration locally and deploy it over SSH
+[group('remote')]
+[linux]
+deploy host +args="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # A MagicDNS miss falls through to the *.sully.org wildcard, which is zap.
+    actual=$(ssh -o BatchMode=yes root@{{ host }} hostname)
+    [[ "$actual" == "{{ host }}" ]] || { echo "root@{{ host }} is '$actual', refusing to deploy" >&2; exit 1; }
+
+    {{ SM }} \
+        --nix-option "extra-experimental-features" "nix-command flakes" \
+        --nix-option "accept-flake-config" "true" \
+        --nix-option "warn-dirty" "false" \
+        switch --flake .#{{ host }} --target-host root@{{ host }} {{ args }}
+
+[group('remote')]
+[linux]
+deploy-ca +args="": (deploy "ca" args)
+
+[group('remote')]
+[linux]
+deploy-tnt +args="": (deploy "tnt" args)
+
 # Switch Home Manager Configuration
 [group('desktop')]
 switch +args="":

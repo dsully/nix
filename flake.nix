@@ -173,16 +173,12 @@
             flake = flakeAttr;
             system-manager = smPkg;
           };
-        in {
-          server = inputs.system-manager.lib.makeSystemConfig {
-            modules = [./hosts/server/system-configuration.nix];
-            specialArgs = smArgs;
-          };
-          zap = inputs.system-manager.lib.makeSystemConfig {
-            modules = [./hosts/zap/system-configuration.nix];
-            specialArgs = smArgs;
-          };
-        });
+        in
+          inputs.nixpkgs.lib.genAttrs ["ca" "server" "tnt" "zap"] (host:
+            inputs.system-manager.lib.makeSystemConfig {
+              modules = [./hosts/${host}/system-configuration.nix];
+              specialArgs = smArgs;
+            }));
       in {
         modules.darwin = darwinModules;
 
