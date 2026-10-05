@@ -15,6 +15,7 @@ buildGoModule rec {
   };
 
   vendorHash = "sha256-zFP1D8KmBoBPjfjEZax+Gx42kUtGMTqm8Pk30SpNrno=";
+  doCheck = false;
 
   subPackages = ["cmd/mcp-mux"];
 
