@@ -112,6 +112,7 @@
             opnix = ./modules/system-manager/opnix.nix;
             caddy = ./modules/system-manager/caddy.nix;
             docker = ./modules/system-manager/docker.nix;
+            tailscale = ./modules/system-manager/tailscale.nix;
           };
         };
       };
