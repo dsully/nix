@@ -51,6 +51,7 @@
     # Keys below are mkDefault, so a downstream flake can override them with a
     # plain assignment.
     enabledPlugins = {
+      "context-mode@context-mode" = lib.mkDefault true;
       "ponytail@ponytail" = lib.mkDefault true;
     };
 
@@ -81,6 +82,15 @@
   };
 
   settingsPath = "${config.xdg.configHome}/claude/settings.json";
+
+  # context-mode npm-installs into its plugin dir (store is read-only), and HM `marketplaces` overwrites settings.extraKnownMarketplaces.
+  settingsFile = pkgs.runCommand "claude-code-settings.json" {nativeBuildInputs = [pkgs.jq];} ''
+    jq '.extraKnownMarketplaces["context-mode"].source = {
+      source: "github",
+      repo: "mksglu/context-mode",
+      ref: "v${ai.contextModeVersion}"
+    }' ${config.home.file."${settingsPath}".source} > $out
+  '';
 in {
   config = lib.mkMerge [
     {programs.claude-code.enable = lib.mkDefault true;}
@@ -88,7 +98,7 @@ in {
     (lib.mkIf config.programs.claude-code.enable {
       home = {
         activation.claudeCodeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          $DRY_RUN_CMD install -Dm600 ${config.home.file."${settingsPath}".source} ${settingsPath}
+          $DRY_RUN_CMD install -Dm600 ${settingsFile} ${settingsPath}
         '';
 
         # Point the legacy ~/.claude paths at the XDG location, which is the single

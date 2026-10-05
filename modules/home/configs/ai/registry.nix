@@ -226,7 +226,7 @@
     )
     mcpServers;
 
-  # pi and opencode each install context-mode from npm as a plugin; pin the one
+  # pi, opencode, and claude-code each install context-mode; pin the one
   # version here so they cannot drift apart.
   contextModeVersion = "1.0.169";
 
