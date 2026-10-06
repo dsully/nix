@@ -4,22 +4,24 @@
 
     extraOptions = [
       "--follow"
-      "--absolute-path"
+      "--hyperlink=auto"
+      # "--absolute-path"
       "--one-file-system"
     ];
 
     hidden = true;
 
     ignores = [
-      ".git/"
-      ".venv/"
       "build-results/"
       "Cargo.lock"
       "flake.lock"
+      ".git/"
+      "node_modules/"
       "package-lock.json"
       "target/"
       "uv.lock"
       "vendor/"
+      ".venv/"
       "yarn.lock"
     ];
   };
