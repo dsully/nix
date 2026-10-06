@@ -23,7 +23,12 @@
     // {
       command = lib.getExe my.pkgs.mcp-mux;
       args = lib.optional stateless "-stateless" ++ [base.command] ++ (base.args or []);
+      # A shim respawns the daemon from this pointer instead of its own binary, so
+      # shims from an older generation cannot resurrect a stale daemon version.
+      env = (base.env or {}) // {MCPMUX_ACTIVE_ENGINE_FILE = muxEngineFile;};
     };
+
+  muxEngineFile = "${config.xdg.stateHome}/mcp-mux/active-engine";
 
   agentDescription = file: let
     text = builtins.readFile file;
@@ -258,6 +263,7 @@ in {
     hooks
     lsp
     models
+    muxEngineFile
     muxWrap
     opencodeAgents
     outputStyles

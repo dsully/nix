@@ -1,4 +1,5 @@
 {
+  ai,
   config,
   lib,
   my,
@@ -19,9 +20,14 @@
   # unrelated home switches from churning the shared daemon (and every live agent
   # session attached to it). muxExe is folded in explicitly so a mux version bump
   # triggers a restart even when the server set is unchanged.
+  #
+  # Live shims from the previous generation reconnect immediately and would
+  # respawn the daemon from their own (old) binary; ai.muxEngineFile points them
+  # at the current muxExe instead, so it must be written before the stop.
   configHash = builtins.hashString "sha256" (muxExe + builtins.toJSON config.programs.mcp.servers);
 
-  stateFile = "${config.xdg.stateHome}/mcp-mux/config-hash";
+  stateDir = "${config.xdg.stateHome}/mcp-mux";
+  stateFile = "${stateDir}/config-hash";
 in {
   config = lib.mkIf config.programs.mcp.enable {
     home.activation.restartMcpMux =
@@ -29,10 +35,13 @@ in {
       # bash
       ''
         state="${stateFile}"
+        engine="${ai.muxEngineFile}"
+
+        run mkdir -p "${stateDir}" "$(dirname "$engine")"
+        run sh -c 'printf "%s\n" "$1" > "$2.tmp" && mv "$2.tmp" "$2"' _ "${muxExe}" "$engine"
 
         if [ "$(cat "$state" 2>/dev/null)" != "${configHash}" ]; then
           run ${muxExe} stop --force || true
-          run mkdir -p "$(dirname "$state")"
           run sh -c 'printf "%s\n" "$1" > "$2"' _ "${configHash}" "$state"
         fi
       '';
