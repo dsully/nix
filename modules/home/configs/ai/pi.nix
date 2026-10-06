@@ -199,10 +199,12 @@ in {
                 # "npm:pi-agent-browser-native"
                 # "npm:pi-autoresearch"
                 # "npm:pi-blackhole"
+                "npm:pi-codemode-toggle"
                 "npm:pi-context-view"
                 "npm:pi-hashline-edit"
                 # "npm:pi-mcp-adapter"
                 # "npm:pi-powerline-footer"
+                "npm:@optomatica/pi-auto-session-name"
                 "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
                 "npm:@pi-unipi/ask-user"
                 "npm:@pi-unipi/background-tasks"
