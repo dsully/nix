@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  dotfileDir = "${config.xdg.configHome}/nix/dotfiles";
+  dotfileDir = config.dotfiles.dir;
 
   # mkOutOfStoreSymlink creates a nix store symlink pointing outside the store.
   # This breaks with `recursive = true` in sandbox builds because the target
@@ -32,36 +32,44 @@
     then "fish/functions-darwin"
     else "fish/functions-linux";
 in {
-  xdg.configFile =
-    {
-      "fish/conf.d" = {
-        source = "${flakeDotfiles}/fish/conf.d";
-        recursive = true;
-      };
+  options.dotfiles.dir = lib.mkOption {
+    type = lib.types.str;
+    default = "${config.xdg.configHome}/nix/dotfiles";
+    description = "Working-tree dotfiles directory that out-of-store symlinks point at.";
+  };
 
-      "fish/functions" = {
-        source = "${flakeDotfiles}/fish/functions";
-        recursive = true;
-      };
+  config = {
+    xdg.configFile =
+      {
+        "fish/conf.d" = {
+          source = "${flakeDotfiles}/fish/conf.d";
+          recursive = true;
+        };
 
-      "fish/completions" = {
-        source = "${flakeDotfiles}/fish/completions";
-        recursive = true;
-      };
-    }
-    // lib.listToAttrs (
-      map (name: {
-        name = "fish/functions/${name}";
-        value.source = config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/${platformDir}/${name}";
-      })
-      platformFunctions
-    );
+        "fish/functions" = {
+          source = "${flakeDotfiles}/fish/functions";
+          recursive = true;
+        };
 
-  # Live-symlinked scripts: edits to the working tree are reflected immediately,
-  # no rebuild needed. Target must remain executable in the source tree.
-  home.file."${config.xdg.binHome}/remove-unicode".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/remove-unicode.py";
+        "fish/completions" = {
+          source = "${flakeDotfiles}/fish/completions";
+          recursive = true;
+        };
+      }
+      // lib.listToAttrs (
+        map (name: {
+          name = "fish/functions/${name}";
+          value.source = config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/${platformDir}/${name}";
+        })
+        platformFunctions
+      );
 
-  home.file."${config.xdg.binHome}/deadcode".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/deadcode.py";
+    # Live-symlinked scripts: edits to the working tree are reflected immediately,
+    # no rebuild needed. Target must remain executable in the source tree.
+    home.file."${config.xdg.binHome}/remove-unicode".source =
+      config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/remove-unicode.py";
+
+    home.file."${config.xdg.binHome}/deadcode".source =
+      config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/deadcode.py";
+  };
 }

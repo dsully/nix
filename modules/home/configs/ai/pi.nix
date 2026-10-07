@@ -52,6 +52,9 @@ in {
         file = {
           ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
 
+          # Live symlink: edits in the working tree apply on /reload, no switch.
+          "${piPath}/extensions/footer".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/pi/extensions/footer";
+
           "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
             mcpServers = piMcpServers;
           };
@@ -102,61 +105,6 @@ in {
             done
 
             [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
-          '';
-
-          # @pi-unipi/footer delays the glance editor 3.5s as a grace period for
-          # unipi's info-screen (not installed); drop it. sed -i replaces the file,
-          # so bun's cache is untouched. Warns if upstream changes the line.
-          piPatchUnipiFooter = lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
-            _f="${piPath}/npm/node_modules/@pi-unipi/footer/src/index.ts"
-            _from='installGlanceEditor(state, ctx), 3500)'
-
-            if [ -f "$_f" ]; then
-              if ${lib.getExe pkgs.gnugrep} -qF "$_from" "$_f"; then
-                run ${lib.getExe pkgs.gnused} -i 's/installGlanceEditor(state, ctx), 3500)/installGlanceEditor(state, ctx), 0)/' "$_f"
-              elif ! ${lib.getExe pkgs.gnugrep} -qF 'installGlanceEditor(state, ctx), 0)' "$_f"; then
-                echo "piPatchUnipiFooter: pattern not found in $_f; glance delay patch not applied"
-              fi
-            fi
-          '';
-
-          # Fullscreen: render the glance editor's autocomplete as an overlay above
-          # the frame instead of inline below it, so neither the frame nor the
-          # transcript moves. Reverse dry-run detects an already-patched tree.
-          # Regenerate from a UniPi checkout (github.com/Neuron-Mr-White/UniPi) at the
-          # installed footer version, with the change applied to src/glance-editor.ts:
-          #   git diff --relative=packages/footer -- packages/footer/src/glance-editor.ts \
-          #     > modules/home/configs/ai/pi/unipi-footer-autocomplete-overlay.patch
-          piPatchUnipiFooterAutocomplete = lib.hm.dag.entryAfter ["piPatchUnipiFooter"] ''
-            _d="${piPath}/npm/node_modules/@pi-unipi/footer"
-            _p=${./pi/unipi-footer-autocomplete-overlay.patch}
-            _patch=${lib.getExe pkgs.gnupatch}
-
-            if [ -f "$_d/src/glance-editor.ts" ] && ! $_patch -d "$_d" -p1 -R -s -f --dry-run < "$_p" >/dev/null 2>&1; then
-              if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < "$_p"; then
-                echo "piPatchUnipiFooterAutocomplete: patch did not apply to $_d; autocomplete overlay not applied"
-              fi
-            fi
-          '';
-
-          # pi-glance: fullscreen autocomplete as an overlay above the frame (same
-          # approach as the UniPi patch), and allow a 1-row minimum editor height.
-          # Regenerate by diffing a patched copy of the installed package:
-          #   git diff -- src/surface/editor.ts > pi/pi-glance-autocomplete-overlay.patch
-          #   git diff -- src/config/model.ts src/surface/frame.ts src/settings/catalog.ts > pi/pi-glance-min-rows.patch
-          piPatchPiGlance = lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
-            _d="${piPath}/npm/node_modules/pi-glance"
-            _patch=${lib.getExe pkgs.gnupatch}
-
-            if [ -d "$_d/src" ]; then
-              for _p in ${./pi/pi-glance-autocomplete-overlay.patch} ${./pi/pi-glance-min-rows.patch}; do
-                if ! $_patch -d "$_d" -p1 -R -s -f --dry-run < "$_p" >/dev/null 2>&1; then
-                  if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < "$_p"; then
-                    echo "piPatchPiGlance: $_p did not apply to $_d"
-                  fi
-                fi
-              done
-            fi
           '';
         };
       };
@@ -242,14 +190,12 @@ in {
                 "npm:pi-context-view"
                 "npm:pi-hashline-edit"
                 # "npm:pi-mcp-adapter"
-                # "npm:pi-powerline-footer"
                 "npm:@optomatica/pi-auto-session-name"
                 "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
                 "npm:@pi-unipi/ask-user"
                 "npm:@pi-unipi/background-tasks"
                 "npm:@pi-unipi/btw"
                 "npm:@pi-unipi/compactor"
-                "npm:@pi-unipi/footer"
                 "npm:@pi-unipi/memory"
                 "npm:@pi-unipi/milestone"
                 "npm:@pi-unipi/notify"
