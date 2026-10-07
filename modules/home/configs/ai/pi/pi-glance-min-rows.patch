@@ -1,0 +1,39 @@
+diff --git i/src/config/model.ts w/src/config/model.ts
+index db2cf1d..719afc8 100644
+--- i/src/config/model.ts
++++ w/src/config/model.ts
+@@ -227,7 +227,7 @@ export function normalizeConfig(raw: unknown): GlanceConfig {
+ 			retryBlinkHz: RETRY_BLINK.normalize(editor.retryBlinkHz),
+ 			stashEnabled: parseBool(editor.stashEnabled, defaults.editor.stashEnabled),
+ 			stashShortcut: normalizeStashShortcut(editor.stashShortcut) ?? defaults.editor.stashShortcut,
+-			minContentRows: parseIntInRange(editor.minContentRows, defaults.editor.minContentRows, 2, 4),
++			minContentRows: parseIntInRange(editor.minContentRows, defaults.editor.minContentRows, 1, 4),
+ 			workingSweepColor: parseStringEnum(editor.workingSweepColor, WORKING_SWEEP_COLORS, defaults.editor.workingSweepColor),
+ 			workingSweepSpeed: WORKING_SPEED.normalize(editor.workingSweepSpeed),
+ 			workingSweep: editor.workingSweep === true || editor.workingSweep === "top" ? "top" : "perimeter",
+diff --git i/src/settings/catalog.ts w/src/settings/catalog.ts
+index 9641213..304b096 100644
+--- i/src/settings/catalog.ts
++++ w/src/settings/catalog.ts
+@@ -126,7 +126,7 @@ const inputSettings = [
+ 		"input.rows",
+ 		"Editor height",
+ 		"Minimum input rows. The editor can grow as you type.",
+-		[2, 3, 4].map((value) => ({ value, label: `${value} rows` })),
++		[1, 2, 3, 4].map((value) => ({ value, label: `${value} row${value === 1 ? "" : "s"}` })),
+ 		(c) => c.editor.minContentRows,
+ 		(c, v) => {
+ 			c.editor.minContentRows = v;
+diff --git i/src/surface/frame.ts w/src/surface/frame.ts
+index b4015c0..ec8952a 100644
+--- i/src/surface/frame.ts
++++ w/src/surface/frame.ts
+@@ -69,7 +69,7 @@ function stripControlsPreservingSpaces(text: string): string {
+ }
+ 
+ function minContentRows(config: GlanceConfig): number {
+-	return Math.max(2, Math.min(4, config.editor.minContentRows));
++	return Math.max(1, Math.min(4, config.editor.minContentRows));
+ }
+ 
+ function shouldDimChrome(input: InputSurfaceFrameInput): boolean {

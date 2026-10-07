@@ -138,6 +138,26 @@ in {
               fi
             fi
           '';
+
+          # pi-glance: fullscreen autocomplete as an overlay above the frame (same
+          # approach as the UniPi patch), and allow a 1-row minimum editor height.
+          # Regenerate by diffing a patched copy of the installed package:
+          #   git diff -- src/surface/editor.ts > pi/pi-glance-autocomplete-overlay.patch
+          #   git diff -- src/config/model.ts src/surface/frame.ts src/settings/catalog.ts > pi/pi-glance-min-rows.patch
+          piPatchPiGlance = lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
+            _d="${piPath}/npm/node_modules/pi-glance"
+            _patch=${lib.getExe pkgs.gnupatch}
+
+            if [ -d "$_d/src" ]; then
+              for _p in ${./pi/pi-glance-autocomplete-overlay.patch} ${./pi/pi-glance-min-rows.patch}; do
+                if ! $_patch -d "$_d" -p1 -R -s -f --dry-run < "$_p" >/dev/null 2>&1; then
+                  if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < "$_p"; then
+                    echo "piPatchPiGlance: $_p did not apply to $_d"
+                  fi
+                fi
+              done
+            fi
+          '';
         };
       };
 
