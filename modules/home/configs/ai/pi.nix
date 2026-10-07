@@ -119,6 +119,25 @@ in {
               fi
             fi
           '';
+
+          # Fullscreen: render the glance editor's autocomplete as an overlay above
+          # the frame instead of inline below it, so neither the frame nor the
+          # transcript moves. Reverse dry-run detects an already-patched tree.
+          # Regenerate from a UniPi checkout (github.com/Neuron-Mr-White/UniPi) at the
+          # installed footer version, with the change applied to src/glance-editor.ts:
+          #   git diff --relative=packages/footer -- packages/footer/src/glance-editor.ts \
+          #     > modules/home/configs/ai/pi/unipi-footer-autocomplete-overlay.patch
+          piPatchUnipiFooterAutocomplete = lib.hm.dag.entryAfter ["piPatchUnipiFooter"] ''
+            _d="${piPath}/npm/node_modules/@pi-unipi/footer"
+            _p=${./pi/unipi-footer-autocomplete-overlay.patch}
+            _patch=${lib.getExe pkgs.gnupatch}
+
+            if [ -f "$_d/src/glance-editor.ts" ] && ! $_patch -d "$_d" -p1 -R -s -f --dry-run < "$_p" >/dev/null 2>&1; then
+              if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < "$_p"; then
+                echo "piPatchUnipiFooterAutocomplete: patch did not apply to $_d; autocomplete overlay not applied"
+              fi
+            fi
+          '';
         };
       };
 

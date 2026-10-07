@@ -1,0 +1,96 @@
+diff --git i/src/glance-editor.ts w/src/glance-editor.ts
+index 327a0a01..227e5af3 100644
+--- i/src/glance-editor.ts
++++ w/src/glance-editor.ts
+@@ -15,7 +15,7 @@
+  */
+ 
+ import { CustomEditor } from "@earendil-works/pi-coding-agent";
+-import type { EditorOptions, EditorTheme, TUI } from "@earendil-works/pi-tui";
++import type { Component, EditorOptions, EditorTheme, OverlayHandle, OverlayOptions, TUI } from "@earendil-works/pi-tui";
+ import type { KeybindingsManager } from "@earendil-works/pi-coding-agent";
+ import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+ import { getIcon, getResolvedIconStyle } from "./rendering/icons.js";
+@@ -171,6 +171,38 @@ export class GlanceEditor extends CustomEditor {
+ 		this.glance = getStatus;
+ 	}
+ 
++	private acLines: string[] = [];
++	private acInner = 0;
++	private acFresh = false;
++	private acOverlay: OverlayHandle | undefined;
++	private readonly acOptions: OverlayOptions = { anchor: "bottom-left", nonCapturing: true };
++	private readonly acComponent: Component & { handleMouse(event: { x: number; y: number }): unknown } = {
++		// The editor renders before overlays every frame; a stale list means it was unmounted.
++		render: () => {
++			if (!this.acFresh) {
++				this.hideAutocompleteOverlay();
++				return [];
++			}
++			this.acFresh = false;
++			return this.acLines;
++		},
++		invalidate: () => {},
++		// Translate into the editor's own coordinates, where the list sits below the frame.
++		handleMouse: (event) => {
++			const ed = this as unknown as {
++				handleMouse?(e: object): object | undefined;
++				renderedVisibleLineCount: number;
++			};
++			const result = ed.handleMouse?.({
++				...event,
++				x: event.x - 1,
++				y: ed.renderedVisibleLineCount + 2 + event.y,
++				width: this.acInner,
++			});
++			return result && { ...result, focus: false };
++		},
++	};
++
+ 	/**
+ 	 * Apply a flowing lolcat gradient to an already-composed frame line.
+ 	 * Kept as a protected hook for subclasses; painting itself lives in
+@@ -297,10 +329,39 @@ export class GlanceEditor extends CustomEditor {
+ 			}
+ 		}
+ 
+-		// Autocomplete list indents by 1 col and sits below the frame (like base).
+-		for (const line of autocomplete) {
+-			lines.push(padLine(` ${line}`, safe));
+-		}
++		const acLines = autocomplete.map(line => padLine(` ${line}`, safe));
++		if (this.tui.mode !== "fullscreen") return [...lines, ...acLines];
++		this.syncAutocompleteOverlay(acLines, lines.length, safe, inner);
+ 		return lines;
+ 	}
++
++	/**
++	 * Fullscreen pins the dock to the bottom row, so a bottom-anchored overlay
++	 * lands exactly above the frame without resizing the dock or transcript.
++	 */
++	private syncAutocompleteOverlay(acLines: string[], frameHeight: number, safe: number, inner: number): void {
++		this.acLines = acLines;
++		this.acInner = inner;
++		this.acFresh = true;
++		if (acLines.length === 0) {
++			this.hideAutocompleteOverlay();
++			return;
++		}
++		this.acOptions.width = safe;
++		this.acOptions.offsetY = -(frameHeight + this.linesBelowEditor());
++		this.acOverlay ??= this.tui.showOverlay(this.acComponent, this.acOptions);
++	}
++
++	private hideAutocompleteOverlay(): void {
++		this.acOverlay?.hide();
++		this.acOverlay = undefined;
++	}
++
++	private linesBelowEditor(): number {
++		const kids = this.tui.children;
++		const i = kids.findIndex(c => c === this || (c as { children?: unknown[] }).children?.includes(this));
++		if (i < 0) return 0;
++		const w = this.tui.terminal.columns;
++		return kids.slice(i + 1).reduce((n, c) => n + c.render(w).length, 0);
++	}
+ }
