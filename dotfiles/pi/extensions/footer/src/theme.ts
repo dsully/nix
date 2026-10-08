@@ -8,7 +8,7 @@ const SEGMENT_COLORS: Record<SegmentId, ThemeColor> = {
   throughput: "muted",
   context: "text",
   tokens: "muted",
-  model: "accent",
+  model: "text",
 };
 
 export interface FooterStyles {
@@ -38,7 +38,7 @@ export function stylesFor(theme: Theme): FooterStyles {
     separator: fg("dim"),
     border: fg("border"),
     title: fg("accent"),
-    path: fg("mdLink"),
+    path: fg("text"),
     segments: Object.fromEntries(Object.entries(SEGMENT_COLORS).map(([id, color]) => [id, fg(color)])) as Record<SegmentId, TextStyler>,
   };
   cache.set(theme, styles);

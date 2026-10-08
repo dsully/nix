@@ -72,8 +72,7 @@ function collectTokens(ctx: SegmentRenderContext): SegmentData {
   return {
     primary,
     display: {
-      // nf-md-refresh (U+F0450)
-      full: rate ? `${primary} 󰑐${rate}` : primary,
+      full: rate ? `${primary} ${rate} cache hit rate` : primary,
       compact: rate ?? primary,
       minimal: rate ?? formatTokens(usage.input + usage.output),
     },
@@ -120,7 +119,7 @@ export const SEGMENTS: readonly SegmentDefinition[] = [
   { id: "throughput", icon: "\uf427", iconSpacing: 2, collect: collectThroughput },
   { id: "context", icon: "󰔟", collect: collectContext },
   { id: "tokens", icon: "󰄨", collect: collectTokens },
-  { id: "model", icon: "󰚩", collect: collectModel },
+  { id: "model", icon: "", collect: collectModel },
 ];
 
 function middleEllipsis(text: string, width: number): string | undefined {
