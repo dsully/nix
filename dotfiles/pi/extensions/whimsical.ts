@@ -459,16 +459,48 @@ const messages = [
   'Cherry-picking the commits...',
 ];
 
+const LOLCAT_FREQ = 0.3;
+const FRAME_MS = 100;
+
 function pickRandom(): string {
   return messages[Math.floor(Math.random() * messages.length)];
 }
 
+function sineColor(t: number, offset: number): number {
+  return Math.round(Math.sin(t + offset) * 127 + 128);
+}
+
+// lolcat -a sine palette; spread iterates code points so surrogate pairs are never split by an SGR.
+function lolcat(text: string, phase: number): string {
+  return `${[...text]
+    .map((ch, i) => {
+      const t = LOLCAT_FREQ * i + phase;
+      return `\x1b[38;2;${sineColor(t, 0)};${sineColor(t, (2 * Math.PI) / 3)};${sineColor(t, (4 * Math.PI) / 3)}m${ch}`;
+    })
+    .join('')}\x1b[39m`;
+}
+
 export default function(pi: ExtensionAPI) {
+  let timer: ReturnType<typeof setInterval> | undefined;
+
+  const stop = () => {
+    clearInterval(timer);
+    timer = undefined;
+  };
+
   pi.on('turn_start', async (_event, ctx) => {
-    ctx.ui.setWorkingMessage(pickRandom());
+    if (!ctx.hasUI) return;
+    stop();
+    const message = pickRandom();
+    const paint = () => ctx.ui.setWorkingMessage(lolcat(message, Date.now() / 300));
+    paint();
+    timer = setInterval(paint, FRAME_MS);
   });
 
   pi.on('turn_end', async (_event, ctx) => {
-    ctx.ui.setWorkingMessage(); // Reset for next time
+    stop();
+    if (ctx.hasUI) ctx.ui.setWorkingMessage(); // Reset for next time
   });
+
+  pi.on('session_shutdown', async () => stop());
 }

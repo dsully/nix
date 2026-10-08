@@ -37,6 +37,13 @@ export interface InputSurfaceFrameInput {
   status(budget: number): string;
 }
 
+// Keeps SGR (CSI final byte `m`) so extension-colored working messages survive; drops OSC/APC and other CSI.
+function stripNonSgrSequences(text: string): string {
+  return text
+    .replace(/\x1b[\]_][^\x07]*(?:\x07|\x1b\\)/g, "")
+    .replace(/\x1b\[[0-?]*[ -/]*[@-ln-~]/g, "");
+}
+
 function identity(text: string): string {
   return text;
 }
@@ -84,9 +91,10 @@ function renderEditorRow(input: InputSurfaceFrameInput, text: string, width: num
 function planBottomFrame(input: InputSurfaceFrameInput, width: number) {
   const activity = input.activity;
   const activityStyle = !input.focused ? input.styles.dim : activity?.kind === "retry" ? input.styles.warn : input.styles.title;
+  const strip = input.focused ? stripNonSgrSequences : stripTerminalSequences;
   return planSurfaceBottomFrame({
     width, scrollIndicator: input.bottomScrollIndicator,
-    label: activity ? budget => activityStyle(truncateStyledText(stripTerminalSequences(activity.render(budget)).replace(/[\r\n\t]/g, " "), budget, "…"))
+    label: activity ? budget => activityStyle(truncateStyledText(strip(activity.render(budget)).replace(/[\r\n\t]/g, " "), budget, "…"))
       : input.hasDraft ? { full: `${DRAFT_LABEL} · ${STASH_SHORTCUT}`, compact: DRAFT_LABEL } : undefined,
   });
 }

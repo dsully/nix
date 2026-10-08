@@ -15,17 +15,20 @@ export interface FooterEditorOptions {
   readonly onStashError?: (message: string) => void;
 }
 
-function stripBorderColor(line: string, borderColor: (text: string) => string): string {
+function removeBorderColor(line: string, borderColor: (text: string) => string): string {
   const sample = borderColor("─");
-  if (!sample || sample === "─") return stripControls(line);
-  const markerIndex = sample.indexOf("─");
-  if (markerIndex < 0) return stripControls(line);
+  const markerIndex = sample ? sample.indexOf("─") : -1;
+  if (markerIndex < 0) return line;
   const prefix = sample.slice(0, markerIndex);
   const suffix = sample.slice(markerIndex + 1);
   let out = line;
   if (prefix) out = out.split(prefix).join("");
   if (suffix) out = out.split(suffix).join("");
-  return stripControls(out);
+  return out;
+}
+
+function stripBorderColor(line: string, borderColor: (text: string) => string): string {
+  return stripControls(removeBorderColor(line, borderColor));
 }
 
 function isHorizontalBorder(line: string, borderColor: (text: string) => string): boolean {
@@ -222,7 +225,7 @@ export class FooterEditor implements Component {
       styles: { ...styles, border },
       lines: lines.slice(1, bottomIndex),
       focused: this.inner.focused ?? false,
-      activity: activity && { kind: activity.kind, render: w => activity.renderInBorder(w) },
+      activity: activity && { kind: activity.kind, render: w => removeBorderColor(activity.renderInBorder(w), border) },
       topScrollIndicator: this.extractScrollIndicator(topOriginal, metrics.safeWidth),
       bottomScrollIndicator: this.extractScrollIndicator(bottomOriginal, metrics.safeWidth),
       hasDraft: this.footerOptions.stash?.hasDraft,
