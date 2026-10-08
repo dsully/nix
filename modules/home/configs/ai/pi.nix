@@ -22,6 +22,10 @@
   # teelicht fork, so track its enable state for pi.
   piSuperpowers = lib.elem "pi" config.programs.ai.superpowers.agents;
 
+  piExtensions =
+    lib.filterAttrs (name: type: (type == "directory" || (type == "regular" && lib.hasSuffix ".ts" name)))
+    (builtins.readDir ../../../../dotfiles/pi/extensions);
+
   rulesSkills = pkgs.linkFarm "pi-rules-skills" (lib.mapAttrsToList (file: _: let
     id = "${lib.removeSuffix ".md" file}-rules";
     parsed = builtins.match "---\npaths: \"([^\"]*)\"\n---\n+(.*)" (builtins.readFile (ai.rulesDir + "/${file}"));
@@ -49,34 +53,38 @@ in {
 
     (lib.mkIf config.programs.pi-coding-agent.enable {
       home = {
-        file = {
-          ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
+        # Live symlinks: edits in the working tree apply on /reload, no switch.
+        file =
+          lib.mapAttrs' (name: _:
+            lib.nameValuePair "${piPath}/extensions/${name}" {
+              source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/pi/extensions/${name}";
+            })
+          piExtensions
+          // {
+            ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
 
-          # Live symlink: edits in the working tree apply on /reload, no switch.
-          "${piPath}/extensions/footer".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/pi/extensions/footer";
-
-          "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
-            mcpServers = piMcpServers;
-          };
-
-          "${piPath}/mcp-adapter.json".source = jsonFormat.generate "pi-mcp-adapter.json" {
-            settings = {
-              deferWithMissingMetadata = true;
-              namespaceProxyTools = false;
+            "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
+              mcpServers = piMcpServers;
             };
-          };
 
-          # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat
-          # would biome-format .ts (its JS/TS default) and fight the oxfmt
-          # PostToolUse hook in hooks.nix, and its autofix runs biome/ruff/eslint
-          # --fix. Turn both off so the hook is the single formatter of record;
-          # LSP, lint dispatch, and diagnostics stay on. Read-only file is fine —
-          # pi-lens only reads this, never rewrites it.
-          # ".pi-lens/config.json".source = jsonFormat.generate "pi-lens-config.json" {
-          #   format.enabled = false;
-          #   autofix.enabled = false;
-          # };
-        };
+            "${piPath}/mcp-adapter.json".source = jsonFormat.generate "pi-mcp-adapter.json" {
+              settings = {
+                deferWithMissingMetadata = true;
+                namespaceProxyTools = false;
+              };
+            };
+
+            # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat
+            # would biome-format .ts (its JS/TS default) and fight the oxfmt
+            # PostToolUse hook in hooks.nix, and its autofix runs biome/ruff/eslint
+            # --fix. Turn both off so the hook is the single formatter of record;
+            # LSP, lint dispatch, and diagnostics stay on. Read-only file is fine —
+            # pi-lens only reads this, never rewrites it.
+            # ".pi-lens/config.json".source = jsonFormat.generate "pi-lens-config.json" {
+            #   format.enabled = false;
+            #   autofix.enabled = false;
+            # };
+          };
 
         activation = {
           # Install/update the extensions listed in settings.json. Runs after
