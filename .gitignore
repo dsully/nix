@@ -3,7 +3,9 @@ build-results/
 nix.conf
 result
 result-*
+.cloudflare/
 .pi/
+node_modules
 
 AGENTS.md
 INDEX.md

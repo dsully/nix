@@ -1,5 +1,5 @@
-import { CustomEditor, type KeybindingsManager, type Theme } from "@earendil-works/pi-coding-agent";
-import { isKeyRepeat, matchesKey, truncateToWidth, visibleWidth, type Component, type EditorTheme, type OverlayHandle, type OverlayOptions, type TUI } from "@earendil-works/pi-tui";
+import type { CustomEditor, KeybindingsManager, Theme } from "@earendil-works/pi-coding-agent";
+import { isKeyRepeat, matchesKey, truncateToWidth, visibleWidth, type Component, type EditorComponent, type OverlayHandle, type OverlayOptions, type TUI } from "@earendil-works/pi-tui";
 import { shortcutConflict } from "../input/keybinding.js";
 import type { PromptStash } from "../input/stash.js";
 import { stripControls } from "./format.js";
@@ -47,16 +47,57 @@ function normalizeRenderedLine(line: string, width: number): string {
   return truncateToWidth(line, width, "");
 }
 
-export class FooterEditor extends CustomEditor {
+type WorkingIndicator = Parameters<CustomEditor["setWorkingStatusIndicator"]>[0];
+
+/** The pi-tui editor members the frame reads; any EditorComponent may lack the optional ones. */
+type InnerEditor = EditorComponent & {
+  focused?: boolean;
+  onExtensionShortcut?: (data: string) => boolean | undefined;
+  getPaddingX?(): number;
+  handleMouse?(event: object): object | undefined;
+  renderedVisibleLineCount?: number;
+};
+
+/** The proxy from forwardToInner supplies these members from the inner editor. */
+export interface FooterEditor extends EditorComponent {}
+
+/**
+ * Members the frame does not define go to the inner editor: pi wires callbacks and
+ * action handlers onto the editor by duck typing, so they must land there.
+ */
+function forwardToInner(frame: FooterEditor, inner: InnerEditor): FooterEditor {
+  const target = inner as unknown as Record<PropertyKey, unknown>;
+  return new Proxy(frame, {
+    get(own, prop, receiver) {
+      if (prop in own) return Reflect.get(own, prop, receiver);
+      const value = target[prop];
+      return typeof value === "function" ? value.bind(inner) : value;
+    },
+    set(own, prop, value, receiver) {
+      if (prop in own) return Reflect.set(own, prop, value, receiver);
+      target[prop] = value;
+      return true;
+    },
+    has: (own, prop) => prop in own || prop in target,
+  });
+}
+
+/**
+ * Frames whatever editor the previous factory produced, so editor layers from other
+ * extensions (prompt history, keymaps) keep working regardless of load order.
+ * Every field needs an initializer: the proxy routes a property to the frame only if it exists here.
+ */
+export class FooterEditor implements Component {
+  readonly embedWorkingStatus = true;
   private disposed = false;
-  private activityIndicator: Parameters<CustomEditor["setWorkingStatusIndicator"]>[0];
+  private activityIndicator: WorkingIndicator = undefined;
   private readonly statusLine = new StatusLineRenderer();
   private pasting = false;
   private acLines: string[] = [];
   private acIndent = 0;
   private acEditorWidth = 0;
   private acFresh = false;
-  private acOverlay: OverlayHandle | undefined;
+  private acOverlay: OverlayHandle | undefined = undefined;
   private readonly acOptions: OverlayOptions = { anchor: "bottom-left", nonCapturing: true };
   private readonly acComponent: Component & { handleMouse(event: { x: number; y: number }): unknown } = {
     // The editor renders before overlays every frame; a stale list means it was unmounted.
@@ -71,28 +112,28 @@ export class FooterEditor extends CustomEditor {
     invalidate: () => { },
     // Translate into the base editor's coordinates, where the list sits below its bottom border.
     handleMouse: (event) => {
-      const ed = this as unknown as {
-        handleMouse?(e: object): object | undefined;
-        renderedVisibleLineCount: number;
-      };
-      const result = ed.handleMouse?.({
+      const result = this.inner.handleMouse?.({
         ...event,
         x: event.x - this.acIndent,
-        y: ed.renderedVisibleLineCount + 2 + event.y,
+        y: (this.inner.renderedVisibleLineCount ?? 0) + 2 + event.y,
         width: this.acEditorWidth,
       });
       return result && { ...result, focus: false };
     },
   };
 
+  private readonly inner: InnerEditor;
+
   constructor(
-    tui: TUI,
-    theme: EditorTheme,
+    private readonly tui: TUI,
+    inner: EditorComponent,
     private readonly appKeybindings: KeybindingsManager,
     private readonly getState: () => FooterState,
     private readonly footerOptions: FooterEditorOptions,
   ) {
-    super(tui, theme, appKeybindings, { embedWorkingStatus: true });
+    this.inner = inner as InnerEditor;
+    // biome-ignore lint/correctness/noConstructorReturn: callers must receive the forwarding proxy, not the bare frame.
+    return forwardToInner(this, this.inner);
   }
 
   dispose(): void {
@@ -101,7 +142,7 @@ export class FooterEditor extends CustomEditor {
     this.hideAutocompleteOverlay();
   }
 
-  override setWorkingStatusIndicator(indicator: Parameters<CustomEditor["setWorkingStatusIndicator"]>[0]): void {
+  setWorkingStatusIndicator(indicator: WorkingIndicator): void {
     // Pi owns the indicator and its clock. The footer renders it only in its own frame.
     if (!this.disposed) this.activityIndicator = indicator;
   }
@@ -112,21 +153,21 @@ export class FooterEditor extends CustomEditor {
       if (data.includes("\x1b[200~")) this.pasting = true;
       const end = data.indexOf("\x1b[201~");
       const length = end < 0 ? data.length : end + 6;
-      super.handleInput(data.slice(0, length));
+      this.inner.handleInput(data.slice(0, length));
       if (end >= 0) this.pasting = false;
       if (length < data.length) this.handleInput(data.slice(length));
       return;
     }
     const stash = this.footerOptions.stash;
-    if (this.focused && stash && matchesKey(data, STASH_SHORTCUT)) {
+    if (this.inner.focused && stash && matchesKey(data, STASH_SHORTCUT)) {
       if (isKeyRepeat(data)) return;
       const conflict = shortcutConflict(data, STASH_SHORTCUT, this.appKeybindings);
       if (conflict) {
         this.footerOptions.onStashError?.(`Stash shortcut ${STASH_SHORTCUT} is used by ${conflict}.`);
       } else {
         // Existing extension shortcuts retain precedence over this editor feature.
-        if (this.onExtensionShortcut?.(data)) return;
-        const current = this.getExpandedText();
+        if (this.inner.onExtensionShortcut?.(data)) return;
+        const current = this.inner.getExpandedText?.() ?? this.inner.getText();
         let restored: string;
         try {
           restored = stash.exchange(current);
@@ -134,30 +175,40 @@ export class FooterEditor extends CustomEditor {
           this.footerOptions.onStashError?.("Could not save the draft. Input was kept.");
           return;
         }
-        if (current !== restored) this.setText(restored);
+        if (current !== restored) this.inner.setText(restored);
         this.tui.requestRender();
         return;
       }
     }
-    super.handleInput(data);
+    this.inner.handleInput(data);
+  }
+
+  invalidate(): void {
+    this.inner.invalidate();
+  }
+
+  // Pi assigns borderColor on the editor (thinking level, Bash mode); the proxy stores it on the inner editor.
+  private frameBorder(): (text: string) => string {
+    return this.inner.borderColor ?? ((text) => text);
   }
 
   private extractScrollIndicator(line: string, width: number): string | undefined {
-    return formatSurfaceScrollIndicator(stripBorderColor(line, this.borderColor), width);
+    return formatSurfaceScrollIndicator(stripBorderColor(line, this.frameBorder()), width);
   }
 
   render(width: number): string[] {
     const metrics = measureInputSurfaceFrame(width);
     // Pi 1.0 still recurses on a wide grapheme in a one-column layout.
     // Reserve two columns plus the native padding/cursor, then clip the frame.
-    const editorWidth = Math.max(metrics.editorContentWidth, 3, 2 + this.getPaddingX() * 2);
-    const lines = super.render(editorWidth);
+    const editorWidth = Math.max(metrics.editorContentWidth, 3, 2 + (this.inner.getPaddingX?.() ?? 0) * 2);
+    const lines = this.inner.render(editorWidth);
     if (lines.length < 2) return lines;
 
+    const border = this.frameBorder();
     const topOriginal = lines[0] ?? "";
     let bottomIndex = -1;
     for (let i = 1; i < lines.length; i++) {
-      if (isHorizontalBorder(lines[i] ?? "", this.borderColor)) bottomIndex = i;
+      if (isHorizontalBorder(lines[i] ?? "", border)) bottomIndex = i;
     }
     if (bottomIndex < 1) return lines;
 
@@ -168,10 +219,9 @@ export class FooterEditor extends CustomEditor {
     const frame = renderInputSurfaceFrame({
       state,
       width,
-      // Pi sets borderColor for thinking level and Bash mode.
-      styles: { ...styles, border: this.borderColor },
+      styles: { ...styles, border },
       lines: lines.slice(1, bottomIndex),
-      focused: this.focused,
+      focused: this.inner.focused ?? false,
       activity: activity && { kind: activity.kind, render: w => activity.renderInBorder(w) },
       topScrollIndicator: this.extractScrollIndicator(topOriginal, metrics.safeWidth),
       bottomScrollIndicator: this.extractScrollIndicator(bottomOriginal, metrics.safeWidth),

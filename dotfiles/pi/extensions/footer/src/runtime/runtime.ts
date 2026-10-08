@@ -1,5 +1,5 @@
 import { performance } from "node:perf_hooks";
-import type { ExtensionAPI, ExtensionContext, ReadonlyFooterDataProvider } from "@earendil-works/pi-coding-agent";
+import { CustomEditor, type ExtensionAPI, type ExtensionContext, type ReadonlyFooterDataProvider } from "@earendil-works/pi-coding-agent";
 import { PromptStash } from "../input/stash.js";
 import { FooterEditor } from "../surface/editor.js";
 import { Footer } from "../surface/footer.js";
@@ -88,12 +88,13 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
 
     const currentEditorFactory = ctx.ui.getEditorComponent();
     if (currentEditorFactory !== ownedEditorFactory) previousEditorFactory = currentEditorFactory;
+    const innerFactory = previousEditorFactory;
     const nextEditorFactory: EditorFactory = (tui, theme, keybindings) => {
       if (generation === uiGeneration) activeEditor?.dispose();
       setUiRequestRender(generation, () => tui.requestRender());
       const editor = new FooterEditor(
         tui,
-        theme,
+        innerFactory?.(tui, theme, keybindings) ?? new CustomEditor(tui, theme, keybindings, { embedWorkingStatus: true }),
         keybindings,
         () => generation === uiGeneration ? refreshSession.ensureState(ctx) : initialState,
         { stash, getTheme: () => ctx.ui.theme, onStashError: message => ctx.ui.notify(message, "warning") },
