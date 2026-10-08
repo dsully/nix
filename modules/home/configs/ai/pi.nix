@@ -74,6 +74,14 @@ in {
               };
             };
 
+            # pi-hashline-edit registers read and edit; pi-tool-display fails to load if it also claims them.
+            "${piPath}/extensions/pi-tool-display/config.json".source = jsonFormat.generate "pi-tool-display-config.json" {
+              registerToolOverrides = {
+                read = false;
+                edit = false;
+              };
+            };
+
             # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat
             # would biome-format .ts (its JS/TS default) and fight the oxfmt
             # PostToolUse hook in hooks.nix, and its autofix runs biome/ruff/eslint
@@ -137,6 +145,9 @@ in {
           configDir = piPath;
 
           context = builtins.readFile ./AGENTS.md;
+
+          # Ctrl+R opens the prompt-history picker from extensions/history.ts.
+          keybindings."app.session.rename" = [];
 
           settings = {
             collapseChangelog = true;
