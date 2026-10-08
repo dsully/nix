@@ -1,13 +1,13 @@
 import type { Component } from "@earendil-works/pi-tui";
 
 export class Footer implements Component {
-	constructor(private readonly onDispose?: () => void) {}
+  constructor(private readonly onDispose?: () => void) { }
 
-	dispose(): void { this.onDispose?.(); }
+  dispose(): void { this.onDispose?.(); }
 
-	invalidate(): void {}
+  invalidate(): void { }
 
-	render(_width: number): string[] {
-		return [];
-	}
+  render(_width: number): string[] {
+    return [];
+  }
 }

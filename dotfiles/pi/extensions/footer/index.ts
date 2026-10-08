@@ -4,5 +4,5 @@ import { createDraftStore } from "./src/input/store.js";
 import { registerFooter } from "./src/runtime/runtime.js";
 
 export default function footer(pi: ExtensionAPI): void {
-	registerFooter(pi, createDraftStore(join(getAgentDir(), "pi-footer", "drafts")));
+  registerFooter(pi, createDraftStore(join(getAgentDir(), "pi-footer", "drafts")));
 }

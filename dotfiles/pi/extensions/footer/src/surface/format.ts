@@ -8,82 +8,82 @@ const SMART_PARENT_MAX_SURFACE_WIDTH = 139;
 const HOME_PATH = normalizePath(homedir());
 
 export function shortenModel(modelId: string | undefined, modelName?: string): string {
-	if (!modelId) return modelName?.trim() || "no-model";
-	const preferredName = modelName?.trim();
-	if (preferredName) return preferredName;
-	let id = modelId;
-	id = id.replace(/^claude-/, "");
-	id = id.replace(/^anthropic[/:]/, "");
-	id = id.replace(/-20\d{6,8}$/, "");
-	id = id.replace(/-latest$/, "");
-	id = id.replace(/-/g, " ");
-	id = id.replace(/\bsonnet\b/i, "Sonnet");
-	id = id.replace(/\bopus\b/i, "Opus");
-	id = id.replace(/\bhaiku\b/i, "Haiku");
-	id = id.replace(/\bgpt\b/i, "GPT");
-	id = id.replace(/\bglm\b/i, "GLM");
-	return id.trim() || modelId;
+  if (!modelId) return modelName?.trim() || "no-model";
+  const preferredName = modelName?.trim();
+  if (preferredName) return preferredName;
+  let id = modelId;
+  id = id.replace(/^claude-/, "");
+  id = id.replace(/^anthropic[/:]/, "");
+  id = id.replace(/-20\d{6,8}$/, "");
+  id = id.replace(/-latest$/, "");
+  id = id.replace(/-/g, " ");
+  id = id.replace(/\bsonnet\b/i, "Sonnet");
+  id = id.replace(/\bopus\b/i, "Opus");
+  id = id.replace(/\bhaiku\b/i, "Haiku");
+  id = id.replace(/\bgpt\b/i, "GPT");
+  id = id.replace(/\bglm\b/i, "GLM");
+  return id.trim() || modelId;
 }
 
 export function displayDirectory(cwd: string): string {
-	if (!cwd) return "?";
-	return basename(cwd) || cwd;
+  if (!cwd) return "?";
+  return basename(cwd) || cwd;
 }
 
 function normalizePath(path: string): string {
-	return path.replace(/\\/g, "/").replace(/\/+$/g, "") || path;
+  return path.replace(/\\/g, "/").replace(/\/+$/g, "") || path;
 }
 
 function splitPathParts(path: string): string[] {
-	return path.split(/[\\/]+/).filter(Boolean);
+  return path.split(/[\\/]+/).filter(Boolean);
 }
 
 function safeHomePath(cwd: string): string {
-	const normalized = normalizePath(cwd);
-	if (!normalized) return "?";
-	if (HOME_PATH && normalized === HOME_PATH) return "~";
-	if (HOME_PATH && normalized.startsWith(`${HOME_PATH}/`)) return `~/${normalized.slice(HOME_PATH.length + 1)}`;
-	const parts = splitPathParts(normalized);
-	if (parts.length === 0) return "root";
-	if (parts.length === 1) return displayDirectory(normalized);
-	return `…/${parts.slice(-Math.min(3, parts.length)).join("/")}`;
+  const normalized = normalizePath(cwd);
+  if (!normalized) return "?";
+  if (HOME_PATH && normalized === HOME_PATH) return "~";
+  if (HOME_PATH && normalized.startsWith(`${HOME_PATH}/`)) return `~/${normalized.slice(HOME_PATH.length + 1)}`;
+  const parts = splitPathParts(normalized);
+  if (parts.length === 0) return "root";
+  if (parts.length === 1) return displayDirectory(normalized);
+  return `…/${parts.slice(-Math.min(3, parts.length)).join("/")}`;
 }
 
 function fitSafePath(label: string, width: number): string {
-	if (width <= 0) return "";
-	if (visibleWidth(label) <= width) return label;
-	const parts = label.split("/").filter(Boolean);
-	const name = parts.at(-1) ?? label;
-	if (visibleWidth(name) >= width) return truncatePlainText(name, width);
-	if (label.startsWith("~/") && parts.length > 2) {
-		const compact = `~/${parts[1]}/…/${name}`;
-		if (visibleWidth(compact) <= width) return compact;
-	}
-	const tail = `…/${name}`;
-	if (visibleWidth(tail) <= width) return tail;
-	return truncatePlainText(name, width);
+  if (width <= 0) return "";
+  if (visibleWidth(label) <= width) return label;
+  const parts = label.split("/").filter(Boolean);
+  const name = parts.at(-1) ?? label;
+  if (visibleWidth(name) >= width) return truncatePlainText(name, width);
+  if (label.startsWith("~/") && parts.length > 2) {
+    const compact = `~/${parts[1]}/…/${name}`;
+    if (visibleWidth(compact) <= width) return compact;
+  }
+  const tail = `…/${name}`;
+  if (visibleWidth(tail) <= width) return tail;
+  return truncatePlainText(name, width);
 }
 
 function parentPathLabel(safePath: string): string {
-	const parts = splitPathParts(safePath);
-	if (parts.length < 2) return safePath;
-	return `…/${parts.slice(-2).join("/")}`;
+  const parts = splitPathParts(safePath);
+  if (parts.length < 2) return safePath;
+  return `…/${parts.slice(-2).join("/")}`;
 }
 
 export function formatWorkspaceLabel(cwd: string, name: string, width: number, surfaceWidth = width): string {
-	const fallback = name || displayDirectory(cwd) || "workspace";
-	const budget = Math.max(1, width);
-	if (surfaceWidth <= SMART_NAME_MAX_SURFACE_WIDTH) return fitSafePath(fallback, budget);
-	const safePath = safeHomePath(cwd);
-	if (surfaceWidth <= SMART_PARENT_MAX_SURFACE_WIDTH) return fitSafePath(parentPathLabel(safePath), budget);
-	return fitSafePath(safePath, budget);
+  const fallback = name || displayDirectory(cwd) || "workspace";
+  const budget = Math.max(1, width);
+  if (surfaceWidth <= SMART_NAME_MAX_SURFACE_WIDTH) return fitSafePath(fallback, budget);
+  const safePath = safeHomePath(cwd);
+  if (surfaceWidth <= SMART_PARENT_MAX_SURFACE_WIDTH) return fitSafePath(parentPathLabel(safePath), budget);
+  return fitSafePath(safePath, budget);
 }
 
 export function stripControls(text: string): string {
-	return text
-		.replace(/\x1b\][^\x07]*(?:\x07|\x1b\\)/g, "")
-		.replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, "")
-		.replace(/[\r\n\t]/g, " ")
-		.replace(/ +/g, " ")
-		.trim();
+  return text
+    .replace(/\x1b\][^\x07]*(?:\x07|\x1b\\)/g, "")
+    .replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, "")
+    .replace(/[\r\n\t]/g, " ")
+    .replace(/ +/g, " ")
+    .trim();
 }
