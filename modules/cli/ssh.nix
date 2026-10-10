@@ -166,7 +166,12 @@ in
                 ControlMaster = "auto";
                 ControlPath = "~/.ssh/sockets/%r@%h-%p";
                 ControlPersist = "10m";
-                ForwardAgent = lib.mkDefault true;
+                # 1Password's agent gates each signature behind Touch ID, so remote sudo via pam_ssh_agent_auth prompts here.
+                ForwardAgent = lib.mkDefault (
+                  if pkgs.stdenv.hostPlatform.isDarwin
+                  then ''"~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"''
+                  else true
+                );
                 ServerAliveInterval = 10;
                 IdentityAgent = "SSH_AUTH_SOCK";
                 UseKeychain = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "yes";
