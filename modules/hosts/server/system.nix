@@ -249,7 +249,8 @@ in {
 
       smbd = smService {
         description = "Samba SMB daemon";
-        after = ["network.target"];
+        after = ["network-online.target"];
+        wants = ["network-online.target"];
         serviceConfig = {
           Type = "notify";
           ExecStart = "${pkgs.samba}/bin/smbd --foreground --no-process-group";
@@ -261,7 +262,8 @@ in {
 
       nmbd = smService {
         description = "Samba NMB daemon";
-        after = ["network.target"];
+        after = ["network-online.target"];
+        wants = ["network-online.target"];
         serviceConfig = {
           Type = "notify";
           ExecStart = "${pkgs.samba}/bin/nmbd --foreground --no-process-group";
