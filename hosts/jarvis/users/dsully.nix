@@ -68,7 +68,7 @@
     pi-coding-agent = {
       enable = true;
       settings.packages = [
-        "git:github.com/paoloanzn/pi-black@v0.84.1-cc2.1.258.1"
+        "npm:pi-claude-bridge"
       ];
     };
 
