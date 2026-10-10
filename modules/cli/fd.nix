@@ -1,0 +1,33 @@
+{mkUserModule, ...}:
+mkUserModule {
+  name = "fd";
+
+  home = {
+    programs.fd = {
+      enable = true;
+
+      extraOptions = [
+        "--follow"
+        "--hyperlink=auto"
+        # "--absolute-path"
+        "--one-file-system"
+      ];
+
+      hidden = true;
+
+      ignores = [
+        "build-results/"
+        "Cargo.lock"
+        "flake.lock"
+        ".git/"
+        "node_modules/"
+        "package-lock.json"
+        "target/"
+        "uv.lock"
+        "vendor/"
+        ".venv/"
+        "yarn.lock"
+      ];
+    };
+  };
+}

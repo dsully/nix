@@ -1,0 +1,47 @@
+{
+  mkUserModule,
+  config,
+  pkgs,
+  ...
+}: let
+  gitHubToken = "${config.xdg.cacheHome}/tokens/github-home.txt";
+  group =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then "staff"
+    else "dsully";
+in
+  mkUserModule {
+    name = "nix-init";
+
+    home = {
+      programs = {
+        nix-init = {
+          enable = true;
+
+          settings = {
+            maintainers = [config.system.userName];
+            commit = false;
+            access-tokens = {
+              "github.com".file = gitHubToken;
+            };
+
+            format = {
+              command = ["alejandra"];
+            };
+          };
+        };
+
+        onepassword-secrets = {
+          enable = true;
+          secrets = {
+            gitHubToken = {
+              reference = "op://Services/GitHub Home/token";
+              path = gitHubToken;
+              mode = "0600";
+              inherit group;
+            };
+          };
+        };
+      };
+    };
+  }

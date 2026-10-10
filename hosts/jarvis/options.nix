@@ -1,3 +1,0 @@
-_: {
-  system.hostName = "jarvis";
-}

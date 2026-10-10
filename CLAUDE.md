@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 Personal Nix configuration for macOS (`nix-darwin`) and Linux (`system-manager` + `home-manager`).
-Single user `dsully`, three hosts: `jarvis` (aarch64-darwin), `server` and `zap` (x86_64-linux).
+Single user `dsully`, five hosts: `jarvis` (aarch64-darwin); `server`, `zap`, `ca`, `tnt` (x86_64-linux; `ca`/`tnt` have no home config).
 
 ## Commands
 
@@ -29,52 +29,65 @@ A `devshell` (`nix develop` / direnv `.envrc`) provides `alejandra cachix deadni
 
 ## Architecture
 
+Capability-module layout adapted from fersilva16's config. Home-manager stays **standalone** (`just switch`), so every capability module is evaluated twice: once in the system config (nix-darwin / system-manager) and once in the standalone home-manager config.
+
+```
+lib/mkDarwinHost.nix          # host factory → { system; homeConfigurations }
+lib/mkSystemManagerHost.nix   # same interface for system-manager hosts
+lib/hostLib.nix               # shared plumbing: specialArgs, discovery, standalone homes
+lib/mkUserModule.nix          # per-user capability with modules.users.<user>.<name>.enable
+lib/mkSystemModule.nix        # host capability with modules.system.<name>.enable
+lib/mkUser.nix                # user declaration: identity + enable flags
+modules/hosts/<host>.nix      # factory call; host-only files under modules/hosts/<host>/
+modules/users/dsully.nix      # the user's default enable flags (shared by all hosts)
+modules/<category>/<app>.nix  # capability modules, auto-discovered
+modules/<category>/<app>/<app>.nix  # capability with helper files beside it
+```
+
 ### Flake assembly (`flake.nix`)
 
-Hand-rolled `flake-parts` flake (not Blueprint, but deliberately "Blueprint-compatible" — modules receive `flake` and `perSystem` via `specialArgs`/`extraSpecialArgs`). Key auto-discovery:
+Hand-rolled `flake-parts` flake. `packages/` is auto-discovered: every `*.nix` file or subdirectory with `default.nix` becomes a `callPackage`d output. `hostsBySystem` calls each `modules/hosts/<host>.nix` with a factory bound to that system's overlaid `pkgs`. Outputs:
 
-- **`packages/`** → flake packages. Every `*.nix` file or subdirectory with `default.nix` becomes a `callPackage`d output. A few get extra inputs via `packageOverrides` (e.g. `meridian` gets `claude-code`/`opencode` from the `llm-agents` input; `nh` gets `rom`).
-- **`modules/home/*.nix`** → `homeModules.<name>`, except internal files `colors.nix` and `dotfiles.nix` (imported directly by `dsully.nix`). The `ai` directory is added explicitly as `homeModules.ai`.
-- **`modules/darwin/{common,homebrew}.nix`** → `modules.darwin.*`.
-- **`modules/system-manager/{common,opnix,caddy}.nix`** → `modules.system-manager.*`.
+- `darwinConfigurations.jarvis`, `systemConfigs.{ca,server,tnt,zap}` — the hosts' `.system`.
+- `legacyPackages.<system>.homeConfigurations."<user>@<host>"` — the hosts' `.homeConfigurations`.
+- `lib.{mkDarwinHost, mkSystemManagerHost, users}` and `overlays.default` — for the work flake (`~/dev/work/nix`), which builds its hosts with these factories and adds its own module tree via `extraModuleDirs`.
 
-Three configuration entry points, each importing from `hosts/<host>/`:
+### Two evaluation targets
 
-- `darwinConfigurations.jarvis` — nix-darwin + home-manager-as-darwin-module. `hosts/jarvis/darwin-configuration.nix` force-disables the darwin-managed HM users (`home-manager.users = mkForce {}`); the real HM config is `hosts/jarvis/users/dsully.nix`.
-- `systemConfigs.{server,zap}` — `system-manager` configs from `hosts/<host>/system-configuration.nix` (Linux).
-- `legacyPackages.homeConfigurations."dsully@<host>"` — standalone home-manager (built by `just switch`). The `mkHome` builder overrides `mcp-nixos` to skip its checks.
+`lib/hostLib.nix` passes `userModuleTarget` as a specialArg:
 
-### Host layout convention
+- `"system"` — `mkUserModule` applies `system`, `casks`, `user`; `mkSystemModule` applies `config`.
+- `"home"` (with `homeUser`) — `mkUserModule` applies `home` (and enabled `parts`) at the top level and declares `homeOptions`; `mkSystemModule` contributes nothing.
 
-Each `hosts/<host>/` has `options.nix` (sets `system.hostName` and other custom options), and `users/dsully.nix` (the home-manager entry point, importing the shared `flake.homeModules.*`). Darwin/system-manager hosts add `*-configuration.nix`; the server keeps raw config files under `hosts/server/files/`.
+Discovery excludes `hosts`/`users` everywhere, `linux` on darwin, `darwin` on system-manager, and both `darwin` and `linux` in home configs. So `modules/darwin/` and `modules/linux/` are system-only; every other category must evaluate in both targets. Inside a module, `config` is the config of the current evaluation (home-manager config inside `home`, system config inside `system`). The top-level attribute names returned by a `home` function must not depend on `cfg`/`userCfg`.
 
-### Custom `system.*` options
+### Hosts and users
 
-`modules/common/nix.nix` defines a custom options namespace used everywhere instead of hardcoding values: `system.hostName`, `system.userName` (default `dsully`), `system.fullName`, `system.primaryGroup`, `system.nixFlavor` (enum `cppnix`/`determinate`/`lix`, **default `lix`**), and `system.nixSettings` (shared substituters/keys merged across flavors). The binary-cache substituters (cache.nixos.org, **dsully.cachix.org**, numtide, nix-community, lix) live here too.
+`modules/users/dsully.nix` (`mkUser`) holds the defaults; `mkUser` wraps every `enable` in `mkDefault`, so a host's `userConfig.dsully.<module>.enable = false` turns a default off. Host factory fields: `hostName`, `primaryUser`, `users`, `userConfig`, `extraModules` (system), `extraHomeModules` (plain home-manager modules for host-only data such as SSH key references, topgrade repos, server's vopono units). Host-only service modules (`modules/linux/{caddy,docker,opnix,beszel-agent,tailscale}.nix`) default to off; hosts set `modules.system.<name>.enable`.
+
+### Plain modules every evaluation imports
+
+- `modules/system/nix.nix` — custom `system.*` options: `system.hostName` (set by the host factory), `system.userName` (primary user / home user), `system.fullName`, `system.primaryGroup`, `system.nixFlavor` (enum `cppnix`/`determinate`/`lix`, **default `lix`**), `system.nixSettings`, `system.sudoRules` + `sudoLib`. The binary-cache substituters (cache.nixos.org, **dsully.cachix.org**, numtide, nix-community, lix) live here.
+- `modules/system/base.nix` — home-only external module imports (agent-skills, nix-index-database, opnix), `disabledModules`, and `_module.args.my.pkgs`.
+- `modules/system/colors.nix` — the read-only `colors` palette.
 
 ### Package injection: `my.pkgs`, `perSystem.self`, `perSystem.upstream`
 
-This flake's own packages are exposed to home-manager modules two ways:
-
 - `perSystem.self` — this flake's `packages.<system>`. Consuming flakes set `perSystem.upstream` instead; modules read `perSystem.upstream or perSystem.self`.
-- `my.pkgs` (`modules/home/dsully.nix`) — `pkgs` extended with all of `perSystem.{upstream,self}`. Use `with my.pkgs; [...]` in `modules/home/packages/` to pull in repo-local tools (`devmoji-log`, `lolcate-rs`, `safari-rs`, …).
-
-### `packageTools.python` — uv-managed CLI tools
-
-`modules/home/packages/python.nix` defines the `packageTools.python` option. Listed tools are installed at home-activation time via `uv tool install` (Python 3.14, `+gil` on Darwin) rather than baked into the store. Supports `extras`, `prerelease`, `withPackages`, `inject`. Hosts/users append to it (e.g. `unifi-mcp-server` in jarvis's user config).
+- `my.pkgs` — `pkgs` extended with `perSystem.{upstream,self}`. Use `with my.pkgs; [...]` to pull in repo-local tools (`devmoji-log`, `lolcate-rs`, `safari-rs`, …).
 
 ### Program configs and dotfiles
 
-- `modules/home/configs/` — per-tool home-manager config (`git.nix`, `fish.nix`, `ssh.nix`, …), aggregated by `configs/default.nix`.
-- `modules/home/dotfiles.nix` — links `dotfiles/` into `~/.config`. **Recursive directories** (fish conf.d/functions/completions) use the **flake-relative path** so they copy into the store; **live-editable single files** use `mkOutOfStoreSymlink` pointing at `~/.config/nix/dotfiles/...` so edits apply without a rebuild (note the comment explaining why recursive + out-of-store symlink breaks in sandbox builds).
+- `modules/system/dotfiles.nix` — links `dotfiles/` into `~/.config`. **Recursive directories** (fish conf.d/functions/completions) use the **flake-relative path** so they copy into the store; **live-editable single files** use `mkOutOfStoreSymlink` pointing at `dotfiles.dir` (default `~/.config/nix/dotfiles`) so edits apply without a rebuild.
+- uv-managed CLI tools: append to `programs.uv.tool.packages` from any capability (e.g. `modules/networking/unifi.nix`).
 
-### AI tooling (`modules/home/configs/ai/`)
+### AI tooling (`modules/ai/`)
 
-Large subsystem configuring `claude-code`, `codex`, `opencode`, and related agents/skills/hooks. `ai/common.nix` is imported as a plain function and re-exposed to all AI submodules via `_module.args.ai`; it provides helpers like `ai.muxWrap` (wraps an MCP server command through mcp-mux). `claude-code`/`opencode` packages come from the `llm-agents` input; agents/skills from the `wshobson-agents`, `agent-skills`, `superpowers`, etc. inputs. `AGENTS.md` and `permissions.nix` define agent policy.
+`modules/ai/ai.nix` is the core capability: it builds the registry (`registry.nix`, `hooks.nix`, `permissions.nix`) and exposes it as `_module.args.ai` (helpers like `ai.muxWrap`). `claude-code`, `codex`, `opencode`, `pi`, `mcp-mux`, and `unifi` declare `requires = ["ai"]`; `meridian` requires `claude-code`. `skills` merges `commands.nix`/`superpowers.nix`, and `pi` merges `theme.nix`, as fragments. Shared content (`AGENTS.md`, `rules/`, `output-styles/`, `plugins/`, `hooks/`) lives in `modules/ai/shared/`.
 
 ### Secrets — 1Password via opnix
 
-`programs.onepassword-secrets` (opnix) materializes secrets from 1Password (`op://...` references) to files at activation time. Home-activation scripts in `dsully.nix` (`checkipConfig`, `zonedConfig`) then template config files from those secret files, gated on their existence and `entryAfter ["onepassword-secrets"]`.
+`programs.onepassword-secrets` (opnix) materializes secrets from 1Password (`op://...` references) to files at activation time. Home-activation scripts in the `checkip` and `zoned` capabilities (`checkipConfig`, `zonedConfig`) then template config files from those secret files, gated on their existence and `entryAfter ["onepassword-secrets"]`.
 
 ## Conventions
 

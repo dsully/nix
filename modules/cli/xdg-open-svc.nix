@@ -1,0 +1,28 @@
+{
+  mkUserModule,
+  lib,
+  my,
+  ...
+}
+:
+mkUserModule {
+  name = "xdg-open-svc";
+
+  home = {
+    launchd.agents.xdg-open-svc = {
+      enable = true;
+      waitForNixStore = false;
+      config = {
+        ProgramArguments = [
+          "${lib.getExe my.pkgs.xdg-open-svc}"
+        ];
+
+        KeepAlive = true;
+        RunAtLoad = true;
+        # StandardOutPath = cfg.logFile;
+        # StandardErrorPath = cfg.logFile;
+      };
+      domain = lib.mkDefault "gui";
+    };
+  };
+}

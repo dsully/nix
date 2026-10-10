@@ -1,0 +1,45 @@
+{
+  mkUserModule,
+  lib,
+  pkgs,
+  ...
+}: let
+  pager = lib.getExe pkgs.moor;
+in
+  mkUserModule {
+    name = "pager";
+
+    home = {
+      xdg.enable = true;
+
+      home.sessionVariables = {
+        BAT_PAGER = "${pager} -no-linenumbers -quit-if-one-screen";
+        BAT_THEME = "Nord";
+        MANPAGER = pager;
+        # https://github.com/walles/moor/blob/master/MOUSE.md
+        MOOR = "-statusbar bold -no-linenumbers -no-clear-on-exit -style nord -colors 16M -wrap -quit-if-one-screen -mousemode select";
+        PAGER = pager;
+      };
+
+      # https://github.com/sharkdp/bat
+      programs.bat = {
+        enable = true;
+        config = {
+          style = "plain";
+          theme = "Nord";
+          italic-text = "always";
+          map-syntax = [
+            ".dockerignore:Git Ignore"
+            ".eslintignore:Git Ignore"
+            ".eslintrc:JSON"
+            ".lua-format:YAML"
+            ".luacheckrc:Lua"
+          ];
+        };
+
+        syntaxes = {
+          Just.src = ./bat/syntaxes/Just.sublime-syntax;
+        };
+      };
+    };
+  }

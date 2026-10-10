@@ -93,130 +93,81 @@
     }: let
       inherit (inputs.nixpkgs) lib;
 
-      inherit (import ./lib/discovery.nix {inherit lib;}) homeModules packagePaths;
+      # Every packages/*.nix file or packages/<name>/ directory is a package.
+      packagePaths =
+        lib.mapAttrs' (name: _:
+          lib.nameValuePair (lib.removeSuffix ".nix" name) (./packages + "/${name}"))
+        (lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name)
+          (builtins.readDir ./packages));
 
-      darwinModules = {
-        common = ./modules/darwin/common.nix;
-        homebrew = ./modules/darwin/homebrew.nix;
-      };
+      users.dsully = import ./modules/users/dsully.nix;
 
-      # Blueprint-compatible "flake" arg passed via specialArgs.
-      flakeAttr = {
-        inherit homeModules inputs;
-        inherit (config.flake) packages;
-        modules = {
-          darwin = darwinModules;
-          system-manager = {
-            beszel-agent = ./modules/system-manager/beszel-agent.nix;
-            common = ./modules/system-manager/common.nix;
-            opnix = ./modules/system-manager/opnix.nix;
-            caddy = ./modules/system-manager/caddy.nix;
-            docker = ./modules/system-manager/docker.nix;
-            tailscale = ./modules/system-manager/tailscale.nix;
-          };
-        };
-      };
-
-      # Blueprint-compatible "perSystem" arg for a given system.
-      # llm-agents packages flow through pkgs.llm-agents (overlay applied in
-      # perSystem below), not this injection.
+      # The `perSystem` specialArg. llm-agents packages flow through
+      # pkgs.llm-agents (overlay applied in perSystem below), not this injection.
       mkPerSystem = system: {
         self = config.flake.packages.${system};
         nix-auth = inputs.nix-auth.packages.${system};
         devshell = inputs.devshell.legacyPackages.${system};
       };
 
-      # Common extraSpecialArgs for home-manager modules.
-      hmArgs = system: {
-        inherit inputs;
-        flake = flakeAttr;
-        perSystem = mkPerSystem system;
-        wrapperLib = inputs.nix-wrapper-modules.lib;
-      };
+      # Host factories bound to this flake's overlaid pkgs for one system.
+      factoriesFor = system:
+        withSystem system ({pkgs, ...}: let
+          args = {
+            inherit inputs pkgs;
+            flake = {
+              inherit inputs;
+              inherit (config.flake) packages;
+            };
+            perSystem = mkPerSystem system;
+          };
+        in {
+          mkDarwinHost = import ./lib/mkDarwinHost.nix args;
+          mkSystemManagerHost = import ./lib/mkSystemManagerHost.nix args;
+        });
 
-      # Standalone home-manager configuration builder. pkgs (from withSystem)
-      # already carries the llm-agents + nixpkgs-fixes overlays.
-      mkHome = system: {
-        user,
-        userModule,
-      }:
-        withSystem system ({pkgs, ...}:
-          inputs.home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
-            extraSpecialArgs = hmArgs system;
-            modules = [
-              userModule
-              {
-                home.username = user;
-                home.homeDirectory =
-                  if pkgs.stdenv.hostPlatform.isDarwin
-                  then "/Users/${user}"
-                  else "/home/${user}";
-              }
-            ];
+      darwin = factoriesFor "aarch64-darwin";
+      linux = factoriesFor "x86_64-linux";
+
+      # Hosts grouped by system, so each system's homeConfigurations can be
+      # listed without evaluating the other system's configs.
+      hostsBySystem = {
+        aarch64-darwin = {
+          jarvis = import ./modules/hosts/jarvis.nix {
+            inherit (darwin) mkDarwinHost;
+            inherit users;
+          };
+        };
+
+        x86_64-linux = lib.genAttrs ["ca" "server" "tnt" "zap"] (name:
+          import ./modules/hosts/${name}.nix {
+            inherit (linux) mkSystemManagerHost;
+            inherit users;
           });
+      };
     in {
       systems = ["aarch64-darwin" "x86_64-linux"];
 
-      imports = [
-        inputs.devshell.flakeModule
-        inputs.flake-parts.flakeModules.modules
-      ];
-      flake = let
-        systemManagerConfigs = withSystem "x86_64-linux" ({
-          pkgs,
-          system,
-          ...
-        }: let
-          smPkg = inputs.system-manager.packages.${system}.default;
-          smArgs = {
-            inherit inputs pkgs;
-            flake = flakeAttr;
-            system-manager = smPkg;
-          };
-        in
-          inputs.nixpkgs.lib.genAttrs ["ca" "server" "tnt" "zap"] (host:
-            inputs.system-manager.lib.makeSystemConfig {
-              modules = [./hosts/${host}/system-configuration.nix];
-              specialArgs = smArgs;
-            }));
-      in {
-        modules.darwin = darwinModules;
+      imports = [inputs.devshell.flakeModule];
 
-        inherit homeModules;
+      flake = {
+        # Factories for consuming flakes. Each host factory takes
+        # { inputs, flake, perSystem, pkgs, extraModuleDirs? } first; see
+        # lib/hostLib.nix.
+        lib = {
+          inherit users;
+          mkDarwinHost = import ./lib/mkDarwinHost.nix;
+          mkSystemManagerHost = import ./lib/mkSystemManagerHost.nix;
+        };
 
         # Consuming flakes apply this at their own pkgs construction (module-level
         # nixpkgs.overlays is ignored when pkgs is passed in externally). Exposes
-        # pkgs.llm-agents.* and the mcp-nixos doCheck fix that homeModules expect.
+        # pkgs.llm-agents.* that the modules expect.
         overlays.default = inputs.nixpkgs.lib.composeManyExtensions (import ./overlays {inherit inputs;});
 
-        darwinConfigurations.jarvis = withSystem "aarch64-darwin" ({
-          pkgs,
-          system,
-          ...
-        }:
-          inputs.nix-darwin.lib.darwinSystem {
-            inherit pkgs;
-            specialArgs = {
-              inherit inputs;
-              flake = flakeAttr;
-            };
-            modules = [
-              inputs.home-manager.darwinModules.home-manager
-              ./hosts/jarvis/darwin-configuration.nix
-              {
-                home-manager = {
-                  backupFileExtension = "bak";
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = hmArgs system;
-                  users.dsully = import ./hosts/jarvis/users/dsully.nix;
-                };
-              }
-            ];
-          });
+        darwinConfigurations = lib.mapAttrs (_: host: host.system) hostsBySystem.aarch64-darwin;
 
-        systemConfigs = systemManagerConfigs;
+        systemConfigs = lib.mapAttrs (_: host: host.system) hostsBySystem.x86_64-linux;
       };
 
       perSystem = {
@@ -226,24 +177,15 @@
       }: let
         # Overlaid package set shared by every consumer (home-manager, darwin,
         # system-manager) via withSystem, plus the packages/ builds below.
-        # The first overlay exposes pkgs.llm-agents.*; the second carries the
-        # mcp-nixos doCheck override.
         pkgs = import inputs.nixpkgs {
           inherit system;
           config.allowUnfree = true;
           overlays = import ./overlays {inherit inputs;};
         };
 
-        selfPackages =
-          lib.mapAttrs (
-            name: path: pkgs.callPackage path (packageOverrides.${name} or {})
-          )
-          packagePaths;
+        selfPackages = lib.mapAttrs (_: path: pkgs.callPackage path {}) packagePaths;
 
         fmt = pkgs.callPackage ./formatter.nix {};
-
-        # Overrides for packages that need flake input sources.
-        packageOverrides = {};
       in {
         _module.args.pkgs = pkgs;
 
@@ -258,21 +200,8 @@
           };
 
         # home-manager CLI discovers homeConfigurations here.
-        legacyPackages.homeConfigurations = let
-          user = "dsully";
-          hosts = {
-            jarvis = "aarch64-darwin";
-            server = "x86_64-linux";
-            zap = "x86_64-linux";
-          };
-          mk = mkHome system;
-        in
-          lib.mapAttrs' (host: _:
-            lib.nameValuePair "${user}@${host}" (mk {
-              inherit user;
-              userModule = ./hosts + "/${host}/users/dsully.nix";
-            }))
-          (lib.filterAttrs (_: sys: sys == system) hosts);
+        legacyPackages.homeConfigurations =
+          lib.mergeAttrsList (lib.mapAttrsToList (_: host: host.homeConfigurations) hostsBySystem.${system});
 
         devshells.default = {
           packages = with pkgs; [

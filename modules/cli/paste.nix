@@ -1,0 +1,62 @@
+{
+  mkUserModule,
+  lib,
+  ...
+}:
+mkUserModule {
+  name = "paste";
+
+  home = {
+    launchd.agents.pbcopy = {
+      enable = true;
+      waitForNixStore = false;
+      config = {
+        Label = "localhost.pbcopy";
+        ProgramArguments = ["/usr/bin/pbcopy"];
+
+        KeepAlive = {
+          Crashed = true;
+          SuccessfulExit = false;
+        };
+
+        ProcessType = "Background";
+
+        Sockets = {
+          Listener = {
+            SockNodeName = "127.0.0.1";
+            SockServiceName = "2224";
+          };
+        };
+
+        inetdCompatibility.Wait = false;
+      };
+      domain = lib.mkDefault "gui";
+    };
+
+    launchd.agents.pbpaste = {
+      enable = true;
+      waitForNixStore = false;
+      config = {
+        Label = "localhost.pbpaste";
+        ProgramArguments = ["/usr/bin/pbpaste"];
+
+        KeepAlive = {
+          Crashed = true;
+          SuccessfulExit = false;
+        };
+
+        ProcessType = "Background";
+
+        Sockets = {
+          Listener = {
+            SockNodeName = "127.0.0.1";
+            SockServiceName = "2225";
+          };
+        };
+
+        inetdCompatibility.Wait = false;
+      };
+      domain = lib.mkDefault "gui";
+    };
+  };
+}

@@ -103,10 +103,10 @@ supports_host_on_current_os() {
 
     case "$OS" in
         Darwin)
-            [[ -f "$SCRIPT_DIR/hosts/${host}/darwin-configuration.nix" ]]
+            grep -q mkDarwinHost "$SCRIPT_DIR/modules/hosts/${host}.nix" 2>/dev/null
             ;;
         Linux)
-            [[ -f "$SCRIPT_DIR/hosts/${host}/system-configuration.nix" ]]
+            grep -q mkSystemManagerHost "$SCRIPT_DIR/modules/hosts/${host}.nix" 2>/dev/null
             ;;
         *)
             return 1
@@ -115,14 +115,13 @@ supports_host_on_current_os() {
 }
 
 list_supported_hosts() {
-    local host_dir
+    local host_file
     local host_name
     local supported=()
 
     shopt -s nullglob
-    for host_dir in "$SCRIPT_DIR"/hosts/*; do
-        [[ -d $host_dir ]] || continue
-        host_name="$(basename -- "$host_dir")"
+    for host_file in "$SCRIPT_DIR"/modules/hosts/*.nix; do
+        host_name="$(basename -- "$host_file" .nix)"
         if supports_host_on_current_os "$host_name"; then
             supported+=("$host_name")
         fi
@@ -135,7 +134,7 @@ list_supported_hosts() {
 
 host_exists() {
     local host="$1"
-    [[ -f "$SCRIPT_DIR/hosts/${host}/options.nix" ]]
+    [[ -f "$SCRIPT_DIR/modules/hosts/${host}.nix" ]]
 }
 
 validate_target_host() {
