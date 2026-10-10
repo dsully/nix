@@ -31,7 +31,8 @@ in
         description = "Beszel agent";
         wantedBy = ["system-manager.target"];
         wants = ["network-online.target"];
-        after = ["network-online.target"];
+        # Binding a tailnet address fails until tailscale0 is up; Restart=always retries.
+        after = ["network-online.target" "tailscaled.service"];
         environment =
           {
             LISTEN = cfg.listen;

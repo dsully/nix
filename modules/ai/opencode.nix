@@ -34,6 +34,7 @@
   outputStyleFiles =
     lib.mapAttrs' (name: path: {
       name = "opencode/output-styles/${name}.md";
+      needs = ["ai"];
       value.source = path;
     })
     ai.outputStyles;
@@ -54,7 +55,7 @@
 in
   mkUserModule {
     name = "opencode";
-    requires = ["ai"];
+    default = false;
 
     # Allow host specific overrides.
     homeOptions.programs.opencode.extraPlugins = lib.mkOption {

@@ -15,18 +15,23 @@
   # mcp-mux's server-identity hash (`--stateless`), so one upstream is shared
   # globally instead of one per project directory. The marker is stripped here;
   # it is not a valid key on the typed `programs.mcp.servers` option.
+  # Priority-wrapped values (lib.mkForce et al.) are unwrapped, wrapped, and
+  # re-wrapped, so a consumer can mkForce a server over an upstream definition.
   muxWrap = server: let
     stateless = server.stateless or false;
     base = removeAttrs server ["stateless"];
   in
-    base
-    // {
-      command = lib.getExe my.pkgs.mcp-mux;
-      args = lib.optional stateless "-stateless" ++ [base.command] ++ (base.args or []);
-      # A shim respawns the daemon from this pointer instead of its own binary, so
-      # shims from an older generation cannot resurrect a stale daemon version.
-      env = (base.env or {}) // {MCPMUX_ACTIVE_ENGINE_FILE = muxEngineFile;};
-    };
+    if server._type or null == "override"
+    then server // {content = muxWrap server.content;}
+    else
+      base
+      // {
+        command = lib.getExe my.pkgs.mcp-mux;
+        args = lib.optional stateless "-stateless" ++ [base.command] ++ (base.args or []);
+        # A shim respawns the daemon from this pointer instead of its own binary, so
+        # shims from an older generation cannot resurrect a stale daemon version.
+        env = (base.env or {}) // {MCPMUX_ACTIVE_ENGINE_FILE = muxEngineFile;};
+      };
 
   muxEngineFile = "${config.xdg.stateHome}/mcp-mux/active-engine";
 

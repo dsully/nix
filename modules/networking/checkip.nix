@@ -9,6 +9,7 @@
 in
   mkUserModule {
     name = "checkip";
+    default = false;
 
     home = {
       home = {
@@ -33,14 +34,10 @@ in
         checkipMaxmind = {
           reference = "op://Services/MaxMind API/credential";
           path = ".config/checkip/maxmind-key";
-          mode = "0600";
-          group = config.system.primaryGroup;
         };
         checkipUrlscan = {
           reference = "op://Services/URLScan API/credential";
           path = ".config/checkip/urlscan-key";
-          mode = "0600";
-          group = config.system.primaryGroup;
         };
       };
     };

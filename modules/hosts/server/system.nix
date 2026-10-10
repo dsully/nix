@@ -107,11 +107,9 @@ in {
       };
 
       systemPackages = with pkgs; [
-        fish
         liquidctl
         rsync
         samba
-        system-manager
         vopono
       ];
     };

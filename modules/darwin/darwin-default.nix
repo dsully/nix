@@ -42,24 +42,14 @@ in
             lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
           );
 
-          settings =
-            config.system.nixSettings
-            // {
-              nix-path = lib.mapAttrsToList (name: _: "${name}=flake:${name}") (
-                lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
-              );
-            };
+          settings.nix-path = lib.mapAttrsToList (name: _: "${name}=flake:${name}") (
+            lib.filterAttrs (_: value: value ? _type && value._type == "flake") inputs
+          );
         }
 
         (lib.mkIf (config.system.nixFlavor == "cppnix") {
           enable = true;
           package = pkgs.nixVersions.latest;
-        })
-
-        # https://lix.systems/add-to-config/
-        (lib.mkIf (config.system.nixFlavor == "lix") {
-          enable = true;
-          package = pkgs.lixPackageSets.latest.lix;
         })
 
         (lib.mkIf (config.system.nixFlavor == "determinate") {
@@ -264,6 +254,7 @@ in
         };
 
         users.${system.primaryUser} = {
+          home = "/Users/${system.primaryUser}";
           ignoreShellProgramCheck = true;
           shell = pkgs.fish;
           uid = lib.mkDefault 501;

@@ -1,10 +1,7 @@
-{
-  mkSystemManagerHost,
-  users,
-}:
+{mkSystemManagerHost}:
 mkSystemManagerHost {
   hostName = "tnt";
-  primaryUser = users.dsully;
+  home = false;
 
   extraModules = [
     {
@@ -12,9 +9,6 @@ mkSystemManagerHost {
         enable = true;
         listen = "100.95.41.16:45876"; # Tailscale
       };
-
-      # Binding fails until tailscale0 has its address; Restart=always retries.
-      systemd.services.beszel-agent.after = ["tailscaled.service"];
     }
   ];
 }

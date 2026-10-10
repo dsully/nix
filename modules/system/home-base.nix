@@ -13,6 +13,13 @@ in
   mkUserModule {
     name = "home-base";
 
+    # opnix defaults the group to "users" on Linux; hosts there use the user's own group.
+    homeOptions.programs.onepassword-secrets.secrets = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.submodule {
+        group = lib.mkDefault config.system.primaryGroup;
+      });
+    };
+
     home = {
       home = {
         enableNixpkgsReleaseCheck = false;

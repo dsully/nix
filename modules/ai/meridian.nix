@@ -46,6 +46,7 @@
 in
   mkUserModule {
     name = "meridian";
+    default = false;
     requires = ["claude-code"];
 
     home = {

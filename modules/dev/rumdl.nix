@@ -40,6 +40,7 @@
 in
   mkUserModule {
     name = "rumdl";
+    default = false;
 
     home = {
       xdg.configFile."rumdl/rumdl.toml".text = ''

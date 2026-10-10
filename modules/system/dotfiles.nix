@@ -14,24 +14,12 @@
   # (which copies into the store) for recursive directories instead.
   flakeDotfiles = ../../dotfiles;
 
-  platformFunctions =
-    if pkgs.stdenv.hostPlatform.isDarwin
-    then [
-      "fix-locationd-permissions.fish"
-      "open-reading-list-items-in-tabs.fish"
-      "systemctl.fish"
-    ]
-    else [
-      "disks.fish"
-      "dmesg.fish"
-      "systemctl.fish"
-      "vpn.fish"
-    ];
-
   platformDir =
     if pkgs.stdenv.hostPlatform.isDarwin
     then "fish/functions-darwin"
     else "fish/functions-linux";
+
+  platformFunctions = builtins.attrNames (builtins.readDir (flakeDotfiles + "/${platformDir}"));
 in
   mkUserModule {
     name = "dotfiles";

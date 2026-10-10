@@ -5,8 +5,6 @@
   pkgs,
   ...
 }: let
-  # inherit (flake.inputs.home-manager.lib.hm.dag) entryAfter;
-  cachixAuthTokenPath = ".config/cachix/auth-token";
   homeDir = config.home.homeDirectory;
   voponoConfigPath = ".config/vopono/protonvpn-us-ca52.conf";
   voponoConfig = "${homeDir}/${voponoConfigPath}";
@@ -65,20 +63,9 @@
   '';
 in {
   home = {
-    # activation.caddyEnv = entryAfter ["writeBoundary" "onepassword-secrets"] ''
-    #   token_file="${homeDir}/.config/caddy/cloudflare-token"
-    #
-    #   if [ -f "$token_file" ]; then
-    #     sudo mkdir -p /etc/caddy
-    #     echo "CLOUDFLARE_API_TOKEN=$(cat "$token_file")" | sudo tee /etc/caddy/env > /dev/null
-    #     sudo chmod 600 /etc/caddy/env
-    #   fi
-    # '';
-
     packages = with pkgs;
       [
         iproute2
-        nix-output-monitor
         pnpm
         qbittorrent-nox
         rustic
@@ -113,35 +100,17 @@ in {
     };
 
     onepassword-secrets.secrets = {
-      cachixAuthToken = {
-        reference = "op://Services/Cachix/token";
-        path = cachixAuthTokenPath;
-        mode = "0600";
-        group = config.system.primaryGroup;
-      };
       huggingFace = {
         reference = "op://Services/HuggingFace/credential";
         path = ".config/huggingface/token";
-        mode = "0600";
-        group = config.system.primaryGroup;
-      };
-      sshPrivateKey = {
-        reference = "op://Services/server/private key";
-        path = ".ssh/id_ed25519";
-        mode = "0600";
-        group = config.system.primaryGroup;
       };
       voponoConfig = {
         reference = "op://Services/ProtonVPN Tunnel/config";
         path = voponoConfigPath;
-        mode = "0600";
-        group = config.system.primaryGroup;
       };
       mullvadAccount = {
         reference = "op://Services/Mullvad/username";
         path = ".mullvad-account";
-        mode = "0600";
-        group = config.system.primaryGroup;
       };
     };
 
@@ -152,29 +121,23 @@ in {
     };
 
     topgrade = {
-      settings = lib.mkMerge [
-        {
-          git = {
-            repos = [
-              "/ai/apps/automatic/extensions/*"
-              "/ai/apps/stable-diffusion-webui/extensions/*"
-            ];
-          };
+      settings = {
+        git = {
+          repos = [
+            "/ai/apps/automatic/extensions/*"
+            "/ai/apps/stable-diffusion-webui/extensions/*"
+          ];
+        };
 
-          misc = {
-            only = ["deb_get" "system" "git_repos"];
-          };
-        }
-      ];
+        misc = {
+          only = ["deb_get" "system" "git_repos"];
+        };
+      };
     };
   };
 
   services = {
-    syncthing = {
-      enable = true;
-      guiAddress = "0.0.0.0:8384";
-      extraOptions = ["--log-level=WARN"];
-    };
+    syncthing.guiAddress = "0.0.0.0:8384";
   };
 
   systemd.user.services = {
@@ -192,24 +155,6 @@ in {
         WantedBy = ["default.target"];
       };
     };
-
-    # cachix-watch-store = {
-    #   Unit = {
-    #     Description = "Cachix Store Watcher";
-    #     After = ["network.target"];
-    #   };
-    #   Service = {
-    #     ExecStart = "${pkgs.writeShellScript "cachix-watch" ''
-    #       export CACHIX_AUTH_TOKEN=$(cat ~/${cachixAuthTokenPath})
-    #       exec ${lib.getExe pkgs.cachix} watch-store dsully
-    #     ''}";
-    #     Restart = "always";
-    #     RestartSec = 10;
-    #   };
-    #   Install = {
-    #     WantedBy = ["default.target"];
-    #   };
-    # };
 
     vopono = {
       Unit = {

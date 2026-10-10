@@ -32,6 +32,7 @@
     parsed = builtins.match "---\npaths: \"([^\"]*)\"\n---\n+(.*)" (builtins.readFile (ai.rulesDir + "/${file}"));
   in {
     name = "${id}/SKILL.md";
+    needs = ["ai"];
     path = pkgs.writeText "${id}-SKILL.md" ''
       ---
       name: ${id}
@@ -63,7 +64,7 @@
 in
   mkUserModule {
     name = "pi";
-    requires = ["ai"];
+    default = false;
 
     home = lib.mkMerge [
       (import ./theme.nix {inherit config lib pkgs piPath;}).config

@@ -5,6 +5,7 @@
 }:
 mkUserModule {
   name = "paste";
+  default = false;
 
   home = {
     launchd.agents.pbcopy = {

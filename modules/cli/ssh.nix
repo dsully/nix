@@ -134,6 +134,14 @@ in
   mkUserModule {
     name = "ssh";
 
+    parts.opnixKey = {
+      default = false;
+      home.programs.onepassword-secrets.secrets.sshPrivateKey = {
+        reference = "op://Services/${hostName}/private key";
+        path = ".ssh/id_ed25519";
+      };
+    };
+
     home = {
       # The `Host *` block below sets ControlPath under ~/.ssh/sockets, but
       # home-manager never creates that directory. Any ssh invocation inheriting

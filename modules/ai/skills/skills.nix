@@ -72,6 +72,7 @@
 in
   mkUserModule {
     name = "skills";
+    default = false;
 
     # Toggleable skill groups. Each group owns one agent-skills source plus its
     # selection, so enabling/disabling a group (e.g. `programs.ai.skills.python`)

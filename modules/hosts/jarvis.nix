@@ -1,13 +1,9 @@
-{
-  mkDarwinHost,
-  users,
-}:
+{mkDarwinHost}:
 mkDarwinHost {
   hostName = "jarvis";
-  primaryUser = users.dsully;
-  users = [users.dsully];
 
-  userConfig.dsully = {
+  userConfig = {
+    ssh.opnixKey.enable = true;
     paste.enable = true;
     pi.enable = true;
     rumdl.enable = true;

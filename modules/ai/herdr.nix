@@ -154,6 +154,7 @@
 in
   mkUserModule {
     name = "herdr";
+    default = false;
 
     homeOptions.programs.herdr = {
       integrations = lib.mkOption {

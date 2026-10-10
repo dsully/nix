@@ -10,6 +10,7 @@
 in
   mkUserModule {
     name = "zoned";
+    default = false;
 
     home = {
       home.activation.zonedConfig = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "onepassword-secrets"] ''
@@ -31,14 +32,10 @@ in
         zonedCloudflareToken = {
           reference = "op://Services/Cloudflare DNS Token/credential";
           path = ".config/zoned/cloudflare-token";
-          mode = "0600";
-          group = config.system.primaryGroup;
         };
         zonedCloudflareZoneId = {
           reference = "op://Services/Cloudflare DNS Token/zoneid";
           path = ".config/zoned/cloudflare-zone-id";
-          mode = "0600";
-          group = config.system.primaryGroup;
         };
       };
     };

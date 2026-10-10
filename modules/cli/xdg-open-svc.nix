@@ -7,6 +7,7 @@
 :
 mkUserModule {
   name = "xdg-open-svc";
+  default = false;
 
   home = {
     launchd.agents.xdg-open-svc = {

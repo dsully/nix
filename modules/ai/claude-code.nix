@@ -86,7 +86,8 @@
 in
   mkUserModule {
     name = "claude-code";
-    requires = ["ai"];
+    needs = ["ai"];
+    default = false;
 
     home = lib.mkMerge [
       {programs.claude-code.enable = lib.mkDefault true;}

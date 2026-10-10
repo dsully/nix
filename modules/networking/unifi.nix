@@ -6,7 +6,8 @@
 }:
 mkUserModule {
   name = "unifi";
-  requires = ["ai"];
+  needs = ["ai"];
+  default = false;
 
   home = {
     fishSecrets.UNIFI_API_KEY = "op://Services/UniFi API/credential";

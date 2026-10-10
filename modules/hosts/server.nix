@@ -1,13 +1,10 @@
-{
-  mkSystemManagerHost,
-  users,
-}:
+{mkSystemManagerHost}:
 mkSystemManagerHost {
   hostName = "server";
-  primaryUser = users.dsully;
-  users = [users.dsully];
 
-  userConfig.dsully = {
+  userConfig = {
+    ssh.opnixKey.enable = true;
+    cachix.enable = true;
     copypaste.enable = true;
     pi.enable = true;
     rumdl.enable = true;

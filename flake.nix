@@ -93,33 +93,14 @@
     }: let
       inherit (inputs.nixpkgs) lib;
 
-      # Every packages/*.nix file or packages/<name>/ directory is a package.
-      packagePaths =
-        lib.mapAttrs' (name: _:
-          lib.nameValuePair (lib.removeSuffix ".nix" name) (./packages + "/${name}"))
-        (lib.filterAttrs (name: type: type == "directory" || lib.hasSuffix ".nix" name)
-          (builtins.readDir ./packages));
-
-      users.dsully = import ./modules/users/dsully.nix;
-
-      # The `perSystem` specialArg. llm-agents packages flow through
-      # pkgs.llm-agents (overlay applied in perSystem below), not this injection.
-      mkPerSystem = system: {
-        self = config.flake.packages.${system};
-        nix-auth = inputs.nix-auth.packages.${system};
-        devshell = inputs.devshell.legacyPackages.${system};
-      };
+      discoverPackages = import ./lib/discoverPackages.nix {inherit lib;};
 
       # Host factories bound to this flake's overlaid pkgs for one system.
       factoriesFor = system:
         withSystem system ({pkgs, ...}: let
           args = {
             inherit inputs pkgs;
-            flake = {
-              inherit inputs;
-              inherit (config.flake) packages;
-            };
-            perSystem = mkPerSystem system;
+            packages = config.flake.packages.${system};
           };
         in {
           mkDarwinHost = import ./lib/mkDarwinHost.nix args;
@@ -129,21 +110,19 @@
       darwin = factoriesFor "aarch64-darwin";
       linux = factoriesFor "x86_64-linux";
 
-      # Hosts grouped by system, so each system's homeConfigurations can be
-      # listed without evaluating the other system's configs.
-      hostsBySystem = {
-        aarch64-darwin = {
-          jarvis = import ./modules/hosts/jarvis.nix {
-            inherit (darwin) mkDarwinHost;
-            inherit users;
-          };
-        };
+      # Every modules/hosts/<name>.nix, grouped by the factory it takes, so each
+      # system's homeConfigurations can be listed without evaluating the other's.
+      hostFiles =
+        lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".nix" name) (import ./modules/hosts/${name}))
+        (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".nix" name) (builtins.readDir ./modules/hosts));
 
-        x86_64-linux = lib.genAttrs ["ca" "server" "tnt" "zap"] (name:
-          import ./modules/hosts/${name}.nix {
-            inherit (linux) mkSystemManagerHost;
-            inherit users;
-          });
+      hostsBySystem = {
+        aarch64-darwin =
+          lib.mapAttrs (_: host: host {inherit (darwin) mkDarwinHost;})
+          (lib.filterAttrs (_: host: builtins.functionArgs host ? mkDarwinHost) hostFiles);
+        x86_64-linux =
+          lib.mapAttrs (_: host: host {inherit (linux) mkSystemManagerHost;})
+          (lib.filterAttrs (_: host: builtins.functionArgs host ? mkSystemManagerHost) hostFiles);
       };
     in {
       systems = ["aarch64-darwin" "x86_64-linux"];
@@ -152,12 +131,13 @@
 
       flake = {
         # Factories for consuming flakes. Each host factory takes
-        # { inputs, flake, perSystem, pkgs, extraModuleDirs? } first; see
-        # lib/hostLib.nix.
-        lib = {
-          inherit users;
-          mkDarwinHost = import ./lib/mkDarwinHost.nix;
-          mkSystemManagerHost = import ./lib/mkSystemManagerHost.nix;
+        # { inputs, pkgs, packages, extraModuleDirs? } first; see lib/hostLib.nix.
+        lib = let
+          withUpstream = factory: args: import factory (args // {upstreamPackages = config.flake.packages;});
+        in {
+          inherit discoverPackages;
+          mkDarwinHost = withUpstream ./lib/mkDarwinHost.nix;
+          mkSystemManagerHost = withUpstream ./lib/mkSystemManagerHost.nix;
         };
 
         # Consuming flakes apply this at their own pkgs construction (module-level
@@ -183,7 +163,7 @@
           overlays = import ./overlays {inherit inputs;};
         };
 
-        selfPackages = lib.mapAttrs (_: path: pkgs.callPackage path {}) packagePaths;
+        selfPackages = lib.mapAttrs (_: path: pkgs.callPackage path {}) (discoverPackages ./packages);
 
         fmt = pkgs.callPackage ./formatter.nix {};
       in {

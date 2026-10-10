@@ -1,13 +1,13 @@
 {
   mkSystemModule,
   config,
-  flake,
+  my,
   lib,
   ...
 }: let
   cfg = config.modules.system.caddy;
 
-  inherit (flake.packages.x86_64-linux) caddy-custom;
+  inherit (my.pkgs) caddy-custom;
 
   caddyConfigDir = "/etc/caddy";
   caddyDataDir = "/var/lib/caddy";

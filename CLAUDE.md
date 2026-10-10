@@ -34,23 +34,21 @@ Capability-module layout adapted from fersilva16's config. Home-manager stays **
 ```
 lib/mkDarwinHost.nix          # host factory → { system; homeConfigurations }
 lib/mkSystemManagerHost.nix   # same interface for system-manager hosts
-lib/hostLib.nix               # shared plumbing: specialArgs, discovery, standalone homes
+lib/hostLib.nix               # mkHost: shared body of both host factories (fields documented here)
 lib/mkUserModule.nix          # per-user capability with modules.users.<user>.<name>.enable
 lib/mkSystemModule.nix        # host capability with modules.system.<name>.enable
-lib/mkUser.nix                # user declaration: identity + enable flags
 modules/hosts/<host>.nix      # factory call; host-only files under modules/hosts/<host>/
-modules/users/dsully.nix      # the user's default enable flags (shared by all hosts)
 modules/<category>/<app>.nix  # capability modules, auto-discovered
 modules/<category>/<app>/<app>.nix  # capability with helper files beside it
 ```
 
 ### Flake assembly (`flake.nix`)
 
-Hand-rolled `flake-parts` flake. `packages/` is auto-discovered: every `*.nix` file or subdirectory with `default.nix` becomes a `callPackage`d output. `hostsBySystem` calls each `modules/hosts/<host>.nix` with a factory bound to that system's overlaid `pkgs`. Outputs:
+Hand-rolled `flake-parts` flake. `packages/` is auto-discovered: every `*.nix` file or subdirectory with `default.nix` becomes a `callPackage`d output. Every `modules/hosts/<host>.nix` is discovered; the factory it takes (`{mkDarwinHost}` or `{mkSystemManagerHost}`) decides its system, and it is called with that factory bound to the system's overlaid `pkgs`. Outputs:
 
 - `darwinConfigurations.jarvis`, `systemConfigs.{ca,server,tnt,zap}` — the hosts' `.system`.
 - `legacyPackages.<system>.homeConfigurations."<user>@<host>"` — the hosts' `.homeConfigurations`.
-- `lib.{mkDarwinHost, mkSystemManagerHost, users}` and `overlays.default` — for the work flake (`~/dev/work/nix`), which builds its hosts with these factories and adds its own module tree via `extraModuleDirs`.
+- `lib.{mkDarwinHost, mkSystemManagerHost, discoverPackages}` and `overlays.default` — for the work flake (`~/dev/work/nix`), which builds its hosts with these factories (`{ inputs, pkgs, packages, extraModuleDirs }`; the factories derive the `flake` and `perSystem` specialArgs) and adds its own module tree via `extraModuleDirs`.
 
 ### Two evaluation targets
 
@@ -63,7 +61,7 @@ Discovery excludes `hosts`/`users` everywhere, `linux` on darwin, `darwin` on sy
 
 ### Hosts and users
 
-`modules/users/dsully.nix` (`mkUser`) holds the defaults; `mkUser` wraps every `enable` in `mkDefault`, so a host's `userConfig.dsully.<module>.enable = false` turns a default off. Host factory fields: `hostName`, `primaryUser`, `users`, `userConfig`, `extraModules` (system), `extraHomeModules` (plain home-manager modules for host-only data such as SSH key references, topgrade repos, server's vopono units). Host-only service modules (`modules/linux/{caddy,docker,opnix,beszel-agent,tailscale}.nix`) default to off; hosts set `modules.system.<name>.enable`.
+Every `mkUserModule` is on by default; host-specific ones declare `default = false`. Each host has one user (`user`, default `dsully`; `homeStateVersion` default `"25.05"`; `home = false` for hosts without a home config). A host turns modules on or off with `userConfig.<module>.enable`. Other host fields: `extraModules` (system) and `extraHomeModules` (plain home-manager modules for host-only data such as topgrade repos and server's vopono units). `mkUserModule` relations: `requires` turns other modules on; `needs` applies `home` only while other modules are on. Host-only service modules (`modules/linux/{caddy,docker,opnix,beszel-agent,tailscale}.nix`) default to off; hosts set `modules.system.<name>.enable`.
 
 ### Plain modules every evaluation imports
 
@@ -83,7 +81,7 @@ Discovery excludes `hosts`/`users` everywhere, `linux` on darwin, `darwin` on sy
 
 ### AI tooling (`modules/ai/`)
 
-`modules/ai/ai.nix` is the core capability: it builds the registry (`registry.nix`, `hooks.nix`, `permissions.nix`) and exposes it as `_module.args.ai` (helpers like `ai.muxWrap`). `claude-code`, `codex`, `opencode`, `pi`, `mcp-mux`, and `unifi` declare `requires = ["ai"]`; `meridian` requires `claude-code`. `skills` merges `commands.nix`/`superpowers.nix`, and `pi` merges `theme.nix`, as fragments. Shared content (`AGENTS.md`, `rules/`, `output-styles/`, `plugins/`, `hooks/`) lives in `modules/ai/shared/`.
+`modules/ai/ai.nix` is the core capability: it builds the registry (`registry.nix`, `hooks.nix`, `permissions.nix`) and exposes it as `_module.args.ai` (helpers like `ai.muxWrap`). `ai` `requires` the default tools (`ccstatusline`, `claude-code`, `herdr`, `mcp-mux`, `opencode`, `skills`), so `ai.enable` alone turns the set on or off and a host disables one tool with `<tool>.enable = false`. Tools that read the `ai` arg (`claude-code`, `codex`, `opencode`, `pi`, `mcp-mux`, `unifi`) declare `needs = ["ai"]` instead of `requires`, which would cycle; `meridian` requires `claude-code`. `skills` merges `commands.nix`/`superpowers.nix`, and `pi` merges `theme.nix`, as fragments. Shared content (`AGENTS.md`, `rules/`, `output-styles/`, `plugins/`, `hooks/`) lives in `modules/ai/shared/`.
 
 ### Secrets — 1Password via opnix
 

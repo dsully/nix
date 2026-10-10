@@ -32,7 +32,8 @@
 in
   mkUserModule {
     name = "mcp-mux";
-    requires = ["ai"];
+    needs = ["ai"];
+    default = false;
 
     home = lib.mkIf config.programs.mcp.enable {
       home.activation.restartMcpMux =

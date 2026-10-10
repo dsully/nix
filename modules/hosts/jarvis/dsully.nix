@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   perSystem,
   pkgs,
   ...
@@ -16,7 +15,6 @@
 
     packages = with pkgs;
       [
-        nix-output-monitor
         zls
       ]
       ++ (with perSystem.self; [
@@ -38,15 +36,9 @@
     };
 
     onepassword-secrets.secrets = {
-      sshPrivateKey = {
-        reference = "op://Services/jarvis/private key";
-        path = ".ssh/id_ed25519";
-        mode = "0600";
-      };
       sshRSAPrivateKey = {
         reference = "op://Services/gateway/private key";
         path = ".ssh/id_rsa";
-        mode = "0600";
       };
     };
 
@@ -57,27 +49,25 @@
     };
 
     topgrade = {
-      settings = lib.mkMerge [
-        {
-          git = {
-            repos = [
-              "${config.home.homeDirectory}/src/*/"
-              "${config.home.homeDirectory}/src/neovim/*/"
-              "${config.home.homeDirectory}/src/dots/*/*/"
-              "${config.home.homeDirectory}/src/nix/*/"
-              "${config.home.homeDirectory}/src/rust/*/"
-            ];
-          };
+      settings = {
+        git = {
+          repos = [
+            "${config.home.homeDirectory}/src/*/"
+            "${config.home.homeDirectory}/src/neovim/*/"
+            "${config.home.homeDirectory}/src/dots/*/*/"
+            "${config.home.homeDirectory}/src/nix/*/"
+            "${config.home.homeDirectory}/src/rust/*/"
+          ];
+        };
 
-          misc = {
-            only = [
-              "brew_formula"
-              "brew_cask"
-              "git_repos"
-            ];
-          };
-        }
-      ];
+        misc = {
+          only = [
+            "brew_formula"
+            "brew_cask"
+            "git_repos"
+          ];
+        };
+      };
     };
   };
 }

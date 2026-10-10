@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  userModuleTarget,
   ...
 }: let
   substituters = [
@@ -111,88 +112,100 @@ in {
     };
   };
 
-  config = {
-    system.nixSettings =
-      {
-        accept-flake-config = true;
-        allow-dirty = true;
-        allowed-users = ["*"];
-        allow-symlinked-store = true;
-        always-allow-substitutes = false;
-        auto-optimise-store = true;
-        builders-use-substitutes = true;
-        connect-timeout = 10;
-        cores = 0;
-        experimental-features = [
-          "daemon-trust-override"
-          "flakes"
-          "nix-command"
-        ];
-        http-connections = 128;
-        keep-derivations = true;
-        keep-going = true;
-        keep-outputs = false;
-        max-jobs = "auto";
-        max-substitution-jobs = 128;
-        narinfo-cache-negative-ttl = 3600;
-        stalled-download-timeout = 20;
-        substituters = map (x: x.url) substituters;
-        trusted-public-keys = map (x: x.key) substituters;
-        trusted-users = trusted_users;
-        use-xdg-base-directories = true;
-        warn-dirty = false;
-      }
-      // lib.optionalAttrs (config.system.nixFlavor == "determinate") {
-        eval-cores = 0;
-        experimental-features = [
-          "blake3-hashes"
-          "build-time-fetch-tree"
-          "dynamic-derivations"
-          "git-hashing"
-        ];
-        lazy-trees = true;
+  config =
+    {
+      system.nixSettings =
+        {
+          accept-flake-config = true;
+          allow-dirty = true;
+          allowed-users = ["*"];
+          allow-symlinked-store = true;
+          always-allow-substitutes = false;
+          auto-optimise-store = true;
+          builders-use-substitutes = true;
+          connect-timeout = 10;
+          cores = 0;
+          experimental-features = [
+            "daemon-trust-override"
+            "flakes"
+            "nix-command"
+          ];
+          http-connections = 128;
+          keep-derivations = true;
+          keep-going = true;
+          keep-outputs = false;
+          max-jobs = "auto";
+          max-substitution-jobs = 128;
+          narinfo-cache-negative-ttl = 3600;
+          stalled-download-timeout = 20;
+          substituters = map (x: x.url) substituters;
+          trusted-public-keys = map (x: x.key) substituters;
+          trusted-users = trusted_users;
+          use-xdg-base-directories = true;
+          warn-dirty = false;
+        }
+        // lib.optionalAttrs (config.system.nixFlavor == "determinate") {
+          eval-cores = 0;
+          experimental-features = [
+            "blake3-hashes"
+            "build-time-fetch-tree"
+            "dynamic-derivations"
+            "git-hashing"
+          ];
+          lazy-trees = true;
+        };
+
+      nixpkgs.config.allowUnfree = true;
+
+      # `ttl` (mtr replacement) needs root for raw sockets. The `mtr` fish
+      # wrapper resolves it to its /nix/store path before invoking sudo, so
+      # this store-path glob matches. Applies on every host.
+      system.sudoRules = [
+        {
+          users = [config.system.userName];
+          commands = ["/nix/store/*/bin/ttl"];
+        }
+      ];
+
+      # Adapters so a single `system.sudoRules` feeds both backends.
+      _module.args.sudoLib = {
+        # -> NixOS `security.sudo.extraRules` entries (system-manager).
+        toExtraRules = map (rule: {
+          inherit (rule) users groups runAs;
+          commands =
+            map (command: {
+              inherit command;
+              options = lib.optional rule.noPasswd "NOPASSWD" ++ lib.optional rule.setEnv "SETENV";
+            })
+            rule.commands;
+        });
+
+        # -> sudoers lines for nix-darwin `security.sudo.extraConfig`. Defaults
+        # are applied here so callers may pass minimal rule literals.
+        toText = rules:
+          lib.concatMapStringsSep "\n" (
+            rule: let
+              users = rule.users or [];
+              groups = rule.groups or [];
+              runAs = rule.runAs or "ALL:ALL";
+              noPasswd = rule.noPasswd or true;
+              setEnv = rule.setEnv or false;
+              who = lib.concatStringsSep ", " (users ++ map (g: "%${g}") groups);
+              tag = lib.optionalString noPasswd "NOPASSWD:" + lib.optionalString setEnv "SETENV:";
+            in "${who} ALL=(${runAs}) ${tag} ${lib.concatStringsSep ", " rule.commands}"
+          )
+          rules;
       };
+    }
+    // lib.optionalAttrs (userModuleTarget != "home") {
+      nix = lib.mkMerge [
+        {settings = config.system.nixSettings;}
 
-    nixpkgs.config.allowUnfree = true;
-
-    # `ttl` (mtr replacement) needs root for raw sockets. The `mtr` fish
-    # wrapper resolves it to its /nix/store path before invoking sudo, so
-    # this store-path glob matches. Applies on every host.
-    system.sudoRules = [
-      {
-        users = [config.system.userName];
-        commands = ["/nix/store/*/bin/ttl"];
-      }
-    ];
-
-    # Adapters so a single `system.sudoRules` feeds both backends.
-    _module.args.sudoLib = {
-      # -> NixOS `security.sudo.extraRules` entries (system-manager).
-      toExtraRules = map (rule: {
-        inherit (rule) users groups runAs;
-        commands =
-          map (command: {
-            inherit command;
-            options = lib.optional rule.noPasswd "NOPASSWD" ++ lib.optional rule.setEnv "SETENV";
-          })
-          rule.commands;
-      });
-
-      # -> sudoers lines for nix-darwin `security.sudo.extraConfig`. Defaults
-      # are applied here so callers may pass minimal rule literals.
-      toText = rules:
-        lib.concatMapStringsSep "\n" (
-          rule: let
-            users = rule.users or [];
-            groups = rule.groups or [];
-            runAs = rule.runAs or "ALL:ALL";
-            noPasswd = rule.noPasswd or true;
-            setEnv = rule.setEnv or false;
-            who = lib.concatStringsSep ", " (users ++ map (g: "%${g}") groups);
-            tag = lib.optionalString noPasswd "NOPASSWD:" + lib.optionalString setEnv "SETENV:";
-          in "${who} ALL=(${runAs}) ${tag} ${lib.concatStringsSep ", " rule.commands}"
-        )
-        rules;
+        # https://lix.systems/add-to-config/
+        (lib.mkIf (config.system.nixFlavor == "lix") {
+          enable = true;
+          package = pkgs.lixPackageSets.latest.lix;
+        })
+      ];
     };
-  };
 }

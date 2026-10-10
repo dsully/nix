@@ -17,7 +17,8 @@
 in
   mkUserModule {
     name = "codex";
-    requires = ["ai"];
+    needs = ["ai"];
+    default = false;
 
     home = lib.mkMerge [
       {programs.codex.enable = lib.mkDefault true;}

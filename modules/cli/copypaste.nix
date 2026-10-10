@@ -8,6 +8,7 @@
 }:
 mkUserModule {
   name = "copypaste";
+  default = false;
 
   home = {
     home = {

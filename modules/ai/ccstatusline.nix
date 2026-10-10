@@ -10,6 +10,7 @@
 in
   mkUserModule {
     name = "ccstatusline";
+    default = false;
 
     home = {
       xdg.configFile."ccstatusline/settings.json".source = jsonFormat.generate "settings.json" {

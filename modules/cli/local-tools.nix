@@ -22,9 +22,6 @@ mkUserModule {
           fishPlugins.macos
           iproute2mac
           safari-rs
-        ]
-        ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-          syncthing
         ];
     };
   };

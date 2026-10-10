@@ -16,10 +16,6 @@ mkSystemModule {
         };
 
         CustomUserPreferences = {
-          "com.apple.Spotlight" = {
-            "NSStatusItem Visible Item-0" = false;
-          };
-
           "com.apple.systemuiserver" = {
             "NSStatusItem Visible com.apple.menuextra.appleuser" = false;
             "NSStatusItem Visible com.apple.menuextra.bluetooth" = true;

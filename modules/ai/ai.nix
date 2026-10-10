@@ -12,6 +12,16 @@ in
   mkUserModule {
     name = "ai";
 
+    # Default tool set; a host turns one off with `<tool>.enable = false`.
+    requires = [
+      "ccstatusline"
+      "claude-code"
+      "herdr"
+      "mcp-mux"
+      "opencode"
+      "skills"
+    ];
+
     home = {
       _module.args = {
         inherit ai;

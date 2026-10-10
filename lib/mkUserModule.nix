@@ -41,8 +41,14 @@
 #
 #   extraOptions: (optional) Custom per-user option declarations (attrset of mkOption defs).
 #
+#   default:      (optional, default true) Default of the enable option. Use
+#                 false for modules only some hosts enable.
+#
 #   requires:     (optional) Module names to auto-enable (mkDefault) for every
 #                 user who enables this module.
+#
+#   needs:        (optional) Module names that must also be enabled for `home`
+#                 to apply. Unlike `requires`, it does not enable them.
 #
 #   parts:        (optional) Sub-features with their own enable option under
 #                 modules.users.<user>.<name>.<partName>. Each part may set
@@ -56,7 +62,9 @@
   homeOptions ? {},
   user ? {},
   extraOptions ? {},
+  default ? true,
   requires ? [],
+  needs ? [],
   parts ? {},
 }: let
   isUserFn = builtins.isFunction user;
@@ -137,7 +145,7 @@ in {
             )
             parts;
         in
-          lib.mkIf cfg.enable (lib.mkMerge ([(applyIfFn home {inherit cfg lib username userCfg;})] ++ partHomes));
+          lib.mkIf (cfg.enable && lib.all (n: userCfg.${n}.enable) needs) (lib.mkMerge ([(applyIfFn home {inherit cfg lib username userCfg;})] ++ partHomes));
       in {
         options =
           lib.optionalAttrs (userModuleTarget == "home") homeOptions
@@ -148,7 +156,11 @@ in {
                   {config, ...}: {
                     options.${name} =
                       {
-                        enable = lib.mkEnableOption name;
+                        enable = lib.mkOption {
+                          type = lib.types.bool;
+                          inherit default;
+                          description = "Enable ${name}.";
+                        };
                       }
                       // extraOptions
                       // partOptions;
