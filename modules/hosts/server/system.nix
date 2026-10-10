@@ -19,9 +19,13 @@
     smService {
       description = "${pkg.meta.mainProgram} daemon";
       wants = ["network-online.target"];
-      after = ["network-online.target"];
+      after = ["network-online.target" "vopono-daemon.service"];
       serviceConfig = {
         Type = "simple";
+        # vopono.service is a dsully user unit, so systemd cannot order against
+        # it. Poll the host forwarder until qBittorrent answers any HTTP response.
+        ExecStartPre = "${lib.getExe pkgs.curl} -so /dev/null --max-time 5 --retry 60 --retry-delay 5 --retry-all-errors http://127.0.0.1:9091/";
+        TimeoutStartSec = "10min";
         User = name;
         Group = group;
         UMask = "0002";
@@ -152,6 +156,25 @@ in {
         };
       };
 
+      # vopono writes its own hosts and nsswitch.conf ("hosts: files dns") into
+      # /etc/netns/vpn-u1000/, and `ip netns exec` binds them over /etc. That
+      # hosts file lacks this machine's name, so every port-forward callback
+      # (`sudo -u dsully qbit-port-update`, ~45s) logs "unable to resolve host".
+      # Re-add the name whenever vopono rewrites the file; triggered by the
+      # vopono-netns-hosts path unit below. The grep makes our own write a no-op.
+      vopono-netns-hosts = smService {
+        description = "Add hostname to vopono netns hosts file";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = pkgs.writeShellScript "vopono-netns-hosts" ''
+            f=/etc/netns/vpn-u1000/hosts
+            [ -f "$f" ] || exit 0
+            read -r host < /etc/hostname
+            ${lib.getExe pkgs.gnugrep} -qw -- "$host" "$f" || echo "127.0.1.1 $host" >> "$f"
+          '';
+        };
+      };
+
       vopono-daemon = smService {
         description = "Vopono root daemon";
         wants = ["network-online.target"];
@@ -277,6 +300,11 @@ in {
           ];
         };
       };
+    };
+
+    systemd.paths.vopono-netns-hosts = {
+      wantedBy = ["system-manager.target"];
+      pathConfig.PathChanged = "/etc/netns/vpn-u1000/hosts";
     };
   };
 }
