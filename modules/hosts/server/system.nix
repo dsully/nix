@@ -175,6 +175,24 @@ in {
         };
       };
 
+      # ZFS snapshot automounts under .zfs/snapshot never expire on this
+      # kernel/ZFS pair (zfs_expire_snapshot is ignored), so any walk through
+      # .zfs leaves them mounted and sanoid-prune then fails with "dataset is
+      # busy". Unmount idle ones before each prune; umount refuses busy mounts.
+      zfs-snapshot-unmount = smService {
+        description = "Unmount idle ZFS snapshot automounts before pruning";
+        wantedBy = ["sanoid-prune.service" "system-manager.target"];
+        before = ["sanoid-prune.service"];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = pkgs.writeShellScript "zfs-snapshot-unmount" ''
+            ${lib.getExe' pkgs.util-linux "findmnt"} -rn -t zfs -o TARGET \
+              | ${lib.getExe pkgs.gnugrep} '/\.zfs/snapshot/' \
+              | while read -r m; do ${lib.getExe' pkgs.util-linux "umount"} "$m" || true; done
+          '';
+        };
+      };
+
       vopono-daemon = smService {
         description = "Vopono root daemon";
         wants = ["network-online.target"];
