@@ -74,6 +74,12 @@ in {
         caddyfile = ./files/Caddyfile;
       };
 
+      tailscale = {
+        enable = true;
+        permitCertUid = "caddy";
+        setFlags = ["--accept-dns=false" "--accept-routes=true" "--advertise-routes=" "--ssh=false"];
+      };
+
       beszel-agent = {
         enable = true;
         extraFilesystems = ["/bits/media" "/bits/stuff" "/ai/models"];
