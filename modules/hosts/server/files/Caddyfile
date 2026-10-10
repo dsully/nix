@@ -134,11 +134,6 @@
 		reverse_proxy 127.0.0.1:8090
 	}
 
-	@crashplan host crashplan.sully.org
-	handle @crashplan {
-		reverse_proxy 127.0.0.1:5800
-	}
-
 	@backblaze host backblaze.sully.org
 	handle @backblaze {
 		reverse_proxy 127.0.0.1:8082

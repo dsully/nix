@@ -49,23 +49,6 @@ in {
         ];
       };
 
-      crashplan = {
-        image = "docker.io/jlesage/crashplan-pro:latest";
-        extraOptions = ["--network" "host"] ++ noAppArmor;
-        environment = {
-          CRASHPLAN_SRV_MAX_MEM = "16G";
-          DISPLAY_HEIGHT = "1200";
-          DISPLAY_WIDTH = "1920";
-          GROUP_ID = "0";
-          KEEP_APP_RUNNING = "1";
-          USER_ID = "0";
-        };
-        volumes = [
-          "/opt/docker/crashplan:/config:rw"
-          "/:/storage:ro"
-        ];
-      };
-
       headless-shell = {
         image = "docker.io/chromedp/headless-shell:latest";
         extraOptions = [
