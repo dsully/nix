@@ -61,18 +61,6 @@
     in "---\n${lib.concatStringsSep "\n" fm}\n---\n${body}\n"
     else text;
 
-  # opencode derives the agent name from the filename and rejects several Claude
-  # frontmatter keys: `tools` is a comma-separated string where opencode wants an
-  # object, `color` is a free word where opencode wants a hex code or a fixed
-  # enum, and `model` is a Claude alias (sonnet/opus/inherit) that does not
-  # resolve under the genai provider. Drop those, plus `name` (the filename wins,
-  # so a `name` here would only override it with the plugin-namespaced value) and
-  # `mode`. We do NOT re-add `mode`: opencode's agent switcher (the `/agents`
-  # picker and Tab cycle) filters out `mode: subagent` (see tui local.tsx), so a
-  # forced `subagent` would hide these from the list. Without a mode they default
-  # to `all` and show up, matching the in-tree and marketplace agents.
-  sanitizeAgent = sanitizeAgentWith ["name:" "tools:" "color:" "model:" "mode:"];
-
   lsp = {
     bash = {
       command = lib.getExe pkgs.bash-language-server;
@@ -201,13 +189,6 @@
   commands = lib.mapAttrs (_: builtins.readFile) commandSources;
   descriptions = lib.mapAttrs (_: agentDescription) agentSources;
 
-  # opencode markdown agent files, one per marketplace source. They are handed
-  # to `programs.opencode.agents`, which writes each into
-  # ~/.config/opencode/agents/<name>.md. `sanitizeAgent` rewrites every Claude
-  # file into opencode's dialect first, so the raw `tools`/`color`/`model` keys
-  # never reach opencode's config validation.
-  opencodeAgents = lib.mapAttrs (_: sanitizeAgent) agentSources;
-
   hooks = import ./hooks.nix {inherit config lib pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
@@ -224,7 +205,7 @@
     )
     mcpServers;
 
-  # pi, opencode, and claude-code each install context-mode; pin the one
+  # pi and claude-code each install context-mode; pin the one
   # version here so they cannot drift apart.
   contextModeVersion = "1.0.169";
 
@@ -232,23 +213,20 @@
 
   # Output styles, in Claude Code's format (frontmatter + system-prompt body).
   # The attribute name is the style id: Claude Code writes it to
-  # `output-styles/<id>.md` and matches `settings.outputStyle` against it, and
-  # opencode-output-styles derives its `/output-style <id>` id from the same
-  # filename. Each file's frontmatter `name` is kept equal to its id so both
+  # `output-styles/<id>.md` and matches `settings.outputStyle` against it.
+  #
+  # Each file's frontmatter `name` is kept equal to its id so both
   # tools agree on one identifier.
   outputStyles = {
     asd-ste-100 = ./output-styles/asd-ste-100.md;
   };
 
-  # The style every tool starts in. Claude Code applies it declaratively via
-  # `settings.outputStyle`; opencode has no declarative equivalent, so
-  # opencode.nix loads the same file through `instructions`.
   defaultOutputStyle = "asd-ste-100";
 
   # Language-specific rule files. Claude Code loads these natively from its
-  # rules/ dir (on-demand via `paths:` frontmatter) and opencode loads them via
-  # the `instructions` glob. Tools without a rules mechanism (codex, pi) embed
-  # `rulesMarkdown` directly into their context.
+  # rules/ dir (on-demand via `paths:` frontmatter).
+  #
+  # Tools without a rules mechanism (codex, pi) embed `rulesMarkdown` directly into their context.
   rulesDir = ./rules;
 
   rulesMarkdown = lib.pipe (builtins.readDir rulesDir) [
@@ -270,10 +248,8 @@ in {
     models
     muxEngineFile
     muxWrap
-    opencodeAgents
     outputStyles
     permissions
-    sanitizeAgent
     sanitizeAgentWith
     rulesDir
     rulesMarkdown

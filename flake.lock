@@ -20,22 +20,6 @@
         "type": "github"
       }
     },
-    "autoresearch-opencode": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1774781781,
-        "narHash": "sha256-P7ZZxmFiS6X5QrH14Dhi3TAKeZ6u7dKI7Az+FSFHhYA=",
-        "owner": "dabiggm0e",
-        "repo": "autoresearch-opencode",
-        "rev": "679a3310b3cb26dc84b81bddf4d450778d53cf35",
-        "type": "github"
-      },
-      "original": {
-        "owner": "dabiggm0e",
-        "repo": "autoresearch-opencode",
-        "type": "github"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -497,7 +481,6 @@
     "root": {
       "inputs": {
         "agent-skills": "agent-skills",
-        "autoresearch-opencode": "autoresearch-opencode",
         "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "flake-parts": "flake-parts",

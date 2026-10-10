@@ -18,7 +18,6 @@ in
       "claude-code"
       "herdr"
       "mcp-mux"
-      "opencode"
       "skills"
     ];
 
@@ -36,11 +35,7 @@ in
           )
           ++ (
             with pkgs.llm-agents;
-              [
-                opencode2
-                ralph-tui
-              ]
-              ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+              lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
                 agent-browser
               ]
           )

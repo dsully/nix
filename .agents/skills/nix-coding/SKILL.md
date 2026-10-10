@@ -5,7 +5,6 @@ description: >
   Home Manager configuration, packages, and overlays. Covers Nix coding style,
   module system patterns, common lib functions, and tooling (nixfmt, deadnix,
   statix). For flake-parts-specific patterns use the flake-parts skill instead.
-compatibility: opencode
 paths:
   - "**/*.nix"
 ---
@@ -15,6 +14,7 @@ paths:
 - Prefer functional programming style; apply eta reduction where it improves
   clarity (e.g., `map f xs` not `map (x: f x) xs`).
 - Use `lib.pipe` to express sequential transformations instead of nested calls:
+
   ```nix
   lib.pipe value [
     lib.flatten
@@ -22,6 +22,7 @@ paths:
     (lib.concatStringsSep " ")
   ]
   ```
+
 - Prefer `lib` functions over builtins when an equivalent exists
   (e.g., `lib.attrNames` over `builtins.attrNames`).
 - Use `let inherit (x) a b c; in` to reduce repetition when pulling multiple
@@ -37,7 +38,7 @@ Split large modules across files by concern:
 - `default.nix` — `imports` list + top-level wiring, minimal logic
 - Backend/feature files — each contributes only `config` for their concern
 
-```
+```text
 my-module/
   interface.nix        # options only
   default.nix          # imports + orchestration
@@ -221,6 +222,7 @@ type = lib.types.submoduleWith {
 ```
 
 For submodules:
+
 ```nix
 type = types.submodule {
   options = {
@@ -284,6 +286,7 @@ Always run it on new or modified `.nix` files before committing.
 ```
 
 Key formatting rules nixfmt enforces:
+
 - 2-space indentation
 - Spaces around `=` in bindings
 - Function arguments on separate lines when they don't fit on one line
@@ -310,4 +313,3 @@ statix is a linter that catches Nix antipatterns.
 
 Common patterns statix flags: unnecessary `with`, `rec` when not needed,
 `builtins.*` when a `lib` equivalent exists, `map (x: f x)` instead of `map f`.
-

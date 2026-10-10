@@ -179,12 +179,6 @@
 
   codexPrefixRule = decision: pattern: "prefix_rule(pattern = ${codexAtom pattern}, decision = \"${decision}\")";
 
-  opencodeAskShell = command: "${command}*";
-  opencodeDenyShell = command: "${command} *";
-
-  attrsWithDecision = decision: values:
-    lib.listToAttrs (map (value: lib.nameValuePair value decision) values);
-
   wrappedAllowPrefixes = lib.concatMap (
     wrapper: map (prefix: [wrapper] ++ prefix) shell.readOnly
   ) (shell.wrappers or []);
@@ -227,18 +221,6 @@
         (s: s // {default_tools_approval_mode = "approve";})
       ];
     };
-
-  opencodeShellPermissions =
-    attrsWithDecision "allow" (map (prefix: "${prefix} *") allowPrefixStrings)
-    // attrsWithDecision "ask" (map opencodeAskShell shell.askCommands)
-    // attrsWithDecision "deny" (
-      map opencodeDenyShell (lib.remove "git" shell.denyCommands)
-    );
-
-  opencodePathPermissions = rules:
-    attrsWithDecision "allow" rules.allow
-    // attrsWithDecision "ask" rules.ask
-    // attrsWithDecision "deny" rules.deny;
 in rec {
   inherit taxonomy;
 
@@ -281,18 +263,5 @@ in rec {
       # its sandbox and by the other agents' native permission systems.
       ${lib.concatStringsSep "\n" (map (codexPrefixRule "allow") expandedAllowPrefixes)}
     '';
-  };
-
-  opencode = {
-    permission = {
-      bash = opencodeShellPermissions;
-      edit = opencodePathPermissions taxonomy.edit;
-      external_directory = {
-        "/**" = "allow";
-      };
-      lsp = "allow";
-      read = opencodePathPermissions taxonomy.read;
-      webfetch = "allow";
-    };
   };
 }

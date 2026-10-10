@@ -161,10 +161,9 @@ in
         type = lib.types.listOf (lib.types.enum [
           "claude"
           "codex"
-          "opencode"
           "pi"
         ]);
-        default = ["claude" "opencode"];
+        default = ["claude"];
         description = ''
           Agents to install the Herdr integration for. The integration reports
           session identity (Claude Code, Codex) or full lifecycle state (OpenCode,
@@ -291,7 +290,6 @@ in
                   }) [
                     "claude"
                     "codex"
-                    "opencode"
                     "pi"
                   ]
                 );

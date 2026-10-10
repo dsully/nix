@@ -13,11 +13,7 @@
     (builtins.readDir "${inputs.superpowers}/skills")
   );
 
-  # opencode's plugin (opencode.nix) already registers these skills directly,
-  # so it must never appear here — doing both would install every skill twice
-  # in opencode's discovery dir and warn at startup.
-  agents = lib.subtractLists ["opencode"] (lib.unique cfg.agents);
-  otherAgents = lib.subtractLists ["pi"] agents;
+  otherAgents = lib.subtractLists ["pi"] (lib.unique cfg.agents);
 
   # pi-superagents drives these via /sp-* and finds them by frontmatter name, so pi
   # gets copies hidden from the model's skill list (saves prompt tokens every turn).
@@ -36,7 +32,7 @@ in {
     example = ["claude" "codex" "pi"];
   };
 
-  config = lib.mkIf (agents != []) {
+  config = lib.mkIf (cfg.agents != []) {
     programs.agent-skills = {
       sources.superpowers = {
         input = "superpowers";
@@ -48,7 +44,7 @@ in {
           path = id;
           agents = otherAgents;
         }))
-        // lib.optionalAttrs (lib.elem "pi" agents) (lib.listToAttrs (map (id:
+        // lib.optionalAttrs (lib.elem "pi" cfg.agents) (lib.listToAttrs (map (id:
           lib.nameValuePair "pi-${id}" {
             from = "superpowers";
             path = id;

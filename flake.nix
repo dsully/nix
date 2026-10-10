@@ -43,11 +43,6 @@
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
     agent-skills.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Agent content: skills, plugins, and prompt collections consumed as plain
-    # file trees. All `flake = false`, all churn far faster than the rest.
-    autoresearch-opencode.url = "github:dabiggm0e/autoresearch-opencode";
-    autoresearch-opencode.flake = false;
-
     claude-plugins-official.url = "github:anthropics/claude-plugins-official";
     claude-plugins-official.flake = false;
 

@@ -3,14 +3,12 @@ mkDarwinHost {
   hostName = "jarvis";
 
   userConfig = {
-    ssh.opnixKey.enable = true;
     paste.enable = true;
     pi.enable = true;
     rumdl.enable = true;
+    ssh.opnixKey.enable = true;
     unifi.enable = true;
     xdg-open-svc.enable = true;
-
-    opencode.enable = false;
   };
 
   extraModules = [

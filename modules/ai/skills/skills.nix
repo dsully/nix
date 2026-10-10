@@ -67,7 +67,7 @@
       };
     };
   };
-  commands = import ./commands.nix {inherit config inputs lib;};
+
   superpowers = import ./superpowers.nix {inherit config inputs lib;};
 in
   mkUserModule {
@@ -88,7 +88,6 @@ in
     };
 
     home = lib.mkMerge [
-      commands.config
       superpowers.config
 
       {

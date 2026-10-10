@@ -210,7 +210,4 @@ in {
   claude = renderEvents "claude";
   codex = renderCodex;
   pi = renderEvents "pi";
-
-  # OpenCode's JSON schema does not expose native lifecycle hooks.
-  opencode = {};
 }
