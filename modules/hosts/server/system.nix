@@ -134,6 +134,24 @@ in {
         };
       };
 
+      liquidctl = smService {
+        description = "Kraken AIO pump and fan curve";
+        serviceConfig = let
+          liquidctl = lib.getExe pkgs.liquidctl;
+        in {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = [
+            "${liquidctl} initialize all"
+            "${liquidctl} --match kraken set pump speed 90"
+            "${liquidctl} --match kraken set fan speed 20 30 30 50 34 80 40 90 50 100"
+          ];
+          # The USB device can enumerate after the unit starts at boot.
+          Restart = "on-failure";
+          RestartSec = "5s";
+        };
+      };
+
       vopono-daemon = smService {
         description = "Vopono root daemon";
         wants = ["network-online.target"];
