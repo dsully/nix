@@ -40,18 +40,6 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
-    meridian = {
-      url = "github:rynfar/meridian";
-
-      inputs = {
-        # We consume meridian's package, never its homeManagerModules, so its own
-        # home-manager copy is dead weight in the lock.
-        home-manager.follows = "home-manager";
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
     agent-skills.inputs.nixpkgs.follows = "nixpkgs";
 
