@@ -40,6 +40,25 @@
       ${builtins.elemAt parsed 1}
     '';
   }) (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".md" name) (builtins.readDir ai.rulesDir)));
+
+  bunExe = lib.getExe config.programs.bun.package;
+  bunRuntime = pkgs.symlinkJoin {
+    name = "bun-runtime";
+    meta.mainProgram = "bun";
+
+    paths = [
+      (pkgs.writeShellScriptBin "bun" ''
+        if [[ "''${1-}" == install ]]; then
+          exec ${bunExe} "$@" --trust
+        fi
+        exec ${bunExe} "$@"
+      '')
+    ];
+
+    postBuild = ''
+      ln -s ${bunExe} $out/bin/node
+    '';
+  };
 in {
   imports = [
     ./pi/theme.nix
@@ -193,7 +212,9 @@ in {
               };
             };
 
-            npmCommand = [(lib.getExe config.programs.bun.package)];
+            # npmCommand = [(lib.getExe config.programs.bun.package)];
+            npmCommand = [(lib.getExe bunRuntime)];
+            # npmCommand = [(lib.getExe pkgs.bun)];
             packages = lib.unique (
               [
                 # "npm:context-mode"
