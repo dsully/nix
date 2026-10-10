@@ -3,6 +3,7 @@
   ai,
   config,
   lib,
+  my,
   pkgs,
   wrapperLib,
   ...
@@ -154,7 +155,7 @@ in
           pi-coding-agent = {
             package = wrapperLib.wrapPackage {
               inherit pkgs;
-              package = pkgs.llm-agents.pi;
+              package = my.pkgs.pi-bolt;
 
               envDefault = {
                 PI_CODING_AGENT_DIR = piPath;
