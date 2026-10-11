@@ -24,6 +24,11 @@
 
   programs = {
     mcp.servers = {
+      fastmail = {
+        type = "http";
+        url = "https://api.fastmail.com/mcp";
+        enabled = false;
+      };
       homekit = {
         type = "http";
         url = "http://127.0.0.1:5333/mcp";

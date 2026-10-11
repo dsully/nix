@@ -128,6 +128,12 @@
       };
     }
     // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+      apple-apps = {
+        command = lib.getExe pkgs.bun;
+        args = ["/Applications/Apple MCP.app/Contents/Resources/dist/mcp/index.js"];
+        enabled = false;
+        stateless = true;
+      };
       safari-mcp = {
         command = "/usr/bin/safaridriver";
         args = ["--mcp"];
