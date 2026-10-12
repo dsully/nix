@@ -5,8 +5,5 @@ function ,fj --description 'Fuzzy Jump'
 
     if test $status -eq 0
         cd $selection
-        # commandline --current-token --replace -- (string escape -- $selection | string join ' ')
     end
-
-    # commandline --function repaint
 end

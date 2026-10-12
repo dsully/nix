@@ -1,20 +1,3 @@
-# command -v gibo >/dev/null 2>&1
-#
-# # Add arguments to add one or more files.
-#
-# function gitignore -d "Generate .gitignore with incremental search"
-#
-#     if test "$OS" = Darwin
-#         set cache $HOME/Library/Caches/gibo/gitignore-boilerplates
-#     else
-#         set cache $XDG_CACHE_DIR/gibo/gitignore-boilerplates
-#     end
-#
-#     command gibo list | fzf --multi --preview "bat --color=always $cache/{}.gitignore" | xargs gibo dump >>./.gitignore
-# end
-#
-# command -v gibo >/dev/null 2>&1
-
 function gitignore -d "Generate .gitignore with incremental search or add files/directories"
     # Find the git root directory
     set -l git_root (git rev-parse --show-toplevel 2>/dev/null)
@@ -36,7 +19,7 @@ function gitignore -d "Generate .gitignore with incremental search or add files/
         if test "$OS" = Darwin
             set cache $HOME/Library/Caches/gibo/gitignore-boilerplates
         else
-            set cache $XDG_CACHE_DIR/gibo/gitignore-boilerplates
+            set cache $XDG_CACHE_HOME/gibo/gitignore-boilerplates
         end
 
         command gibo list | fzf --multi --preview "bat --color=always $cache/{}.gitignore" | xargs gibo dump >>"$gitignore_file"

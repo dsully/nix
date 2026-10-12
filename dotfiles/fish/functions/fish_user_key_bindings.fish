@@ -37,7 +37,7 @@ function print_custom_binds --description "Prints out custom user binds"
     set -a bindings "Ctrl+t\tFuzzy search files in current directory"
     set -a bindings ",ff\tCustom file finder function"
     set -a bindings ",fg\tCustom file grep function"
-    set -a bindings ",fr\tCustom file replace function"
+    set -a bindings ",fr\tFuzzy cd to a ghq repository"
 
     # Print each binding with colors
     for binding in $bindings
@@ -167,6 +167,4 @@ function fish_user_key_bindings
     bind \cg\ct __git_fzf_git_tag
     bind \cg\ch __git_fzf_git_log
     bind \cg\cr __git_fzf_git_remote
-
-    print_custom_binds
 end

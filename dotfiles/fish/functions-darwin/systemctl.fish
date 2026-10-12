@@ -43,6 +43,16 @@ function __get_plist_path
     return 1
 end
 
+# LaunchAgents run in the user's GUI domain; only daemons need the root system domain.
+function __launchctl_domain
+    switch $argv[1]
+        case '*/LaunchDaemons/*'
+            echo system
+        case '*'
+            echo gui/(id -u)
+    end
+end
+
 function systemctl --description 'Wraps launchctl'
 
     if test (count $argv) -lt 1
@@ -51,7 +61,6 @@ function systemctl --description 'Wraps launchctl'
     end
 
     set -l blue (set_color blue)
-    set -l cyan (set_color cyan)
     set -l green (set_color green)
     set -l red (set_color red)
     set -l reset (set_color normal)
@@ -60,74 +69,56 @@ function systemctl --description 'Wraps launchctl'
     set -l command $argv[1]
     set -l service_name $argv[2]
 
+    if contains -- $command start stop restart reload status enable disable
+        if test -z "$service_name"
+            echo "Error: Service name required"
+            return 1
+        end
+    end
+
+    set -l plist_path
+    set -l domain
+    set -l sudo
+
+    if contains -- $command start stop enable disable
+        set plist_path (__get_plist_path $service_name)
+        or begin
+            echo "Error: Service $service_name not found"
+            return 1
+        end
+
+        set domain (__launchctl_domain $plist_path)
+
+        if test "$domain" = system
+            set sudo sudo
+        end
+    end
+
     switch $command
         case start
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
-            set -l plist_path (__get_plist_path $service_name)
-            if test $status -ne 0
-                echo "Error: Service $service_name not found"
-                return 1
-            end
-
-            sudo launchctl bootstrap system "$plist_path"
-            sudo launchctl start "$service_name"
+            $sudo launchctl bootstrap $domain $plist_path
+            $sudo launchctl kickstart "$domain/$service_name"
             echo "Started $service_name"
 
         case stop
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
-            sudo launchctl stop "$service_name"
-            sudo launchctl bootout system/$service_name
+            $sudo launchctl bootout "$domain/$service_name"
             echo "Stopped $service_name"
 
-        case restart
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
+        case restart reload
             systemctl stop $service_name
             sleep 1
             systemctl start $service_name
 
         case status
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
-            set -l status (__get_service_status $service_name)
-            echo "$service_name - $status"
+            set -l pid (launchctl list | awk -v label=$service_name '$3 == label {print $1}')
+            echo "$service_name - "(__format_service_status $pid)
 
         case enable
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
-            set -l plist_path (__get_plist_path $service_name)
-            if test $status -ne 0
-                echo "Error: Service $service_name not found"
-                return 1
-            end
-
-            sudo launchctl enable "system/$service_name"
+            $sudo launchctl enable "$domain/$service_name"
             echo "Enabled $service_name"
 
         case disable
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
-            sudo launchctl disable "system/$service_name"
+            $sudo launchctl disable "$domain/$service_name"
             echo "Disabled $service_name"
 
         case list
@@ -157,16 +148,6 @@ function systemctl --description 'Wraps launchctl'
                     $blue loaded $reset \
                     $status_color $status_text $reset
             end | sort
-
-        case reload
-            if test -z "$service_name"
-                echo "Error: Service name required"
-                return 1
-            end
-
-            systemctl stop $service_name
-            sleep 1
-            systemctl start $service_name
 
         case help
             __launchctl_service_help

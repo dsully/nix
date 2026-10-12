@@ -1,5 +1,6 @@
 function tower -d "Open Tower for directory (default: Git root)"
-    set -l paths (fallback $argv (git rev-parse --show-toplevel))
+    set -l paths $argv
+    set -q paths[1]; or set paths (git rev-parse --show-toplevel)
 
     if test (uname) = Linux
         if not set -q SSH_CLIENT_MOUNT

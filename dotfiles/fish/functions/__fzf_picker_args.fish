@@ -20,5 +20,4 @@ function __fzf_picker_args
         --no-scrollbar \
         --preview-window 'up,50%,wrap,border-bottom,+{2}/3' \
         --select-1
-        # --no-clear \
 end

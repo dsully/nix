@@ -1,5 +1,4 @@
 function commit -d "Stage and generate AI commit message from diff"
-    #
     set -l issue $argv[1]
     set -l diff (git diff --cached --stat | string collect)
 
@@ -76,6 +75,6 @@ Just return the commit message as plain text. Do not wrap it in backticks or any
         set_color red
         echo "=> Commit aborted. Changes remain staged."
         set_color normal
-        clip "$msg"
+        printf '%s' "$msg" | fish_clipboard_copy
     end
 end

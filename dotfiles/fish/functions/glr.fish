@@ -18,25 +18,6 @@ function glr -d "git sync: fetch, autorebase and trim branches that have been me
             command git merge --ff-only "$upstream"; or true
         end
     end
-
-    # if command -q autorebase
-    #     echo "Pulling and autorebasing..."
-    #     autorebase --include-non-local --slow
-    # else
-    #     echo "Pulling ..."
-    #     git pull
-    # end
-
-    # if test $status -eq 0
-    #
-    #     if type -q git-trim
-    #         echo
-    #         echo "Pruning local branches that have been merged ..."
-    #         git trim --no-confirm --no-update
-    #     else
-    #         echo "Install git-trim via 'cargo binstall -y git-trim'"
-    #     end
-    # end
 end
 
 function do-ff

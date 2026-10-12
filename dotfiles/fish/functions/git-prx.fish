@@ -5,7 +5,7 @@ function git-prx --description "Interactively select and checkout a GitHub PR"
         return 0
     end
 
-    set choice (echo $choices | fzf --prompt="Select PR > ")
+    set choice (printf '%s\n' $choices | fzf --prompt="Select PR > ")
     set choice (echo $choice | cut -d' ' -f1 | tr -d '#:')
 
     if test -z "$choice"

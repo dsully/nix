@@ -1,3 +1,10 @@
+set -g __fish_git_prompt_showdirtystate 1
+set -g __fish_git_prompt_char_dirtystate "*"
+set -g __fish_git_prompt_char_stagedstate "+"
+set -g __fish_git_prompt_color_branch white --bold
+set -g __fish_git_prompt_show_informative_status 0
+set -g __fish_git_prompt_char_stateseparator ""
+
 function __get_status_symbol
     set -l code $argv[1]
     switch $code
@@ -43,7 +50,6 @@ function fish_prompt
     if test "$pwd" != "$HOME"
 
         # Collect language icons
-        set -l icon_count 0
         set -l icons
 
         if string match -q -r iCloud $pwd
@@ -156,13 +162,6 @@ function fish_prompt
                 echo -n " "
             end
 
-            # The order is important to not have a space after the branch name.
-            set -g __fish_git_prompt_showdirtystate 1
-            set -g __fish_git_prompt_char_dirtystate "*"
-            set -g __fish_git_prompt_char_stagedstate "+"
-            set -g __fish_git_prompt_color_branch white --bold
-            set -g __fish_git_prompt_show_informative_status 0
-            set -g ___fish_git_prompt_char_stateseparator ""
             fish_git_prompt "%s"
 
             echo -n ')'

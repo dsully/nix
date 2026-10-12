@@ -101,15 +101,15 @@ function git-sw --description "Switch to a branch, or create it, setting the ups
         # Didn't find a branch name (e.g. `git sw -`), just run the switch
         command git switch $argv
 
-    else if test (command git branch --no-color --list "$git_branch_arg" | string trim) -eq 0
+    else if test -n "$(command git branch --no-color --list "$git_branch_arg")"
         # We're trying to switch to an existing local branch
         command git switch $argv
 
-    else if test (command git branch --all --no-color --list "$git_branch_arg" | string trim) -eq 0
+    else if test -n "$(command git branch --all --no-color --list "$git_branch_arg")"
         # User is specifying a remote branch directly, switch in detached mode
         command git switch -d $argv
 
-    else if test (command git branch --all --no-color --list "*/$git_branch_arg" | string trim) -eq 0
+    else if test -n "$(command git branch --all --no-color --list "*/$git_branch_arg")"
         # Branch exists in a remote but not locally
         set -g created 1
 

@@ -35,7 +35,7 @@ function owner-from-url --argument url --description="Extract just the owner/use
     basename (dirname (string replace -r '\.git$' '' $url))
 end
 
-function c --wraps='git clone' --description 'Wrap git clone.' --argument url _destination cloneargs
+function c --wraps='git clone' --description 'Wrap git clone.' --argument url _destination
 
     set url (expand-slug $url)
 
@@ -51,5 +51,5 @@ function c --wraps='git clone' --description 'Wrap git clone.' --argument url _d
         return
     end
 
-    git clone $cloneargs $url $destination && cd $destination
+    git clone $argv[3..] $url $destination && cd $destination
 end

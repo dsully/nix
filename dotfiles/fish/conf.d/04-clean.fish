@@ -26,4 +26,4 @@ function clean-complete-path --description "Remove non-existent paths from fish_
     set -g fish_complete_path $valid_paths
 end
 
-clean-complete-path
+status is-interactive; and clean-complete-path

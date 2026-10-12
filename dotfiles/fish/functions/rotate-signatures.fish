@@ -69,13 +69,5 @@ function rotate-signatures
         "<goldenmean> The Self Deprecating Angle by the way is the name of my book about the plight of suicidal geometry." \
         "I like Florida. Everything is in the 80's. The temperatures, the ages and the IQ's. - George Carlin"
 
-    # Get a random index.
-    set rand_index (math (random) % (count $sigs))
-
-    # Get a random signature and replace '\\n' with actual newlines.
-    set rand_sig (string replace -r '\\n' '\n' $sigs[$rand_index])
-
-    echo -e $rand_sig
+    echo -e (random choice $sigs)
 end
-
-rotate-signatures

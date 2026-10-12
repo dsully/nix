@@ -2,7 +2,7 @@
 function fix-locationd-permissions
     # https://superuser.com/questions/526183/remove-applications-from-location-services-in-security-privacy-on-mac-os-x-10
 
-    if test -d /var/db/locationd/clients.plist
+    if not test -f /var/db/locationd/clients.plist
         return
     end
 

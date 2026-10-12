@@ -10,12 +10,14 @@ if status is-interactive
     else
         switch $OS
             case Darwin
-                set -l BASE /Library/Java/JavaVirtualMachines
-                set -gx JAVA_HOME $BASE/(command ls $BASE|sort)[-1]/Contents/Home
-
-                fish_add_path --append -g $JAVA_HOME/bin
+                if set -l java_home (/usr/libexec/java_home 2>/dev/null)
+                    set -gx JAVA_HOME $java_home
+                    fish_add_path --append -g $JAVA_HOME/bin
+                end
             case Linux
-                set -gx JAVA_HOME (dirname (dirname (readlink -f /usr/bin/java)))
+                if test -e /usr/bin/java
+                    set -gx JAVA_HOME (path dirname (path dirname (path resolve /usr/bin/java)))
+                end
         end
     end
 end

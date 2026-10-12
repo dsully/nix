@@ -3,13 +3,13 @@ function rcheck --wraps="cargo check" --description "Run cargo check"
         set_color blue
         echo -e "\n\nFormatting the code ...\n"
         set_color normal
-        rust_fmt
+        rfmt
     end &&
         begin
             set_color red
             echo -e "Running clippy...\n"
             set_color normal
-            rust_clippy --all-features
+            clippy --all-features
         end &&
         begin
             set_color yellow

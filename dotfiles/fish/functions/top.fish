@@ -1,4 +1,3 @@
-# Defined in /var/folders/3q/x_nn53z13p35x0qrrx7n8bz40003dm/T//fish.CPuVJ8/top.fish @ line 2
 function top --wraps=btop
 
     if command -q btop
@@ -10,7 +9,7 @@ function top --wraps=btop
             case Darwin
                 command top -s 2 -ocpu -Otime $argv
             case Linux
-                command top
+                command top $argv
         end
     end
 end
