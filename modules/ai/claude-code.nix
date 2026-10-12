@@ -59,7 +59,19 @@
     hooks = lib.mkDefault ai.hooks.claude;
 
     statusLine = {
-      command = lib.getExe pkgs.llm-agents.ccstatusline;
+      # shortcut: upstream installs only dist/ccstatusline.js, not its chunk files; drop when numtide/llm-agents.nix fixes it.
+      command = lib.getExe (pkgs.llm-agents.ccstatusline.overrideAttrs {
+        installPhase = ''
+          runHook preInstall
+          mkdir -p $out/bin $out/lib
+          cp -r $src/dist $out/lib/ccstatusline
+          chmod +x $out/lib/ccstatusline/ccstatusline.js
+          substituteInPlace $out/lib/ccstatusline/ccstatusline.js \
+            --replace-quiet "#!/usr/bin/env node" "#!${pkgs.nodejs}/bin/node"
+          ln -s $out/lib/ccstatusline/ccstatusline.js $out/bin/ccstatusline
+          runHook postInstall
+        '';
+      });
       padding = 0;
       type = "command";
     };
