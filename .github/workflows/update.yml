@@ -97,3 +97,5 @@ jobs:
         with:
           commit_message: "chore: update lockfile and versions"
           file_pattern: packages/
+          branch: ${{ github.ref_name }}
+          skip_checkout: true
