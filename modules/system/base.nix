@@ -31,7 +31,8 @@ in {
     _final: _prev:
       (perSystem.upstream or perSystem.self)
       // lib.optionalAttrs (inputs ? neovim-nightly-overlay) {
-        inherit (inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}) neovim;
+        # CI builds and caches checks (dev-partition nixpkgs pin), not packages.
+        inherit (inputs.neovim-nightly-overlay.checks.${pkgs.stdenv.hostPlatform.system}) neovim;
       }
   );
 }
