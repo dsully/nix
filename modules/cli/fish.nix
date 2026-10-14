@@ -224,9 +224,6 @@ in
                 set -gx --path MANPATH (/usr/bin/xcode-select --show-manpaths 2>/dev/null) $MANPATH ""
             end
           '';
-
-        # A login shell is the top level even if its parent leaked SHLVL (fish_prompt nesting indicator).
-        loginShellInit = "set -gx SHLVL 1";
       };
 
       xdg.configFile = {
