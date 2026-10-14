@@ -25,6 +25,7 @@ mkSystemModule {
 
       brews = [
         "mas"
+        "portop"
       ];
 
       casks = [

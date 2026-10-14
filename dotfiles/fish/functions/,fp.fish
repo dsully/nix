@@ -2,7 +2,10 @@ function ,fp -d "TCP Port Picker"
 
     __fzf_picker_args
 
-    if command -q lsof
+    if command -q portop
+        portop
+
+    else if command -q lsof
         lsof -iTCP -sTCP:LISTEN -n -P | sort | fzf --no-sort $PICKER_ARGS
 
     else if command -q ss
