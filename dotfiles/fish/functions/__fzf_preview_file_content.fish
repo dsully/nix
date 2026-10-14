@@ -8,15 +8,11 @@ function __fzf_preview_file_content --description 'Preview file content'
 
     set path $_flag_path
     set line $_flag_line
-    set column $_flag_column
 
     set bat_args --color=always --plain
 
     if test -n "$line"
         set bat_args $bat_args --highlight-line $line
-
-    else if test -n "$column"
-        set bat_args $bat_args --highlight-line $line:$column
     else
         set bat_args $bat_args --line-range :50
     end
