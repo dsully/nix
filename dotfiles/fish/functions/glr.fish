@@ -10,12 +10,11 @@ function glr -d "git sync: fetch, autorebase and trim branches that have been me
         do-ff $current $r
     end
 
-    # Fast-forward the current branch if it has an upstream
     if test -n "$current"
         set upstream (command git branch --list --format "%(upstream:short)" "$current")
         if test -n "$upstream"
-            echo "Fast-forward branch '$current' to '$upstream'"
-            command git merge --ff-only "$upstream"; or true
+            echo "Rebase branch '$current' onto '$upstream'"
+            command git rebase --autostash "$upstream"
         end
     end
 end
