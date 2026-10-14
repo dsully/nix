@@ -136,7 +136,7 @@ in
           ai.superpowers.agents = ["claude"];
 
           claude-code = {
-            package = pkgs.llm-agents.claude-code;
+            package = lib.mkDefault pkgs.llm-agents.claude-code;
             mutableSettings = true;
 
             enableMcpIntegration = true;
