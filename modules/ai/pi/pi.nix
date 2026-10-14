@@ -190,6 +190,9 @@ in
               defaultModel = ai.models.large.model;
               defaultProvider = ai.models.large.provider;
               defaultThinkingLevel = ai.models.large.reasoning_effort;
+              defaultTools = [
+                "+codemode"
+              ];
 
               enableInstallTelemetry = false;
               enableSkillCommands = false;
@@ -223,7 +226,6 @@ in
               };
 
               npmCommand = [(lib.getExe bunRuntime)];
-              # npmCommand = [(lib.getExe pkgs.bun)];
 
               packages = lib.subtractLists config.programs.pi-coding-agent.excludePackages (lib.unique (
                 [
