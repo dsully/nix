@@ -67,6 +67,12 @@ in
     name = "pi";
     default = false;
 
+    homeOptions.programs.pi-coding-agent.excludePackages = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "Package sources removed from the default pi packages list.";
+    };
+
     home = lib.mkMerge [
       (import ./theme.nix {inherit config lib pkgs piPath;}).config
       {
@@ -216,10 +222,10 @@ in
                 };
               };
 
-              # npmCommand = [(lib.getExe config.programs.bun.package)];
               npmCommand = [(lib.getExe bunRuntime)];
               # npmCommand = [(lib.getExe pkgs.bun)];
-              packages = lib.unique (
+
+              packages = lib.subtractLists config.programs.pi-coding-agent.excludePackages (lib.unique (
                 [
                   # "npm:context-mode"
                   # Core skill only; the audit/debt/gain/help/review extras cost prompt tokens every turn.
@@ -235,7 +241,7 @@ in
                   "npm:pi-hashline-edit"
                   # "npm:pi-mcp-adapter"
                   "npm:@optomatica/pi-auto-session-name"
-                  "npm:pi-tool-display" # https://github.com/MasuRii/pi-tool-display
+                  "npm:pi-compact-tools"
                   "npm:@pi-unipi/ask-user"
                   "npm:@pi-unipi/background-tasks"
                   "npm:@pi-unipi/btw"
@@ -245,15 +251,14 @@ in
                   "npm:@pi-unipi/notify"
                   "npm:@pi-unipi/subagents"
                   "npm:@pi-unipi/workflow"
-                  "npm:@tifan/pi-copy-response@0.2.6"
+                  "npm:@tifan/pi-copy-response"
                   "npm:@tifan/pi-handoff"
-                  "npm:@tifan/pi-inline-skills"
-                  "npm:@tifan/pi-rename"
+                  "npm:@tifan/pi-recap"
                   "npm:@vanillagreen/pi-skills-manager"
                 ]
                 ++ lib.optional (!piSuperpowers) "npm:@tintinweb/pi-subagents"
                 ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
-              );
+              ));
 
               terminal = {
                 showTerminalProgress = true;
