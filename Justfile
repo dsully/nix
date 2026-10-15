@@ -165,9 +165,16 @@ push-cache:
     for pkg in packages/*; do
         name=$(basename "$pkg" .nix)
 
-        if [[ -f "$pkg" && "$pkg" == *.nix ]] || [[ -d "$pkg" && -f "$pkg/default.nix" ]]; then
-            targets+=(".#$name")
+        if [[ -f "$pkg" && "$pkg" == *.nix ]]; then
+            entry="$pkg"
+        elif [[ -d "$pkg" && -f "$pkg/default.nix" ]]; then
+            entry="$pkg/default.nix"
+        else
+            continue
         fi
+
+        # Flakes only see tracked files, so untracked packages can't be built.
+        git ls-files --error-unmatch "$entry" &>/dev/null && targets+=(".#$name")
     done
 
     nix build --no-link --print-out-paths "${targets[@]}" | DYLD_LIBRARY_PATH=/usr/lib cachix push dsully
