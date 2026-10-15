@@ -103,12 +103,22 @@ in
                 };
               };
 
-              # pi-hashline-edit registers read and edit; pi-tool-display fails to load if it also claims them.
-              "${piPath}/extensions/pi-tool-display/config.json".source = jsonFormat.generate "pi-tool-display-config.json" {
-                registerToolOverrides = {
-                  read = false;
+              "${piPath}/compact-tools.json".source = jsonFormat.generate "pi-compact-tools.json" {
+                "$schema" = "https://raw.githubusercontent.com/nedleeds/pi-compact-tools/main/schemas/compact-tools.schema.json";
+                auto_compact = {
+                  bash = true;
                   edit = false;
+                  read = true;
+                  write = true;
                 };
+                custom_tools = {
+                  enabled = true;
+                  auto_compact = true;
+                  exclude = [];
+                };
+                mode = "normal";
+                previewLines = 10;
+                style = "claude";
               };
 
               # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat
