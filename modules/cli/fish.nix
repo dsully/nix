@@ -6,7 +6,6 @@
   pkgs,
   ...
 }: let
-  yamlFormat = pkgs.formats.yaml {};
   c = config.colors;
   inherit (config.colors) noHash;
 in
@@ -237,15 +236,15 @@ in
             end
           '';
 
-        "fish/secrets.yaml".source = yamlFormat.generate "fish-secrets-yaml" {
-          secrets =
-            {
+        # opah's line parser breaks on the `---` header that pkgs.formats.yaml emits.
+        "fish/secrets.yaml".text =
+          "secrets:\n"
+          + lib.concatLines (lib.mapAttrsToList (name: ref: "  ${name}: \"${ref}\"") ({
               CACHIX_AUTH_TOKEN = "op://Services/Cachix/token";
               GITHUB_TOKEN = "op://Services/GitHub Home/token";
               # OPENAI_API_KEY = "op://Services/OpenAI/token";
             }
-            // config.fishSecrets;
-        };
+            // config.fishSecrets));
 
         "fish/themes/Nordish.theme".text =
           # fish
