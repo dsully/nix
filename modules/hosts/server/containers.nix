@@ -157,8 +157,11 @@ in {
         extraOptions = [
           "--network"
           "host"
-          "--log-driver"
-          "none"
+          # Keep `docker logs` working, capped at 3 × 10MB.
+          "--log-opt"
+          "max-size=10m"
+          "--log-opt"
+          "max-file=3"
           "--device"
           "/dev/dri/card1"
         ];
