@@ -461,6 +461,7 @@ const messages = [
 
 const LOLCAT_FREQ = 0.3;
 const FRAME_MS = 100;
+const FRAME_COUNT = 19;
 
 function pickRandom(): string {
   return messages[Math.floor(Math.random() * messages.length)];
@@ -480,27 +481,12 @@ function lolcat(text: string, phase: number): string {
     .join('')}\x1b[39m`;
 }
 
+// Uses the indicator slot, not setWorkingMessage, so it coexists with extensions that own the working label (pi-compact-tools).
 export default function(pi: ExtensionAPI) {
-  let timer: ReturnType<typeof setInterval> | undefined;
-
-  const stop = () => {
-    clearInterval(timer);
-    timer = undefined;
-  };
-
   pi.on('turn_start', async (_event, ctx) => {
     if (!ctx.hasUI) return;
-    stop();
     const message = pickRandom();
-    const paint = () => ctx.ui.setWorkingMessage(lolcat(message, Date.now() / 300));
-    paint();
-    timer = setInterval(paint, FRAME_MS);
+    const frames = Array.from({ length: FRAME_COUNT }, (_, i) => lolcat(message, (2 * Math.PI * i) / FRAME_COUNT));
+    ctx.ui.setWorkingIndicator({ frames, intervalMs: FRAME_MS });
   });
-
-  pi.on('turn_end', async (_event, ctx) => {
-    stop();
-    if (ctx.hasUI) ctx.ui.setWorkingMessage(); // Reset for next time
-  });
-
-  pi.on('session_shutdown', async () => stop());
 }
