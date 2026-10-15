@@ -104,6 +104,8 @@ in
           ".claude/settings.local.json"
           ".indxr-cache"
           ".opencode/"
+          ".pi/"
+          ".unipi/"
 
           # JavaScript / TypeScript
           ".eslintcache"
