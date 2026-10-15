@@ -41,6 +41,7 @@ mkSystemModule {
         "little-snitch"
         "lunar"
         "markdown-preview"
+        "marked-app"
         "monodraw"
         "processspy"
         "raindropio"
