@@ -24,6 +24,8 @@
   # teelicht fork, so track its enable state for pi.
   piSuperpowers = lib.elem "pi" config.programs.ai.superpowers.agents;
 
+  piMemory = lib.any (p: lib.isString p && lib.hasPrefix "npm:@pi-unipi/memory" p) (config.programs.pi-coding-agent.settings.packages or []);
+
   piExtensions =
     lib.filterAttrs (name: type: (type == "directory" || (type == "regular" && lib.hasSuffix ".ts" name)))
     (builtins.readDir ../../../dotfiles/pi/extensions);
@@ -117,7 +119,7 @@ in
                   exclude = [];
                 };
                 mode = "normal";
-                previewLines = 10;
+                previewLines = 1;
                 style = "claude";
               };
 
@@ -161,6 +163,12 @@ in
 
               [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
             '';
+
+            # mempalace breaks on Python 3.15; uv records --python in the tool
+            # receipt, so uvTool's later install/upgrade keep this interpreter.
+            mempalacePython = lib.mkIf piMemory (lib.hm.dag.entryBetween ["uvTool"] ["linkGeneration"] ''
+              run ${lib.getExe config.programs.uv.package} tool install $VERBOSE_ARG --python 3.14 mempalace
+            '');
           };
         };
 
@@ -174,6 +182,7 @@ in
               package = my.pkgs.pi-bolt;
 
               envDefault = {
+                PI_CLIPBOARD_OSC52 = "1";
                 PI_CODING_AGENT_DIR = piPath;
                 PI_SKIP_VERSION_CHECK = "1";
                 PI_TELEMETRY = "0";
@@ -257,7 +266,7 @@ in
                   "npm:@pi-unipi/background-tasks"
                   "npm:@pi-unipi/btw"
                   "npm:@pi-unipi/compactor"
-                  "npm:@pi-unipi/memory"
+                  "npm:@pi-unipi/memory@alpha"
                   "npm:@pi-unipi/milestone"
                   "npm:@pi-unipi/notify"
                   "npm:@pi-unipi/subagents"
@@ -280,6 +289,10 @@ in
               theme = "nord";
             };
           };
+
+          uv.tool.packages = lib.mkIf piMemory [
+            "mempalace"
+          ];
         };
       })
     ];
