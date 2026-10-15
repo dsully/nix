@@ -269,7 +269,6 @@ in
                   "npm:@pi-unipi/memory@alpha"
                   "npm:@pi-unipi/milestone"
                   "npm:@pi-unipi/notify"
-                  "npm:@pi-unipi/subagents"
                   "npm:@pi-unipi/workflow"
                   "npm:@ssk_dev/rpiv-ask-user-question-lean"
                   "npm:@ssk_dev/rpiv-todo-lean"
@@ -278,7 +277,7 @@ in
                   "npm:@tifan/pi-recap"
                   "npm:@vanillagreen/pi-skills-manager"
                 ]
-                ++ lib.optional (!piSuperpowers) "npm:@tintinweb/pi-subagents"
+                ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
                 ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
               ));
 
