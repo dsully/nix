@@ -13,7 +13,6 @@ in
       home = {
         packages = with pkgs;
           [
-            bash-language-server
             commitlint-rs
             crates-lsp
             docker-compose-language-service
@@ -35,8 +34,6 @@ in
             revive
             ruff
             rumdl
-            shellharden
-            shfmt
             stylelint
             stylua
             superhtml
@@ -58,6 +55,7 @@ in
           ++ (with my.pkgs; [
             neovim
             rust-markdown-lsp-server
+            shell-lsp
             version-lsp
           ]);
       };

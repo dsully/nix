@@ -63,8 +63,7 @@
 
   lsp = {
     bash = {
-      command = lib.getExe pkgs.bash-language-server;
-      args = ["start"];
+      command = lib.getExe my.pkgs.shell-lsp;
     };
     go = {
       command = lib.getExe pkgs.gopls;
