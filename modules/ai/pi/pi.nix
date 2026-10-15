@@ -255,18 +255,21 @@ in
                     source = "npm:@dietrichgebert/ponytail";
                     skills = ["./skills/ponytail"];
                   }
+                  "npm:@injaneity/pi-computer-use"
+                  "npm:@optomatica/pi-auto-session-name"
                   # "npm:pi-agent-browser-native"
                   # "npm:pi-autoresearch"
                   # "npm:pi-blackhole"
-                  "npm:@injaneity/pi-computer-use"
-                  "npm:@optomatica/pi-auto-session-name"
                   "npm:pi-codemode-toggle"
                   "npm:pi-compact-tools"
                   "npm:pi-context-view"
+                  "npm:pi-hashline-edit-pro-lean"
+                  "npm:pi-inspector"
                   "npm:@pi-unipi/background-tasks@alpha"
                   "npm:@pi-unipi/compactor@alpha"
                   "npm:@pi-unipi/memory@alpha"
                   "npm:@pi-unipi/notify@alpha"
+                  "npm:@ssk_dev/pi-docs-slim"
                   "npm:@ssk_dev/rpiv-ask-user-question-lean"
                   "npm:@ssk_dev/rpiv-todo-lean"
                   "npm:@tifan/pi-copy-response"
