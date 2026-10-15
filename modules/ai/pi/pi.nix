@@ -189,6 +189,7 @@ in
             keybindings."app.session.rename" = [];
 
             settings = {
+              "$schema" = "https://pi.dev/schemas/settings.schema.json";
               collapseChangelog = true;
 
               compaction = {
