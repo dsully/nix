@@ -27,7 +27,6 @@ in
             just-lsp
             mbake
             nil
-            nixd
             oxfmt
             oxlint
             pyrefly
