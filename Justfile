@@ -9,8 +9,8 @@ export NH_PRESERVE_ENV := "1"
 
 NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
 SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run nixpkgs#system-manager --" }
-NH_ARGS := "--ask --keep-failed --keep-going"
-NH_CLEAN_ARGS := "clean all --no-gcroots --no-direnv --optimise --keep-one --cross-filesystems"
+NH_ARGS := "--ask --keep-going"
+NH_CLEAN_ARGS := "clean all --optimise --keep-one --cross-filesystems"
 USER_HOME := home_directory()
 
 # This list
