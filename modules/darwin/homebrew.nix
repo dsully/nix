@@ -59,6 +59,7 @@ mkSystemModule {
 
       masApps = {
         "1Password for Safari" = 1569813296;
+        "AdGap" = 6818434016;
         "Amphetamine" = 937984704;
         "CleanMyKeyboard" = 6468120888;
         "Color Picker" = 1545870783;
@@ -76,12 +77,12 @@ mkSystemModule {
         "Save to Raindrop.io" = 1549370672;
         "Slack" = 803453959;
         "Soulver" = 1508732804;
+        "TabLinker" = 6758283574;
         "TestFlight" = 899247664;
         "Text Lens" = 6743369285;
         "Trackless Links Pro" = 6754613166;
         "TrashMe 3" = 1490879410;
         "Unforgetful" = 6785630295;
-        "USB Connection Info" = 6747853674;
         "Userscripts" = 1463298887;
         "wBlock" = 6746388723;
         "WiFi Signal" = 525912054;
