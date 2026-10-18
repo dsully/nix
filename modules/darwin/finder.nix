@@ -78,13 +78,6 @@ in
               BrowseAllInterfaces = true;
             };
 
-            # Disable disk image verification.
-            "com.apple.frameworks.diskimages" = {
-              skip-verify = true;
-              skip-verify-locked = true;
-              skip-verify-remote = true;
-            };
-
             "com.apple.screencapture" = {
               location = "~/Library/Mobile Documents/com~apple~CloudDocs/Screenshots";
               type = "png";
