@@ -126,7 +126,6 @@ in {
           connect-timeout = 10;
           cores = 0;
           experimental-features = [
-            "daemon-trust-override"
             "flakes"
             "nix-command"
           ];
@@ -204,7 +203,7 @@ in {
         # https://lix.systems/add-to-config/
         (lib.mkIf (config.system.nixFlavor == "lix") {
           enable = true;
-          package = pkgs.lixPackageSets.latest.lix;
+          package = pkgs.lixPackageSet.lix;
         })
       ];
     };
