@@ -23,7 +23,6 @@ in
         shells = [pkgs.fish];
 
         systemPackages = [
-          pkgs.cachix
           pkgs.fish
           pkgs.just
         ];

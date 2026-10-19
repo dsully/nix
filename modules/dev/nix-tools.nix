@@ -12,7 +12,6 @@ mkUserModule {
       packages = with pkgs;
         [
           alejandra
-          cachix
           deadnix
           flake-checker
           nix-output-monitor

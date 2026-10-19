@@ -194,4 +194,4 @@ push-cache:
         git ls-files --error-unmatch "$entry" &>/dev/null && targets+=(".#$name")
     done
 
-    nix build --no-link --print-out-paths "${targets[@]}" | DYLD_LIBRARY_PATH=/usr/lib cachix push dsully
+    nix build --no-link --print-out-paths "${targets[@]}" | nix-cache-push dsully
