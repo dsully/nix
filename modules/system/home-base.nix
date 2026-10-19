@@ -104,9 +104,9 @@ in
         nh = {
           enable = true;
 
+          # On darwin, nix-darwin's programs.nh runs `nh clean all` as root instead.
           clean = {
-            enable = true;
-            extraArgs = "--no-direnv --no-gcroots";
+            enable = pkgs.stdenv.hostPlatform.isLinux;
           };
 
           flake = lib.mkDefault "${config.xdg.configHome}/nix";

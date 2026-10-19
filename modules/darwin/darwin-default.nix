@@ -58,6 +58,14 @@ in
 
       nixpkgs.hostPlatform = "aarch64-darwin";
 
+      programs.nh = {
+        enable = true;
+        clean = {
+          inherit (config.nix) enable;
+        };
+        flake = "/Users/${config.system.userName}/.config/nix";
+      };
+
       programs = {
         fish = {
           enable = true;
