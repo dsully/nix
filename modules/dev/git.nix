@@ -23,7 +23,7 @@ in
       #    https://git-scm.com/docs/git-config#Documentation/git-config.txt---global
       home = {
         activation = {
-          removeExistingGitconfig = lib.hm.dag.entryBefore ["checkLinkTargets"] "/bin/rm -f ~/.gitconfig";
+          removeExistingGitconfig = lib.hm.dag.entryBefore ["checkLinkTargets"] "run /bin/rm -f ~/.gitconfig";
         };
 
         file = {

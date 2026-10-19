@@ -43,7 +43,10 @@ in
             source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/iCloud/Downloads";
           };
 
-          "src".source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/dev/src";
+          # Only the primary user keeps code under ~/dev/src.
+          "src" = lib.mkIf (config.home.username == userName) {
+            source = config.lib.file.mkOutOfStoreSymlink "${homeDir}/dev/src";
+          };
 
           ".ignore" = {
             force = true;
@@ -87,7 +90,9 @@ in
       manual.manpages.enable = false;
 
       programs = {
-        onepassword-secrets.enable = true;
+        # opnix asserts on an empty secret set, which users without
+        # secret-bearing modules (e.g. root) have.
+        onepassword-secrets.enable = config.programs.onepassword-secrets.secrets != {};
 
         home-manager.enable = true;
 
@@ -104,7 +109,7 @@ in
             extraArgs = "--no-direnv --no-gcroots";
           };
 
-          flake = "${config.xdg.configHome}/nix";
+          flake = lib.mkDefault "${config.xdg.configHome}/nix";
         };
 
         # generate index with: nix-index --filter-prefix '/bin/'

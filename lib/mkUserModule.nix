@@ -42,7 +42,9 @@
 #   extraOptions: (optional) Custom per-user option declarations (attrset of mkOption defs).
 #
 #   default:      (optional, default true) Default of the enable option. Use
-#                 false for modules only some hosts enable.
+#                 false for modules only some hosts enable. A user with
+#                 defaultEnable = false (see extraHomeUsers in hostLib.nix)
+#                 gets false regardless.
 #
 #   requires:     (optional) Module names to auto-enable (mkDefault) for every
 #                 user who enables this module.
@@ -158,7 +160,7 @@ in {
                       {
                         enable = lib.mkOption {
                           type = lib.types.bool;
-                          inherit default;
+                          default = default && config.defaultEnable;
                           description = "Enable ${name}.";
                         };
                       }

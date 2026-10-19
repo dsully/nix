@@ -11,6 +11,7 @@ All day-to-day operations go through the `Justfile` (run `just` for the list):
 
 - `just system [args]` — build/activate the host system config. On macOS uses `nh darwin switch`; on Linux uses `system-manager switch`.
 - `just switch [args]` — activate the standalone home-manager config (`nh home switch -b backup`). On `server` it adds `--impure --refresh`.
+- `just switch-root [args]` (Linux) — build `root@<host>` as the invoking user (eval needs their SSH key for private repos) and run its activation under `sudo`, backing up conflicts to `*.bak`.
 - `just fmt` (aka `just format` / `just lint`) — run `alejandra .`, `deadnix .`, `statix check`. Always run before committing Nix changes.
 - `just up` — `nix flake update` (update all inputs).
 - `just gc` / `just clean` — garbage collect via `nh clean`.
@@ -61,7 +62,7 @@ Discovery excludes `hosts`/`users` everywhere, `linux` on darwin, `darwin` on sy
 
 ### Hosts and users
 
-Every `mkUserModule` is on by default; host-specific ones declare `default = false`. Each host has one user (`user`, default `dsully`; `homeStateVersion` default `"25.05"`; `home = false` for hosts without a home config). A host turns modules on or off with `userConfig.<module>.enable`. Other host fields: `extraModules` (system) and `extraHomeModules` (plain home-manager modules for host-only data such as topgrade repos and server's vopono units). `mkUserModule` relations: `requires` turns other modules on; `needs` applies `home` only while other modules are on. Host-only service modules (`modules/linux/{caddy,docker,opnix,beszel-agent,tailscale}.nix`) default to off; hosts set `modules.system.<name>.enable`.
+Every `mkUserModule` is on by default; host-specific ones declare `default = false`. Each host has one user (`user`, default `dsully`; `homeStateVersion` default `"25.05"`; `home = false` for hosts without a home config). A host turns modules on or off with `userConfig.<module>.enable`. `extraHomeUsers.<name>` (e.g. `root` on `server`) adds another standalone home config `<name>@<host>` with `userConfig`/`extraHomeModules`/`group`; its `modules.users.<name>.defaultEnable = false` makes every module opt-in. These users are home-only (the system evaluation sees only the primary user), keep `system.userName` as the primary user (git identity, GitHub handle), and point `dotfiles.dir`/`programs.nh.flake` at the primary user's working tree. Other host fields: `extraModules` (system) and `extraHomeModules` (plain home-manager modules for host-only data such as topgrade repos and server's vopono units). `mkUserModule` relations: `requires` turns other modules on; `needs` applies `home` only while other modules are on. Host-only service modules (`modules/linux/{caddy,docker,opnix,beszel-agent,tailscale}.nix`) default to off; hosts set `modules.system.<name>.enable`.
 
 ### Plain modules every evaluation imports
 

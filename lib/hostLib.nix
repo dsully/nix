@@ -47,6 +47,12 @@ in {
   #                      options), applied to the system and home evaluations.
   #   extraModules:      Additional system modules.
   #   extraHomeModules:  Additional home-manager modules (host-only data).
+  #   extraHomeUsers:    Other users with their own standalone home-manager
+  #                      config "<name>@<hostName>" (e.g. root), as
+  #                      name -> { userConfig?, extraHomeModules?, homeStateVersion?, group? }.
+  #                      Modules default to off for them (defaultEnable = false),
+  #                      so userConfig lists the ones to turn on. Home only: the
+  #                      system evaluation sees the primary user alone.
   mkHost = {
     buildSystem,
     platformDir,
@@ -59,6 +65,7 @@ in {
     userConfig ? {},
     extraModules ? [],
     extraHomeModules ? [],
+    extraHomeUsers ? {},
   }: let
     specialArgsFor = userModuleTarget: extra:
       {
@@ -75,6 +82,19 @@ in {
       lib.concatMap (modulesDir: discoverModules {inherit modulesDir exclude;})
       ([../modules] ++ extraModuleDirs);
 
+    # Read by mkUserModule as the default of every module's enable option.
+    userDefaults = {
+      options.modules.users = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.submodule {
+          options.defaultEnable = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Default of this user's module enables; false makes every module opt-in.";
+          };
+        });
+      };
+    };
+
     identity = {
       system = {
         inherit hostName;
@@ -82,36 +102,76 @@ in {
       };
       modules.users = lib.optionalAttrs home {${user} = userConfig;};
     };
+
+    homeDirectoryOf = name:
+      if pkgs.stdenv.hostPlatform.isDarwin
+      then
+        if name == "root"
+        then "/var/root"
+        else "/Users/${name}"
+      else if name == "root"
+      then "/root"
+      else "/home/${name}";
+
+    # The flake's working tree, which other users' configs point back at.
+    flakeDir = "${homeDirectoryOf user}/.config/nix";
+
+    mkHomeConfiguration = name: {
+      stateVersion,
+      modules,
+    }:
+      inputs.home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = specialArgsFor "home" {homeUser = name;};
+        modules =
+          [
+            userDefaults
+            {
+              home = {
+                username = name;
+                homeDirectory = homeDirectoryOf name;
+                inherit stateVersion;
+              };
+            }
+          ]
+          ++ modules
+          ++ modulesExcept ["hosts" "darwin" "linux"];
+      };
   in {
     system = buildSystem {
       specialArgs = specialArgsFor "system" {};
       modules =
-        [identity systemModule]
+        [userDefaults identity systemModule]
         ++ extraModules
         ++ modulesExcept (lib.remove platformDir ["hosts" "darwin" "linux"]);
     };
 
-    homeConfigurations = lib.optionalAttrs home {
-      "${user}@${hostName}" = inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = specialArgsFor "home" {homeUser = user;};
-        modules =
-          [
-            identity
-            {
-              home = {
-                username = user;
-                homeDirectory =
-                  if pkgs.stdenv.hostPlatform.isDarwin
-                  then "/Users/${user}"
-                  else "/home/${user}";
-                stateVersion = homeStateVersion;
-              };
-            }
-          ]
-          ++ extraHomeModules
-          ++ modulesExcept ["hosts" "darwin" "linux"];
-      };
-    };
+    homeConfigurations =
+      lib.optionalAttrs home {
+        "${user}@${hostName}" = mkHomeConfiguration user {
+          stateVersion = homeStateVersion;
+          modules = [identity] ++ extraHomeModules;
+        };
+      }
+      // lib.mapAttrs' (name: extra:
+        lib.nameValuePair "${name}@${hostName}" (mkHomeConfiguration name {
+          stateVersion = extra.homeStateVersion or homeStateVersion;
+          modules =
+            [
+              {
+                system = {
+                  inherit hostName;
+                  # The person, not the account: git identity, GitHub handle.
+                  userName = user;
+                  primaryGroup = extra.group or name;
+                };
+                modules.users.${name} = {defaultEnable = false;} // extra.userConfig or {};
+                dotfiles.dir = "${flakeDir}/dotfiles";
+                programs.nh.flake = flakeDir;
+              }
+            ]
+            ++ extra.extraHomeModules or [];
+        }))
+      extraHomeUsers;
   };
 }

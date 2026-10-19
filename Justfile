@@ -86,6 +86,23 @@ switch +args="":
     fi
     {{ NH }} home switch {{ NH_ARGS }} --backup-extension bak . $extra_args {{ args }} -- --substitute --no-warn-dirty $nix_args
 
+# Switch root's Home Manager configuration (root@<host>, see extraHomeUsers)
+[group('desktop')]
+[linux]
+switch-root +args="":
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # Build as the invoking user: evaluation fetches private repos with their SSH key,
+    # which root does not have. Only the activation runs as root.
+    extra_args=""
+    if [[ "$(hostname)" == "server" ]]; then
+        extra_args="--impure --refresh"
+    fi
+
+    out=$(nix build --no-link --print-out-paths --no-warn-dirty $extra_args {{ args }} ".#homeConfigurations.\"root@$(hostname)\".activationPackage")
+    sudo -H env PATH="$(dirname "$(command -v nix-env)"):/usr/bin:/bin" HOME_MANAGER_BACKUP_EXT=bak "$out/activate" --driver-version 1
+
 # Update all the flake inputs
 [group('nix')]
 up:

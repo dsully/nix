@@ -118,6 +118,20 @@ in
             rm -f "$tmp"
           '';
 
+          # Adopt pre-existing (unmanaged) ~/.claude state into the XDG location before
+          # the links below would otherwise displace it to a backup.
+          activation.claudeAdoptLegacyState = lib.hm.dag.entryBefore ["checkLinkTargets"] ''
+            xdg_claude="${config.xdg.configHome}/claude"
+            if [ -d "$HOME/.claude" ] && [ ! -L "$HOME/.claude" ] && [ ! -e "$xdg_claude" ]; then
+              run mkdir -p "$(dirname "$xdg_claude")"
+              run mv "$HOME/.claude" "$xdg_claude"
+            fi
+            if [ -f "$HOME/.claude.json" ] && [ ! -L "$HOME/.claude.json" ] && [ ! -e "$xdg_claude/.claude.json" ]; then
+              run mkdir -p "$xdg_claude"
+              run mv "$HOME/.claude.json" "$xdg_claude/.claude.json"
+            fi
+          '';
+
           # Point the legacy ~/.claude paths at the XDG location, which is the single
           # source of truth (configDir below).
           file = {
