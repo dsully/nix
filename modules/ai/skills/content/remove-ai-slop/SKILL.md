@@ -6,6 +6,7 @@ description: >-
   asked to de-slop or humanize text, to remove em dashes, or when text or
   comments read as AI-written.
 ---
+
 # Remove AI slop
 
 Rewrite text so it reads like a knowledgeable person typing plainly, and

@@ -213,6 +213,13 @@ in
             ids = [
               "cleanup"
               "comment-sicko"
+              "dead-code-finder"
+              "delegate-first"
+              "nix-patch"
+              "nix-triage"
+              "prompt-optimizer"
+              "remove-ai-slop"
+              "visual-explainer"
             ];
           };
         };
