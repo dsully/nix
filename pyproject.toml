@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "uv_build"
-requires = [ "uv-build>=0.10.6,<0.13" ]
+requires = [ "uv-build>=0.13,<0.14" ]
 
 [project]
 name = "nix"
@@ -11,6 +11,7 @@ requires-python = ">=3.14"
 classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
 ]
 dependencies = [ "rich", "typer" ]
 scripts.check-upstream-packages = "scripts.check_upstream_packages:main"

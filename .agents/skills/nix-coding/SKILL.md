@@ -9,6 +9,8 @@ paths:
   - "**/*.nix"
 ---
 
+# Nix triage
+
 ## Style
 
 - Prefer functional programming style; apply eta reduction where it improves
