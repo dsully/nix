@@ -98,13 +98,6 @@ in
                 mcpServers = piMcpServers;
               };
 
-              "${piPath}/mcp-adapter.json".source = jsonFormat.generate "pi-mcp-adapter.json" {
-                settings = {
-                  deferWithMissingMetadata = true;
-                  namespaceProxyTools = false;
-                };
-              };
-
               "${piPath}/compact-tools.json".source = jsonFormat.generate "pi-compact-tools.json" {
                 "$schema" = "https://raw.githubusercontent.com/nedleeds/pi-compact-tools/main/schemas/compact-tools.schema.json";
                 auto_compact = {
@@ -184,9 +177,11 @@ in
               envDefault = {
                 PI_CLIPBOARD_OSC52 = "1";
                 PI_CODING_AGENT_DIR = piPath;
+                PI_COMPUTER_USE_BROWSER_USE = "1";
+                PI_COMPUTER_USE_CDP_PORT = "9222";
+                PI_COMPUTER_USE_MANAGED_BROWSER = "chrome";
                 PI_SKIP_VERSION_CHECK = "1";
                 PI_TELEMETRY = "0";
-                POWERLINE_NERD_FONTS = "1";
               };
             };
 
