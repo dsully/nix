@@ -143,6 +143,7 @@ fmt:
     @alejandra .
     @deadnix .
     @statix check
+    @rumdl fmt .
 
 # Fetch a source using nix-init (via nurl)
 

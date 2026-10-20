@@ -32,7 +32,7 @@ A `devshell` (`nix develop` / direnv `.envrc`) provides `alejandra cachix deadni
 
 Capability-module layout adapted from fersilva16's config. Home-manager stays **standalone** (`just switch`), so every capability module is evaluated twice: once in the system config (nix-darwin / system-manager) and once in the standalone home-manager config.
 
-```
+```text
 lib/mkDarwinHost.nix          # host factory → { system; homeConfigurations }
 lib/mkSystemManagerHost.nix   # same interface for system-manager hosts
 lib/hostLib.nix               # mkHost: shared body of both host factories (fields documented here)

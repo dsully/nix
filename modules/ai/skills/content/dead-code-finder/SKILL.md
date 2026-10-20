@@ -49,7 +49,7 @@ When invoked:
    **IMPORTANT**: The tool already performed reachability, class-hierarchy and Protocol checks, entry-point detection, dynamic-surface detection, and suppression. Do not repeat that work. Focus on the genuinely dynamic residue that static analysis cannot resolve without runtime data. Let the item's reasons and dynamic insights guide which extra checks add value.
 
    a) **Pattern cross-verification with grep or ast-grep**:
-      Design searches that explore angles the static pass cannot, such as:
+   Design searches that explore angles the static pass cannot, such as:
      - Inheritance and method-overriding patterns.
      - Dynamic attribute access (`getattr`, `hasattr`, `setattr`, `globals`, `vars`, `importlib`).
      - Nested-scope usage (lambdas, inner functions, comprehensions).
@@ -57,13 +57,13 @@ When invoked:
      - Indirect usage through other variables or functions.
 
    b) **Strategic text verification with grep**:
-      Based on the symbol type and name, decide which text patterns to search for:
+   Based on the symbol type and name, decide which text patterns to search for:
      - String-literal references (plugin names, dotted paths, `@patch` targets).
      - Non-obvious references (logging, debugging, error messages, config keys).
      - Domain-specific patterns based on the code's purpose.
 
    c) **Context-aware file inspection with the Read tool**:
-      Examine the surrounding code to understand:
+   Examine the surrounding code to understand:
      - The full context of where and how the symbol is defined.
      - Whether a design pattern or convention is at play.
      - Whether documentation or comments explain the symbol's purpose.
@@ -71,7 +71,7 @@ When invoked:
      - Whether there are hints about intended future usage.
 
    d) **Adaptive verification strategy**:
-      Let the tool output guide your approach:
+   Let the tool output guide your approach:
      - If a dynamic insight cites decorators, check the framework the decorator belongs to.
      - If the name heads an interface (callback, handler, listener, observer, leading underscore), verify against the interface or convention.
      - If the file exposes a dynamic surface, cast a wider net with string-literal and attribute-access searches.

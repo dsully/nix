@@ -11,7 +11,7 @@ reported. Everything else, and every plain shell, is gone.
 `herdr-recall show` prints one line per pane: the resume invocation for an agent,
 the last command line for a shell.
 
-```
+```text
 sevastopol
   w2F:p4     ~/Projects/github.com/cuentacero/sevastopol
     codex resume 019a3f7c-2b41-7a10-9c55-2f0a1d8e4b33

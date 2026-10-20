@@ -1,6 +1,6 @@
 ---
 name: nix-triage
-description: Diagnose a pasted nixos-rebuild, home-manager switch or nix build failure or eval warning: name the failing derivation and what pulls it in, check upstream, then bump, patch, override or comment out, without running the build. Use when the user pastes a Nix error or asks which package breaks the build.
+description: "Diagnose a pasted nixos-rebuild, home-manager switch or nix build failure or eval warning: name the failing derivation and what pulls it in, check upstream, then bump, patch, override or comment out, without running the build. Use when the user pastes a Nix error or asks which package breaks the build."
 ---
 
 # Nix triage
@@ -17,11 +17,15 @@ the user rebuilds with `nyx update`, and a full build can take 30 minutes.
    - `nix why-depends` on a store path from the log;
    - `nix-store -q --referrers` on the failed `.drv`;
    - grep the repo for the package name.
+
    Report the chain: `pdal <- gdal <- qgis <- home/modules/...`.
+
 3. Check whether upstream already fixed it:
    - read the locked rev in `flake.lock`;
    - compare against the input's newer commits, open issues and PRs (`gh`).
+
    If a fix landed after the locked rev, the bump is the fix.
+
 4. Pick one fix, in this order of preference:
    - **Bump** the single input that carries the fix (`nix flake update <input>`).
    - **Patch** the source when the failure is a small code issue. Hand off to the `nix-patch` skill.
