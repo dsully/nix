@@ -24,6 +24,49 @@
   # teelicht fork, so track its enable state for pi.
   piSuperpowers = lib.elem "pi" config.programs.ai.superpowers.agents;
 
+  piDefaultPackages = lib.unique (
+    [
+      # "npm:context-mode"
+      # Core skill only; the audit/debt/gain/help/review extras cost prompt tokens every turn.
+      {
+        source = "npm:@dietrichgebert/ponytail";
+        skills = ["./skills/ponytail"];
+      }
+      # "git:github.com/light4/pi-session-manager@v0.2.16"
+      "npm:@injaneity/pi-computer-use"
+      "npm:@optomatica/pi-auto-session-name"
+      # "npm:pi-agent-browser-native"
+      # "npm:pi-autoresearch"
+      # "npm:pi-blackhole"
+      "npm:pi-codemode-toggle"
+      "npm:pi-compact-tools"
+      "npm:pi-context-view"
+      "npm:pi-hashline-edit-pro-lean"
+      "npm:pi-inspector"
+      # "npm:pi-resume-search"
+      "npm:@pi-unipi/background-tasks@alpha"
+      "npm:@pi-unipi/compactor@alpha"
+      "npm:@pi-unipi/memory@alpha"
+      "npm:@pi-unipi/notify@alpha"
+      "npm:@ssk_dev/pi-docs-slim"
+      "npm:@ssk_dev/rpiv-ask-user-question-lean"
+      "npm:@ssk_dev/rpiv-todo-lean"
+      "npm:@tifan/pi-copy-response"
+      "npm:@tifan/pi-handoff"
+      "npm:@tifan/pi-recap"
+      "npm:@vanillagreen/pi-skills-manager"
+    ]
+    ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
+    ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
+  );
+
+  # Bare npm names, matching the dependency keys pi writes to npm/package.json.
+  piNpmNames = lib.concatMap (p: let
+    source = p.source or p;
+  in
+    lib.optional (lib.hasPrefix "npm:" source) (builtins.head (builtins.match "(@?[^@]+).*" (lib.removePrefix "npm:" source))))
+  config.programs.pi-coding-agent.settings.packages;
+
   piMemory = lib.any (p: lib.isString p && lib.hasPrefix "npm:@pi-unipi/memory" p) (config.programs.pi-coding-agent.settings.packages or []);
 
   piExtensions =
@@ -83,6 +126,11 @@ in
       }
 
       (lib.mkIf config.programs.pi-coding-agent.enable {
+
+        warnings =
+          map (p: "programs.pi-coding-agent.excludePackages: \"${p}\" matches no default pi package source.")
+          (lib.subtractLists piDefaultPackages config.programs.pi-coding-agent.excludePackages);
+
         home = {
           # Live symlinks: edits in the working tree apply on /reload, no switch.
           file =
@@ -129,20 +177,29 @@ in
             };
 
           activation = {
-            # Install/update the extensions listed in settings.json. Runs after
-            # onFilesChange so settings.json is written and any bunfig onChange
-            # hook has already run.
-            # context-mode pulls better-sqlite3, a native module bun builds from
-            # source (bun disables prebuild-install), so node-gyp needs Python and
-            # the system toolchain. Activation runs with a stripped PATH, so add
-            # Python here; clang/make come from the inherited PATH (Xcode CLT).
+            # Install/update the extensions listed in settings.json once
+            # onFilesChange has written it. pi adds npm dependencies on install
+            # but never drops removed ones (nor does bun delete their node_modules
+            # dirs), so prune both first.
             # Retry a few times to ride out transient registry failures.
             # Non-fatal: a persistent failure warns, never aborts the switch.
             piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange"] ''
-              export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.python3 pkgs.git]}:$PATH"
-              export PYTHON="${lib.getExe pkgs.python3}"
+              export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.git]}:$PATH"
               export PI_CODING_AGENT_DIR="${piPath}"
               _ok=
+              _pkg="${piPath}/npm/package.json"
+
+              if [[ -f $_pkg && ! -v DRY_RUN ]]; then
+                _keep='${builtins.toJSON piNpmNames}'
+
+                for _dep in $(${lib.getExe pkgs.jq} -r --argjson keep "$_keep" '.dependencies // {} | keys[] | select(. as $k | $keep | index($k) | not)' "$_pkg"); do
+                  rm -rf "${piPath}/npm/node_modules/$_dep"
+                done
+
+                ${lib.getExe pkgs.jq} --argjson keep "$_keep" \
+                  '.dependencies |= ((. // {}) | with_entries(select(.key as $k | $keep | index($k))))' \
+                  "$_pkg" > "$_pkg.tmp" && mv "$_pkg.tmp" "$_pkg"
+              fi
 
               for _try in 1 2 3; do
                 if run ${config.programs.pi-coding-agent.package}/bin/pi update --extensions; then
@@ -242,39 +299,7 @@ in
 
               npmCommand = [(lib.getExe bunRuntime)];
 
-              packages = lib.subtractLists config.programs.pi-coding-agent.excludePackages (lib.unique (
-                [
-                  # "npm:context-mode"
-                  # Core skill only; the audit/debt/gain/help/review extras cost prompt tokens every turn.
-                  {
-                    source = "npm:@dietrichgebert/ponytail";
-                    skills = ["./skills/ponytail"];
-                  }
-                  "npm:@injaneity/pi-computer-use"
-                  "npm:@optomatica/pi-auto-session-name"
-                  # "npm:pi-agent-browser-native"
-                  # "npm:pi-autoresearch"
-                  # "npm:pi-blackhole"
-                  "npm:pi-codemode-toggle"
-                  "npm:pi-compact-tools"
-                  "npm:pi-context-view"
-                  "npm:pi-hashline-edit-pro-lean"
-                  "npm:pi-inspector"
-                  "npm:@pi-unipi/background-tasks@alpha"
-                  "npm:@pi-unipi/compactor@alpha"
-                  "npm:@pi-unipi/memory@alpha"
-                  "npm:@pi-unipi/notify@alpha"
-                  "npm:@ssk_dev/pi-docs-slim"
-                  "npm:@ssk_dev/rpiv-ask-user-question-lean"
-                  "npm:@ssk_dev/rpiv-todo-lean"
-                  "npm:@tifan/pi-copy-response"
-                  "npm:@tifan/pi-handoff"
-                  "npm:@tifan/pi-recap"
-                  "npm:@vanillagreen/pi-skills-manager"
-                ]
-                ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
-                ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
-              ));
+              packages = lib.subtractLists config.programs.pi-coding-agent.excludePackages piDefaultPackages;
 
               terminal = {
                 showTerminalProgress = true;
