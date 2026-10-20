@@ -102,28 +102,6 @@ in {
   config = lib.mkIf config.programs.pi-coding-agent.enable {
     home.file = {
       "${piPath}/themes/nord.json".source = jsonFormat.generate "pi-nord.json" nordTheme;
-
-      "${piPath}/extensions/powerline-footer/theme.json".source = jsonFormat.generate "pi-powerline-footer-theme.json" {
-        colors = {
-          border = config.colors.black.bright;
-          context = config.colors.gray.base;
-          contextError = config.colors.red.base;
-          contextWarn = config.colors.yellow.base;
-          cost = config.colors.white.bright;
-          gitClean = config.colors.green.base;
-          gitDirty = config.colors.orange.base;
-          model = config.colors.white.bright;
-          path = config.colors.gray.bright;
-          queue = config.colors.cyan.base;
-          separator = config.colors.gray.base;
-          shellMode = config.colors.green.base;
-          thinking = config.colors.orange.base;
-          thinkingLow = config.colors.blue.bright;
-          thinkingMedium = config.colors.cyan.bright;
-          thinkingMinimal = config.colors.blue.base;
-          tokens = config.colors.gray.base;
-        };
-      };
     };
   };
 }
