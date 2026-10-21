@@ -191,7 +191,7 @@ in
     home = lib.mkMerge [
       {
         programs.herdr = {
-          enable = lib.mkDefault true;
+          enable = lib.mkDefault false;
           package = pkgs.llm-agents.herdr;
 
           # Built by this flake, so they are linked rather than installed. Their

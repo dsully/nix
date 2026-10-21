@@ -27,12 +27,17 @@
   piDefaultPackages = lib.unique (
     [
       # "npm:context-mode"
-      # Core skill only; the audit/debt/gain/help/review extras cost prompt tokens every turn.
+      # Core + audit only; the debt/gain/help/review extras cost prompt tokens every turn.
       {
         source = "npm:@dietrichgebert/ponytail";
-        skills = ["./skills/ponytail"];
+        skills = [
+          "./skills/ponytail"
+          "./skills/ponytail-audit"
+          "./skills/ponytail-review"
+        ];
       }
       # "git:github.com/light4/pi-session-manager@v0.2.16"
+      "npm:@ff-labs/pi-fff"
       "npm:@injaneity/pi-computer-use"
       "npm:@optomatica/pi-auto-session-name"
       # "npm:pi-agent-browser-native"
@@ -42,6 +47,7 @@
       "npm:pi-compact-tools"
       "npm:pi-context-view"
       "npm:pi-hashline-edit-pro-lean"
+      "npm:pi-idle-time"
       "npm:pi-inspector"
       # "npm:pi-resume-search"
       "npm:@pi-unipi/background-tasks@alpha"
