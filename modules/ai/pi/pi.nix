@@ -238,6 +238,7 @@ in
               package = my.pkgs.pi-bolt;
 
               envDefault = {
+                FFF_ENABLE_HOME_SCAN = "0";
                 PI_CLIPBOARD_OSC52 = "1";
                 PI_CODING_AGENT_DIR = piPath;
                 PI_COMPUTER_USE_BROWSER_USE = "1";
