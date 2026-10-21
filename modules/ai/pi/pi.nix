@@ -13,10 +13,13 @@
 
   # Normalize via lib.hm.mcp.transformMcpServer to drop the typed schema's null
   # and empty-default fields and add the exposure key/value.
-  piMcpServers = lib.mapAttrs (_: server:
+  piMcpServers = lib.mapAttrs (name: server:
     lib.hm.mcp.transformMcpServer {inherit server;}
     // {exposure = "deferred";}
-    // lib.optionalAttrs (server.enabled == false) {disabled = true;})
+    // lib.optionalAttrs (server.enabled == false) {disabled = true;}
+    // lib.optionalAttrs (config.programs.pi-coding-agent.mcpDescriptions ? ${name}) {
+      description = config.programs.pi-coding-agent.mcpDescriptions.${name};
+    })
   config.programs.mcp.servers;
 
   # tintinweb/pi-subagents and teelicht/pi-superagents both own
@@ -27,18 +30,25 @@
   piDefaultPackages = lib.unique (
     [
       # "npm:context-mode"
-      # Core + audit only; the debt/gain/help/review extras cost prompt tokens every turn.
+      # Audit + review only: the extension injects core ponytail from its SKILL.md
+      # path, and the debt/gain/help extras cost prompt tokens every turn.
+      # Include patterns are minimatch globs against the package-relative path; a "./" prefix never matches.
       {
         source = "npm:@dietrichgebert/ponytail";
         skills = [
-          "./skills/ponytail"
-          "./skills/ponytail-audit"
-          "./skills/ponytail-review"
+          "skills/ponytail-audit"
+          "skills/ponytail-review"
         ];
       }
       # "git:github.com/light4/pi-session-manager@v0.2.16"
       "npm:@ff-labs/pi-fff"
-      "npm:@injaneity/pi-computer-use"
+      # Installed but loads nothing: its 11 UI tools cost ~3k prompt tokens every turn.
+      # Enable per repo with the `pi-computer-use` fish function, which adds an
+      # autoload=false delta to <repo>/.pi/settings.json that reuses this install.
+      {
+        source = "npm:@injaneity/pi-computer-use";
+        extensions = [];
+      }
       "npm:@optomatica/pi-auto-session-name"
       # "npm:pi-agent-browser-native"
       # "npm:pi-autoresearch"
@@ -52,8 +62,15 @@
       # "npm:pi-resume-search"
       "npm:@pi-unipi/background-tasks@alpha"
       "npm:@pi-unipi/compactor@alpha"
-      "npm:@pi-unipi/memory@alpha"
-      "npm:@pi-unipi/notify@alpha"
+      # Their bundled skills restate the tool descriptions every turn.
+      {
+        source = "npm:@pi-unipi/memory@alpha";
+        skills = [];
+      }
+      {
+        source = "npm:@pi-unipi/notify@alpha";
+        skills = [];
+      }
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@ssk_dev/rpiv-todo-lean"
@@ -73,7 +90,7 @@
     lib.optional (lib.hasPrefix "npm:" source) (builtins.head (builtins.match "(@?[^@]+).*" (lib.removePrefix "npm:" source))))
   config.programs.pi-coding-agent.settings.packages;
 
-  piMemory = lib.any (p: lib.isString p && lib.hasPrefix "npm:@pi-unipi/memory" p) (config.programs.pi-coding-agent.settings.packages or []);
+  piMemory = lib.any (p: lib.hasPrefix "npm:@pi-unipi/memory" (p.source or p)) (config.programs.pi-coding-agent.settings.packages or []);
 
   piExtensions =
     lib.filterAttrs (name: type: (type == "directory" || (type == "regular" && lib.hasSuffix ".ts" name)))
@@ -118,10 +135,18 @@ in
     name = "pi";
     default = false;
 
-    homeOptions.programs.pi-coding-agent.excludePackages = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [];
-      description = "Package sources removed from the default pi packages list.";
+    homeOptions.programs.pi-coding-agent = {
+      excludePackages = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "Package sources removed from the default pi packages list.";
+      };
+
+      mcpDescriptions = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        default = {};
+        description = "Per-server one-line descriptions listed in pi's system prompt, replacing the server's own instructions.";
+      };
     };
 
     home = lib.mkMerge [
@@ -135,7 +160,7 @@ in
 
         warnings =
           map (p: "programs.pi-coding-agent.excludePackages: \"${p}\" matches no default pi package source.")
-          (lib.subtractLists piDefaultPackages config.programs.pi-coding-agent.excludePackages);
+          (lib.subtractLists (map (p: p.source or p) piDefaultPackages) config.programs.pi-coding-agent.excludePackages);
 
         home = {
           # Live symlinks: edits in the working tree apply on /reload, no switch.
@@ -180,6 +205,12 @@ in
               #   format.enabled = false;
               #   autofix.enabled = false;
               # };
+            }
+            # The wake-up block is truncated memory-file snippets; the reminder and memory_search stay.
+            // lib.optionalAttrs piMemory {
+              ".unipi/config/memory/config.json".source = jsonFormat.generate "unipi-memory-config.json" {
+                recall = "reminder";
+              };
             };
 
           activation = {
@@ -306,7 +337,7 @@ in
 
               npmCommand = [(lib.getExe bunRuntime)];
 
-              packages = lib.subtractLists config.programs.pi-coding-agent.excludePackages piDefaultPackages;
+              packages = lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages;
 
               terminal = {
                 showTerminalProgress = true;
