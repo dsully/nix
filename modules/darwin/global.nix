@@ -31,24 +31,16 @@ mkSystemModule {
 
           # Expanded save panels.
           NSNavPanelExpandedStateForSaveMode = true;
-          NSNavPanelExpandedStateForSaveMode2 = true;
 
           PMPrintingExpandedStateForPrint = true;
-          PMPrintingExpandedStateForPrint2 = true;
         };
 
         universalaccess = {
-          reduceMotion = true;
-          reduceTransparency = true;
+          reduceMotion = false;
+          reduceTransparency = false;
         };
 
         CustomUserPreferences = {
-          # Completely Disable Dashboard
-          "com.apple.dashboard" = {
-            dashboard-enabled-state = 1;
-            mcx-disabled = 1;
-          };
-
           # Set Help Viewer windows to non-floating mode
           "com.apple.helpviewer" = {
             DevMode = true;

@@ -48,7 +48,6 @@ mkSystemModule {
         CustomUserPreferences = {
           "com.apple.dock" = {
             showAppExposeGestureEnabled = false;
-            showLaunchpadGestureEnabled = false;
             showMissionControlGestureEnabled = false;
 
             # https://superuser.com/questions/1778079/disable-switching-window-on-different-desktop

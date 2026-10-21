@@ -49,14 +49,14 @@ mkSystemModule {
             DisablePrintPreview = true;
 
             # Expand the print dialog by default
-            PMPrintingExpandedStateForPrint2 = true;
+            PMPrintingExpandedStateForPrint = true;
 
             # https://support.google.com/chrome/thread/14193532?hl=en
             ExternalProtocolDialogShowAlwaysOpenCheckbox = true;
           };
 
           "com.google.Chrome.canary" = {
-            PMPrintingExpandedStateForPrint2 = true;
+            PMPrintingExpandedStateForPrint = true;
             DisablePrintPreview = true;
           };
 

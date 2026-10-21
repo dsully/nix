@@ -144,17 +144,13 @@ in
         defaults = {
           CustomUserPreferences = {
             "com.apple.DiskUtility" = {
-              "OperationProgress DetailsVisible" = true;
-              advanced-image-options = true;
-              DUDebugMenuEnabled = true;
               SidebarShowAllDevices = true;
             };
 
             NSGlobalDomain = {
               NSUseAnimatedFocusRing = false; # Disable the over-the-top focus ring animation
 
-              # Disable animations when opening and closing windows.
-              NSAutomaticWindowAnimationsEnabled = false;
+              NSAutomaticWindowAnimationsEnabled = true;
 
               # Disable animations when opening a Quick Look window.
               QLPanelAnimationDuration = 0;
@@ -164,7 +160,7 @@ in
             };
 
             "com.apple.Accessibility" = {
-              EnhancedBackgroundContrastEnabled = true;
+              EnhancedBackgroundContrastEnabled = false;
             };
 
             "com.apple.SoftwareUpdate" = {

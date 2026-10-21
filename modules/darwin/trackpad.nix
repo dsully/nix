@@ -5,7 +5,6 @@
     TrackpadFourFingerHorizSwipeGesture = 0;
     TrackpadFourFingerPinchGesture = 0;
     TrackpadFourFingerVertSwipeGesture = 0;
-    TrackpadHandResting = 1;
     TrackpadHorizScroll = 1;
     TrackpadMomentumScroll = 1;
     TrackpadPinch = false;

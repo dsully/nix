@@ -72,20 +72,14 @@ mkSystemModule {
               ShowDevelopMenu = true;
             };
 
-            SendDoNotTrackHTTPHeader = true;
             ShowBackgroundImageInFavorites = false;
             ShowFavoritesBar = false;
             ShowFavoritesUnderSmartSearchField = false;
             ShowFullURLInSmartSearchField = true;
-            ShowIconsInTabs = true;
             ShowOverlayStatusBar = true;
             ShowSidebarInNewWindows = false;
             ShowSidebarInTopSites = false;
             UseHTTPSOnly = false;
-
-            # Disable the standard delay in rendering a Web page.
-            WebKitInitialTimedLayoutDelay = 0.25;
-            WebKitResourceTimedLayoutDelay = 0.0001;
 
             # Include Safari Suggestions
             UniversalSearchEnabled = false;

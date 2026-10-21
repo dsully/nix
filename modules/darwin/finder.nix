@@ -33,7 +33,6 @@ in
             "com.apple.desktopservices" = {
               # Avoid creating .DS_Store files on network or USB volumes
               DSDontWriteNetworkStores = true;
-              DSDontWriteUSBStores = true;
 
               # Force the Finder to gather all metadata first
               UseBareEnumeration = 1;
