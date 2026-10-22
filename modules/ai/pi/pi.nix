@@ -57,7 +57,6 @@
       "npm:pi-compact-tools"
       "npm:pi-context-view"
       "npm:pi-hashline-edit-pro-lean"
-      "npm:pi-idle-time"
       "npm:pi-inspector"
       # "npm:pi-resume-search"
       "npm:@pi-unipi/background-tasks@alpha"

@@ -4,6 +4,7 @@ nix.conf
 result
 result-*
 .cloudflare/
+.agents
 .pi/
 node_modules
 
