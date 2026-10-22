@@ -10,8 +10,8 @@ buildGo127Module rec {
   src = fetchFromGitHub {
     owner = "stubbedev";
     repo = "shell-lsp";
-    rev = "a2a29357bb3533aaa2e94d86d9d412ca1f9b8415";
-    hash = "sha256-EoGPK3TGsSendUE8rebtkWm3nokFxqUaOEvkuYHc5b8=";
+    rev = "bf0d770189fc8f5c90b6e44d7ea7f120780a4930";
+    hash = "sha256-s0aF8peMoMNReui5Z1x8aQpOZcE5D0Pf/oTKVGu1bd8=";
   };
 
   vendorHash = "sha256-TxEBzxsQdz/o4zjOoFggtfgrKDrpblWqOxs1a3io5Sk=";
