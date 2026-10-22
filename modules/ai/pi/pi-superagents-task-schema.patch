@@ -1,0 +1,41 @@
+--- a/src/shared/schemas.ts
++++ b/src/shared/schemas.ts
+@@ -20,19 +20,12 @@
+ 
+ const TaskItem = Type.Object(
+ 	{
+-		agent: SuperpowersRoleNameSchema,
+-		task: Type.String({ description: "Objective for this discovered agent task." }),
++		agent: Type.String(),
++		task: Type.String(),
+ 		cwd: Type.Optional(Type.String()),
+-		model: Type.Optional(
+-			Type.String({
+-				description:
+-					"Optional one-off model override. Omit during normal Superpowers dispatch so the role's frontmatter tier resolves through configuration; set only when the user explicitly requests a one-off override.",
+-			}),
+-		),
+-		skill: Type.Optional(SkillOverride),
+-		resumeSession: Type.Optional(
+-			Type.String({ description: "Prior pi-superagents sp-implementer session file to continue synchronously when upstream requests resuming the original implementer." }),
+-		),
++		model: Type.Optional(Type.String()),
++		skill: Type.Optional(Type.Any()),
++		resumeSession: Type.Optional(Type.String()),
+ 	},
+ 	{ additionalProperties: false },
+ );
+@@ -41,12 +34,7 @@
+ 	{
+ 		agent: Type.Optional(SuperpowersRoleNameSchema),
+ 		task: Type.Optional(Type.String({ description: "The specific objective for the selected discovered agent." })),
+-		workflow: Type.Optional(
+-			Type.String({
+-				enum: ["superpowers"],
+-				description: "Superpowers role execution workflow. Only 'superpowers' is supported.",
+-			}),
+-		),
++		workflow: Type.Optional(Type.String({ enum: ["superpowers"] })),
+ 		useTestDrivenDevelopment: Type.Optional(
+ 			Type.Boolean({
+ 				description: "Whether sp-implementer should receive test-driven-development guidance.",

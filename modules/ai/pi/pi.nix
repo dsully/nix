@@ -66,15 +66,10 @@
         source = "npm:@pi-unipi/memory@alpha";
         skills = [];
       }
-      {
-        source = "npm:@pi-unipi/notify@alpha";
-        skills = [];
-      }
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@ssk_dev/rpiv-todo-lean"
       "npm:@tifan/pi-copy-response"
-      "npm:@tifan/pi-handoff"
       "npm:@tifan/pi-recap"
       "npm:@vanillagreen/pi-skills-manager"
     ]
@@ -250,19 +245,36 @@ in
               [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
             '';
 
-            # before_agent_start from sendCustomMessage has no prompt; upstream crashes on it.
             # Reverse dry-run detects an already-patched tree.
-            piPatchSuperagents = lib.mkIf piSuperpowers (lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
-              _d="${piPath}/npm/node_modules/@teelicht/pi-superagents"
-              _p=${./pi-superagents-prompt-undefined.patch}
+            piPatchExtensions = lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
               _patch=${lib.getExe pkgs.gnupatch}
-
-              if [ -f "$_d/src/superpowers/prompt-dispatch.ts" ] && ! $_patch -d "$_d" -p1 -R -s -f --dry-run < "$_p" >/dev/null 2>&1; then
-                if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < "$_p"; then
-                  echo "piPatchSuperagents: patch did not apply to $_d"
-                fi
-              fi
-            '');
+              ${lib.concatMapStrings ({
+                  pkg,
+                  patch,
+                }: ''
+                  _d="${piPath}/npm/node_modules/${pkg}"
+                  if [ -d "$_d" ] && ! $_patch -d "$_d" -p1 -R -s -f --dry-run < ${patch} >/dev/null 2>&1; then
+                    if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < ${patch}; then
+                      echo "piPatchExtensions: ${baseNameOf patch} did not apply to $_d"
+                    fi
+                  fi
+                '') [
+                  # before_agent_start from sendCustomMessage has no prompt; upstream crashes on it.
+                  {
+                    pkg = "@teelicht/pi-superagents";
+                    patch = ./pi-superagents-prompt-undefined.patch;
+                  }
+                  # Task items repeat the top-level field descriptions.
+                  {
+                    pkg = "@teelicht/pi-superagents";
+                    patch = ./pi-superagents-task-schema.patch;
+                  }
+                  {
+                    pkg = "pi-hashline-edit-pro-lean";
+                    patch = ./pi-hashline-lean-edit-output-schema.patch;
+                  }
+                ]}
+            '';
 
             # mempalace breaks on Python 3.15; uv records --python in the tool
             # receipt, so uvTool's later install/upgrade keep this interpreter.
