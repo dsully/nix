@@ -251,6 +251,20 @@ in
               [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
             '';
 
+            # before_agent_start from sendCustomMessage has no prompt; upstream crashes on it.
+            # Reverse dry-run detects an already-patched tree.
+            piPatchSuperagents = lib.mkIf piSuperpowers (lib.hm.dag.entryAfter ["piUpdateExtensions"] ''
+              _d="${piPath}/npm/node_modules/@teelicht/pi-superagents"
+              _p=${./pi-superagents-prompt-undefined.patch}
+              _patch=${lib.getExe pkgs.gnupatch}
+
+              if [ -f "$_d/src/superpowers/prompt-dispatch.ts" ] && ! $_patch -d "$_d" -p1 -R -s -f --dry-run < "$_p" >/dev/null 2>&1; then
+                if ! run $_patch -d "$_d" -p1 -N -s --no-backup-if-mismatch -r - < "$_p"; then
+                  echo "piPatchSuperagents: patch did not apply to $_d"
+                fi
+              fi
+            '');
+
             # mempalace breaks on Python 3.15; uv records --python in the tool
             # receipt, so uvTool's later install/upgrade keep this interpreter.
             mempalacePython = lib.mkIf piMemory (lib.hm.dag.entryBetween ["uvTool"] ["linkGeneration"] ''

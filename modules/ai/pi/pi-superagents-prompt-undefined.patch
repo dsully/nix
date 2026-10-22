@@ -1,0 +1,13 @@
+--- a/src/superpowers/prompt-dispatch.ts
++++ b/src/superpowers/prompt-dispatch.ts
+@@ -51,8 +51,8 @@ const SUPERPOWERS_VISIBLE_SUMMARY_PREFIX = "Superpowers ▸";
+  * @param prompt User-visible prompt text received by Pi.
+  * @returns True when a pending hidden contract should be paired with the prompt.
+  */
+-function isSuperpowersVisibleSummary(prompt: string): boolean {
+-	return prompt.startsWith(SUPERPOWERS_VISIBLE_SUMMARY_PREFIX);
++function isSuperpowersVisibleSummary(prompt: string | undefined): boolean {
++	return prompt?.startsWith(SUPERPOWERS_VISIBLE_SUMMARY_PREFIX) ?? false;
+ }
+ 
+ /**
