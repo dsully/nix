@@ -178,8 +178,6 @@ in
               "comment-sicko"
               "dead-code-finder"
               "delegate-first"
-              "nix-patch"
-              "nix-triage"
               "prompt-optimizer"
               "remove-ai-slop"
               "visual-explainer"
@@ -204,5 +202,18 @@ in
           };
         };
       })
+
+      # Nix skills go only into the nix working tree; home.file can't target outside $HOME (e.g. root's extra config).
+      (let
+        flake = toString config.programs.nh.flake;
+        prefix = "${config.home.homeDirectory}/";
+        tree = lib.removePrefix prefix flake;
+      in
+        lib.mkIf (lib.hasPrefix prefix flake) {
+          home.file = lib.genAttrs ["${tree}/.agents/skills" "${tree}/.claude/skills"] (_: {
+            source = ./nix;
+            recursive = true;
+          });
+        })
     ];
   }
