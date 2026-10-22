@@ -16,7 +16,8 @@ if status is-interactive
                     set -l activate_script "$venv_path/bin/activate.fish"
 
                     if test -f "$activate_script" && test "$current_venv" != "$venv_path"
-                        if test -n "$current_venv"
+                        # An inherited $VIRTUAL_ENV arrives without the deactivate function.
+                        if test -n "$current_venv"; and functions -q deactivate
                             # @fish-lsp-disable-next-line 7001
                             deactivate
                         end
@@ -45,7 +46,7 @@ if status is-interactive
             set check_dir $parent
         end
 
-        if test -n "$current_venv"
+        if test -n "$current_venv"; and functions -q deactivate
             # @fish-lsp-disable-next-line 7001
             deactivate
         end
