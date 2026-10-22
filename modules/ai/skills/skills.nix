@@ -97,14 +97,12 @@ in
 
         programs.ai.skills = {
           improve = {
-            name = "improve";
             input = "improve";
             subdir = "skills";
             all = true;
           };
           essentials = {
             enable = lib.mkDefault false;
-            name = "essentials";
             input = "wshobson-agents";
             subdir = "plugins/developer-essentials/skills";
             ids = [
@@ -123,7 +121,6 @@ in
           # `programs.ai.skills.mattpocock-engineering.ids = ["diagnosing-bugs"];`
           # (also available: prototype, improve-codebase-architecture, wizard).
           mattpocock-engineering = {
-            name = "mattpocock-engineering";
             input = "mattpocock-skills";
             subdir = "skills/engineering";
             ids = [
@@ -132,7 +129,6 @@ in
             ];
           };
           mattpocock-productivity = {
-            name = "mattpocock-productivity";
             input = "mattpocock-skills";
             subdir = "skills/productivity";
             ids = [
@@ -142,7 +138,6 @@ in
           };
           writing = {
             enable = lib.mkDefault false;
-            name = "writing";
             input = "no-ai-slop";
             subdir = "skills";
             ids = ["no-ai-slop"];
@@ -153,7 +148,6 @@ in
           # the host or user config when working in that stack.
           python = {
             enable = lib.mkDefault false;
-            name = "python";
             input = "wshobson-agents";
             subdir = "plugins/python-development/skills";
             ids = [
@@ -172,37 +166,6 @@ in
               "uv-package-manager"
             ];
           };
-          # authoring = {
-          #   enable = lib.mkDefault false;
-          #   name = "authoring";
-          #   input = "softaworks";
-          #   subdir = "skills";
-          #   ids = [
-          #     "agent-md-refactor"
-          #     "command-creator"
-          #     "plugin-forge"
-          #     "skill-judge"
-          #   ];
-          # };
-          # softaworks = {
-          #   name = "systems";
-          #   input = "softaworks";
-          #   subdir = "skills";
-          #   ids = [
-          #     "commit-work"
-          #     "crafting-effective-readmes"
-          #     "naming-analyzer"
-          #     "reducing-entropy"
-          #   ];
-          # };
-          # systems = {
-          #   name = "systems";
-          #   input = "wshobson-agents";
-          #   subdir = "plugins/systems-programming/skills";
-          #   ids = [
-          #     "memory-safety-patterns"
-          #   ];
-          # };
           # Only skills that fire on most repos live here. The rest
           # (property-based-testing, python-simplifier, typescript-simplifier)
           # stay in ./content unselected; enable them where they apply with
