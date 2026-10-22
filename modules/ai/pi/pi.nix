@@ -208,6 +208,29 @@ in
             };
 
           activation = {
+            # pi-superagents reads ~/.pi/agent/extensions/subagent/config.json (~/.pi links to piPath's parent)
+            # and rewrites it with new bundled defaults, so merge into a writable file instead of a store symlink.
+            # Its bundled tiers point at opencode-go/openai models; cheap runs sp-implementer, so Sonnet per AGENTS.md.
+            piSuperagentsConfig = lib.mkIf piSuperpowers (lib.hm.dag.entryAfter ["writeBoundary"] ''
+              _cfg="${piPath}/extensions/subagent/config.json"
+              if [[ ! -v DRY_RUN ]]; then
+                mkdir -p "''${_cfg%/*}"
+                [[ -f $_cfg ]] || echo '{}' > "$_cfg"
+                ${lib.getExe pkgs.jq} -s '.[0] * .[1]' "$_cfg" ${jsonFormat.generate "pi-superagents-config.json" {
+                superagents.modelTiers = {
+                  cheap.model = "claude-sonnet-5-5";
+                  balanced = {
+                    model = "claude-sonnet-5-5";
+                    thinking = "high";
+                  };
+                  max = {
+                    model = "claude-opus-5-5";
+                    thinking = "high";
+                  };
+                };
+              }} > "$_cfg.tmp" && mv "$_cfg.tmp" "$_cfg"
+              fi
+            '');
             # Install/update the extensions listed in settings.json once
             # onFilesChange has written it. pi adds npm dependencies on install
             # but never drops removed ones (nor does bun delete their node_modules
