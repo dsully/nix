@@ -46,16 +46,6 @@
         matcher = "Bash";
         hooks = [
           (hook {
-            name = "prefer-indxr-diff-summary";
-            command = ''
-              # $TOOL_INPUT is never set — the payload is JSON on stdin, so this
-              # matched nothing and the hint never fired.
-              if ${lib.getExe pkgs.jq} -r '.tool_input.command // ""' | grep -qE 'git[[:space:]]+diff'; then
-                echo 'IMPORTANT: Use indxr get_diff_summary MCP tool instead of git diff (requires --all-tools). It shows structural changes (added/removed/modified declarations) at ~200-500 tokens vs thousands for raw diffs. Example: get_diff_summary(since_ref: "main")'
-              fi
-            '';
-          })
-          (hook {
             name = "enforce-uv";
             command = "${./hooks/enforce-uv.fish}";
           })
