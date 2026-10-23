@@ -171,6 +171,9 @@ in
             // {
               ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
 
+              # pi has no path-scoped rules; extensions/rules-skills registers the matching ones as skills per repo.
+              "${piPath}/rules-skills".source = rulesSkills;
+
               "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
                 mcpServers = piMcpServers;
               };
@@ -341,8 +344,6 @@ in
               enableInstallTelemetry = false;
               enableSkillCommands = false;
 
-              # pi has no path-scoped rules; ship them as on-demand skills instead of always-on context.
-              skills = ["${rulesSkills}"];
               hideThinkingBlock = true;
               hooks = ai.hooks.pi;
               quietStartup = true;
