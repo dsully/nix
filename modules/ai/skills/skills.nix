@@ -65,10 +65,28 @@
         default = [];
         description = "Specific skill IDs to enable from this group.";
       };
+      manual = lib.mkOption {
+        type = lib.types.either lib.types.bool (lib.types.listOf lib.types.str);
+        default = [];
+        description = "Skill IDs to install hidden from the model, loadable only via an explicit /skill:<name>. `true` applies to every skill the group selects.";
+      };
     };
   };
 
-  superpowers = import ./superpowers.nix {inherit config inputs lib;};
+  hideFromModel = import ../../../lib/hideFromModel.nix {inherit lib;};
+  inherit (config.programs.agent-skills) catalog;
+
+  manualIds = key: g:
+    if g.manual == true
+    then
+      if g.all
+      then lib.attrNames (lib.filterAttrs (_: s: s.source == srcName key g) catalog)
+      else g.ids
+    else if g.manual == false
+    then []
+    else g.manual;
+
+  superpowers = import ./superpowers.nix {inherit config hideFromModel inputs lib;};
 in
   mkUserModule {
     name = "skills";
@@ -97,6 +115,7 @@ in
 
         programs.ai.skills = {
           improve = {
+            enable = lib.mkDefault false;
             input = "improve";
             subdir = "skills";
             all = true;
@@ -121,6 +140,7 @@ in
           # `programs.ai.skills.mattpocock-engineering.ids = ["diagnosing-bugs"];`
           # (also available: prototype, improve-codebase-architecture, wizard).
           mattpocock-engineering = {
+            enable = lib.mkDefault false;
             input = "mattpocock-skills";
             subdir = "skills/engineering";
             ids = [
@@ -131,6 +151,7 @@ in
           mattpocock-productivity = {
             input = "mattpocock-skills";
             subdir = "skills/productivity";
+            manual = true;
             ids = [
               "grilling"
               # "writing-for-agents"
@@ -174,12 +195,14 @@ in
           local = {
             path = ./content;
             ids = [
+              # "delegate-first"
+              "remove-ai-slop"
+            ];
+            manual = [
               "cleanup"
               "comment-sicko"
               "dead-code-finder"
-              "delegate-first"
               "prompt-optimizer"
-              "remove-ai-slop"
               "visual-explainer"
             ];
           };
@@ -187,18 +210,36 @@ in
       }
 
       (lib.mkIf (enabled != {}) {
-        assertions =
-          lib.mapAttrsToList (name: g: {
-            assertion = (g.input != null) != (g.path != null);
-            message = "programs.ai.skills.${name}: set exactly one of `input` or `path`.";
-          })
-          enabled;
+        assertions = lib.concatLists (lib.mapAttrsToList (name: g: [
+            {
+              assertion = (g.input != null) != (g.path != null);
+              message = "programs.ai.skills.${name}: set exactly one of `input` or `path`.";
+            }
+            {
+              assertion = !(g.all && lib.isList g.manual && g.manual != []);
+              message = "programs.ai.skills.${name}: `all` already installs every skill, so a `manual` list would collide with it; use `manual = true`.";
+            }
+          ])
+          enabled);
 
         programs.agent-skills = {
           sources = lib.mapAttrs' (key: g: lib.nameValuePair (srcName key g) (sourceOf g)) enabled;
           skills = {
-            enable = lib.concatMap (g: g.ids) (lib.attrValues enabled);
-            enableAll = lib.mapAttrsToList srcName (lib.filterAttrs (_: g: g.all) enabled);
+            enable = lib.concatMap (g: lib.optionals (g.manual != true) g.ids) (lib.attrValues enabled);
+            enableAll = lib.mapAttrsToList srcName (lib.filterAttrs (_: g: g.all && g.manual != true) enabled);
+            # Allowlisted skills can't be transformed, so manual ones go in as explicit entries.
+            explicit = lib.concatMapAttrs (key: g:
+              lib.genAttrs (manualIds key g) (id: let
+                skill = catalog.${id} or (throw "programs.ai.skills.${key}: manual skill `${id}` is not in source `${srcName key g}`.");
+              in {
+                from = skill.source;
+                path =
+                  if skill.relPath == ""
+                  then "."
+                  else skill.relPath;
+                transform = hideFromModel;
+              }))
+            enabled;
           };
         };
       })

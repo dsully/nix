@@ -1,5 +1,6 @@
 {
   config,
+  hideFromModel,
   inputs,
   lib,
   ...
@@ -14,12 +15,6 @@
   );
 
   otherAgents = lib.subtractLists ["pi"] (lib.unique cfg.agents);
-
-  # pi-superagents drives these via /sp-* and finds them by frontmatter name, so pi
-  # gets copies hidden from the model's skill list (saves prompt tokens every turn).
-  hideFromModel = {original, ...}:
-    assert lib.hasPrefix "---\n" original;
-      "---\ndisable-model-invocation: true\n" + lib.removePrefix "---\n" original;
 in {
   options.programs.ai.superpowers.agents = lib.mkOption {
     type = lib.types.listOf lib.types.str;
@@ -44,6 +39,8 @@ in {
           path = id;
           agents = otherAgents;
         }))
+        # pi-superagents drives these via /sp-* and finds them by frontmatter name, so pi
+        # gets copies hidden from the model's skill list (saves prompt tokens every turn).
         // lib.optionalAttrs (lib.elem "pi" cfg.agents) (lib.listToAttrs (map (id:
           lib.nameValuePair "pi-${id}" {
             from = "superpowers";

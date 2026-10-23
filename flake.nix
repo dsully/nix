@@ -119,6 +119,7 @@
           withUpstream = factory: args: import factory (args // {upstreamPackages = config.flake.packages;});
         in {
           inherit discoverPackages;
+          hideFromModel = import ./lib/hideFromModel.nix {inherit lib;};
           mkDarwinHost = withUpstream ./lib/mkDarwinHost.nix;
           mkSystemManagerHost = withUpstream ./lib/mkSystemManagerHost.nix;
         };
