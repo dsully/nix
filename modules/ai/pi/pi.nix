@@ -54,10 +54,14 @@
       # "npm:pi-autoresearch"
       # "npm:pi-blackhole"
       "npm:pi-codemode-toggle"
-      "npm:pi-compact-tools"
       "npm:pi-context-view"
       "npm:pi-hashline-edit-pro-lean"
       "npm:pi-inspector"
+      # chrome.ts would take over the working label, spinner, and editor that whimsical and footer own.
+      {
+        source = "npm:pi-polish";
+        extensions = ["extensions/tools.ts"];
+      }
       # "npm:pi-resume-search"
       "npm:@pi-unipi/background-tasks@alpha"
       "npm:@pi-unipi/compactor@alpha"
@@ -169,24 +173,6 @@ in
 
               "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
                 mcpServers = piMcpServers;
-              };
-
-              "${piPath}/compact-tools.json".source = jsonFormat.generate "pi-compact-tools.json" {
-                "$schema" = "https://raw.githubusercontent.com/nedleeds/pi-compact-tools/main/schemas/compact-tools.schema.json";
-                auto_compact = {
-                  bash = true;
-                  edit = false;
-                  read = true;
-                  write = true;
-                };
-                custom_tools = {
-                  enabled = true;
-                  auto_compact = true;
-                  exclude = [];
-                };
-                mode = "normal";
-                previewLines = 1;
-                style = "claude";
               };
 
               # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat

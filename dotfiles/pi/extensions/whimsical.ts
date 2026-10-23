@@ -481,7 +481,7 @@ function lolcat(text: string, phase: number): string {
     .join('')}\x1b[39m`;
 }
 
-// Uses the indicator slot, not setWorkingMessage, so it coexists with extensions that own the working label (pi-compact-tools).
+// Uses the indicator slot, not setWorkingMessage, so it coexists with extensions that own the working label.
 export default function(pi: ExtensionAPI) {
   pi.on('turn_start', async (_event, ctx) => {
     if (!ctx.hasUI) return;
