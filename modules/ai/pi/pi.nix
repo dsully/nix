@@ -58,7 +58,6 @@
       "npm:pi-hashline-edit-pro-lean"
       "npm:pi-heads-up"
       "npm:pi-inspector"
-      "npm:pi-next-prompt"
       # chrome.ts would take over the working label, spinner, and editor that whimsical and footer own.
       {
         source = "npm:pi-polish";
