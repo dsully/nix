@@ -15,5 +15,7 @@ export function preview(text: string, isError: boolean): string | undefined {
   const [head, tail] = isError ? [160, 120] : [100, 60];
   if (lines.length <= head + tail) return cutChars(text);
   const omitted = lines.length - head - tail;
-  return cutChars([...lines.slice(0, head), "", `... ${omitted} lines omitted ...`, "", ...lines.slice(-tail)].join("\n"));
+  return cutChars(
+    [...lines.slice(0, head), "", `... ${omitted} lines omitted ...`, "", ...lines.slice(-tail)].join("\n"),
+  );
 }

@@ -35,7 +35,7 @@ interface Prompt {
   timestamp: number;
 }
 
-export default function(pi: ExtensionAPI) {
+export default function (pi: ExtensionAPI) {
   let previous: Prompt[] = [];
   type EditorFactory = NonNullable<ReturnType<ExtensionContext["ui"]["getEditorComponent"]>>;
   let baseFactory: EditorFactory | undefined;
@@ -46,7 +46,9 @@ export default function(pi: ExtensionAPI) {
     const current = ctx.ui.getEditorComponent();
     if (current !== ownFactory) baseFactory = current;
     ownFactory = (tui, theme, keybindings) => {
-      const editor = baseFactory?.(tui, theme, keybindings) ?? new CustomEditor(tui, theme, keybindings, { embedWorkingStatus: true });
+      const editor =
+        baseFactory?.(tui, theme, keybindings) ??
+        new CustomEditor(tui, theme, keybindings, { embedWorkingStatus: true });
       for (const prompt of [...previous].reverse()) editor.addToHistory?.(prompt.text);
       return editor;
     };
@@ -264,7 +266,12 @@ function oneLine(text: string): string {
 
 function dateLabel(timestamp: number): string {
   if (!Number.isFinite(timestamp)) return "";
-  return new Date(timestamp).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  return new Date(timestamp).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function displayCwd(cwd: string): string {
@@ -303,7 +310,7 @@ async function loadPrompts(cwd: string): Promise<Prompt[]> {
       if (prompts.length >= MAX_PROMPTS) break;
       try {
         prompts.push(...userPrompts(SessionManager.open(session.path).getEntries()));
-      } catch { }
+      } catch {}
     }
     return dedupe(prompts).slice(0, MAX_PROMPTS);
   } catch {

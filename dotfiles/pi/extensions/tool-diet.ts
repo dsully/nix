@@ -30,7 +30,9 @@ const rules: Record<string, string[]> = {
     "fffind is for paths; use grep for content. Keep patterns to 1-2 terms.",
     "Exact file: path '**/name.ext'. Whole directory: path 'dir/**' with an empty pattern.",
   ],
-  recall: ["Use recall on a specific compacted-memory id when the exact wording, paths, commands, or rationale behind it matter."],
+  recall: [
+    "Use recall on a specific compacted-memory id when the exact wording, paths, commands, or rationale behind it matter.",
+  ],
   memory_store: [],
   memory_search: [],
   memory_delete: [],
@@ -46,7 +48,10 @@ export default function (pi: ExtensionAPI) {
     const active = pi.getActiveTools();
     if (active.some((name) => hidden.has(name))) pi.setActiveTools(active.filter((name) => !hidden.has(name)));
 
-    const options = event.systemPromptOptions as { toolSnippets?: Record<string, string>; toolGuidelines?: Record<string, string[]> };
+    const options = event.systemPromptOptions as {
+      toolSnippets?: Record<string, string>;
+      toolGuidelines?: Record<string, string[]>;
+    };
     if (options.toolSnippets) for (const name of Object.keys(options.toolSnippets)) delete options.toolSnippets[name];
     if (options.toolGuidelines) Object.assign(options.toolGuidelines, rules);
   });

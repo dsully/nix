@@ -29,7 +29,10 @@ const cache = new WeakMap<Theme, FooterStyles>();
 export function stylesFor(theme: Theme): FooterStyles {
   let styles = cache.get(theme);
   if (styles) return styles;
-  const fg = (color: ThemeColor): TextStyler => text => theme.fg(color, text);
+  const fg =
+    (color: ThemeColor): TextStyler =>
+    (text) =>
+      theme.fg(color, text);
   styles = {
     text: fg("text"),
     dim: fg("dim"),
@@ -39,7 +42,10 @@ export function stylesFor(theme: Theme): FooterStyles {
     border: fg("border"),
     title: fg("accent"),
     path: fg("text"),
-    segments: Object.fromEntries(Object.entries(SEGMENT_COLORS).map(([id, color]) => [id, fg(color)])) as Record<SegmentId, TextStyler>,
+    segments: Object.fromEntries(Object.entries(SEGMENT_COLORS).map(([id, color]) => [id, fg(color)])) as Record<
+      SegmentId,
+      TextStyler
+    >,
   };
   cache.set(theme, styles);
   return styles;

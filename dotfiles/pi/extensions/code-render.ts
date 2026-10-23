@@ -1,8 +1,4 @@
-import {
-  copyToClipboard,
-  type ExtensionAPI,
-  type ExtensionContext,
-} from "@earendil-works/pi-coding-agent";
+import { copyToClipboard, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
 import {
   Markdown,
   stripTerminalSequences,
@@ -50,12 +46,7 @@ type LayoutCache = {
  * intersection does not collapse to `never`.
  */
 type MarkdownWithPrivateRenderer = Omit<Markdown, "renderToken" | "render" | "handleMouse"> & {
-  renderToken: (
-    token: CodeToken,
-    width: number,
-    nextTokenType?: string,
-    styleContext?: unknown,
-  ) => string[];
+  renderToken: (token: CodeToken, width: number, nextTokenType?: string, styleContext?: unknown) => string[];
   render: (width: number) => string[];
   handleMouse?: (event: TuiMouseEvent) => TuiMouseEventResult | undefined;
 };
@@ -63,7 +54,7 @@ type MarkdownWithPrivateRenderer = Omit<Markdown, "renderToken" | "render" | "ha
 type PatchRecord = { restore: () => void };
 
 function languageFromInfo(info: unknown): string {
-  return typeof info === "string" ? info.trim().split(/\s+/, 1)[0] ?? "" : "";
+  return typeof info === "string" ? (info.trim().split(/\s+/, 1)[0] ?? "") : "";
 }
 
 function normalizeCodeToken(token: CodeToken, language: string): CodeToken {
@@ -73,8 +64,7 @@ function normalizeCodeToken(token: CodeToken, language: string): CodeToken {
 
 /** Pad a styled line with the card background out to `width` columns. */
 function fillRow(text: string, width: number, bg: (value: string) => string): string {
-  const clipped =
-    visibleWidth(text) <= width ? text : (wrapTextWithAnsi(text, Math.max(1, width))[0] ?? "");
+  const clipped = visibleWidth(text) <= width ? text : (wrapTextWithAnsi(text, Math.max(1, width))[0] ?? "");
   return bg(clipped + " ".repeat(Math.max(0, width - visibleWidth(clipped))));
 }
 
@@ -106,8 +96,7 @@ function buildCard(
 ): string[] {
   const innerWidth = Math.max(1, cardWidth - CARD_PAD.length * 2);
   const buttonWidth = visibleWidth(COPY_LABEL);
-  const align = (line: string): string =>
-    line.startsWith(codeIndent) ? line.slice(codeIndent.length) : line;
+  const align = (line: string): string => (line.startsWith(codeIndent) ? line.slice(codeIndent.length) : line);
   const firstLine = highlighted[0] === undefined ? "" : align(highlighted[0]);
   const firstLineWidth = Math.max(1, innerWidth - buttonWidth - CARD_PAD.length);
   const wrappedFirstLine = wrapTextWithAnsi(firstLine, firstLineWidth);
@@ -115,11 +104,7 @@ function buildCard(
   const gapWidth = Math.max(1, innerWidth - visibleWidth(firstLineContent) - buttonWidth);
   const card = [
     fillRow("", cardWidth, bg),
-    fillRow(
-      `${CARD_PAD}${firstLineContent}${" ".repeat(gapWidth)}${accent(COPY_ANCHOR)}${CARD_PAD}`,
-      cardWidth,
-      bg,
-    ),
+    fillRow(`${CARD_PAD}${firstLineContent}${" ".repeat(gapWidth)}${accent(COPY_ANCHOR)}${CARD_PAD}`, cardWidth, bg),
   ];
 
   for (const line of wrappedFirstLine.slice(1)) {
@@ -137,10 +122,7 @@ function buildCard(
   return card;
 }
 
-function installPatch(
-  getTheme: () => ExtensionContext["ui"]["theme"],
-  copyCode: (source: string) => void,
-): () => void {
+function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode: (source: string) => void): () => void {
   const prototype = Markdown.prototype as unknown as MarkdownWithPrivateRenderer &
     Record<PropertyKey, PatchRecord | undefined>;
   prototype[PATCH]?.restore();
@@ -155,8 +137,7 @@ function installPatch(
   const pressedHits = new WeakMap<Markdown, CopyHit>();
   const layoutCache = new WeakMap<Markdown, LayoutCache>();
 
-  const getText = (instance: Markdown): string =>
-    (instance as unknown as { text?: string }).text ?? "";
+  const getText = (instance: Markdown): string => (instance as unknown as { text?: string }).text ?? "";
 
   /**
    * User messages and thinking blocks pass a defaultTextStyle to Markdown;
@@ -165,12 +146,7 @@ function installPatch(
   const isPlainTextContext = (instance: Markdown): boolean =>
     !!(instance as unknown as { defaultTextStyle?: unknown }).defaultTextStyle;
 
-  const cacheLayout = (
-    instance: Markdown,
-    key: string,
-    lines: string[],
-    hits: CopyHit[] = [],
-  ): string[] => {
+  const cacheLayout = (instance: Markdown, key: string, lines: string[], hits: CopyHit[] = []): string[] => {
     layoutCache.set(instance, { key, hits, lines });
     return lines;
   };
@@ -256,10 +232,7 @@ function installPatch(
     return cacheLayout(this, key, lines, locateCopyHits(plainLines, sources));
   };
 
-  const patchedHandleMouse = function (
-    this: Markdown,
-    event: TuiMouseEvent,
-  ): TuiMouseEventResult | undefined {
+  const patchedHandleMouse = function (this: Markdown, event: TuiMouseEvent): TuiMouseEventResult | undefined {
     if (event.button !== "left") return originalHandleMouse?.call(this, event);
 
     const hitAt = (y: number, x: number): CopyHit | undefined =>

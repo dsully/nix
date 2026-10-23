@@ -11,8 +11,9 @@ export function createDraftStore(directory: string) {
   return {
     loadDraft(sessionId: string): string | null {
       let text: string;
-      try { text = readFileSync(path(sessionId), "utf8"); }
-      catch (error) {
+      try {
+        text = readFileSync(path(sessionId), "utf8");
+      } catch (error) {
         if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
         throw error;
       }

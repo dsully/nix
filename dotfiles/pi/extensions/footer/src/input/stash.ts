@@ -1,8 +1,13 @@
 /** The editor and a single saved draft exchange content; neither is overwritten. */
 export class PromptStash {
-  constructor(private text: string | null, private readonly persist: (text: string | null) => void) { }
+  constructor(
+    private text: string | null,
+    private readonly persist: (text: string | null) => void,
+  ) {}
 
-  get hasDraft(): boolean { return this.text !== null; }
+  get hasDraft(): boolean {
+    return this.text !== null;
+  }
 
   exchange(current: string): string {
     if (current.length === 0 && this.text === null) return current;

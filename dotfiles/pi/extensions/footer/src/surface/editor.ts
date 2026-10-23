@@ -1,5 +1,15 @@
 import type { CustomEditor, KeybindingsManager, Theme } from "@earendil-works/pi-coding-agent";
-import { isKeyRepeat, matchesKey, truncateToWidth, visibleWidth, type Component, type EditorComponent, type OverlayHandle, type OverlayOptions, type TUI } from "@earendil-works/pi-tui";
+import {
+  isKeyRepeat,
+  matchesKey,
+  truncateToWidth,
+  visibleWidth,
+  type Component,
+  type EditorComponent,
+  type OverlayHandle,
+  type OverlayOptions,
+  type TUI,
+} from "@earendil-works/pi-tui";
 import { shortcutConflict } from "../input/keybinding.js";
 import type { PromptStash } from "../input/stash.js";
 import { stripControls } from "./format.js";
@@ -62,6 +72,7 @@ type InnerEditor = EditorComponent & {
 };
 
 /** The proxy from forwardToInner supplies these members from the inner editor. */
+// oxlint-disable-next-line typescript/no-unsafe-declaration-merging
 export interface FooterEditor extends EditorComponent {}
 
 /**
@@ -112,7 +123,7 @@ export class FooterEditor implements Component {
       this.acFresh = false;
       return this.acLines;
     },
-    invalidate: () => { },
+    invalidate: () => {},
     // Translate into the base editor's coordinates, where the list sits below its bottom border.
     handleMouse: (event) => {
       const result = this.inner.handleMouse?.({
@@ -135,7 +146,7 @@ export class FooterEditor implements Component {
     private readonly footerOptions: FooterEditorOptions,
   ) {
     this.inner = inner as InnerEditor;
-    // biome-ignore lint/correctness/noConstructorReturn: callers must receive the forwarding proxy, not the bare frame.
+    // Callers must receive the forwarding proxy, not the bare frame.
     return forwardToInner(this, this.inner);
   }
 
@@ -225,15 +236,20 @@ export class FooterEditor implements Component {
       styles: { ...styles, border },
       lines: lines.slice(1, bottomIndex),
       focused: this.inner.focused ?? false,
-      activity: activity && { kind: activity.kind, render: w => removeBorderColor(activity.renderInBorder(w), border) },
+      activity: activity && {
+        kind: activity.kind,
+        render: (w) => removeBorderColor(activity.renderInBorder(w), border),
+      },
       topScrollIndicator: this.extractScrollIndicator(topOriginal, metrics.safeWidth),
       bottomScrollIndicator: this.extractScrollIndicator(bottomOriginal, metrics.safeWidth),
       hasDraft: this.footerOptions.stash?.hasDraft,
-      status: budget => this.statusLine.render(state, budget, styles),
+      status: (budget) => this.statusLine.render(state, budget, styles),
     });
 
     const indent = " ".repeat(metrics.autocompleteIndent);
-    const acLines = lines.slice(bottomIndex + 1).map(line => normalizeRenderedLine(`${indent}${line}`, metrics.safeWidth));
+    const acLines = lines
+      .slice(bottomIndex + 1)
+      .map((line) => normalizeRenderedLine(`${indent}${line}`, metrics.safeWidth));
     if (this.tui.mode !== "fullscreen") return [...frame, ...acLines];
     this.acIndent = metrics.autocompleteIndent;
     this.acEditorWidth = editorWidth;
@@ -264,7 +280,7 @@ export class FooterEditor implements Component {
 
   private linesBelowEditor(): number {
     const kids = this.tui.children;
-    const i = kids.findIndex(c => c === this || (c as { children?: unknown[] }).children?.includes(this));
+    const i = kids.findIndex((c) => c === this || (c as { children?: unknown[] }).children?.includes(this));
     if (i < 0) return 0;
     const w = this.tui.terminal.columns;
     return kids.slice(i + 1).reduce((n, c) => n + c.render(w).length, 0);

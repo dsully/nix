@@ -19,7 +19,7 @@ function widthModeFor(width: number): WidthMode {
 
 function joinSegments(styles: FooterStyles, segments: SegmentRenderResult[]): { text: string; width: number } {
   if (segments.length === 0) return { text: "", width: 0 };
-  const text = `${segments.map(segment => applySegmentStyle(segment, styles)).join(styles.separator(" · "))}${RESET}`;
+  const text = `${segments.map((segment) => applySegmentStyle(segment, styles)).join(styles.separator(" · "))}${RESET}`;
   return { text, width: visibleWidth(text) };
 }
 
@@ -52,7 +52,7 @@ function renderLine(state: FooterState, width: number, styles: FooterStyles): st
     widthMode,
     showProvider: state.providers.availableCount > 1 && widthMode === "full",
   };
-  const segments = SEGMENTS.map(segment => renderSegment(ctx, segment)).filter(segment => segment !== undefined);
+  const segments = SEGMENTS.map((segment) => renderSegment(ctx, segment)).filter((segment) => segment !== undefined);
   const line = joinSegments(styles, fitSegments(styles, segments, safeWidth));
   return line.width > safeWidth ? truncateToWidth(line.text, safeWidth, styles.dim("…")) : line.text;
 }
@@ -62,7 +62,12 @@ export class StatusLineRenderer {
 
   render(state: FooterState, width: number, styles: FooterStyles): string {
     const previous = this.cached;
-    if (previous?.state === state && previous.version === state.version && previous.width === width && previous.styles === styles) {
+    if (
+      previous?.state === state &&
+      previous.version === state.version &&
+      previous.width === width &&
+      previous.styles === styles
+    ) {
       return previous.text;
     }
     const text = renderLine(state, width, styles);

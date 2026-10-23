@@ -177,6 +177,8 @@
             just
             nh
             nurl
+            oxfmt
+            oxlint
             ripgrep
             sd
             statix

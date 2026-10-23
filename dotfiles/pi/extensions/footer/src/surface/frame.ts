@@ -39,9 +39,7 @@ export interface InputSurfaceFrameInput {
 
 // Keeps SGR (CSI final byte `m`) so extension-colored working messages survive; drops OSC/APC and other CSI.
 function stripNonSgrSequences(text: string): string {
-  return text
-    .replace(/\x1b[\]_][^\x07]*(?:\x07|\x1b\\)/g, "")
-    .replace(/\x1b\[[0-?]*[ -/]*[@-ln-~]/g, "");
+  return text.replace(/\x1b[\]_][^\x07]*(?:\x07|\x1b\\)/g, "").replace(/\x1b\[[0-?]*[ -/]*[@-ln-~]/g, "");
 }
 
 function identity(text: string): string {
@@ -65,11 +63,11 @@ function planTopFrame(input: InputSurfaceFrameInput, metrics: InputSurfaceFrameM
   const left = scrollIndicator
     ? { chunks: [{ role: "border" as const, text: scrollIndicator }], width: visibleWidth(scrollIndicator) }
     : planWorkspaceTitle({
-      workspacePath: input.state.workspace.path,
-      workspaceName: input.state.workspace.name,
-      innerWidth: metrics.innerWidth,
-      surfaceWidth: metrics.safeWidth,
-    });
+        workspacePath: input.state.workspace.path,
+        workspaceName: input.state.workspace.name,
+        innerWidth: metrics.innerWidth,
+        surfaceWidth: metrics.safeWidth,
+      });
   const statusBudget = planSurfaceStatusBudget(metrics.innerWidth, left.width);
   return planSurfaceTopFrame({ width: metrics.safeWidth, left, status: resolveStatus(input, statusBudget) });
 }
@@ -83,19 +81,29 @@ function renderTopFrame(input: InputSurfaceFrameInput, plan: ReturnType<typeof p
 
 function renderEditorRow(input: InputSurfaceFrameInput, text: string, width: number): string {
   return renderSurfaceChunks(
-    planSurfaceRow({ width, text, paddingX: SURFACE_CONTENT_PADDING_X, reserveRightPadding: true, ellipsis: "" }).chunks,
+    planSurfaceRow({ width, text, paddingX: SURFACE_CONTENT_PADDING_X, reserveRightPadding: true, ellipsis: "" })
+      .chunks,
     { border: input.focused ? input.styles.border : input.styles.dim, content: identity, text: identity },
   );
 }
 
 function planBottomFrame(input: InputSurfaceFrameInput, width: number) {
   const activity = input.activity;
-  const activityStyle = !input.focused ? input.styles.dim : activity?.kind === "retry" ? input.styles.warn : input.styles.title;
+  const activityStyle = !input.focused
+    ? input.styles.dim
+    : activity?.kind === "retry"
+      ? input.styles.warn
+      : input.styles.title;
   const strip = input.focused ? stripNonSgrSequences : stripTerminalSequences;
   return planSurfaceBottomFrame({
-    width, scrollIndicator: input.bottomScrollIndicator,
-    label: activity ? budget => activityStyle(truncateStyledText(strip(activity.render(budget)).replace(/[\r\n\t]/g, " "), budget, "…"))
-      : input.hasDraft ? { full: `${DRAFT_LABEL} · ${STASH_SHORTCUT}`, compact: DRAFT_LABEL } : undefined,
+    width,
+    scrollIndicator: input.bottomScrollIndicator,
+    label: activity
+      ? (budget) =>
+          activityStyle(truncateStyledText(strip(activity.render(budget)).replace(/[\r\n\t]/g, " "), budget, "…"))
+      : input.hasDraft
+        ? { full: `${DRAFT_LABEL} · ${STASH_SHORTCUT}`, compact: DRAFT_LABEL }
+        : undefined,
   });
 }
 
@@ -118,7 +126,8 @@ export function measureInputSurfaceFrame(width: number): InputSurfaceFrameMetric
 export function renderInputSurfaceFrame(input: InputSurfaceFrameInput): string[] {
   const metrics = measureInputSurfaceFrame(input.width);
   const lines = [renderTopFrame(input, planTopFrame(input, metrics))];
-  for (const line of input.lines.length > 0 ? input.lines : [""]) lines.push(renderEditorRow(input, line, metrics.safeWidth));
+  for (const line of input.lines.length > 0 ? input.lines : [""])
+    lines.push(renderEditorRow(input, line, metrics.safeWidth));
   lines.push(renderBottomFrame(input, planBottomFrame(input, metrics.safeWidth)));
   return lines;
 }

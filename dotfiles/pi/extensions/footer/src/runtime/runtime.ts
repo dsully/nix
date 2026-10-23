@@ -1,5 +1,9 @@
-import { performance } from "node:perf_hooks";
-import { CustomEditor, type ExtensionAPI, type ExtensionContext, type ReadonlyFooterDataProvider } from "@earendil-works/pi-coding-agent";
+import {
+  CustomEditor,
+  type ExtensionAPI,
+  type ExtensionContext,
+  type ReadonlyFooterDataProvider,
+} from "@earendil-works/pi-coding-agent";
 import { PromptStash } from "../input/stash.js";
 import { FooterEditor } from "../surface/editor.js";
 import { Footer } from "../surface/footer.js";
@@ -94,10 +98,11 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
       setUiRequestRender(generation, () => tui.requestRender());
       const editor = new FooterEditor(
         tui,
-        innerFactory?.(tui, theme, keybindings) ?? new CustomEditor(tui, theme, keybindings, { embedWorkingStatus: true }),
+        innerFactory?.(tui, theme, keybindings) ??
+          new CustomEditor(tui, theme, keybindings, { embedWorkingStatus: true }),
         keybindings,
-        () => generation === uiGeneration ? refreshSession.ensureState(ctx) : initialState,
-        { stash, getTheme: () => ctx.ui.theme, onStashError: message => ctx.ui.notify(message, "warning") },
+        () => (generation === uiGeneration ? refreshSession.ensureState(ctx) : initialState),
+        { stash, getTheme: () => ctx.ui.theme, onStashError: (message) => ctx.ui.notify(message, "warning") },
       );
       if (generation === uiGeneration) activeEditor = editor;
       return editor;
@@ -111,11 +116,14 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
     const sessionId = ctx.sessionManager.getSessionId();
     const persistent = ctx.sessionManager.getSessionFile() !== undefined;
     try {
-      return new PromptStash(persistent ? drafts.loadDraft(sessionId) : null, text => {
+      return new PromptStash(persistent ? drafts.loadDraft(sessionId) : null, (text) => {
         if (persistent) drafts.saveDraft(sessionId, text);
       });
     } catch {
-      ctx.ui.notify("Could not read the saved draft. Stash is unavailable until /reload; the file was kept.", "warning");
+      ctx.ui.notify(
+        "Could not read the saved draft. Stash is unavailable until /reload; the file was kept.",
+        "warning",
+      );
       return undefined;
     }
   }

@@ -126,10 +126,12 @@ function surfaceChunksWidth(chunks: readonly SurfaceChunk[]): number {
 }
 
 export function renderSurfaceChunks(chunks: readonly SurfaceChunk[], renderers: SurfaceChunkRenderers = {}): string {
-  return chunks.map((part) => {
-    const renderer = renderers[part.role];
-    return renderer ? renderer(part.text, part) : identity(part.text);
-  }).join("");
+  return chunks
+    .map((part) => {
+      const renderer = renderers[part.role];
+      return renderer ? renderer(part.text, part) : identity(part.text);
+    })
+    .join("");
 }
 
 function insetLabel(label: string, role: "title" | "status" = "title"): SurfaceInlinePlan {
@@ -149,7 +151,12 @@ export function planWorkspaceTitle(options: WorkspaceTitlePlanOptions): SurfaceI
   }
 
   const labelBudget = Math.max(1, budget - SURFACE_TITLE_PADDING_X * 2);
-  const label = formatWorkspaceLabel(options.workspacePath, options.workspaceName || "workspace", labelBudget, surfaceWidth);
+  const label = formatWorkspaceLabel(
+    options.workspacePath,
+    options.workspaceName || "workspace",
+    labelBudget,
+    surfaceWidth,
+  );
   return insetLabel(label);
 }
 
@@ -180,7 +187,8 @@ export function planSurfaceTopFrame(options: SurfaceTopFrameOptions): SurfaceFra
   if (metrics.safeWidth <= 2) {
     let chunks: SurfaceChunk[] = [];
     if (metrics.safeWidth === 1) chunks = [chunk("border", SURFACE_BORDER.topLeft)];
-    if (metrics.safeWidth === 2) chunks = [chunk("border", SURFACE_BORDER.topLeft), chunk("border", SURFACE_BORDER.topRight)];
+    if (metrics.safeWidth === 2)
+      chunks = [chunk("border", SURFACE_BORDER.topLeft), chunk("border", SURFACE_BORDER.topRight)];
     return { ...metrics, chunks };
   }
 
@@ -226,35 +234,42 @@ export function planSurfaceBottomFrame(options: SurfaceBottomFrameOptions): Surf
 
   const indicator = options.scrollIndicator ? truncateSurfaceText(options.scrollIndicator, metrics.innerWidth, "") : "";
   const indicatorWidth = visibleWidth(indicator);
-  const labelBudget = Math.max(0, metrics.innerWidth - indicatorWidth - (indicator ? 1 : 0) - 2 - SURFACE_TITLE_PADDING_X * 2);
+  const labelBudget = Math.max(
+    0,
+    metrics.innerWidth - indicatorWidth - (indicator ? 1 : 0) - 2 - SURFACE_TITLE_PADDING_X * 2,
+  );
   const dynamicLabel = typeof options.label === "function";
-  const label = labelBudget > 0 && options.label
-    ? typeof options.label === "function" ? truncateSurfaceText(options.label(labelBudget), labelBudget, "…")
-      : [options.label.full, options.label.compact].find(text => visibleWidth(text) <= labelBudget)
-    : undefined;
+  const label =
+    labelBudget > 0 && options.label
+      ? typeof options.label === "function"
+        ? truncateSurfaceText(options.label(labelBudget), labelBudget, "…")
+        : [options.label.full, options.label.compact].find((text) => visibleWidth(text) <= labelBudget)
+      : undefined;
   if (label) {
     const left = insetLabel(label, dynamicLabel ? "status" : "title");
     const fillerWidth = metrics.innerWidth - left.width - indicatorWidth;
     const chunks = [
-      chunk("border", SURFACE_BORDER.bottomLeft), ...left.chunks,
+      chunk("border", SURFACE_BORDER.bottomLeft),
+      ...left.chunks,
       chunk("border", repeat(SURFACE_BORDER.horizontal, fillerWidth)),
-      ...(indicator ? [chunk("border", indicator)] : []), chunk("border", SURFACE_BORDER.bottomRight),
+      ...(indicator ? [chunk("border", indicator)] : []),
+      chunk("border", SURFACE_BORDER.bottomRight),
     ];
     return { ...metrics, chunks };
   }
   const fillerWidth = Math.max(0, metrics.innerWidth - indicatorWidth);
   const chunks = indicator
     ? [
-      chunk("border", SURFACE_BORDER.bottomLeft),
-      chunk("border", repeat(SURFACE_BORDER.horizontal, fillerWidth)),
-      chunk("border", indicator),
-      chunk("border", SURFACE_BORDER.bottomRight),
-    ]
+        chunk("border", SURFACE_BORDER.bottomLeft),
+        chunk("border", repeat(SURFACE_BORDER.horizontal, fillerWidth)),
+        chunk("border", indicator),
+        chunk("border", SURFACE_BORDER.bottomRight),
+      ]
     : [
-      chunk("border", SURFACE_BORDER.bottomLeft),
-      chunk("border", repeat(SURFACE_BORDER.horizontal, metrics.innerWidth)),
-      chunk("border", SURFACE_BORDER.bottomRight),
-    ];
+        chunk("border", SURFACE_BORDER.bottomLeft),
+        chunk("border", repeat(SURFACE_BORDER.horizontal, metrics.innerWidth)),
+        chunk("border", SURFACE_BORDER.bottomRight),
+      ];
   return { ...metrics, chunks };
 }
 
@@ -268,14 +283,20 @@ export function planSurfaceRow(options: SurfaceRowOptions): SurfaceFramePlan {
   const paddingX = Math.max(0, finiteFloor(options.paddingX ?? 0, 0));
   const leftPaddingWidth = Math.min(paddingX, metrics.innerWidth);
   const reserveRightPadding = options.reserveRightPadding === true;
-  const rightPaddingWidth = reserveRightPadding ? Math.min(paddingX, Math.max(0, metrics.innerWidth - leftPaddingWidth)) : 0;
+  const rightPaddingWidth = reserveRightPadding
+    ? Math.min(paddingX, Math.max(0, metrics.innerWidth - leftPaddingWidth))
+    : 0;
   const prefixBudget = Math.max(0, metrics.innerWidth - leftPaddingWidth - rightPaddingWidth);
   const prefix = options.prefix ? truncateSurfaceText(options.prefix, prefixBudget, "") : "";
   const prefixWidth = visibleWidth(prefix);
   const contentBudget = Math.max(0, metrics.innerWidth - leftPaddingWidth - prefixWidth - rightPaddingWidth);
-  const content = options.text && contentBudget > 0 ? truncateSurfaceText(options.text, contentBudget, options.ellipsis ?? "…") : "";
+  const content =
+    options.text && contentBudget > 0 ? truncateSurfaceText(options.text, contentBudget, options.ellipsis ?? "…") : "";
   const contentWidth = visibleWidth(content);
-  const fillerWidth = Math.max(0, metrics.innerWidth - leftPaddingWidth - prefixWidth - contentWidth - rightPaddingWidth);
+  const fillerWidth = Math.max(
+    0,
+    metrics.innerWidth - leftPaddingWidth - prefixWidth - contentWidth - rightPaddingWidth,
+  );
   const chunks = [
     chunk("border", SURFACE_BORDER.vertical),
     chunk("text", repeat(" ", leftPaddingWidth)),

@@ -133,7 +133,7 @@ gc:
 gc:
     @{{ NH }} {{ NH_CLEAN_ARGS }}
 
-# Format the nix files in this repo
+# Format and lint the nix, markdown, and pi extension files in this repo
 
 alias format := fmt
 alias lint := fmt
@@ -144,6 +144,8 @@ fmt:
     @deadnix .
     @statix check
     @rumdl fmt .
+    @oxfmt dotfiles/pi/extensions
+    @oxlint dotfiles/pi/extensions
 
 # Fetch a source using nix-init (via nurl)
 

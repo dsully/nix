@@ -23,7 +23,7 @@ class InspectPopup implements Component {
     private readonly title: string,
     private readonly sections: Section[],
     private readonly done: () => void,
-  ) { }
+  ) {}
 
   handleInput(data: string): void {
     const last = this.sections.length - 1;
@@ -55,7 +55,8 @@ class InspectPopup implements Component {
       const cursor = isSelected ? theme.fg("accent", `${arrow} `) : `${arrow} `;
       const header = isSelected ? theme.bg("selectedBg", section.header) : section.header;
       body.push(...wrapTextWithAnsi(cursor + header, inner));
-      if (isExpanded) for (const line of section.details.split("\n")) body.push(...wrapTextWithAnsi(`    ${line}`, inner));
+      if (isExpanded)
+        for (const line of section.details.split("\n")) body.push(...wrapTextWithAnsi(`    ${line}`, inner));
       if (isSelected) selectedBottom = body.length;
     });
 
@@ -68,17 +69,20 @@ class InspectPopup implements Component {
     const edge = (left: string, label: string, right: string) =>
       theme.fg("border", `${left}${truncateToWidth(`─ ${label} ${"─".repeat(width)}`, width - 2, "")}${right}`);
     const side = theme.fg("border", "│");
-    const position = body.length > height ? ` ${this.scroll + 1}-${Math.min(body.length, this.scroll + height)}/${body.length}` : "";
+    const position =
+      body.length > height ? ` ${this.scroll + 1}-${Math.min(body.length, this.scroll + height)}/${body.length}` : "";
     const keys = "↑↓ move · enter expand · a all · pgup/pgdn scroll · esc close";
 
     return [
       edge("╭", this.title, "╮"),
-      ...body.slice(this.scroll, this.scroll + height).map((line) => `${side} ${truncateToWidth(line, inner, "", true)} ${side}`),
+      ...body
+        .slice(this.scroll, this.scroll + height)
+        .map((line) => `${side} ${truncateToWidth(line, inner, "", true)} ${side}`),
       edge("╰", `${keys}${position}`, "╯"),
     ];
   }
 
-  invalidate(): void { }
+  invalidate(): void {}
 
   private viewHeight(): number {
     return Math.max(5, Math.floor(this.tui.terminal.rows * 0.85) - 2);
@@ -94,7 +98,7 @@ class InspectPopup implements Component {
   }
 }
 
-export default function(pi: ExtensionAPI) {
+export default function (pi: ExtensionAPI) {
   const handler = async (args: string, ctx: ExtensionCommandContext) => {
     if (!ctx.hasUI) return;
     const filter = args.trim().toLowerCase();
@@ -110,7 +114,9 @@ export default function(pi: ExtensionAPI) {
 
     const tools = all
       .filter((tool) => !filter || tool.name.toLowerCase().includes(filter))
-      .sort((a, b) => Number(activeNames.has(b.name)) - Number(activeNames.has(a.name)) || a.name.localeCompare(b.name));
+      .sort(
+        (a, b) => Number(activeNames.has(b.name)) - Number(activeNames.has(a.name)) || a.name.localeCompare(b.name),
+      );
 
     await ctx.ui.custom<void>(
       (tui, theme, _keybindings, done) => {

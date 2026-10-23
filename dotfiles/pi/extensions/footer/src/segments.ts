@@ -140,7 +140,11 @@ function middleEllipsis(text: string, width: number): string | undefined {
   return head && tail ? `${head}…${tail}` : undefined;
 }
 
-function fitCollectedSegment(fit: NonNullable<SegmentData["fit"]>, iconPrefix: string, width: number): string | undefined {
+function fitCollectedSegment(
+  fit: NonNullable<SegmentData["fit"]>,
+  iconPrefix: string,
+  width: number,
+): string | undefined {
   for (const alternative of fit.alternatives) {
     const text = `${iconPrefix}${alternative}`.trim();
     if (visibleWidth(text) <= width) return text;

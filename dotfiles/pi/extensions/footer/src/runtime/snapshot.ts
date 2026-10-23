@@ -72,7 +72,8 @@ export function usageTotalsFromMessage(message: StateMessageInputs): UsageTotals
 
 export function usageTotalsFromEntry(entry: StateSessionEntry): UsageTotals {
   if (entry.type === "message" && entry.message) return usageTotalsFromMessage(entry.message);
-  if ((entry.type === "usage" || entry.type === "compaction" || entry.type === "branch_summary") && entry.usage) return usageTotalsFromUsage(entry.usage);
+  if ((entry.type === "usage" || entry.type === "compaction" || entry.type === "branch_summary") && entry.usage)
+    return usageTotalsFromUsage(entry.usage);
   return emptyUsageTotals();
 }
 
@@ -114,10 +115,10 @@ function contextUsageInputsFromContext(ctx: ExtensionContext): StateContextUsage
   const contextUsage = ctx.getContextUsage();
   return contextUsage
     ? {
-      tokens: contextUsage.tokens,
-      contextWindow: contextUsage.contextWindow,
-      percent: contextUsage.percent,
-    }
+        tokens: contextUsage.tokens,
+        contextWindow: contextUsage.contextWindow,
+        percent: contextUsage.percent,
+      }
     : undefined;
 }
 

@@ -119,7 +119,8 @@ export function refreshContextUsage(state: FooterState, inputs: Pick<StateInputs
   const tokens = usage?.tokens ?? null;
   const window = usage?.contextWindow ?? inputs.model?.contextWindow ?? 0;
   const percent = usage?.percent ?? null;
-  if (state.context.tokens === tokens && state.context.window === window && state.context.percent === percent) return false;
+  if (state.context.tokens === tokens && state.context.window === window && state.context.percent === percent)
+    return false;
   state.context.tokens = tokens;
   state.context.window = window;
   state.context.percent = percent;

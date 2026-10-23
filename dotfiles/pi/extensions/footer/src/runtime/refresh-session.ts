@@ -1,5 +1,15 @@
 import type { ExtensionContext, MessageEndEvent, SessionCompactEvent } from "@earendil-works/pi-coding-agent";
-import { lifecycleInputsFromContext, thinkingInputsFromContext, usageTotalsFromEntries, usageTotalsFromEntry, usageTotalsFromMessage, type StateInputs, type StateLifecycleInputs, type StateMessageInputs, type StateSessionEntry } from "./snapshot.js";
+import {
+  lifecycleInputsFromContext,
+  thinkingInputsFromContext,
+  usageTotalsFromEntries,
+  usageTotalsFromEntry,
+  usageTotalsFromMessage,
+  type StateInputs,
+  type StateLifecycleInputs,
+  type StateMessageInputs,
+  type StateSessionEntry,
+} from "./snapshot.js";
 import {
   addUsageTotals,
   clearCurrentRunModelSpeed,
@@ -91,7 +101,7 @@ export class RuntimeRefreshSession {
   private seenEntryIds = new Set<string>();
   private readonly modelSpeedTracker = new ModelSpeedRunTracker();
 
-  constructor(private readonly host: RuntimeRefreshSessionHost) { }
+  constructor(private readonly host: RuntimeRefreshSessionHost) {}
 
   getState(): FooterState | undefined {
     return this.state;
@@ -99,7 +109,7 @@ export class RuntimeRefreshSession {
 
   private readStateInputs(ctx: ExtensionContext): StateInputs {
     const entries = ctx.sessionManager.getEntries();
-    this.seenEntryIds = new Set(entries.map(entry => entry.id));
+    this.seenEntryIds = new Set(entries.map((entry) => entry.id));
     // Reliable snapshots have already billed these entries. Late event delivery
     // must use the same deduplication ledger as incremental persistence reads.
     for (const entry of entries) {
@@ -180,8 +190,10 @@ export class RuntimeRefreshSession {
   }
 
   private messageUsageKey(message: StateMessageInputs): string | undefined {
-    if (message.role === "assistant" && typeof message.responseId === "string" && message.responseId) return `assistant:${message.responseId}`;
-    if (message.role === "toolResult" && typeof message.toolCallId === "string" && message.toolCallId) return `toolResult:${message.toolCallId}`;
+    if (message.role === "assistant" && typeof message.responseId === "string" && message.responseId)
+      return `assistant:${message.responseId}`;
+    if (message.role === "toolResult" && typeof message.toolCallId === "string" && message.toolCallId)
+      return `toolResult:${message.toolCallId}`;
     return undefined;
   }
 

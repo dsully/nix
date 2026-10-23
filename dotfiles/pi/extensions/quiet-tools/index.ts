@@ -44,7 +44,10 @@ export default function quietTools(pi: ExtensionAPI) {
       }
 
       const notice = `[quiet-tools] Output cut to its start and end (${text.split("\n").length} lines, ${text.length} chars). Full output: ${path} (read it with offset/limit if the omitted part matters).`;
-      message.content = [...message.content.filter((part) => part.type !== "text"), { type: "text", text: `${notice}\n\n${cut}` }];
+      message.content = [
+        ...message.content.filter((part) => part.type !== "text"),
+        { type: "text", text: `${notice}\n\n${cut}` },
+      ];
     }
     return { messages: event.messages };
   });
