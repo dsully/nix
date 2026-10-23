@@ -180,21 +180,7 @@ push-cache:
 
     set -euo pipefail
 
-    targets=()
-
-    for pkg in packages/*; do
-        name=$(basename "$pkg" .nix)
-
-        if [[ -f "$pkg" && "$pkg" == *.nix ]]; then
-            entry="$pkg"
-        elif [[ -d "$pkg" && -f "$pkg/default.nix" ]]; then
-            entry="$pkg/default.nix"
-        else
-            continue
-        fi
-
-        # Flakes only see tracked files, so untracked packages can't be built.
-        git ls-files --error-unmatch "$entry" &>/dev/null && targets+=(".#$name")
-    done
+    system=$(nix eval --raw --impure --expr builtins.currentSystem)
+    mapfile -t targets < <(nix eval --json ".#packages.$system" --apply builtins.attrNames | jq -r '.[] | ".#" + .')
 
     nix build --no-link --print-out-paths "${targets[@]}" | nix-cache-push dsully

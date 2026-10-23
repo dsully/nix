@@ -147,7 +147,9 @@
           overlays = import ./overlays {inherit inputs;};
         };
 
-        selfPackages = lib.mapAttrs (_: path: pkgs.callPackage path {}) (discoverPackages ./packages);
+        selfPackages =
+          lib.filterAttrs (_: lib.meta.availableOn pkgs.stdenv.hostPlatform)
+          (lib.mapAttrs (_: path: pkgs.callPackage path {}) (discoverPackages ./packages));
 
         fmt = pkgs.callPackage ./formatter.nix {};
       in {
