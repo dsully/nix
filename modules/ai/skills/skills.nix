@@ -1,6 +1,7 @@
 {
   mkUserModule,
   config,
+  hideFromModel,
   inputs,
   lib,
   ...
@@ -73,7 +74,6 @@
     };
   };
 
-  hideFromModel = import ../../../lib/hideFromModel.nix {inherit lib;};
   inherit (config.programs.agent-skills) catalog;
 
   manualIds = key: g:

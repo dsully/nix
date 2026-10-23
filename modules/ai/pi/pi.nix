@@ -2,6 +2,7 @@
   mkUserModule,
   ai,
   config,
+  hideFromModel,
   lib,
   my,
   pkgs,
@@ -30,15 +31,11 @@
   piDefaultPackages = lib.unique (
     [
       # "npm:context-mode"
-      # Audit + review only: the extension injects core ponytail from its SKILL.md
-      # path, and the debt/gain/help extras cost prompt tokens every turn.
-      # Include patterns are minimatch globs against the package-relative path; a "./" prefix never matches.
+      # The extension injects core ponytail from its SKILL.md path; audit + review come
+      # hidden from agent-skills below, reachable through its /ponytail-* aliases.
       {
         source = "npm:@dietrichgebert/ponytail";
-        skills = [
-          "skills/ponytail-audit"
-          "skills/ponytail-review"
-        ];
+        skills = [];
       }
       # "git:github.com/light4/pi-session-manager@v0.2.16"
       "npm:@ff-labs/pi-fff"
@@ -297,7 +294,20 @@ in
         };
 
         programs = {
-          agent-skills.targets.pi.enable = true;
+          agent-skills = {
+            targets.pi.enable = true;
+            sources.ponytail = {
+              input = "ponytail";
+              subdir = "skills";
+            };
+            # pi-only: Claude Code gets these from the ponytail plugin.
+            skills.explicit = lib.genAttrs ["ponytail-audit" "ponytail-review"] (id: {
+              from = "ponytail";
+              path = id;
+              agents = ["pi"];
+              transform = hideFromModel;
+            });
+          };
           ai.superpowers.agents = ["pi"];
 
           pi-coding-agent = {

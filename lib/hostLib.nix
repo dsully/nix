@@ -72,6 +72,7 @@ in {
         inherit inputs perSystem userModuleTarget;
         flake = {inherit inputs;};
         forPlatform = import ./forPlatform.nix system;
+        hideFromModel = import ./hideFromModel.nix {inherit lib;};
         mkSystemModule = import ./mkSystemModule.nix;
         mkUserModule = import ./mkUserModule.nix;
         wrapperLib = inputs.nix-wrapper-modules.lib;
