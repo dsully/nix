@@ -20,11 +20,11 @@ const childOnly = ["subagent_done", "caller_ping"];
 // Replaces each tool's rules; memory rules repeat the memory reminder message.
 const rules: Record<string, string[]> = {
   bg_run: [
-    "Use bg_run, not bash, for builds, test suites, servers, and watchers; set triggerOnCompletion:false for anything that never exits.",
-    "A finite task's completion notification wakes you and is final: never sleep, bg_status, or bg_logs to wait for it.",
+    "Use bg_run, not bash, for anything that may run past ~30s (downloads, installs, builds, test suites, servers, watchers); keep bash for quick commands whose output you need now.",
+    "bg_run's exit message (code + log tail) arrives on its own: never sleep, poll, or tail its log. To react to output while it runs, pass wake_on with a regex.",
+    "Don't redirect bg_run output; it already logs. bash times out after 2 minutes unless you pass timeout (max 10).",
   ],
   bg_status: [],
-  bg_logs: [],
   bg_kill: [],
   fffind: [
     "fffind is for paths; use grep for content. Keep patterns to 1-2 terms.",

@@ -50,17 +50,21 @@
       # "npm:pi-agent-browser-native"
       # "npm:pi-autoresearch"
       # "npm:pi-blackhole"
+      "npm:pi-away"
+      "npm:pi-background"
+      "npm:pi-checkpoints"
       "npm:pi-codemode-toggle"
       "npm:pi-context-view"
       "npm:pi-hashline-edit-pro-lean"
+      "npm:pi-heads-up"
       "npm:pi-inspector"
+      "npm:pi-next-prompt"
       # chrome.ts would take over the working label, spinner, and editor that whimsical and footer own.
       {
         source = "npm:pi-polish";
         extensions = ["extensions/tools.ts"];
       }
       # "npm:pi-resume-search"
-      "npm:@pi-unipi/background-tasks@alpha"
       "npm:@pi-unipi/compactor@alpha"
       # Their bundled skills restate the tool descriptions every turn.
       {
@@ -71,7 +75,6 @@
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@ssk_dev/rpiv-todo-lean"
       "npm:@tifan/pi-copy-response"
-      "npm:@tifan/pi-recap"
       "npm:@vanillagreen/pi-skills-manager"
     ]
     ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
