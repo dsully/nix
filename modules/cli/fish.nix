@@ -20,17 +20,28 @@ in
 
     home = {
       home = {
-        activation.opahRefresh =
-          lib.hm.dag.entryAfter ["writeBoundary"]
-          # bash
-          ''
-            config_file="${config.xdg.configHome}/fish/secrets.yaml"
-            cache_file="${config.xdg.cacheHome}/fish/opah/secrets.fish"
+        activation = {
+          opahRefresh =
+            lib.hm.dag.entryAfter ["writeBoundary"]
+            # bash
+            ''
+              config_file="${config.xdg.configHome}/fish/secrets.yaml"
+              cache_file="${config.xdg.cacheHome}/fish/opah/secrets.fish"
 
-            if [ ! -f "$cache_file" ] || [ "$config_file" -nt "$cache_file" ]; then
-              ${lib.getExe pkgs.fish} -c "_opah_load --force" || true
-            fi
-          '';
+              if [ ! -f "$cache_file" ] || [ "$config_file" -nt "$cache_file" ]; then
+                ${lib.getExe pkgs.fish} -c "_opah_load --force" || true
+              fi
+            '';
+
+          # Wakes running shells' __hm_sess_vars_reload (dotfiles/fish/conf.d/01-hm-session-reload.fish).
+          hmSessionReload =
+            lib.hm.dag.entryAfter ["installPackages" "linkGeneration"]
+            # bash
+            ''
+              run ${lib.getExe pkgs.fish} -c 'set -U __hm_sess_vars_gen (path resolve $argv[1])' \
+                ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.fish || true
+            '';
+        };
 
         packages = [
           my.pkgs.fish-session
