@@ -72,6 +72,10 @@ in {
       caddy = {
         enable = true;
         caddyfile = ./files/Caddyfile;
+        visualizer = {
+          enable = true;
+          listen = "10.0.0.100";
+        };
       };
 
       tailscale = {

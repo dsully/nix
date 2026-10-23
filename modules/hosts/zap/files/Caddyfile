@@ -1,8 +1,18 @@
 {
-	admin off
+	admin unix//run/caddy/admin.sock
 	default_sni sully.org
 	http_port 80
 	https_port 443
+}
+
+(access_log) {
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 64mb
+			roll_keep 5
+			roll_keep_for 720h
+		}
+	}
 }
 
 (cloudflare) {
@@ -12,6 +22,7 @@
 }
 
 electricrain.com {
+	import access_log
 	import cloudflare
 	root * /www/electricrain.com/htdocs/
 	file_server
@@ -19,6 +30,7 @@ electricrain.com {
 }
 
 holonet.org {
+	import access_log
 	import cloudflare
 	root * /www/holonet.org/htdocs/
 	file_server
@@ -26,12 +38,14 @@ holonet.org {
 }
 
 rss.sully.org {
+	import access_log
 	import cloudflare
 	encode zstd gzip
 	reverse_proxy http://127.0.0.1:8082
 }
 
 sully.org {
+	import access_log
 	import cloudflare
 	root * /www/sully.org/htdocs/
 	encode zstd gzip
@@ -67,6 +81,7 @@ sully.org {
 }
 
 g-na.org {
+	import access_log
 	tls {
 		dns linode {
 			api_token {file./run/secrets/caddy/linode-token}
@@ -74,3 +89,5 @@ g-na.org {
 	}
 	redir * https://portfolio.g-na.org permanent
 }
+
+import /var/lib/caddy/manager/sites.caddy
