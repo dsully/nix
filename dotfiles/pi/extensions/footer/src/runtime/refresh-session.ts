@@ -12,18 +12,13 @@ import {
 } from "./snapshot.js";
 import {
   addUsageTotals,
-  clearCurrentRunModelSpeed,
   createInitialState,
   refreshContextUsage,
   refreshModel,
   refreshWorkspace,
   setBranch,
-  setCurrentRunModelSpeed,
-  setLastRunModelSpeed,
-  setProviderCount,
   setUsageTotals,
 } from "./state.js";
-import { ModelSpeedRunTracker, type ModelSpeedStateIntent } from "./throughput-run-tracker.js";
 import type { FooterState, UsageTotals } from "../types.js";
 
 export interface RuntimeMessageEndInput {
@@ -40,7 +35,6 @@ export interface RuntimeSessionCompactInput {
 export interface RuntimeRefreshSessionHost {
   getThinkingLevel(): string;
   getBranch(): string | null;
-  nowMs(): number;
   requestRender(): void;
 }
 
@@ -78,28 +72,11 @@ const LIFECYCLE_NO_MODEL: RefreshPlan = { ...LIFECYCLE_MODEL, refreshModel: fals
 const USAGE_MESSAGE_END: RefreshPlan = { ...ENSURE_ONLY, render: true };
 const THINKING_LEVEL_SELECT: RefreshPlan = { ...ENSURE_ONLY, snapshot: "thinking", refreshModel: true, render: true };
 
-function applyModelSpeedIntent(state: FooterState, intent: ModelSpeedStateIntent): boolean {
-  switch (intent.kind) {
-    case "none":
-      return false;
-    case "set-current-run":
-      return setCurrentRunModelSpeed(state, intent.currentRun);
-    case "clear-current-run":
-      return clearCurrentRunModelSpeed(state);
-    case "set-last-run-and-clear-current-run": {
-      const lastRunChanged = setLastRunModelSpeed(state, intent.lastRun);
-      const currentRunChanged = clearCurrentRunModelSpeed(state);
-      return lastRunChanged || currentRunChanged;
-    }
-  }
-}
-
 export class RuntimeRefreshSession {
   private state?: FooterState;
   private appliedUsageObjects = new WeakSet<object>();
   private appliedUsageKeys = new Set<string>();
   private seenEntryIds = new Set<string>();
-  private readonly modelSpeedTracker = new ModelSpeedRunTracker();
 
   constructor(private readonly host: RuntimeRefreshSessionHost) {}
 
@@ -129,7 +106,6 @@ export class RuntimeRefreshSession {
     this.seenEntryIds.clear();
     this.appliedUsageObjects = new WeakSet<object>();
     this.appliedUsageKeys = new Set<string>();
-    this.modelSpeedTracker.reset();
   }
 
   private resetState(ctx: ExtensionContext): FooterState {
@@ -205,7 +181,6 @@ export class RuntimeRefreshSession {
     if (!this.state) return false;
     let changed = false;
     if (plan.refreshWorkspace) changed = refreshWorkspace(this.state, inputs) || changed;
-    changed = setProviderCount(this.state, inputs.availableProviderCount) || changed;
     if (plan.refreshModel) changed = refreshModel(this.state, inputs) || changed;
     if (plan.refreshUsageTotals && usage) changed = setUsageTotals(this.state, usage) || changed;
     if (plan.refreshContext) changed = refreshContextUsage(this.state, inputs) || changed;
@@ -217,9 +192,7 @@ export class RuntimeRefreshSession {
 
     if (plan.snapshot === "thinking") {
       const inputs = thinkingInputsFromContext(ctx, this.host.getThinkingLevel());
-      let changed = setProviderCount(this.state, inputs.availableProviderCount);
-      if (plan.refreshModel) changed = refreshModel(this.state, inputs) || changed;
-      return changed;
+      return plan.refreshModel ? refreshModel(this.state, inputs) : false;
     }
 
     if (plan.snapshot === "reliable") {
@@ -250,7 +223,6 @@ export class RuntimeRefreshSession {
   }
 
   turnStart(ctx: ExtensionContext): void {
-    this.modelSpeedTracker.turnStart();
     this.refresh(ctx, LIFECYCLE_MODEL);
   }
 
@@ -263,60 +235,32 @@ export class RuntimeRefreshSession {
     this.refresh(ctx, RELIABLE_MODEL);
   }
 
-  providerRequest(): void {
-    this.modelSpeedTracker.requestStart(() => this.host.nowMs());
-  }
-
-  uiPromptStart(): void {
-    this.modelSpeedTracker.uiPromptStart(() => this.host.nowMs());
-  }
-
-  uiPromptEnd(): void {
-    this.modelSpeedTracker.uiPromptEnd(() => this.host.nowMs());
-  }
-
   messageEnd(event: RuntimeMessageEndInput, ctx: ExtensionContext): void {
     const message = event.message;
     const hadState = this.state !== undefined;
     const delta = usageTotalsFromMessage(message);
-    const modelSpeedIntent = this.modelSpeedTracker.messageEnd(message, () => this.host.nowMs());
-    const plan = message.role === "assistant"
-      ? LIFECYCLE_NO_MODEL
-      : message.role === "toolResult" && !this.usageTotalsAreZero(delta)
-        ? USAGE_MESSAGE_END
-        : ENSURE_ONLY;
-    this.refresh(ctx, plan, () => {
-      let changed = false;
-      if (hadState) changed = this.applyUsageDelta(message, delta, this.messageUsageKey(message)) || changed;
-      if (this.state) changed = applyModelSpeedIntent(this.state, modelSpeedIntent) || changed;
-      return changed;
-    });
+    const plan =
+      message.role === "assistant"
+        ? LIFECYCLE_NO_MODEL
+        : message.role === "toolResult" && !this.usageTotalsAreZero(delta)
+          ? USAGE_MESSAGE_END
+          : ENSURE_ONLY;
+    this.refresh(ctx, plan, () => hadState && this.applyUsageDelta(message, delta, this.messageUsageKey(message)));
   }
 
   sessionCompact(event: RuntimeSessionCompactInput, ctx: ExtensionContext): void {
     const hadState = this.state !== undefined;
     const entry = event.compactionEntry;
     const delta = usageTotalsFromEntry(entry);
-    const modelSpeedIntent = this.modelSpeedTracker.compactionRetry(event.willRetry === true);
-    this.refresh(ctx, LIFECYCLE_MODEL, () => {
-      let changed = false;
-      if (hadState) changed = this.applyUsageDelta(entry, delta, this.entryUsageKey(entry)) || changed;
-      if (this.state) changed = applyModelSpeedIntent(this.state, modelSpeedIntent) || changed;
-      return changed;
-    });
-  }
-
-  agentStart(): void {
-    const intent = this.modelSpeedTracker.start();
-    if (this.state && applyModelSpeedIntent(this.state, intent)) this.host.requestRender();
+    this.refresh(ctx, LIFECYCLE_MODEL, () => hadState && this.applyUsageDelta(entry, delta, this.entryUsageKey(entry)));
   }
 
   agentSettled(ctx: ExtensionContext): void {
-    const intent = this.modelSpeedTracker.settle();
     if (!this.state) return;
     let changed = this.syncPersistedUsage(ctx);
-    changed = refreshContextUsage(this.state, { contextUsage: ctx.getContextUsage() ?? undefined, model: ctx.model }) || changed;
-    changed = applyModelSpeedIntent(this.state, intent) || changed;
+    changed =
+      refreshContextUsage(this.state, { contextUsage: ctx.getContextUsage() ?? undefined, model: ctx.model }) ||
+      changed;
     if (changed) this.host.requestRender();
   }
 

@@ -1,6 +1,6 @@
 import { displayDirectory, shortenModel } from "../surface/format.js";
 import type { StateInputs } from "./snapshot.js";
-import type { FooterState, ModelSpeedMeasurement, UsageTotals } from "../types.js";
+import type { FooterState, UsageTotals } from "../types.js";
 
 export function createInitialState(inputs: StateInputs, branch: string | null): FooterState {
   const state: FooterState = {
@@ -9,9 +9,6 @@ export function createInitialState(inputs: StateInputs, branch: string | null): 
       path: inputs.cwd,
     },
     branch,
-    providers: {
-      availableCount: inputs.availableProviderCount,
-    },
     model: {
       id: inputs.model?.id,
       provider: inputs.model?.provider,
@@ -24,10 +21,6 @@ export function createInitialState(inputs: StateInputs, branch: string | null): 
       percent: null,
     },
     usage: inputs.usage,
-    throughput: {
-      lastRun: null,
-      currentRun: null,
-    },
     version: 0,
   };
   refreshContextUsage(state, inputs);
@@ -40,34 +33,6 @@ function touch(state: FooterState): void {
 
 function usageTotalsEqual(a: UsageTotals, b: UsageTotals): boolean {
   return a.input === b.input && a.output === b.output && a.cacheRead === b.cacheRead && a.cacheWrite === b.cacheWrite;
-}
-
-function modelSpeedEqual(a: ModelSpeedMeasurement | null, b: ModelSpeedMeasurement | null): boolean {
-  if (a === b) return true;
-  if (!a || !b) return false;
-  return (
-    a.outputTokens === b.outputTokens &&
-    a.elapsedMs === b.elapsedMs &&
-    a.tokensPerSecond === b.tokensPerSecond
-  );
-}
-
-export function setLastRunModelSpeed(state: FooterState, next: ModelSpeedMeasurement | null): boolean {
-  if (modelSpeedEqual(state.throughput.lastRun, next)) return false;
-  state.throughput.lastRun = next;
-  touch(state);
-  return true;
-}
-
-export function setCurrentRunModelSpeed(state: FooterState, next: ModelSpeedMeasurement | null): boolean {
-  if (modelSpeedEqual(state.throughput.currentRun, next)) return false;
-  state.throughput.currentRun = next;
-  touch(state);
-  return true;
-}
-
-export function clearCurrentRunModelSpeed(state: FooterState): boolean {
-  return setCurrentRunModelSpeed(state, null);
 }
 
 export function setUsageTotals(state: FooterState, usage: UsageTotals): boolean {
@@ -85,13 +50,6 @@ export function addUsageTotals(state: FooterState, delta: UsageTotals): boolean 
     cacheRead: state.usage.cacheRead + delta.cacheRead,
     cacheWrite: state.usage.cacheWrite + delta.cacheWrite,
   };
-  touch(state);
-  return true;
-}
-
-export function setProviderCount(state: FooterState, availableCount: number): boolean {
-  if (state.providers.availableCount === availableCount) return false;
-  state.providers.availableCount = availableCount;
   touch(state);
   return true;
 }

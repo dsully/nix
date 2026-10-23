@@ -29,7 +29,6 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
   const refreshSession = new RuntimeRefreshSession({
     getThinkingLevel: () => pi.getThinkingLevel(),
     getBranch: () => footerData?.getGitBranch() ?? null,
-    nowMs: () => performance.now(),
     requestRender: () => requestRender?.(),
   });
 
@@ -143,12 +142,8 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
   pi.on("tool_execution_end", (_event, ctx) => refreshSession.lifecycle(ctx));
   pi.on("session_tree", (_event, ctx) => refreshSession.sessionTree(ctx));
   pi.on("session_compact", (event, ctx) => refreshSession.sessionCompact(event, ctx));
-  pi.on("before_provider_request", () => refreshSession.providerRequest());
-  pi.on("ui_prompt_start", () => refreshSession.uiPromptStart());
-  pi.on("ui_prompt_end", () => refreshSession.uiPromptEnd());
   pi.on("message_end", (event, ctx) => refreshSession.messageEnd(event, ctx));
   pi.on("turn_end", (_event, ctx) => refreshSession.lifecycle(ctx));
-  pi.on("agent_start", () => refreshSession.agentStart());
   pi.on("agent_end", (_event, ctx) => refreshSession.lifecycle(ctx));
   pi.on("agent_settled", (_event, ctx) => refreshSession.agentSettled(ctx));
 }

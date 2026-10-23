@@ -243,7 +243,7 @@ export class FooterEditor implements Component {
       topScrollIndicator: this.extractScrollIndicator(topOriginal, metrics.safeWidth),
       bottomScrollIndicator: this.extractScrollIndicator(bottomOriginal, metrics.safeWidth),
       hasDraft: this.footerOptions.stash?.hasDraft,
-      status: (budget) => this.statusLine.render(state, budget, styles),
+      status: (budget) => this.statusLine.render(state, budget, styles, border),
     });
 
     const indent = " ".repeat(metrics.autocompleteIndent);

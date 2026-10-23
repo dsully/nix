@@ -1,5 +1,11 @@
 import { visibleWidth } from "@earendil-works/pi-tui";
-import type { ModelSpeedMeasurement, SegmentData, SegmentDefinition, SegmentRenderContext, SegmentRenderResult, UsageTotals } from "./types.js";
+import type {
+  SegmentData,
+  SegmentDefinition,
+  SegmentRenderContext,
+  SegmentRenderResult,
+  UsageTotals,
+} from "./types.js";
 
 const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
@@ -22,38 +28,21 @@ function collectGit(ctx: SegmentRenderContext): SegmentData | undefined {
   return ctx.state.branch ? { primary: ctx.state.branch } : undefined;
 }
 
-function formatThroughputRate(rate: number): string {
-  const scale = rate < 1_000 ? 1 : rate < 1_000_000 ? 1_000 : 1_000_000;
-  const scaled = rate / scale;
-  const value = scaled < 10 ? scaled.toFixed(1) : `${Math.round(scaled)}`;
-  return `${value}${scale === 1 ? "" : scale === 1_000 ? "k" : "M"}`;
-}
-
-function validThroughput(turn: ModelSpeedMeasurement | null | undefined): turn is ModelSpeedMeasurement {
-  const rate = turn?.tokensPerSecond;
-  return typeof rate === "number" && Number.isFinite(rate) && rate > 0;
-}
-
-function collectThroughput(ctx: SegmentRenderContext): SegmentData {
-  const { currentRun, lastRun } = ctx.state.throughput;
-  const turn = validThroughput(currentRun) ? currentRun : validThroughput(lastRun) ? lastRun : undefined;
-  const formatted = turn ? `${turn === currentRun ? "~" : ""}${formatThroughputRate(turn.tokensPerSecond)}` : "?";
-  return {
-    primary: `${formatted} tok/s`,
-    display: { full: `${formatted} tok/s`, compact: `${formatted}/s`, minimal: `${formatted}/s` },
-  };
-}
-
 function collectContext(ctx: SegmentRenderContext): SegmentData {
   const { tokens, window, percent } = ctx.state.context;
-  const pct = formatPercent(percent);
-  const ratio = `${formatTokens(tokens)}/${formatTokens(window)}`;
+  const { bright } = ctx.styles;
+  const fill = Math.min(100, Math.max(0, percent ?? 0));
+  const tone = fill >= 85 ? bright.red : fill >= 70 ? bright.orange : fill >= 50 ? bright.yellow : bright.green;
+  const pct = tone(formatPercent(percent));
+  const bar = (size: number) => {
+    const filled = Math.round((fill / 100) * size);
+    return `${bright.gray("[")}${tone("█".repeat(filled))}${bright.gray(`${"░".repeat(size - filled)}]`)}`;
+  };
   return {
-    tone: percent !== null && percent >= 90 ? "error" : percent !== null && percent >= 75 ? "warning" : "normal",
     primary: pct,
     display: {
-      full: percent === null && tokens === null ? ratio : `${pct} ${ratio}`,
-      compact: pct,
+      full: `${bar(20)} ${bright.white(`${formatTokens(tokens)}/${formatTokens(window)}`)} ${pct}`,
+      compact: `${bar(5)} ${pct}`,
       minimal: pct,
     },
   };
@@ -64,18 +53,14 @@ function sessionCacheHitPercent(usage: UsageTotals): number | undefined {
   return promptTokens > 0 ? Math.round((usage.cacheRead / promptTokens) * 100) : undefined;
 }
 
-function collectTokens(ctx: SegmentRenderContext): SegmentData {
-  const usage = ctx.state.usage;
-  const primary = `↑${formatTokens(usage.input)} ↓${formatTokens(usage.output)}`;
-  const hitRate = sessionCacheHitPercent(usage);
-  const rate = hitRate !== undefined ? `${hitRate}%` : undefined;
+function collectTokens(ctx: SegmentRenderContext): SegmentData | undefined {
+  const hitRate = sessionCacheHitPercent(ctx.state.usage);
+  if (hitRate === undefined) return undefined;
+  const { bright } = ctx.styles;
+  const tone = hitRate >= 90 ? bright.green : hitRate >= 71 ? bright.yellow : bright.white;
   return {
-    primary,
-    display: {
-      full: rate ? `${primary} ${rate} cache hit rate` : primary,
-      compact: rate ?? primary,
-      minimal: rate ?? formatTokens(usage.input + usage.output),
-    },
+    primary: `${tone(`${hitRate}%`)} ${bright.white("cached")}`,
+    display: { minimal: tone(`${hitRate}%`) },
   };
 }
 
@@ -88,35 +73,23 @@ function withoutProviderPrefix(name: string, provider: string | undefined): stri
 }
 
 function collectModel(ctx: SegmentRenderContext): SegmentData {
-  const { id, displayName, provider: providerName } = ctx.state.model;
-  const originalName = displayName || id || "no-model";
-  const shortName = withoutProviderPrefix(originalName, providerName);
+  const { id, displayName, provider } = ctx.state.model;
+  const originalName = (displayName || id || "").replace(/^.*\//, "") || "no-model";
+  const shortName = withoutProviderPrefix(originalName, provider);
   const name = ctx.widthMode === "minimal" ? shortName : originalName;
-  let provider = ctx.showProvider && providerName ? `${providerName}/` : "";
   const thinking = ctx.state.model.thinking || "off";
-  const visibleThinking = thinking !== "off" && ctx.widthMode === "full" ? thinking : undefined;
-  let suffix = visibleThinking ? ` ${visibleThinking}` : "";
-  const model = `${provider}${name}`;
-  const alternatives: string[] = [];
-  if (provider) {
-    provider = "";
-    alternatives.push(`${name}${suffix}`);
-  }
-  if (suffix) {
-    suffix = "";
-    alternatives.push(`${provider}${name}`);
-  }
-  if (shortName !== name) alternatives.push(`${provider}${shortName}${suffix}`);
+  const suffix =
+    thinking !== "off" && ctx.widthMode === "full" ? `: ${thinking.charAt(0).toUpperCase()}${thinking.slice(1)}` : "";
+  const alternatives = suffix ? [name] : [];
+  if (shortName !== name) alternatives.push(shortName);
   return {
-    primary: model,
-    secondary: visibleThinking,
-    fit: { alternatives, name: { prefix: provider, value: shortName, suffix } },
+    primary: `${name}${suffix}`,
+    fit: { alternatives, name: { prefix: "", value: shortName, suffix: "" } },
   };
 }
 
 export const SEGMENTS: readonly SegmentDefinition[] = [
   { id: "git", icon: "\ue725", collect: collectGit },
-  { id: "throughput", icon: "\uf427", iconSpacing: 2, collect: collectThroughput },
   { id: "context", icon: "󰔟", collect: collectContext },
   { id: "tokens", icon: "󰄨", collect: collectTokens },
   { id: "model", icon: "", collect: collectModel },
@@ -128,7 +101,11 @@ function middleEllipsis(text: string, width: number): string | undefined {
   if (width < 7) return undefined;
   const parts = Array.from(graphemes.segment(text), ({ segment }) => ({ text: segment, width: visibleWidth(segment) }));
   const headBudget = Math.ceil((width - 1) / 2);
-  let head = "", tail = "", headWidth = 0, tailWidth = 0, first = 0;
+  let head = "",
+    tail = "",
+    headWidth = 0,
+    tailWidth = 0,
+    first = 0;
   while (first < parts.length && headWidth + parts[first]!.width <= headBudget) {
     head += parts[first]!.text;
     headWidth += parts[first++]!.width;
@@ -157,18 +134,16 @@ function fitCollectedSegment(
 function displayForMode(data: SegmentData, widthMode: SegmentRenderContext["widthMode"]): string {
   const display = data.display?.[widthMode];
   if (display !== undefined) return display;
-  const secondary = data.secondary ? ` ${data.secondary}` : "";
-  return `${data.primary}${secondary}`.trim();
+  return data.primary;
 }
 
 export function renderSegment(ctx: SegmentRenderContext, segment: SegmentDefinition): SegmentRenderResult | undefined {
   const data = segment.collect(ctx);
   if (!data) return undefined;
-  const prefix = `${segment.icon}${" ".repeat(segment.iconSpacing ?? 1)}`;
+  const prefix = `${ctx.styles.icons[segment.id]?.(segment.icon) ?? segment.icon} `;
   const fit = data.fit;
   return {
     id: segment.id,
-    tone: data.tone ?? "normal",
     text: `${prefix}${displayForMode(data, ctx.widthMode)}`.trim(),
     ...(fit ? { fit: (width: number) => fitCollectedSegment(fit, prefix, width) } : {}),
   };

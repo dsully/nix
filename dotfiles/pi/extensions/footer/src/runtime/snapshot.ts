@@ -17,7 +17,6 @@ export interface StateContextUsageInputs {
 export interface StateThinkingInputs {
   model?: StateModelInputs;
   thinkingLevel: string;
-  availableProviderCount: number;
 }
 
 export interface StateLifecycleInputs extends StateThinkingInputs {
@@ -89,16 +88,6 @@ export function usageTotalsFromEntries(entries: readonly StateSessionEntry[]): U
   return usage;
 }
 
-function availableProviderCountFromContext(ctx: ExtensionContext): number {
-  const scopedModels = ctx.scopedModels ?? [];
-  const availableModels = scopedModels.length > 0 ? scopedModels.map((entry) => entry.model) : ctx.modelRegistry.getAvailable();
-  const providers = new Set<string>();
-  for (const model of availableModels) {
-    if (typeof model.provider === "string" && model.provider) providers.add(model.provider);
-  }
-  return Math.max(1, providers.size);
-}
-
 function modelInputsFromContext(ctx: ExtensionContext): StateModelInputs | undefined {
   const model = ctx.model;
   if (!model) return undefined;
@@ -126,7 +115,6 @@ export function thinkingInputsFromContext(ctx: ExtensionContext, thinkingLevel: 
   return {
     model: modelInputsFromContext(ctx),
     thinkingLevel,
-    availableProviderCount: availableProviderCountFromContext(ctx),
   };
 }
 
