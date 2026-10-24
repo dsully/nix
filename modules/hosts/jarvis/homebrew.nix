@@ -31,6 +31,7 @@
       "serverbuddy"
       "signal"
       "superduper"
+      "swiftcord"
       "syncthing-app"
       "tailscale-app"
       "telegram"

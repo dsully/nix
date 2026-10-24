@@ -48,7 +48,6 @@ mkUserModule {
         ]
         ++ (with my.pkgs; [
           clean-dev-dirs
-          timecop
           xdg-open-svc
         ]);
     };
