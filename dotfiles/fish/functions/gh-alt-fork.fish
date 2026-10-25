@@ -1,6 +1,6 @@
 function gh-alt-fork --description "Fork and clone a GitHub repo as the alt account: gh-alt-fork <owner/repo | https://github.com/owner/repo>"
 
-    # Token comes from $GH_ALT_TOKEN, else from `gh auth token --user $GH_ALT_USER`.
+    # Token comes from $GH_ALT_TOKEN, else from 1Password.
     set -l key ~/.ssh/gh-alt
     set -q GH_ALT_KEY; and set key $GH_ALT_KEY
 
@@ -16,7 +16,7 @@ function gh-alt-fork --description "Fork and clone a GitHub repo as the alt acco
     if set -q GH_ALT_TOKEN
         set -fx GH_TOKEN $GH_ALT_TOKEN
     else
-        set -fx GH_TOKEN (command gh auth token --user $GH_ALT_USER); or return 1
+        set -fx GH_TOKEN (op item get 5u7bz6bpn4qfhvtkvi2neah3oq --fields label=token --reveal); or return 1
     end
 
     # `command gh` skips the 1Password gh wrapper, which ignores GH_TOKEN and prompts.
