@@ -9,6 +9,11 @@ _: {
       };
     };
 
+    tailscale = {
+      enable = true;
+      setFlags = ["--accept-dns=false" "--accept-routes=true" "--advertise-exit-node" "--ssh=true"];
+    };
+
     # zap is public; accept the hub only over the tailnet.
     beszel-agent = {
       enable = true;
