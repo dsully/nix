@@ -6,6 +6,7 @@
 }: {
   fishSecrets = {
     HOMEKIT_MCP_TOKEN = "op://Services/HomeBar MCP/credential";
+    RACHIO_ACCESS_TOKEN = "op://Services/Rachio MCP/credential";
   };
 
   home = {
@@ -35,6 +36,20 @@
         headers = {
           Authorization = "Bearer {env:HOMEKIT_MCP_TOKEN}";
         };
+        enabled = false;
+        stateless = true;
+      };
+      quicken = {
+        command = lib.getExe perSystem.self.quicken-mac-mcp;
+        env = {
+          QUICKEN_ALLOW_WRITES = "1";
+        };
+        enabled = false;
+        stateless = true;
+      };
+      rachio = {
+        command = lib.getExe' pkgs.uv "uvx";
+        args = ["rachio-mcp"];
         enabled = false;
         stateless = true;
       };
