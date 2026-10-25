@@ -154,7 +154,6 @@ in
       }
 
       (lib.mkIf config.programs.pi-coding-agent.enable {
-
         warnings =
           map (p: "programs.pi-coding-agent.excludePackages: \"${p}\" matches no default pi package source.")
           (lib.subtractLists (map (p: p.source or p) piDefaultPackages) config.programs.pi-coding-agent.excludePackages);
