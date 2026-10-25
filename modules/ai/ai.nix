@@ -46,8 +46,7 @@ in
             mcp-mux
             mcp-server-git-rs
             mcptools
-          ])
-          ++ [pkgs.mcp-nixos];
+          ]);
       };
 
       programs = {

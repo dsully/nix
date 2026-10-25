@@ -118,13 +118,6 @@
         command = lib.getExe my.pkgs.just-mcp;
         enabled = false;
       };
-      nixos = {
-        command = lib.getExe pkgs.mcp-nixos;
-        env = {
-          PYTHON_GIL = "1";
-        };
-        enabled = false;
-      };
     }
     // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       apple-apps = {
