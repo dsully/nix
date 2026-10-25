@@ -11,7 +11,7 @@ _: {
 
     tailscale = {
       enable = true;
-      setFlags = ["--accept-dns=false" "--accept-routes=true" "--advertise-exit-node" "--ssh=true"];
+      setFlags = ["--accept-dns=true" "--accept-routes=true" "--advertise-exit-node" "--ssh=true"];
     };
 
     # zap is public; accept the hub only over the tailnet.
