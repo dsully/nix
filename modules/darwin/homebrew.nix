@@ -66,6 +66,7 @@ mkSystemModule {
         "CotEditor" = 1024640650;
         "Dato" = 1470584107;
         "Hyperspace" = 6739505345;
+        "Itsyhome" = 6758070650;
         "JSONPeep" = 1458969831;
         "Kagi Search" = 1622835804;
         "MarkChart" = 6475648822;
@@ -86,6 +87,7 @@ mkSystemModule {
         "Unforgetful" = 6785630295;
         "Userscripts" = 1463298887;
         "wBlock" = 6746388723;
+        "Weatherling" = 6813641198;
         "WiFi Signal" = 525912054;
         "Wipr" = 1662217862;
         "WordService" = 899972312;
