@@ -58,7 +58,7 @@ in
             version-lsp
           ])
           ++ (
-            with pkgs.llm-agents;
+            with my.pkgs;
               lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
                 apple-notes-editor
               ]
