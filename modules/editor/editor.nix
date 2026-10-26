@@ -52,6 +52,7 @@ in
             luajitPackages.nlua
           ]
           ++ (with my.pkgs; [
+            apple-notes-editor
             neovim
             rust-markdown-lsp-server
             shell-lsp
