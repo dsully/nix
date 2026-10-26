@@ -296,10 +296,12 @@ in
         programs = {
           agent-skills = {
             targets.pi.enable = true;
+
             sources.ponytail = {
               input = "ponytail";
               subdir = "skills";
             };
+
             # pi-only: Claude Code gets these from the ponytail plugin.
             skills.explicit = lib.genAttrs ["ponytail-audit" "ponytail-review"] (id: {
               from = "ponytail";
@@ -308,7 +310,16 @@ in
               transform = hideFromModel;
             });
           };
+
           ai.superpowers.agents = ["pi"];
+
+          fish = {
+            functions.pi-bolt = {
+              description = "Wrapper around pi-bolt for resume";
+              wraps = "pi";
+              body = "command pi $argv";
+            };
+          };
 
           pi-coding-agent = {
             package = wrapperLib.wrapPackage {
