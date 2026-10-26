@@ -38,6 +38,9 @@
     config.programs.herdr.enable
     && builtins.elem "claude" config.programs.herdr.integrations;
 
+  # `rex skill setup` writes the same hook into settings.json, which the same rewrite removes.
+  rexEnabled = config.modules.users.${config.home.username}.rex.enable or false;
+
   herdrClaudeHook = "${config.programs.claude-code.configDir}/hooks/herdr-agent-state.sh";
 
   events = {
@@ -80,17 +83,28 @@
       })
     ];
 
-    SessionStart = lib.optional herdrClaudeEnabled (group {
-      matcher = "*";
-      hooks = [
-        (hook {
-          name = "herdr-session";
-          command = "bash '${herdrClaudeHook}' session";
-          targets = ["claude"];
-          timeout = 10;
-        })
-      ];
-    });
+    SessionStart =
+      lib.optional herdrClaudeEnabled (group {
+        matcher = "*";
+        hooks = [
+          (hook {
+            name = "herdr-session";
+            command = "bash '${herdrClaudeHook}' session";
+            targets = ["claude"];
+            timeout = 10;
+          })
+        ];
+      })
+      ++ lib.optional rexEnabled (group {
+        hooks = [
+          (hook {
+            name = "rex-session";
+            command = "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'";
+            targets = ["claude"];
+            timeout = 5;
+          })
+        ];
+      });
   };
 
   supportsTarget = target: hookDef:
