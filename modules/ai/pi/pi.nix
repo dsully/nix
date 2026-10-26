@@ -46,7 +46,6 @@
         source = "npm:@injaneity/pi-computer-use";
         extensions = [];
       }
-      "npm:@optomatica/pi-auto-session-name"
       # "npm:pi-agent-browser-native"
       # "npm:pi-autoresearch"
       # "npm:pi-blackhole"

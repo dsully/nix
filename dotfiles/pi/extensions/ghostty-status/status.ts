@@ -8,14 +8,18 @@ export interface StatusReport {
   /** Short human text. Already sanitized by the caller is fine; this module sanitizes again. */
   detail: string;
   folder: string;
+  name?: string;
+  /** Spinner frame index while working. */
+  frame?: number;
   kind?: BlockedKind;
 }
 
 const WAITING_TOOLS = new Set(["ask_user_question", "exit_plan_mode", "enter_plan_mode"]);
 
-const STATUS_EMOJI: Record<StatusPhase, string> = {
+export const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+
+const STATUS_EMOJI: Record<Exclude<StatusPhase, "working">, string> = {
   idle: "",
-  working: "⚡",
   blocked: "✋",
   done: "✅",
   error: "❌",
@@ -23,17 +27,21 @@ const STATUS_EMOJI: Record<StatusPhase, string> = {
 
 /** Tab badge. Question waits are distinct from permission waits. */
 export function statusEmoji(report: StatusReport): string {
+  if (report.phase === "working") return SPINNER[(report.frame ?? 0) % SPINNER.length];
   if (report.phase === "blocked" && report.kind === "question") return "❓";
   return STATUS_EMOJI[report.phase];
 }
 
-export function tabTitle(report: StatusReport): string {
+/** Tab: mark and session name, or folder when unnamed. Window: the same, then the detail. */
+export function titles(report: StatusReport): { tab: string; window: string } {
   const mark = statusEmoji(report);
-  const parts = ["pi", sanitize(report.folder, 24)];
+  const folder = sanitize(report.folder, 24);
+  const tab = sanitize(report.name ?? "", 24) || folder;
+  const parts = [sanitize(report.name ?? "", 48) || folder];
   const detail = sanitize(report.detail, 48);
   if (detail && detail !== mark) parts.push(detail);
-  const body = parts.filter(Boolean).join(" · ");
-  return mark ? `${mark} ${body}` : body;
+  const window = parts.join(" · ");
+  return mark ? { tab: `${mark} ${tab}`, window: `${mark} ${window}` } : { tab, window };
 }
 
 export function activityFromTool(
@@ -47,16 +55,16 @@ export function activityFromTool(
   return { detail, blocked: false };
 }
 
+/** OSC 2 window title, OSC 1 tab title, and ConEmu OSC 9;3 tab title. Ghostty ignores OSC 1, so its tab shows OSC 2. */
+export function titleSequences(report: StatusReport): string {
+  const { tab, window } = titles(report);
+  return [osc(2, window), osc(1, tab), report.phase === "idle" ? osc(9, "3;") : osc(9, `3;${tab}`)].join("");
+}
+
 /** OSC bytes for one report. Ghostty 1.3.1 reads the title and OSC 9;4; newer builds also read OSC 7501. */
 export function statusSequences(report: StatusReport): string {
-  const title = tabTitle(report);
   const msg = sanitize(report.detail, 180) || statusEmoji(report) || "idle";
-  return [
-    osc(0, title),
-    report.phase === "idle" ? osc(9, "3;") : osc(9, `3;${title}`),
-    progressSequence(report.phase),
-    programStatus(report, msg),
-  ].join("");
+  return [titleSequences(report), progressSequence(report.phase), programStatus(report, msg)].join("");
 }
 
 export function clearSequences(): string {

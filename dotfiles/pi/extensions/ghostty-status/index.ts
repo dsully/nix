@@ -1,27 +1,29 @@
 /**
- * Report pi's run state to Ghostty.
+ * Report pi's run state and session name to Ghostty.
  *
- * Ghostty 1.3.1 shows OSC 0 / OSC 9;3 in the tab title and OSC 9;4 as the
- * progress mark under the tab bar. OSC 7501 is the program-status protocol
- * for terminals that understand it; 1.3.1 ignores it.
+ * Titles go out as OSC 2 (window) and OSC 1 (tab). Ghostty 1.3.1 ignores
+ * OSC 1, so its tab shows the OSC 2 title. OSC 9;4 is the progress mark under
+ * the tab bar. OSC 7501 is the program-status protocol for terminals that
+ * understand it; 1.3.1 ignores it.
  *
  * Leave terminal.showTerminalProgress off. Its keepalive rewrites OSC 9;4;3
  * and would cover the paused "waiting for you" state.
  */
-import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
   activityFromTool,
   assistantSummary,
   clearSequences,
   progressKeepalive,
   statusSequences,
-  tabTitle,
+  titleSequences,
   type BlockedKind,
   type StatusPhase,
   type StatusReport,
 } from "./status.ts";
 
-const KEEPALIVE_MS = 1000;
+const TICK_MS = 200;
+const KEEPALIVE_TICKS = 5;
 
 interface Block {
   detail: string;
@@ -38,23 +40,25 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
   let summary = "";
   let activity = "";
   let folder = "pi";
+  let frame = 0;
   const blocking = new Map<string, Block>();
   let timer: ReturnType<typeof setInterval> | undefined;
   let lastWritten = "";
-  let ctx: ExtensionContext | undefined;
 
   const report = (): StatusReport => {
+    const name = pi.getSessionName();
     const block =
       promptDepth > 0
         ? { detail: promptDetail, kind: promptKind }
         : blocking.size > 0
           ? [...blocking.values()].at(-1)
           : undefined;
-    if (block) return { phase: "blocked", detail: block.detail, folder, kind: block.kind };
-    if (running || compacting) return { phase: "working", detail: activity || (compacting ? "📦" : "💭"), folder };
-    if (outcome === "error") return { phase: "error", detail: summary || "❌", folder };
-    if (outcome === "completed" && summary) return { phase: "done", detail: summary, folder };
-    return { phase: "idle", detail: "", folder };
+    if (block) return { phase: "blocked", detail: block.detail, folder, name, kind: block.kind };
+    if (running || compacting)
+      return { phase: "working", detail: activity || (compacting ? "📦" : "💭"), folder, name, frame };
+    if (outcome === "error") return { phase: "error", detail: summary || "❌", folder, name };
+    if (outcome === "completed" && summary) return { phase: "done", detail: summary, folder, name };
+    return { phase: "idle", detail: "", folder, name };
   };
 
   const write = (force = false) => {
@@ -64,30 +68,32 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     if (!force && bytes === lastWritten) return;
     lastWritten = bytes;
     process.stdout.write(bytes);
-    ctx?.ui.setTitle(tabTitle(next));
     const phase: StatusPhase = next.phase;
-    if (phase === "idle") stopKeepalive();
-    else startKeepalive();
+    if (phase === "idle") stopTicker();
+    else startTicker();
   };
 
-  const startKeepalive = () => {
+  // Animates the spinner while working and repeats OSC 9;4, which Ghostty drops after ~15s without it.
+  const startTicker = () => {
     if (timer) return;
     timer = setInterval(() => {
-      const bytes = progressKeepalive(report().phase);
-      if (!process.stdout.isTTY || !bytes) return;
-      process.stdout.write(bytes);
-    }, KEEPALIVE_MS);
+      if (!process.stdout.isTTY) return;
+      frame++;
+      const now = report();
+      const title = now.phase === "working" ? titleSequences(now) : "";
+      const keepalive = frame % KEEPALIVE_TICKS === 0 ? progressKeepalive(now.phase) : "";
+      if (title || keepalive) process.stdout.write(title + keepalive);
+    }, TICK_MS);
     timer.unref?.();
   };
 
-  const stopKeepalive = () => {
+  const stopTicker = () => {
     if (!timer) return;
     clearInterval(timer);
     timer = undefined;
   };
 
-  const bind = (next: ExtensionContext) => {
-    ctx = next;
+  const bind = (next: { cwd: string }) => {
     folder = next.cwd.split("/").filter(Boolean).pop() || "pi";
   };
 
@@ -104,9 +110,14 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
   });
 
   pi.on("session_shutdown", async () => {
-    stopKeepalive();
+    stopTicker();
     if (process.stdout.isTTY) process.stdout.write(clearSequences());
     lastWritten = "";
+  });
+
+  // Pi rewrites OSC 0 to "π - <name> - <cwd>" just before this event reaches extensions.
+  pi.on("session_info_changed", async () => {
+    write(true);
   });
 
   pi.on("session_before_compact", async (_event, next) => {
