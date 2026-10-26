@@ -1,6 +1,7 @@
 /**
  * Deactivates tools whose job another declared tool already does, or that cannot work in this session, to save prompt tokens,
- * drops the system prompt's tool list (it repeats the tool declarations), and condenses rules that repeat tool descriptions.
+ * and condenses rules that repeat tool descriptions.
+ * Leaves toolSnippets alone: pi rebuilds the prompt with them after the first call, so removing them busts the prompt cache every turn.
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
@@ -48,11 +49,7 @@ export default function (pi: ExtensionAPI) {
     const active = pi.getActiveTools();
     if (active.some((name) => hidden.has(name))) pi.setActiveTools(active.filter((name) => !hidden.has(name)));
 
-    const options = event.systemPromptOptions as {
-      toolSnippets?: Record<string, string>;
-      toolGuidelines?: Record<string, string[]>;
-    };
-    if (options.toolSnippets) for (const name of Object.keys(options.toolSnippets)) delete options.toolSnippets[name];
+    const options = event.systemPromptOptions as { toolGuidelines?: Record<string, string[]> };
     if (options.toolGuidelines) Object.assign(options.toolGuidelines, rules);
   });
 }
