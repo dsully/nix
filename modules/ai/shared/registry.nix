@@ -118,6 +118,11 @@
         command = lib.getExe my.pkgs.just-mcp;
         enabled = false;
       };
+      superlogical = {
+        type = "http";
+        url = "https://www.superlogical.com/rex/community-mcp";
+        enabled = false;
+      };
     }
     // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       apple-apps = {
@@ -191,13 +196,14 @@
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
   # workspace-scoped index from the client's CWD, so a shared mux process would
-  # bind it to the wrong workspace for every other session.
+  # bind it to the wrong workspace for every other session. HTTP servers (with
+  # a `url`) have no process to mux.
   noMuxServers = ["indxr"];
 
   mcpServersMuxed =
     lib.mapAttrs (
       name: server:
-        if builtins.elem name noMuxServers
+        if builtins.elem name noMuxServers || server ? url
         then server
         else muxWrap server
     )

@@ -22,8 +22,9 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
 
+      # rex needs a netrc token that CI does not have; update it locally.
       - name: Update flake.lock
-        run: nix flake update
+        run: nix flake update $(jq -r '.nodes.root.inputs | keys[] | select(. != "rex")' flake.lock)
 
       # Re-pins llm-agents/nixpkgs from llm-agents' own lock. See `just up`.
       - name: Re-sync llm-agents

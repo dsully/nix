@@ -7,6 +7,7 @@ mkSystemManagerHost {
     cachix.enable = true;
     copypaste.enable = true;
     pi.enable = true;
+    rex.enable = false;
     rumdl.enable = true;
     unifi.enable = true;
   };
@@ -16,7 +17,10 @@ mkSystemManagerHost {
     ./server/system.nix
   ];
 
-  extraHomeModules = [./server/dsully.nix];
+  extraHomeModules = [
+    ./server/dsully.nix
+    ./server/rex.nix
+  ];
 
   # root@server: activate with `just switch-root`.
   extraHomeUsers.root.userConfig = {

@@ -5,6 +5,7 @@ mkDarwinHost {
   userConfig = {
     paste.enable = true;
     pi.enable = true;
+    rex.enable = true;
     rumdl.enable = true;
     ssh.opnixKey.enable = true;
     unifi.enable = true;

@@ -31,6 +31,9 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Needs the netrc from modules/dev/rex.nix; enables modules/hosts/server/rex.nix.
+    # rex.url = "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz";
+
     opnix.url = "github:brizzbuzz/opnix";
     opnix.inputs.nixpkgs.follows = "nixpkgs";
 
