@@ -30,7 +30,6 @@ mkSystemModule {
 
       casks = [
         "1password"
-        "cotypist"
         "daisydisk"
         "dash"
         "fastmail"
@@ -39,7 +38,6 @@ mkSystemModule {
         "jithin-sabu/tap/purge"
         "keka"
         "little-snitch"
-        "lunar"
         "markdown-preview"
         "marked-app"
         "monodraw"
@@ -93,6 +91,17 @@ mkSystemModule {
         "WordService" = 899972312;
         "Yoink" = 457622435;
       };
+
+      taps = [
+        {
+          name = "jithin-sabu/tap";
+          trusted = true;
+        }
+        {
+          name = "skulkworks/tap";
+          trusted = true;
+        }
+      ];
     };
   };
 }

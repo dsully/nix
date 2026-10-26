@@ -1,7 +1,7 @@
 {
   homebrew = {
     onActivation = {
-      cleanup = "uninstall";
+      cleanup = "check";
       extraFlags = [
         "--force"
       ];
@@ -16,6 +16,7 @@
       "backblaze-restore"
       "boltai"
       "claude"
+      "cotypist"
       "discord"
       "downie"
       "fission"
