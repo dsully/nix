@@ -29,7 +29,7 @@
     then "/Applications/Tailscale.app/Contents/MacOS/Tailscale"
     else "${pkgs.tailscale}/bin/tailscale";
 
-  # Exits 0 iff tailscaled is up AND the named peer is currently online.
+  # Exits 0 if tailscaled is up AND the named peer is currently online.
   # Matches on DNSName prefix (e.g. "gateway") rather than the peer's OS
   # HostName, because the two don't always coincide -- the UDM advertises
   # itself as "udm-pro" but its tailnet DNS name is "gateway.<tailnet>".
@@ -47,15 +47,17 @@
   # not match, so the override still fires when away from home.
   homeLanPrefix = "10.0.0.";
 
-  # Exits 0 iff this host currently has an IPv4 address on the home LAN.
+  # Exits 0 if this host currently has an IPv4 address on the home LAN.
   # `ifconfig` (darwin) and `ip addr` (linux) both emit the literal
   # substring "inet <addr>", so a single grep handles both.
   ifaceCmd =
     if pkgs.stdenv.hostPlatform.isDarwin
     then "/sbin/ifconfig"
     else "${pkgs.iproute2}/bin/ip addr";
+  # Other networks also use 10.0.0.0/24, so confirm the UniFi console answers with a home-only record.
   onHomeLan = pkgs.writeShellScript "ssh-on-home-lan" ''
-    ${ifaceCmd} 2>/dev/null | grep -q "inet ${homeLanPrefix}"
+    ${ifaceCmd} 2>/dev/null | grep -q "inet ${homeLanPrefix}" &&
+      [ "$(${pkgs.dnsutils}/bin/dig +short +time=1 +tries=1 @${homeLanPrefix}1 server.sully.org A 2>/dev/null)" = "${homeLanPrefix}100" ]
   '';
 
   # Match-exec body: peer online AND (when the peer is itself a home-LAN host)
@@ -75,14 +77,14 @@
     ControlPath = "none";
   };
 
-  # Hosts reachable on both a non-tailscale address (LAN or public) and
-  # via MagicDNS. The Host block sets the default; a sibling Match block
-  # overrides HostName to the ts.net name when tailscaled is up.
+  # Hosts with a non-tailscale address (LAN or public). Those with `ts` are
+  # also reachable via MagicDNS: a sibling Match block overrides HostName to
+  # the ts.net name when tailscaled is up. zap has no `ts`, so it always uses
+  # its public address and OpenSSH rather than Tailscale SSH.
   # Trailing dots stop a MagicDNS miss from falling through to the *.sully.org wildcard (zap).
   dual = {
     zap = {
       ip = "172.104.194.233";
-      ts = "zap.tail2ca1.ts.net.";
       forward = true;
       mux = true;
       aliases = ["er"];
@@ -129,7 +131,7 @@
   # generated ~/.ssh/config (home-manager sorts blocks alphabetically by attr
   # key). Required because ssh_config uses first-value-wins per option, so a
   # Match override must appear before its corresponding Host block.
-  tsMatches = lib.mapAttrs' (n: s: lib.nameValuePair "0-ts-${n}" (mkTsMatch n s)) dual;
+  tsMatches = lib.mapAttrs' (n: s: lib.nameValuePair "0-ts-${n}" (mkTsMatch n s)) (lib.filterAttrs (_: s: s ? ts) dual);
 in
   mkUserModule {
     name = "ssh";
@@ -234,6 +236,11 @@ in
           (lib.mkIf (hostName != "jarvis") {
             "jarvis" = {
               HostName = "10.0.0.98";
+            };
+
+            "0-ts-jarvis" = {
+              header = ''Match originalhost jarvis exec "${tsExec "jarvis" "10.0.0.98"}"'';
+              HostName = "jarvis.tail2ca1.ts.net.";
             };
           })
 
