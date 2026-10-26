@@ -10,16 +10,16 @@
 }:
 buildNpmPackage rec {
   pname = "caddy-visualizer";
-  version = "1.2.0";
+  version = "1.2.0-32d44793";
 
   src = fetchFromGitHub {
     owner = "dree007";
     repo = "caddy-visualizer";
     tag = "v${version}";
-    hash = "sha256-Mm9pRO7OEAHC+iWdkHJZ3jYtJQVQRok5ECmu44HFWtw=";
+    hash = "sha256-At+H5tc0EDUsyi66n1lwgUjBRToX8vhf/ccZd+bEYL0=";
   };
 
-  npmDepsHash = "sha256-iVJ2UF66zK39HsNdh8ZLFZ7LB0PTVaLn+7TUIS+C4G8=";
+  npmDepsHash = "sha256-5bdCaV11Ec9wisVabUlKT8C8ZGPu3KxA5sdJki/rQEc=";
   nodejs = nodejs_24;
 
   nativeBuildInputs = [makeWrapper python3];
