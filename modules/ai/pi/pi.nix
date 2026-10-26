@@ -315,6 +315,7 @@ in
             package = wrapperLib.wrapPackage {
               inherit pkgs;
               package = my.pkgs.pi-bolt;
+              drv.name = "${my.pkgs.pi-bolt.name}-wrapped";
 
               envDefault = {
                 FFF_ENABLE_HOME_SCAN = "0";

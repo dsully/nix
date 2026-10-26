@@ -17,6 +17,7 @@ mkUserModule {
         command = "${config.home.homeDirectory}/.local/bin/unifi-mcp-server";
         env = {
           UNIFI_API_TYPE = "local";
+          UNIFI_AUDIT_LOG_ENABLED = "false";
           UNIFI_DEFAULT_SITE = "default";
           UNIFI_LOCAL_HOST = "10.0.0.1";
           UNIFI_LOCAL_VERIFY_SSL = "false";
