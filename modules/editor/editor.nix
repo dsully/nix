@@ -52,12 +52,17 @@ in
             luajitPackages.nlua
           ]
           ++ (with my.pkgs; [
-            apple-notes-editor
             neovim
             rust-markdown-lsp-server
             shell-lsp
             version-lsp
-          ]);
+          ])
+          ++ (
+            with pkgs.llm-agents;
+              lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+                apple-notes-editor
+              ]
+          );
       };
 
       programs.uv.tool.packages = [
