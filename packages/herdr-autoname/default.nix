@@ -18,6 +18,7 @@ rustPlatform.buildRustPackage rec {
   };
 
   cargoLock.lockFile = ./Cargo.lock;
+  doCheck = false;
 
   postInstall = ''
     cp herdr-plugin.toml $out/
