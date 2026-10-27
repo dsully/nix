@@ -23,26 +23,26 @@
     exit 127
   '';
 
-  fishScript = name: runtimeInputs: text:
-    pkgs.writeTextFile {
-      inherit name;
-      destination = "/bin/${name}";
-      executable = true;
-      text = ''
-        #!${lib.getExe pkgs.fish}
-        set -p PATH ${lib.makeBinPath runtimeInputs}
-        ${text}
-      '';
-      checkPhase = "${lib.getExe pkgs.fish} --no-execute $target";
-      meta.mainProgram = name;
-    };
-
-  rexHints = fishScript "rex-hints" [rexCli pkgs.fzf pkgs.gawk pkgs.ripgrep] (builtins.readFile ./hints.fish);
-
-  rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) ''
-    set -l sessions_lua ${./sessions.lua}
-    ${builtins.readFile ./project-picker.fish}
-  '';
+  # fishScript = name: runtimeInputs: text:
+  #   pkgs.writeTextFile {
+  #     inherit name;
+  #     destination = "/bin/${name}";
+  #     executable = true;
+  #     text = ''
+  #       #!${lib.getExe pkgs.fish}
+  #       set -p PATH ${lib.makeBinPath runtimeInputs}
+  #       ${text}
+  #     '';
+  #     checkPhase = "${lib.getExe pkgs.fish} --no-execute $target";
+  #     meta.mainProgram = name;
+  #   };
+  #
+  # rexHints = fishScript "rex-hints" [rexCli pkgs.fzf pkgs.gawk pkgs.ripgrep] (builtins.readFile ./hints.fish);
+  #
+  # rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) ''
+  #   set -l sessions_lua ${./sessions.lua}
+  #   ${builtins.readFile ./project-picker.fish}
+  # '';
 
   nordThemeId = "custom-93EEFE7D-B004-481D-AE29-BE2E029C3E99";
 
@@ -69,7 +69,7 @@
         source.ghosttyMigration.themeName = "Nord";
         palette = {
           background = rgb c.bg;
-          foreground = rgb c.fg;
+          foreground = rgb c.white.dim;
           cursor = rgb c.white.bright;
           cursorText = rgb c.bg;
           selectionBackground = rgb c.white.bright;
@@ -83,7 +83,7 @@
             c.magenta.base
             c.cyan.bright
             c.white.base
-            c.gray.base
+            "#596377"
             c.red.base
             c.green.base
             c.yellow.base
@@ -93,7 +93,7 @@
             c.white.bright
           ];
           paletteBase = {};
-          paletteGenerate = true;
+          paletteGenerate = false;
           paletteHarmonious = true;
           paletteOverrides = {};
         };
@@ -116,20 +116,25 @@ in
       # Rebuilds overwrite these keys if they are changed in Rex's Settings.
       (forPlatform {
         darwin.system.defaults.CustomUserPreferences."com.superlogical.rex" = {
+          "rex.agents.names-sessions" = 1;
           "rex.client.remoteControl" = true;
           "rex.server.automatic-restart-enabled" = true;
           "rex.server.block-plugin-reload-enabled" = false;
           "rex.server.run-mode" = "bundled";
           "Workspace.appearance" = "dark";
+          "Workspace.appIconVisibility" = "dockOnly";
           "Workspace.darkThemeID" = nordThemeId;
           "Workspace.darkUsesExtendedThemePalette" = 1;
-          "Workspace.inactivePaneFadeMode" = "both";
-          "Workspace.interfaceStyle" = "blendTheme";
+          "Workspace.inactivePaneFadeMode" = "none";
+          "Workspace.interfaceStyle" = "useTheme";
           "Workspace.lightThemeID" = nordThemeId;
+          "Workspace.notificationPosition" = "top-right";
+          "Workspace.showsActivePaneBorder" = 1;
+          "Workspace.showsProcessesInActivity" = 1;
           "Workspace.sidebarPosition" = "left";
           "Workspace.tabIconCount" = 4;
           "Workspace.tabIconTintMode" = "off";
-          "Workspace.tabsFillAvailableSpace" = 0;
+          "Workspace.tabsFillAvailableSpace" = 1;
           "Workspace.tabStyle" = "horizontal";
           "Workspace.terminalAllowsLigatures" = 0;
           "Workspace.terminalCustomSchemeLinks" = "ask";
@@ -138,7 +143,8 @@ in
           "Workspace.terminalFontSmoothing" = 1;
           "Workspace.terminalUsesDisplayP3" = 1;
           "Workspace.terminalUseThemePalette" = 1;
-          "Workspace.usesStandardInactiveWindowPaneStyles" = true;
+          "Workspace.tintsPanesWithProgramBackground" = 0;
+          "Workspace.usesStandardInactiveWindowPaneStyles" = false;
         };
       })
     ];
@@ -175,12 +181,12 @@ in
         packages = lib.optional isDarwin rexCli;
       };
 
-      xdg.configFile."rex/init.lua" = lib.mkIf isDarwin {
-        source = pkgs.replaceVars ./init.lua {
-          rexHints = lib.getExe rexHints;
-          rexProjectPicker = lib.getExe rexProjectPicker;
-        };
-      };
+      # xdg.configFile."rex/init.lua" = lib.mkIf isDarwin {
+      #   source = pkgs.replaceVars ./init.lua {
+      #     rexHints = lib.getExe rexHints;
+      #     rexProjectPicker = lib.getExe rexProjectPicker;
+      #   };
+      # };
 
       programs = {
         ai.skills.local.ids = ["rex"];
