@@ -31,6 +31,7 @@ interface Block {
 }
 
 export default function ghosttyStatus(pi: ExtensionAPI) {
+  if (process.env.TERM !== "xterm-ghostty") return;
   let running = false;
   let compacting = false;
   let promptDepth = 0;
