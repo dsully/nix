@@ -32,6 +32,8 @@
       nord14 = config.colors.green.base;
       nord15 = config.colors.magenta.base;
       nordMuted = "#8b95a7";
+      # Secondary UI text (widgets, hints, status lines); nord3 and nordMuted are too faint on nord0.
+      nordSubtle = "#b4bccb";
       # Subtle Nord-tinted panel backgrounds (blend.* in colors.nix), replacing
       # the off-palette defaults for the custom-message and tool-error blocks.
       nordCustomBg = config.colors.blend.blue;
@@ -46,8 +48,8 @@
       success = "nord14";
       error = "nord11";
       warning = "nord12";
-      muted = "nordMuted";
-      dim = "nord3";
+      muted = "nordSubtle";
+      dim = "nordSubtle";
       text = "nord6";
       thinkingText = "nord3";
       selectedBg = "nord1";

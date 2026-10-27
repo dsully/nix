@@ -37,7 +37,7 @@ mkSystemModule {
 
         universalaccess = {
           reduceMotion = false;
-          reduceTransparency = false;
+          reduceTransparency = true;
         };
 
         CustomUserPreferences = {
