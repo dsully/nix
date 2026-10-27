@@ -19,14 +19,22 @@ function commit -d "Stage and generate AI commit message from diff"
 
     set_color normal
 
-    set -l prompt "Analyze this git diff and generate a concise, professional commit message following conventional commit format. Use the structure:
-    <type>(<optional scope>): <short description><two newlines>
+    set -l prompt "Write a git commit message for the staged diff, in conventional commit format.
 
-    <body and/or bullet points newline separated>
+Subject line: <type>(<scope>): <summary>
+- type: one of feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
+- scope: optional, one word naming the area affected
+- summary: imperative mood, lowercase, under 60 characters. Say what the change does, not which files it touches.
 
-Example types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-Include a body for more details in bullet points.
-Just return the commit message as plain text. Do not wrap it in backticks or any other formatting."
+Body: optional. Most commits need none. Add one only for something a reviewer cannot get from the subject: a non-obvious behavior, a limitation, or a breaking change. Keep it to 1-3 short lines.
+
+Never:
+- list the files, modules, functions, or classes added or changed
+- mention tests, CLI/command registration, imports, or other wiring that follows from the main change
+- restate the subject in the body
+- invent a motivation the diff does not show
+
+Output only the commit message as plain text, with no backticks or other formatting."
 
     set -l msg
 
