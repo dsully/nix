@@ -63,6 +63,7 @@ mkSystemModule {
         "Color Picker" = 1545870783;
         "CotEditor" = 1024640650;
         "Dato" = 1470584107;
+        "Hindsight" = 6806331002;
         "Hyperspace" = 6739505345;
         "Itsyhome" = 6758070650;
         "JSONPeep" = 1458969831;
