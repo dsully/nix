@@ -36,7 +36,7 @@
     envs = lib.concatLists (lib.mapAttrsToList (k: v: ["-e" "${k}=${v}"]) (cfg.defaultEnvironment // c.environment));
     envFiles = lib.concatMap (f: ["--env-file" f]) c.environmentFiles;
 
-    runArgs = lib.concatStringsSep " " (
+    runArgs = lib.escapeShellArgs (
       ["run" "--rm" "--name" name]
       ++ c.extraOptions
       ++ ports
