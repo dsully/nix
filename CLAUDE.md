@@ -82,7 +82,7 @@ Every `mkUserModule` is on by default; host-specific ones declare `default = fal
 
 ### AI tooling (`modules/ai/`)
 
-`modules/ai/ai.nix` is the core capability: it builds the registry (`registry.nix`, `hooks.nix`, `permissions.nix`) and exposes it as `_module.args.ai` (helpers like `ai.muxWrap`). `ai` `requires` the default tools (`ccstatusline`, `claude-code`, `herdr`, `mcp-mux`, `skills`), so `ai.enable` alone turns the set on or off and a host disables one tool with `<tool>.enable = false`. Tools that read the `ai` arg (`claude-code`, `codex`, `pi`, `mcp-mux`, `unifi`) declare `needs = ["ai"]` instead of `requires`, which would cycle; `skills` merges `commands.nix`/`superpowers.nix`, and `pi` merges `theme.nix`, as fragments. Shared content (`AGENTS.md`, `rules/`, `output-styles/`, `plugins/`, `hooks/`) lives in `modules/ai/shared/`.
+`modules/ai/ai.nix` is the core capability: it builds the registry (`registry.nix`, `hooks.nix`, `permissions.nix`) and exposes it as `_module.args.ai` (helpers like `ai.muxWrap`). `ai` `requires` the default tools (`ccstatusline`, `claude-code`, `mcp-mux`, `skills`), so `ai.enable` alone turns the set on or off and a host disables one tool with `<tool>.enable = false`. Tools that read the `ai` arg (`claude-code`, `codex`, `pi`, `mcp-mux`, `unifi`) declare `needs = ["ai"]` instead of `requires`, which would cycle; `skills` merges `commands.nix`/`superpowers.nix`, and `pi` merges `theme.nix`, as fragments. Shared content (`AGENTS.md`, `rules/`, `output-styles/`, `plugins/`, `hooks/`) lives in `modules/ai/shared/`.
 
 ### Secrets — 1Password via opnix
 

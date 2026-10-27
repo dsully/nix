@@ -30,18 +30,8 @@
     }
     // lib.optionalAttrs (matcher != null) {inherit matcher;};
 
-  # `herdr integration install claude` writes this hook into settings.json
-  # itself, but claudeCodeSettings rewrites that file from the store on every
-  # activation. Declaring the same entry here is what makes it survive; herdr
-  # matches on the command string and does not add a duplicate.
-  herdrClaudeEnabled =
-    config.programs.herdr.enable
-    && builtins.elem "claude" config.programs.herdr.integrations;
-
   # `rex skill setup` writes the same hook into settings.json, which the same rewrite removes.
   rexEnabled = config.modules.users.${config.home.username}.rex.enable or false;
-
-  herdrClaudeHook = "${config.programs.claude-code.configDir}/hooks/herdr-agent-state.sh";
 
   events = {
     PreToolUse = [
@@ -84,18 +74,7 @@
     ];
 
     SessionStart =
-      lib.optional herdrClaudeEnabled (group {
-        matcher = "*";
-        hooks = [
-          (hook {
-            name = "herdr-session";
-            command = "bash '${herdrClaudeHook}' session";
-            targets = ["claude"];
-            timeout = 10;
-          })
-        ];
-      })
-      ++ lib.optional rexEnabled (group {
+      lib.optional rexEnabled (group {
         hooks = [
           (hook {
             name = "rex-session";

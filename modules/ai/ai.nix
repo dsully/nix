@@ -16,7 +16,6 @@ in
     requires = [
       "ccstatusline"
       "claude-code"
-      "herdr"
       "mcp-mux"
       "skills"
     ];
