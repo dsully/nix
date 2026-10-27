@@ -4,13 +4,13 @@
 }:
 stdenv.mkDerivation rec {
   pname = "apple-notes-editor";
-  version = "0.1.0";
+  version = "0.1.1";
 
   # Private release assets need a GitHub token, which Nix fetchers cannot send.
   src = requireFile {
     name = "${pname}-aarch64-apple-darwin.tar.gz";
     url = "https://github.com/dsully/${pname}/releases/tag/v${version}";
-    hash = "sha256-BOKiNA5kMxTH9MgRiA+335ZPppovMh8k4Bk5b55izTw=";
+    hash = "sha256-tK/pfnLbSXw1icJ3F9jF9cvtrqXvVMifhlEcfelHJ2A=";
     message = ''
       Add the private release asset to the store using "just install" in the repo.
     '';
