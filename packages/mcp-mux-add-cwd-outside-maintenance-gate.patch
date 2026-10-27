@@ -1,0 +1,33 @@
+diff --git i/muxcore/daemon/maintenance.go w/muxcore/daemon/maintenance.go
+index 1a6e24c..ce6d29a 100644
+--- i/muxcore/daemon/maintenance.go
++++ w/muxcore/daemon/maintenance.go
+@@ -91,9 +91,18 @@ func (d *Daemon) lockMaintenanceRegistry(key string) error {
+ func (d *Daemon) unlockMaintenanceRegistry() { d.mu.Unlock(); d.maintenanceGate.RUnlock() }
+ 
+ func (d *Daemon) admitOwner(entry *OwnerEntry, token, cwd string, env map[string]string, initial bool) (bool, error) {
+-	key := d.maintenanceContext(entry.ProtocolEra, entry.Command, entry.Args, cwd, env)
+ 	d.maintenanceGate.RLock()
+-	defer d.maintenanceGate.RUnlock()
++	admitted, err := d.admitOwnerUnderGate(entry, token, cwd, env, initial)
++	d.maintenanceGate.RUnlock()
++	// AddCwd re-acquires the gate via lockRequestAdmission; under a held RLock a queued Lock() deadlocks it (thebtf/mcp-mux#151).
++	if admitted {
++		entry.Owner.AddCwd(cwd)
++	}
++	return admitted, err
++}
++
++func (d *Daemon) admitOwnerUnderGate(entry *OwnerEntry, token, cwd string, env map[string]string, initial bool) (bool, error) {
++	key := d.maintenanceContext(entry.ProtocolEra, entry.Command, entry.Args, cwd, env)
+ 	if err := d.checkMaintenanceKeyLocked(key); err != nil {
+ 		return false, err
+ 	}
+@@ -122,7 +131,6 @@ func (d *Daemon) admitOwner(entry *OwnerEntry, token, cwd string, env map[string
+ 		}
+ 		entry.maintenanceContexts[key] = true
+ 		d.mu.Unlock()
+-		entry.Owner.AddCwd(cwd)
+ 	}
+ 	return admitted, nil
+ }

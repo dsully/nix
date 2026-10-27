@@ -14,7 +14,10 @@ buildGoModule rec {
     hash = "sha256-HPf6tqbLbjZhF7bgg43QV9KWvxfykG0x2Ab7SaK1fDs=";
   };
 
-  vendorHash = "sha256-282qTvR6quBwQgQMKMg9jlBhds4biX6k45aXHDEUedE=";
+  # Upstream thebtf/mcp-mux#151 (open): daemon deadlocks when owners join new cwds during a spawn.
+  patches = [./mcp-mux-add-cwd-outside-maintenance-gate.patch];
+
+  vendorHash = "sha256-a0aW+uQ8RcHJNyAS/SAhSP1GtqU5RLbSGZksgIp6rVU=";
   doCheck = false;
 
   subPackages = ["cmd/mcp-mux"];
