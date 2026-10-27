@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
   src = requireFile {
     name = "${pname}-aarch64-apple-darwin.tar.gz";
     url = "https://github.com/dsully/${pname}/releases/tag/v${version}";
-    hash = "sha256-tK/pfnLbSXw1icJ3F9jF9cvtrqXvVMifhlEcfelHJ2A=";
+    hash = "sha256-tsl3q1RyPkEBbrvvt/m90DYU/cteI5ZZRNJSAcu+Qyw=";
     message = ''
       Add the private release asset to the store using "just install" in the repo.
     '';
