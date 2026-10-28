@@ -317,7 +317,10 @@ in
             functions.pi-bolt = {
               description = "Wrapper around pi-bolt for resume";
               wraps = "pi";
-              body = "command pi $argv";
+              body = ''
+                isatty stdout; and printf '\e]0;%s\a' (path basename $PWD)
+                command pi $argv
+              '';
             };
           };
 
