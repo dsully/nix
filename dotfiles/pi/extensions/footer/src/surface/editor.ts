@@ -13,6 +13,7 @@ import {
 import { shortcutConflict } from "../input/keybinding.js";
 import type { PromptStash } from "../input/stash.js";
 import { stripControls } from "./format.js";
+import { forwardToInner } from "./forward.js";
 import { measureInputSurfaceFrame, renderInputSurfaceFrame, STASH_SHORTCUT } from "./frame.js";
 import { StatusLineRenderer } from "./status-line.js";
 import { formatSurfaceScrollIndicator } from "./layout.js";
@@ -74,27 +75,6 @@ type InnerEditor = EditorComponent & {
 /** The proxy from forwardToInner supplies these members from the inner editor. */
 // oxlint-disable-next-line typescript/no-unsafe-declaration-merging
 export interface FooterEditor extends EditorComponent {}
-
-/**
- * Members the frame does not define go to the inner editor: pi wires callbacks and
- * action handlers onto the editor by duck typing, so they must land there.
- */
-function forwardToInner(frame: FooterEditor, inner: InnerEditor): FooterEditor {
-  const target = inner as unknown as Record<PropertyKey, unknown>;
-  return new Proxy(frame, {
-    get(own, prop, receiver) {
-      if (prop in own) return Reflect.get(own, prop, receiver);
-      const value = target[prop];
-      return typeof value === "function" ? value.bind(inner) : value;
-    },
-    set(own, prop, value, receiver) {
-      if (prop in own) return Reflect.set(own, prop, value, receiver);
-      target[prop] = value;
-      return true;
-    },
-    has: (own, prop) => prop in own || prop in target,
-  });
-}
 
 /**
  * Frames whatever editor the previous factory produced, so editor layers from other
