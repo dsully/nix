@@ -118,11 +118,6 @@
         command = lib.getExe my.pkgs.just-mcp;
         enabled = false;
       };
-      superlogical = {
-        type = "http";
-        url = "https://www.superlogical.com/rex/community-mcp";
-        enabled = false;
-      };
     }
     // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       apple-apps = {

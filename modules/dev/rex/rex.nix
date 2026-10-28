@@ -195,6 +195,12 @@ in
 
         fish.completions.rex = "command -q rex; and rex completion fish | source";
 
+        mcp.servers.superlogical = {
+          type = "http";
+          url = "https://www.superlogical.com/rex/community-mcp";
+          enabled = false;
+        };
+
         # Rex's own guard, inlined: ssh keeps only the first SetEnv, so it must carry Host *'s too.
         ssh.settings."0-rex-terminfo" = {
           header = ''Match exec "[ x$TERM = xxterm-rex ] && ! grep -qxF -- %h '${homeDir}/.config/rex/terminfo-hosts' 2>/dev/null"'';
