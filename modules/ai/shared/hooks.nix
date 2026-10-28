@@ -73,17 +73,16 @@
       })
     ];
 
-    SessionStart =
-      lib.optional rexEnabled (group {
-        hooks = [
-          (hook {
-            name = "rex-session";
-            command = "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'";
-            targets = ["claude"];
-            timeout = 5;
-          })
-        ];
-      });
+    SessionStart = lib.optional rexEnabled (group {
+      hooks = [
+        (hook {
+          name = "rex-session";
+          command = "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'";
+          targets = ["claude"];
+          timeout = 5;
+        })
+      ];
+    });
   };
 
   supportsTarget = target: hookDef:
