@@ -73,6 +73,7 @@
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@ssk_dev/rpiv-todo-lean"
       "npm:@tifan/pi-copy-response"
+      "npm:@vanillagreen/pi-session-manager"
     ]
     ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
     ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
