@@ -8,6 +8,6 @@ lib.optionalAttrs (inputs ? rex) {
 
   services.rex = {
     enable = true;
-    tailscale.enable = true;
+    extraListen = ["tailnet://:7297"];
   };
 }

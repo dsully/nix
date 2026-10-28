@@ -7,7 +7,7 @@ mkSystemManagerHost {
     cachix.enable = true;
     copypaste.enable = true;
     pi.enable = true;
-    rex.enable = false;
+    rex.enable = true;
     rumdl.enable = true;
     unifi.enable = true;
   };
