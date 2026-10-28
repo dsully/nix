@@ -13,10 +13,10 @@
   piPath = "${config.xdg.configHome}/pi/agent";
 
   # Normalize via lib.hm.mcp.transformMcpServer to drop the typed schema's null
-  # and empty-default fields and add the exposure key/value.
+  # and empty-default fields. Exposure stays at pi's default "codemode": "deferred"
+  # tools loaded by tool_search change the declared tool list and reset the prompt cache.
   piMcpServers = lib.mapAttrs (name: server:
     lib.hm.mcp.transformMcpServer {inherit server;}
-    // {exposure = "deferred";}
     // lib.optionalAttrs (server.enabled == false) {disabled = true;}
     // lib.optionalAttrs (config.programs.pi-coding-agent.mcpDescriptions ? ${name}) {
       description = config.programs.pi-coding-agent.mcpDescriptions.${name};
@@ -399,6 +399,8 @@ in
                   showUntracked = false;
                 };
               };
+
+              observational-memory.showWorkerNotifications = false;
 
               npmCommand = [(lib.getExe bunRuntime)];
 
