@@ -37,15 +37,19 @@ Never:
 Output only the commit message as plain text, with no backticks or other formatting."
 
     set -l msg
+    set -l pathspec ':/'
+    for pattern in '*.lock' package-lock.json npm-shrinkwrap.json pnpm-lock.yaml go.sum '*.min.js' '*.min.css' '*.map'
+        set -a pathspec ":(top,glob,exclude)**/$pattern"
+    end
 
     # Apple's on-device fm model has a small context window; large diffs overflow
     # it and it emits nothing on stdout. Fall back to claude when fm is missing or fails.
     if command -q fm
-        set msg (git diff --cached | fm respond --model pcc --no-stream --instructions "$prompt" 2>/dev/null | string collect)
+        set msg (git diff --cached -- $pathspec | fm respond --model pcc --no-stream --instructions "$prompt" 2>/dev/null | string collect)
     end
 
     if test -z "$msg"
-        set msg (git diff --cached | claude -p --model sonnet "$prompt" | string collect)
+        set msg (git diff --cached -- $pathspec | claude -p --model sonnet "$prompt" | string collect)
     end
 
     if test -z "$msg"
