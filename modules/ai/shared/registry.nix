@@ -218,9 +218,10 @@
   # tools agree on one identifier.
   outputStyles = {
     asd-ste-100 = ./output-styles/asd-ste-100.md;
+    i-have-adhd = ./output-styles/i-have-adhd.md;
   };
 
-  defaultOutputStyle = "asd-ste-100";
+  defaultOutputStyle = "i-have-adhd";
 
   # Language-specific rule files. Claude Code loads these natively from its
   # rules/ dir (on-demand via `paths:` frontmatter).

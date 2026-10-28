@@ -344,7 +344,14 @@ in
 
             configDir = piPath;
 
-            context = builtins.readFile ../shared/AGENTS.md;
+            # pi has no output styles; append the shared default's body, minus its Claude Code frontmatter.
+            context = let
+              styleLines = lib.drop 1 (lib.splitString "\n" (builtins.readFile ai.outputStyles.${ai.defaultOutputStyle}));
+              body = lib.drop (lib.lists.findFirstIndex (l: l == "---") 0 styleLines + 1) styleLines;
+            in ''
+              ${builtins.readFile ../shared/AGENTS.md}
+              ${lib.trim (lib.concatStringsSep "\n" body)}
+            '';
 
             # Ctrl+R opens the prompt-history picker from extensions/history.ts.
             keybindings."app.session.rename" = [];
