@@ -36,13 +36,15 @@ in
             stylelint
             stylua
             superhtml
+            swiftlint
             tombi
             ts_query_ls
             ty
-            typos-lsp
             typescript
+            typos-lsp
             vimdoc-language-server
             vscode-langservers-extracted
+            xcodegen
             yaml-language-server
             yamllint
           ]
