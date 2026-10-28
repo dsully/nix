@@ -44,6 +44,13 @@
     set -l sessions_lua ${./sessions.lua}
     ${builtins.readFile ./project-picker.fish}
   '';
+
+  rexurrect = lib.getExe my.pkgs.rexurrect;
+
+  # The Rex server, launchd and systemd start rexurrect without the shell's XDG_* variables.
+  rexurrectEnv = {
+    REXURRECT_STATE_DIR = "${config.xdg.stateHome}/rexurrect";
+    REXURRECT_CONFIG = "${config.xdg.configHome}/rexurrect/config.toml";
   };
 
   nordThemeId = "custom-93EEFE7D-B004-481D-AE29-BE2E029C3E99";
@@ -183,7 +190,7 @@ in
         };
 
         # On Linux, the rex flake's programs.rex installs the CLI, terminfo and ssh fallback.
-        packages = lib.optional isDarwin rexCli;
+        packages = [my.pkgs.rexurrect] ++ lib.optional isDarwin rexCli;
       };
 
       xdg = {
@@ -199,6 +206,55 @@ in
           };
         };
 
+        configFile."rexurrect/config.toml".source = (pkgs.formats.toml {}).generate "rexurrect-config.toml" {
+          # pi, like Claude Code, draws on the main screen, so its scrollback is its own UI.
+          no_scrollback = ["claude" "pi"];
+          programs = {
+            # SessionLoad (nvim/lua/plugins/session.lua) loads resession's session for the git root or cwd.
+            nvim = {
+              resume = "nvim -c SessionLoad";
+              requires_file = "";
+            };
+            # dotfiles/pi/extensions/rexurrect.ts reports the session ID.
+            pi = {
+              state = "id";
+              resume = "pi --session {state}";
+            };
+          };
+        };
+      };
+
+      launchd.agents.rexurrect-autosave = lib.mkIf isDarwin {
+        enable = true;
+        config = {
+          Label = "io.github.cemcatik.rexurrect.autosave";
+          ProgramArguments = [rexurrect "save"];
+          EnvironmentVariables = rexurrectEnv // {PATH = "/usr/bin:/bin:/usr/sbin:/sbin";};
+          StartInterval = 900;
+          ProcessType = "Background";
+          StandardOutPath = "/dev/null";
+          StandardErrorPath = "/dev/null";
+        };
+      };
+
+      systemd.user = lib.mkIf (!isDarwin) {
+        services.rexurrect-autosave = {
+          Unit.Description = "Save Rex sessions with rexurrect";
+          Service = {
+            Type = "oneshot";
+            ExecStart = "${rexurrect} save";
+            Environment = lib.mapAttrsToList (name: value: "${name}=${value}") rexurrectEnv;
+          };
+        };
+
+        timers.rexurrect-autosave = {
+          Unit.Description = "Save Rex sessions with rexurrect every 15 minutes";
+          Timer = {
+            OnActiveSec = "15min";
+            OnUnitActiveSec = "15min";
+          };
+          Install.WantedBy = ["timers.target"];
+        };
       };
 
       programs = {

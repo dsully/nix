@@ -81,6 +81,12 @@
           targets = ["claude"];
           timeout = 5;
         })
+        (hook {
+          name = "rexurrect-report";
+          command = "rexurrect report claude";
+          targets = ["claude"];
+          timeout = 5;
+        })
       ];
     });
   };
