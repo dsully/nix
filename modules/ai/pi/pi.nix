@@ -79,13 +79,6 @@
     ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
   );
 
-  # Bare npm names, matching the dependency keys pi writes to npm/package.json.
-  piNpmNames = lib.concatMap (p: let
-    source = p.source or p;
-  in
-    lib.optional (lib.hasPrefix "npm:" source) (builtins.head (builtins.match "(@?[^@]+).*" (lib.removePrefix "npm:" source))))
-  config.programs.pi-coding-agent.settings.packages;
-
   piMemory = lib.any (p: lib.hasPrefix "npm:@pi-unipi/memory" (p.source or p)) (config.programs.pi-coding-agent.settings.packages or []);
 
   piExtensions =
@@ -217,20 +210,22 @@ in
               }} > "$_cfg.tmp" && mv "$_cfg.tmp" "$_cfg"
               fi
             '');
+
             # Install/update the extensions listed in settings.json once
-            # onFilesChange has written it. pi adds npm dependencies on install
+            # it is written. pi adds npm dependencies on install
             # but never drops removed ones (nor does bun delete their node_modules
             # dirs), so prune both first.
             # Retry a few times to ride out transient registry failures.
             # Non-fatal: a persistent failure warns, never aborts the switch.
-            piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange"] ''
+            piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange" "piCodingAgentMutableSettings"] ''
               export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.git]}:$PATH"
               export PI_CODING_AGENT_DIR="${piPath}"
               _ok=
               _pkg="${piPath}/npm/package.json"
 
               if [[ -f $_pkg && ! -v DRY_RUN ]]; then
-                _keep='${builtins.toJSON piNpmNames}'
+                # Bare npm names from the merged settings.json, so packages added with `pi install` survive.
+                _keep=$(${lib.getExe pkgs.jq} -c '[.packages[]? | .source? // . | select(startswith("npm:")) | ltrimstr("npm:") | capture("^(?<n>@?[^@]+)").n]' "${piPath}/settings.json")
 
                 for _dep in $(${lib.getExe pkgs.jq} -r --argjson keep "$_keep" '.dependencies // {} | keys[] | select(. as $k | $keep | index($k) | not)' "$_pkg"); do
                   rm -rf "${piPath}/npm/node_modules/$_dep"
@@ -343,6 +338,9 @@ in
             };
 
             configDir = piPath;
+
+            # pi writes settings.json itself (model, theme, `pi install`); Nix values win on each switch.
+            mutableSettings = true;
 
             # pi has no output styles; append the shared default's body, minus its Claude Code frontmatter.
             context = let
