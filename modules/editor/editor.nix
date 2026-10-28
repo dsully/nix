@@ -56,13 +56,7 @@ in
             rust-markdown-lsp-server
             shell-lsp
             version-lsp
-          ])
-          ++ (
-            with my.pkgs;
-              lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-                apple-notes-editor
-              ]
-          );
+          ]);
       };
 
       programs.uv.tool.packages = [

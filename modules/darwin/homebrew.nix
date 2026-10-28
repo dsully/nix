@@ -52,6 +52,8 @@ mkSystemModule {
         "syntax-highlight"
         "tower"
         "transmit"
+        "xiaofeng-han/tap/apple-notes-mcp"
+        "xiaofeng-han/tap/apple-reminders-mcp"
         "yaak"
       ];
 
@@ -100,6 +102,10 @@ mkSystemModule {
         }
         {
           name = "skulkworks/tap";
+          trusted = true;
+        }
+        {
+          name = "xiaofeng-han/tap";
           trusted = true;
         }
       ];
