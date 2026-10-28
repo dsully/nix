@@ -20,6 +20,22 @@
         "type": "github"
       }
     },
+    "beautiful-rust": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793106322,
+        "narHash": "sha256-TJ4K98nkTk2TJlX+D+ycAoYrbCqt31JD1vbWgHrtx/E=",
+        "owner": "morganlinton",
+        "repo": "BeautifulRust",
+        "rev": "58757ee890da9b3c8d5b785adc7a8d53cce27307",
+        "type": "github"
+      },
+      "original": {
+        "owner": "morganlinton",
+        "repo": "BeautifulRust",
+        "type": "github"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -481,6 +497,7 @@
     "root": {
       "inputs": {
         "agent-skills": "agent-skills",
+        "beautiful-rust": "beautiful-rust",
         "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
