@@ -103,19 +103,21 @@ mkSystemModule {
 
           "net.matthewpalmer.Rocket" = {
             "deactivated-apps" = [
-              "Slack"
-              "Xcode"
-              "Terminal"
-              "Quicken"
+              "BoltAI"
+              "ChatGPT"
               "Code"
               "Finder"
-              "Raycast"
               "Ghostty"
-              "Screens 5"
-              "Safari"
               "Google Chrome"
-              "ChatGPT"
-              "BoltAI"
+              "Quicken"
+              "Raycast"
+              "Rex"
+              "Rex Beta"
+              "Safari"
+              "Screens 5"
+              "Slack"
+              "Terminal"
+              "Xcode"
               "Zed"
             ];
             "hot-key-b8-iaK-thyib-yoV-Kep-It" = ":";
