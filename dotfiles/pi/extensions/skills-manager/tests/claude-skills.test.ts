@@ -1,8 +1,8 @@
+import { expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { expect, test } from "bun:test";
-import { claudeSkillDirs } from "./paths.js";
+import { claudeSkillDirs } from "../claude-skills.ts";
 
 const tree = (dirs: string[]) => {
   const root = mkdtempSync(join(tmpdir(), "claude-skills-"));
