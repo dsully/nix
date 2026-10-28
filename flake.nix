@@ -46,6 +46,9 @@
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
     agent-skills.inputs.nixpkgs.follows = "nixpkgs";
 
+    beautiful-rust.url = "github:morganlinton/BeautifulRust";
+    beautiful-rust.flake = false;
+
     claude-plugins-official.url = "github:anthropics/claude-plugins-official";
     claude-plugins-official.flake = false;
 

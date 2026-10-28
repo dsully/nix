@@ -187,6 +187,12 @@ in
               "uv-package-manager"
             ];
           };
+          rust = {
+            enable = lib.mkDefault false;
+            input = "beautiful-rust";
+            subdir = "skills";
+            all = true;
+          };
           # Only skills that fire on most repos live here. The rest
           # (property-based-testing, python-simplifier, typescript-simplifier)
           # stay in ./content unselected; enable them where they apply with
