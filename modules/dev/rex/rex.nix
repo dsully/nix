@@ -4,6 +4,7 @@
   forPlatform,
   inputs,
   lib,
+  my,
   pkgs,
   ...
 }: let
@@ -23,26 +24,27 @@
     exit 127
   '';
 
-  # fishScript = name: runtimeInputs: text:
-  #   pkgs.writeTextFile {
-  #     inherit name;
-  #     destination = "/bin/${name}";
-  #     executable = true;
-  #     text = ''
-  #       #!${lib.getExe pkgs.fish}
-  #       set -p PATH ${lib.makeBinPath runtimeInputs}
-  #       ${text}
-  #     '';
-  #     checkPhase = "${lib.getExe pkgs.fish} --no-execute $target";
-  #     meta.mainProgram = name;
-  #   };
-  #
-  # rexHints = fishScript "rex-hints" [rexCli pkgs.fzf pkgs.gawk pkgs.ripgrep] (builtins.readFile ./hints.fish);
-  #
-  # rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) ''
-  #   set -l sessions_lua ${./sessions.lua}
-  #   ${builtins.readFile ./project-picker.fish}
-  # '';
+  fishScript = name: runtimeInputs: text:
+    pkgs.writeTextFile {
+      inherit name;
+      destination = "/bin/${name}";
+      executable = true;
+      text = ''
+        #!${lib.getExe pkgs.fish}
+        set -p PATH ${lib.makeBinPath runtimeInputs}
+        ${text}
+      '';
+      checkPhase = "${lib.getExe pkgs.fish} --no-execute $target";
+      meta.mainProgram = name;
+    };
+
+  rexHints = fishScript "rex-hints" [rexCli pkgs.fzf pkgs.gawk pkgs.ripgrep] (builtins.readFile ./hints.fish);
+
+  rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) ''
+    set -l sessions_lua ${./sessions.lua}
+    ${builtins.readFile ./project-picker.fish}
+  '';
+  };
 
   nordThemeId = "custom-93EEFE7D-B004-481D-AE29-BE2E029C3E99";
 
@@ -184,12 +186,20 @@ in
         packages = lib.optional isDarwin rexCli;
       };
 
-      # xdg.configFile."rex/init.lua" = lib.mkIf isDarwin {
-      #   source = pkgs.replaceVars ./init.lua {
-      #     rexHints = lib.getExe rexHints;
-      #     rexProjectPicker = lib.getExe rexProjectPicker;
-      #   };
-      # };
+      xdg = {
+        # Lua type stub for rex.*, on emmylua_ls's library path (nvim/after/lsp/emmylua_ls.lua).
+        dataFile."rex/types/rex.lua".source = ./types/rex.lua;
+
+        configFile."rex/init.lua" = lib.mkIf isDarwin {
+          source = pkgs.replaceVars ./init.lua {
+            inherit rexurrect;
+            inherit (rexurrectEnv) REXURRECT_STATE_DIR REXURRECT_CONFIG;
+            rexHints = lib.getExe rexHints;
+            rexProjectPicker = lib.getExe rexProjectPicker;
+          };
+        };
+
+      };
 
       programs = {
         ai.skills.local.ids = ["rex"];
