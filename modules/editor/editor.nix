@@ -45,7 +45,6 @@ in
             stylelint
             stylua
             superhtml
-            swiftlint
             tombi
             ts_query_ls
             ty
@@ -53,9 +52,12 @@ in
             typos-lsp
             vimdoc-language-server
             vscode-langservers-extracted
-            xcodegen
             yaml-language-server
             yamllint
+          ]
+          ++ lib.optionals stdenv.hostPlatform.isDarwin [
+            swiftlint
+            xcodegen
           ]
           ++ [
             luajitPackages.busted
