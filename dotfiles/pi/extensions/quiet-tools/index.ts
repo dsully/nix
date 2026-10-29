@@ -1,18 +1,35 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { type ExtensionAPI, ToolExecutionComponent } from "@earendil-works/pi-coding-agent";
 import { preview } from "./compact.js";
+import { usesPiFallback } from "./subagent.js";
 
 const READ_DEFAULT_LIMIT = 120;
 const OUTPUT_DIR = ".pi/quiet-tools/outputs";
 
 const safe = (s: string) => s.replace(/[^\w.-]+/g, "-");
 
+const ORIGINAL = Symbol.for("pi-quiet-tools.getResultRenderer");
+
+type GetRenderer = () => unknown;
+type Execution = { toolName: string; args: unknown; getResultRenderer?: GetRenderer; [ORIGINAL]?: GetRenderer };
+
+function collapseSubagentResults(): void {
+  const proto = ToolExecutionComponent.prototype as unknown as Execution;
+  const original = (proto[ORIGINAL] ??= proto.getResultRenderer);
+  // shortcut: patches a private method; if a pi update renames it, this silently does nothing.
+  if (typeof original !== "function") return;
+  proto.getResultRenderer = function (this: Execution) {
+    return usesPiFallback(this.toolName, this.args) ? undefined : original.call(this);
+  };
+}
+
 /**
  * Sends the model a head/tail preview of large tool results while the session and UI keep the full output.
  * Previews are rebuilt on every request, so they must be deterministic or the prompt cache breaks.
  */
 export default function quietTools(pi: ExtensionAPI) {
+  collapseSubagentResults();
   const saved = new Map<string, string>();
 
   // Pages unbounded reads instead of letting them hit the preview cut; nested (codemode) reads filter whole files.
