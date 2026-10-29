@@ -1,13 +1,3 @@
--- First, so an error further down can't stop sessions from coming back.
-do
-    local r = rex.exec(
-        { [[@rexurrect@]], "auto-restore" },
-        { env = { REXURRECT_STATE_DIR = [[@REXURRECT_STATE_DIR@]], REXURRECT_CONFIG = [[@REXURRECT_CONFIG@]] } }
-    )
-    if r then
-        io.stderr:write(r.stderr)
-    end
-end
 
 -- ctrl+, stands in for nvim's "," leader: a bare comma would stop commas from being typed.
 local L = "ctrl+,>"
