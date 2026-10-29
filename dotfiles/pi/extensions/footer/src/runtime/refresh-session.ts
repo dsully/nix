@@ -1,5 +1,6 @@
 import type { ExtensionContext, MessageEndEvent, SessionCompactEvent } from "@earendil-works/pi-coding-agent";
 import {
+  contextUsageInputsFromContext,
   lifecycleInputsFromContext,
   thinkingInputsFromContext,
   usageTotalsFromEntries,
@@ -36,6 +37,7 @@ export interface RuntimeRefreshSessionHost {
   getThinkingLevel(): string;
   getBranch(): string | null;
   requestRender(): void;
+  readStatus(): string | undefined;
 }
 
 type SnapshotMode = "none" | "reliable" | "lifecycle" | "thinking";
@@ -97,7 +99,7 @@ export class RuntimeRefreshSession {
       }
     }
     return {
-      ...lifecycleInputsFromContext(ctx, this.host.getThinkingLevel()),
+      ...lifecycleInputsFromContext(ctx, this.host.getThinkingLevel(), this.host.readStatus()),
       usage: usageTotalsFromEntries(entries),
     };
   }
@@ -125,6 +127,12 @@ export class RuntimeRefreshSession {
   ensureState(ctx: ExtensionContext): FooterState {
     if (!this.state) return this.resetState(ctx);
     this.syncPersistedUsage(ctx);
+    // Rendered on every frame, so the reading is never one event behind the
+    // extension that publishes it.
+    refreshContextUsage(this.state, {
+      contextUsage: contextUsageInputsFromContext(ctx, this.host.readStatus()),
+      model: ctx.model,
+    });
     return this.state;
   }
 
@@ -200,7 +208,10 @@ export class RuntimeRefreshSession {
       return this.applyLifecycleSnapshot(inputs, plan, inputs.usage);
     }
 
-    return this.applyLifecycleSnapshot(lifecycleInputsFromContext(ctx, this.host.getThinkingLevel()), plan);
+    return this.applyLifecycleSnapshot(
+      lifecycleInputsFromContext(ctx, this.host.getThinkingLevel(), this.host.readStatus()),
+      plan,
+    );
   }
 
   private refresh(ctx: ExtensionContext, plan: RefreshPlan, beforeRender?: () => boolean): void {
@@ -259,8 +270,10 @@ export class RuntimeRefreshSession {
     if (!this.state) return;
     let changed = this.syncPersistedUsage(ctx);
     changed =
-      refreshContextUsage(this.state, { contextUsage: ctx.getContextUsage() ?? undefined, model: ctx.model }) ||
-      changed;
+      refreshContextUsage(this.state, {
+        contextUsage: contextUsageInputsFromContext(ctx, this.host.readStatus()),
+        model: ctx.model,
+      }) || changed;
     if (changed) this.host.requestRender();
   }
 

@@ -1,5 +1,6 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { UsageTotals } from "../types.js";
+import { parseMagicContextStatus } from "./magic-context.js";
 
 export interface StateModelInputs {
   id?: string;
@@ -100,7 +101,24 @@ function modelInputsFromContext(ctx: ExtensionContext): StateModelInputs | undef
   };
 }
 
-function contextUsageInputsFromContext(ctx: ExtensionContext): StateContextUsageInputs | undefined {
+/**
+ * magic-context's reading wins over Pi's when it is on screen: it is the figure
+ * its own historian threshold and emergency wall are measured against. Its
+ * denominator is the usable window, so reconstruct it from tokens/percent to keep
+ * the bar and the ratio on the same scale.
+ */
+export function contextUsageInputsFromContext(
+  ctx: ExtensionContext,
+  status: string | undefined,
+): StateContextUsageInputs | undefined {
+  const published = parseMagicContextStatus(status);
+  if (published) {
+    return {
+      tokens: published.tokens,
+      contextWindow: Math.round((published.tokens / published.percent) * 100),
+      percent: published.percent,
+    };
+  }
   const contextUsage = ctx.getContextUsage();
   return contextUsage
     ? {
@@ -118,10 +136,14 @@ export function thinkingInputsFromContext(ctx: ExtensionContext, thinkingLevel: 
   };
 }
 
-export function lifecycleInputsFromContext(ctx: ExtensionContext, thinkingLevel: string): StateLifecycleInputs {
+export function lifecycleInputsFromContext(
+  ctx: ExtensionContext,
+  thinkingLevel: string,
+  status?: string,
+): StateLifecycleInputs {
   return {
     cwd: ctx.sessionManager.getCwd() || ctx.cwd,
     ...thinkingInputsFromContext(ctx, thinkingLevel),
-    contextUsage: contextUsageInputsFromContext(ctx),
+    contextUsage: contextUsageInputsFromContext(ctx, status),
   };
 }

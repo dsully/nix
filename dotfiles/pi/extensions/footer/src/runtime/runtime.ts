@@ -7,6 +7,7 @@ import {
 import { PromptStash } from "../input/stash.js";
 import { FooterEditor } from "../surface/editor.js";
 import { Footer } from "../surface/footer.js";
+import { MAGIC_CONTEXT_STATUS_KEY } from "./magic-context.js";
 import { RuntimeRefreshSession } from "./refresh-session.js";
 
 export interface DraftStore {
@@ -18,6 +19,7 @@ type EditorFactory = NonNullable<ReturnType<ExtensionContext["ui"]["getEditorCom
 
 export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
   let footerData: Pick<ReadonlyFooterDataProvider, "getGitBranch"> | undefined;
+  let readStatus: (() => string | undefined) | undefined;
   let footer: Footer | undefined;
   let ownedEditorFactory: EditorFactory | undefined;
   let previousEditorFactory: EditorFactory | undefined;
@@ -29,6 +31,7 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
   const refreshSession = new RuntimeRefreshSession({
     getThinkingLevel: () => pi.getThinkingLevel(),
     getBranch: () => footerData?.getGitBranch() ?? null,
+    readStatus: () => readStatus?.(),
     requestRender: () => requestRender?.(),
   });
 
@@ -77,11 +80,13 @@ export function registerFooter(pi: ExtensionAPI, drafts: DraftStore): void {
         unsubscribe();
         if (generation === uiGeneration && footer === nextFooter) {
           footerData = undefined;
+          readStatus = undefined;
           footer = undefined;
         }
       });
       if (generation === uiGeneration) {
         footerData = data;
+        readStatus = () => data.getExtensionStatuses().get(MAGIC_CONTEXT_STATUS_KEY);
         setUiRequestRender(generation, () => tui.requestRender());
         footer = nextFooter;
         refreshSession.branchChanged(data.getGitBranch());
