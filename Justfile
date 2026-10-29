@@ -167,6 +167,11 @@ init-from-url URL *args:
     # Run nix-init with the specified parameters
     nix-package-add {{ args }} "{{ URL }}"
 
+# List packages/ entries nothing in the config references
+[group('nix')]
+unused-packages:
+    @scripts/unused-packages.fish
+
 # https://github.com/stefanzweifel/git-auto-commit-action
 
 [group('git')]
