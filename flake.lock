@@ -512,10 +512,10 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1793281733,
-        "narHash": "sha256-jVL9y78a40QYCHzDHJyQZr2rhQFUbFOhCDwcRn2CHN0=",
+        "lastModified": 1793299046,
+        "narHash": "sha256-LZ/U4N+O0ek2Y16egyFYHDy9zdNclUY7/gtKc8YIMiA=",
         "type": "tarball",
-        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1793281733-g6a53ee.tar.gz"
+        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1793299046-g2307b7.tar.gz"
       },
       "original": {
         "type": "tarball",
