@@ -88,13 +88,3 @@ Bad:  We parsed this as UTC before, which caused duplicate rows in prod, so...
   treat them as the coding standard.
 - Do not shell out for file operations. Use Read, Edit, Write, and the MCP
   tools instead of `cat`, `sed`, `awk`, or shell redirection.
-
-## Codebase Navigation - MUST USE indxr MCP tools
-
-Never read full source files as a first step.
-
-1. `find(query)` - files/symbols by concept, name, callers, or signature.
-2. `summarize(path)` - understand a file/glob/symbol without reading source.
-3. `read(path, symbol?)` - one function/struct at a time.
-4. `Read` (full file) - only when editing, when exact formatting matters, or
-   for non-source files (config, Cargo.toml, markdown).

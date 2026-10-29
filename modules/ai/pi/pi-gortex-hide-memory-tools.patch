@@ -1,0 +1,11 @@
+--- a/src/mcp.ts
++++ b/src/mcp.ts
+@@ -78,6 +78,8 @@
+     // Declared to the model like built-in tools, and the first prompt waits
+     // for the connection. Codemode would hand scripts gcx text to parse.
+     exposure: "direct",
++    // magic-context owns memory; gortex's compact surface cannot drop these itself.
++    toolExposure: { recall: "hidden", remember: "hidden" },
+     timeout: CALL_TIMEOUT_S,
+     description: SERVER_DESCRIPTION,
+   };

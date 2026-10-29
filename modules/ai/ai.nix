@@ -40,7 +40,6 @@ in
           )
           ++ (with my.pkgs; [
             git-remote-mcp
-            indxr
             just-mcp
             mcp-mux
             mcp-server-git-rs

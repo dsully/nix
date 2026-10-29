@@ -63,12 +63,7 @@
         extensions = ["extensions/tools.ts"];
       }
       # "npm:pi-resume-search"
-      "npm:@pi-unipi/compactor@alpha"
-      # Their bundled skills restate the tool descriptions every turn.
-      {
-        source = "npm:@pi-unipi/memory@alpha";
-        skills = [];
-      }
+      "npm:@cortexkit/pi-magic-context"
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@ssk_dev/rpiv-todo-lean"
@@ -78,8 +73,6 @@
     ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
     ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
   );
-
-  piMemory = lib.any (p: lib.hasPrefix "npm:@pi-unipi/memory" (p.source or p)) (config.programs.pi-coding-agent.settings.packages or []);
 
   piExtensions =
     lib.filterAttrs (name: type: (type == "directory" || (type == "regular" && lib.hasSuffix ".ts" name)))
@@ -136,6 +129,12 @@ in
         default = {};
         description = "Per-server one-line descriptions listed in pi's system prompt, replacing the server's own instructions.";
       };
+
+      magicContext = lib.mkOption {
+        inherit (jsonFormat) type;
+        default = {};
+        description = "Contents of ~/.config/cortexkit/magic-context.jsonc.";
+      };
     };
 
     home = lib.mkMerge [
@@ -178,12 +177,7 @@ in
               #   format.enabled = false;
               #   autofix.enabled = false;
               # };
-            }
-            # The wake-up block is truncated memory-file snippets; the reminder and memory_search stay.
-            // lib.optionalAttrs piMemory {
-              ".unipi/config/memory/config.json".source = jsonFormat.generate "unipi-memory-config.json" {
-                recall = "reminder";
-              };
+              "${config.xdg.configHome}/cortexkit/magic-context.jsonc".source = jsonFormat.generate "magic-context.jsonc" config.programs.pi-coding-agent.magicContext;
             };
 
           activation = {
@@ -277,14 +271,12 @@ in
                     pkg = "pi-hashline-edit-pro-lean";
                     patch = ./pi-hashline-lean-edit-output-schema.patch;
                   }
+                  {
+                    pkg = "pi-gortex";
+                    patch = ./pi-gortex-hide-memory-tools.patch;
+                  }
                 ]}
             '';
-
-            # mempalace breaks on Python 3.15; uv records --python in the tool
-            # receipt, so uvTool's later install/upgrade keep this interpreter.
-            mempalacePython = lib.mkIf piMemory (lib.hm.dag.entryBetween ["uvTool"] ["linkGeneration"] ''
-              run ${lib.getExe config.programs.uv.package} tool install $VERBOSE_ARG --python 3.14 mempalace
-            '');
           };
         };
 
@@ -342,6 +334,8 @@ in
             # pi writes settings.json itself (model, theme, `pi install`); Nix values win on each switch.
             mutableSettings = true;
 
+            magicContext.historian.pi.model = lib.mkDefault "${ai.models.small.provider}/${ai.models.small.model}";
+
             # pi has no output styles; append the shared default's body, minus its Claude Code frontmatter.
             context = let
               styleLines = lib.drop 1 (lib.splitString "\n" (builtins.readFile ai.outputStyles.${ai.defaultOutputStyle}));
@@ -386,8 +380,6 @@ in
               steeringMode = "all";
               followUpMode = "all";
 
-              observational-memory.showWorkerNotifications = false;
-
               npmCommand = [(lib.getExe bunRuntime)];
 
               packages = lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages;
@@ -399,10 +391,6 @@ in
               theme = "nord";
             };
           };
-
-          uv.tool.packages = lib.mkIf piMemory [
-            "mempalace"
-          ];
         };
       })
     ];

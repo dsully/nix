@@ -109,11 +109,6 @@
         command = lib.getExe my.pkgs.git-remote-mcp;
         enabled = false;
       };
-      indxr = {
-        command = lib.getExe my.pkgs.indxr;
-        args = ["serve" "."];
-        enabled = false;
-      };
       just = {
         command = lib.getExe my.pkgs.just-mcp;
         enabled = false;

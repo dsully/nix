@@ -3,6 +3,7 @@ mkDarwinHost {
   hostName = "jarvis";
 
   userConfig = {
+    gortex.enable = true;
     paste.enable = true;
     pi.enable = true;
     rex.enable = true;
