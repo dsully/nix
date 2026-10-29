@@ -88,7 +88,12 @@
       factoriesFor = system:
         withSystem system ({pkgs, ...}: let
           args = {
-            inherit inputs pkgs;
+            # Only Linux hosts use rex; darwin's nix.registry would otherwise fetch it (needs a token).
+            inputs =
+              if lib.hasSuffix "darwin" system
+              then removeAttrs inputs ["rex"]
+              else inputs;
+            inherit pkgs;
             packages = config.flake.packages.${system};
           };
         in {
