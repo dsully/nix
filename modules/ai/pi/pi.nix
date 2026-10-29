@@ -74,6 +74,14 @@
     ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
   );
 
+  # Package entries may be a source string or an attrset with one; other modules
+  # (gortex) append to settings.packages, so read the merged option, not piDefaultPackages.
+  declaredPackageSources = map (p:
+    if builtins.isString p
+    then p
+    else p.source)
+  config.programs.pi-coding-agent.settings.packages;
+
   piExtensions =
     lib.filterAttrs (name: type: (type == "directory" || (type == "regular" && lib.hasSuffix ".ts" name)))
     (builtins.readDir ../../../dotfiles/pi/extensions);
@@ -205,31 +213,30 @@ in
               fi
             '');
 
-            # Install/update the extensions listed in settings.json once
-            # it is written. pi adds npm dependencies on install
-            # but never drops removed ones (nor does bun delete their node_modules
-            # dirs), so prune both first.
+            # Removing a package from Nix is not enough: pi's mutable settings.json
+            # keeps the entry and its npm deps. Diff the declared list against the
+            # copy the last activation wrote, and let `pi remove` do the deleting.
             # Retry a few times to ride out transient registry failures.
             # Non-fatal: a persistent failure warns, never aborts the switch.
             piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange" "piCodingAgentMutableSettings"] ''
-              export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.git]}:$PATH"
+              export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.git pkgs.gnugrep]}:$PATH"
               export PI_CODING_AGENT_DIR="${piPath}"
-              _ok=
-              _pkg="${piPath}/npm/package.json"
+              _state="${piPath}/.nix-packages"
+              _cur=${lib.escapeShellArg (lib.concatStringsSep "\n" declaredPackageSources)}
 
-              if [[ -f $_pkg && ! -v DRY_RUN ]]; then
-                # Bare npm names from the merged settings.json, so packages added with `pi install` survive.
-                _keep=$(${lib.getExe pkgs.jq} -c '[.packages[]? | .source? // . | select(startswith("npm:")) | ltrimstr("npm:") | capture("^(?<n>@?[^@]+)").n]' "${piPath}/settings.json")
-
-                for _dep in $(${lib.getExe pkgs.jq} -r --argjson keep "$_keep" '.dependencies // {} | keys[] | select(. as $k | $keep | index($k) | not)' "$_pkg"); do
-                  rm -rf "${piPath}/npm/node_modules/$_dep"
-                done
-
-                ${lib.getExe pkgs.jq} --argjson keep "$_keep" \
-                  '.dependencies |= ((. // {}) | with_entries(select(.key as $k | $keep | index($k))))' \
-                  "$_pkg" > "$_pkg.tmp" && mv "$_pkg.tmp" "$_pkg"
+              _stale=0
+              if [[ -f $_state && ! -v DRY_RUN ]]; then
+                while IFS= read -r _src; do
+                  [[ -n $_src ]] || continue
+                  grep -qxF -- "$_src" <<< "$_cur" && continue
+                  run ${config.programs.pi-coding-agent.package}/bin/pi remove "$_src" || {
+                    echo "pi remove $_src failed; keeping it in $_state to retry"
+                    _stale=1
+                  }
+                done < "$_state"
               fi
 
+              _ok=
               for _try in 1 2 3; do
                 if run ${config.programs.pi-coding-agent.package}/bin/pi update --extensions; then
                   _ok=1
@@ -241,6 +248,11 @@ in
               done
 
               [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
+
+              # Only advance the baseline once the removals stuck, so a failure is retried on the next switch.
+              if [[ ! -v DRY_RUN ]] && [[ -n $_ok ]] && [[ $_stale = 0 ]]; then
+                printf '%s\n' "$_cur" > "$_state"
+              fi
             '';
 
             # Reverse dry-run detects an already-patched tree.
