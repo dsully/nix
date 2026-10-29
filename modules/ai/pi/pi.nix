@@ -369,6 +369,10 @@ in
               defaultThinkingLevel = ai.models.large.reasoning_effort;
               defaultTools = [
                 "+codemode"
+                "+grep"
+                "+find"
+                "+ls"
+                "+tool_search"
               ];
 
               enableInstallTelemetry = false;
@@ -379,26 +383,8 @@ in
               quietStartup = true;
               skipApprovals = true;
 
-              powerline = {
-                preset = "nerd";
-                separator = "slash";
-                welcome = true;
-
-                layout = {
-                  left = ["model" "thinking" "path"];
-                  right = ["context_pct" "subagents"];
-                };
-
-                model.showThinkingLevel = false;
-                path.mode = "basename";
-
-                git = {
-                  showBranch = false;
-                  showStaged = false;
-                  showUnstaged = false;
-                  showUntracked = false;
-                };
-              };
+              steeringMode = "all";
+              followUpMode = "all";
 
               observational-memory.showWorkerNotifications = false;
 
