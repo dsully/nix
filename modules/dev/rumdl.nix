@@ -43,9 +43,11 @@ in
     default = false;
 
     home = {
-      xdg.configFile."rumdl/rumdl.toml".text = ''
-        # yaml-language-server: $schema=https://raw.githubusercontent.com/rvben/rumdl/main/rumdl.schema.json
-        ${builtins.readFile rumdlConfig}
-      '';
+      xdg.configFile."rumdl/rumdl.toml".source = pkgs.concatText "rumdl.toml" [
+        (pkgs.writeText "rumdl-schema" ''
+          # yaml-language-server: $schema=https://raw.githubusercontent.com/rvben/rumdl/main/rumdl.schema.json
+        '')
+        rumdlConfig
+      ];
     };
   }
