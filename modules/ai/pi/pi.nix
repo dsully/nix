@@ -64,7 +64,6 @@
       "npm:@cortexkit/pi-magic-context"
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
-      "npm:@ssk_dev/rpiv-todo-lean"
       "npm:@tifan/pi-copy-response"
       "npm:@vanillagreen/pi-session-manager"
     ]
