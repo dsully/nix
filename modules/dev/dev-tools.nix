@@ -32,7 +32,6 @@ mkUserModule {
           tree-sitter
           typos
           xan
-          yq-go
         ]
         ++ (with my.pkgs; [
           debtmap

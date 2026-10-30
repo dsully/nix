@@ -21,7 +21,6 @@ mkUserModule {
           dust
           fclones
           gnutar
-          hexyl
           inetutils
           iperf3
           ipmitool

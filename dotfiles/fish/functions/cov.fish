@@ -2,7 +2,7 @@ function cov --wraps=pytest
     set -l cov_args --cov src
 
     if test -f pyproject.toml
-        set -l modules (yq -p toml -oy '.tool.uv.build-backend.module-name | select(. != null) | .[]? // .' pyproject.toml 2>/dev/null)
+        set -l modules (python3 -c 'import tomllib; m = tomllib.load(open("pyproject.toml", "rb")).get("tool", {}).get("uv", {}).get("build-backend", {}).get("module-name", []); [print(x) for x in ([m] if isinstance(m, str) else m)]' 2>/dev/null)
 
         if test (count $modules) -gt 0
             set cov_args

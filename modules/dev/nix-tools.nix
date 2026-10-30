@@ -15,7 +15,6 @@ mkUserModule {
           deadnix
           flake-checker
           nix-output-monitor
-          nix-tree
           nurl
           statix
         ]
