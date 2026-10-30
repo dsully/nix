@@ -85,20 +85,19 @@ in {
     };
   };
 
-  xdg.configFile."vopono/config.toml".source = (pkgs.formats.toml {}).generate "vopono-config" {
-    interface = "eth0";
-    protocol = "Wireguard";
-    provider = "Custom";
-    custom = voponoConfig;
-    custom_netns_name = "vpn";
+  xdg.configFile = {
+    "vopono/config.toml".source = (pkgs.formats.toml {}).generate "vopono-config" {
+      interface = "eth0";
+      protocol = "Wireguard";
+      provider = "Custom";
+      custom = voponoConfig;
+      custom_netns_name = "vpn";
+    };
+
+    "fish/completions/stash-tool.fish".source = "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
   };
 
   programs = {
-    fish = {
-      completions."stash-tool" =
-        builtins.readFile "${perSystem.self.qbit-tools}/share/fish/vendor_completions.d/stash-tool.fish";
-    };
-
     onepassword-secrets.secrets = {
       huggingFace = {
         reference = "op://Services/HuggingFace/credential";

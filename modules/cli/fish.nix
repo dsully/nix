@@ -182,12 +182,6 @@ in
           };
         };
 
-        completions.rm =
-          builtins.replaceStrings ["complete -c rip"] ["complete -c rm"]
-          (builtins.readFile (pkgs.runCommand "rip-completions" {} ''
-            ${lib.getExe pkgs.rip2} completions fish > $out
-          ''));
-
         shellAbbrs =
           {
             dc = "cd";
@@ -237,6 +231,10 @@ in
       };
 
       xdg.configFile = {
+        "fish/completions/rm.fish".source = pkgs.runCommand "rm-completions" {} ''
+          ${lib.getExe pkgs.rip2} completions fish | ${lib.getExe pkgs.gnused} 's/complete -c rip/complete -c rm/g' > $out
+        '';
+
         "fish/conf.d/pwd.fish".text =
           # fish
           ''
