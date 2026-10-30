@@ -15,6 +15,7 @@ mkUserModule {
     fishSecrets = {
       HOMEKIT_MCP_TOKEN = "op://Services/HomeBar MCP/credential";
       RACHIO_ACCESS_TOKEN = "op://Services/Rachio MCP/credential";
+      TAILSCALE_API_KEY = "op://Services/Tailscale API/credential";
     };
 
     programs.mcp.servers = {
@@ -45,6 +46,14 @@ mkUserModule {
         args = ["rachio-mcp"];
         enabled = false;
         stateless = true;
+      };
+      tailscale = {
+        command = lib.getExe' pkgs.bun "bunx";
+        args = [
+          "--package=@hexsleeves/tailscale-mcp-server"
+          "tailscale-mcp-server"
+        ];
+        env.TAILSCALE_TAILNET = "sully.org";
       };
       tripsy = {
         command = lib.getExe' my.pkgs.tripsy-cli "tripsy-mcp";
