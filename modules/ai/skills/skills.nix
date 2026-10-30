@@ -4,6 +4,7 @@
   hideFromModel,
   inputs,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.programs.ai.skills;
@@ -204,13 +205,15 @@ in
               # "delegate-first"
               "remove-ai-slop"
             ];
-            manual = [
-              "cleanup"
-              "comment-sicko"
-              "dead-code-finder"
-              "prompt-optimizer"
-              "visual-explainer"
-            ];
+            manual =
+              [
+                "cleanup"
+                "comment-sicko"
+                "dead-code-finder"
+                "prompt-optimizer"
+                "visual-explainer"
+              ]
+              ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin "swiftui";
           };
         };
       }

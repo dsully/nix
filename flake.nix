@@ -69,7 +69,6 @@
 
     superpowers.url = "github:obra/superpowers";
     superpowers.flake = false;
-
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
   };

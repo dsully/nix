@@ -5,6 +5,8 @@ metadata:
   rex-stub: "2"
 ---
 
+# Rex
+
 Run `rex __internal skill --feature-session-naming=false` and follow the guide it prints. The guide comes from
 the installed Rex CLI, so it describes the commands available in that version.
 
