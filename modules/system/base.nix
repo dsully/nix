@@ -27,12 +27,11 @@ in {
 
   # This flake's packages layered over nixpkgs. A consuming flake passes ours
   # as perSystem.upstream.
-  _module.args.my.pkgs = pkgs.extend (
-    _final: _prev:
-      (perSystem.upstream or perSystem.self)
-      // lib.optionalAttrs (inputs ? neovim-nightly-overlay) {
-        # CI builds and caches checks (dev-partition nixpkgs pin), not packages.
-        inherit (inputs.neovim-nightly-overlay.checks.${pkgs.stdenv.hostPlatform.system}) neovim;
-      }
-  );
+  _module.args.my.pkgs =
+    pkgs
+    // (perSystem.upstream or perSystem.self)
+    // lib.optionalAttrs (inputs ? neovim-nightly-overlay) {
+      # CI builds and caches checks (dev-partition nixpkgs pin), not packages.
+      inherit (inputs.neovim-nightly-overlay.checks.${pkgs.stdenv.hostPlatform.system}) neovim;
+    };
 }
