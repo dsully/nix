@@ -5,6 +5,7 @@ mkDarwinHost {
   userConfig = {
     gortex.enable = true;
     paste.enable = true;
+    personal-mcps.enable = true;
     pi.enable = true;
     rex.enable = true;
     rumdl.enable = true;
