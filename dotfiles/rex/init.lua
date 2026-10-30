@@ -1,8 +1,10 @@
-
 -- ctrl+, stands in for nvim's "," leader: a bare comma would stop commas from being typed.
 local L = "ctrl+,>"
 
 local DIRS = { h = "left", j = "down", k = "up", l = "right" }
+
+-- rex-hints and rex-project-picker are installed into the home-manager profile by rex.nix.
+local BIN = os.getenv("HOME") .. "/.local/state/nix/profile/bin/"
 
 -- Pickers run in a split below the pane, not a floating layer: Rex draws a layer's
 -- unpainted cells see-through, so fzf would sit on top of the pane's text.
@@ -27,7 +29,7 @@ rex.action({
     name = "hints",
     title = "Copy or Type a Hint from the Pane",
     run = function(ctx)
-        split_below(ctx, { "@rexHints@", ctx.block_id })
+        split_below(ctx, { BIN .. "rex-hints", ctx.block_id })
     end,
 })
 
@@ -35,9 +37,28 @@ rex.action({
     name = "projects",
     title = "Open or Switch to a Project Session",
     run = function(ctx)
-        split_below(ctx, { "@rexProjectPicker@" })
+        split_below(ctx, { BIN .. "rex-project-picker" })
     end,
 })
+
+local function copy(text, title)
+    local copied = rex.exec({ "pbcopy" }, { stdin = text })
+    if copied and copied.ok then
+        rex.exec({
+            "osascript",
+            "-e", "on run argv",
+            "-e", "display notification (item 1 of argv) with title (item 2 of argv)",
+            "-e", "end run",
+            text, title,
+        })
+    end
+    return text
+end
+
+-- Fork Agent Session and Copy Agent Session ID, for Claude Code, Codex and pi
+require("agent_fork").setup({ copy = copy })
+rex.bind("f20>f", "fork_agent")
+rex.bind("f20>i", "copy_agent_session_id")
 
 -- Find, as <leader>f
 rex.bind(L .. "f>f", "projects")

@@ -1,0 +1,39 @@
+#!/usr/bin/env fish
+# Records the agent session each Rex pane runs, for Rex's Fork Agent Session action (agent_fork.lua):
+#   agent-session record APP [ID]  records this pane's session. Without ID, reads it from a
+#                                  SessionStart hook's JSON on stdin
+#   agent-session clear            forgets this pane's session
+#   agent-session id APP BLOCK     prints BLOCK's session ID, if APP recorded it
+
+set -l state $XDG_STATE_HOME
+test -n "$state"; or set state $HOME/.local/state
+set -l dir $state/rex/agent-sessions
+
+switch "$argv[1]"
+    case record
+        test -n "$REX_BLOCK"; or exit 0
+        set -l id $argv[3]
+        if test -z "$id"
+            read -z -l json
+            set id (string match -rg '"session_id": *"([^"]*)"' -- $json)
+        end
+        test -n "$id"; or exit 0
+        mkdir -p $dir; and printf '%s\n%s\n' "$argv[2]" $id >$dir/$REX_BLOCK
+    case clear
+        test -z "$REX_BLOCK"; or rm -f $dir/$REX_BLOCK
+    case id
+        set -l f "$dir/$argv[3]"
+        if not test -r $f
+            echo "no session recorded for this pane yet" >&2
+            exit 1
+        end
+        read -L -l app id <$f
+        if test "$app" != "$argv[2]"
+            echo "this pane's recorded session is $app's" >&2
+            exit 1
+        end
+        echo $id
+    case '*'
+        echo "usage: agent-session record APP [ID] | clear | id APP BLOCK" >&2
+        exit 2
+end

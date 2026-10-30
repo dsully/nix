@@ -39,10 +39,7 @@
 
   rexHints = fishScript "rex-hints" [rexCli pkgs.fzf pkgs.gawk pkgs.ripgrep] (builtins.readFile ./hints.fish);
 
-  rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) ''
-    set -l sessions_lua ${./sessions.lua}
-    ${builtins.readFile ./project-picker.fish}
-  '';
+  rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) (builtins.readFile ./project-picker.fish);
 
   nordThemeId = "custom-93EEFE7D-B004-481D-AE29-BE2E029C3E99";
 
@@ -181,18 +178,15 @@ in
         };
 
         # On Linux, the rex flake's programs.rex installs the CLI, terminfo and ssh fallback.
-        packages = lib.optional isDarwin rexCli;
+        packages = lib.optionals isDarwin [rexCli rexHints rexProjectPicker];
       };
 
       xdg = {
         # Lua type stub for rex.*, on emmylua_ls's library path (nvim/after/lsp/emmylua_ls.lua).
         dataFile."rex/types/rex.lua".source = ./types/rex.lua;
 
-        configFile."rex/init.lua" = lib.mkIf isDarwin {
-          source = pkgs.replaceVars ./init.lua {
-            rexHints = lib.getExe rexHints;
-            rexProjectPicker = lib.getExe rexProjectPicker;
-          };
+        configFile.rex = lib.mkIf isDarwin {
+          source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/rex";
         };
       };
 

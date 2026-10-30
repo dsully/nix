@@ -1,0 +1,6 @@
+# ~/.config/rex links here, and Rex writes its own files (ssh_config, terminfo-hosts) into it.
+*
+!.gitignore
+!init.lua
+!agent_fork.lua
+!agent-session
