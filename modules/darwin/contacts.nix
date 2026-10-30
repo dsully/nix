@@ -19,13 +19,6 @@ mkSystemModule {
             NSPersonNameDefaultShortNameEnabled = 1;
             NSPersonNameDefaultShortNameFormat = 3;
           };
-
-          # "com.apple.AddressBook" = {
-          #   ABBirthDayVisible = true;
-          #   ABNameSortingFormat = "sortingFirstName sortingLastName";
-          #   ABPrivateVCardFieldsEnabled = false; # Enable private me vCard
-          #   ABUse21vCardFormat = false;
-          # };
         };
       };
     };

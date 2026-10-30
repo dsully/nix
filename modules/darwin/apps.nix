@@ -44,6 +44,23 @@ mkSystemModule {
             useMarkdown = 1;
           };
 
+          "com.apple.DiskUtility" = {
+            SidebarShowAllDevices = true;
+          };
+
+          "com.apple.TextEdit" = {
+            # Open and save files as UTF-8 in TextEdit
+            PlainTextEncoding = 4;
+            PlainTextEncodingForWrite = 4;
+
+            # Use plain text mode for new TextEdit documents
+            RichText = 0;
+          };
+
+          "com.apple.TimeMachine" = {
+            DoNotOfferNewDisksForBackup = true;
+          };
+
           "com.google.Chrome" = {
             # Use the system-native print preview dialog
             DisablePrintPreview = true;

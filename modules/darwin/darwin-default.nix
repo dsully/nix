@@ -98,37 +98,6 @@ in
               sudo -u ${primaryUser} /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
 
               chflags nohidden ~/Library /Volumes
-
-              # Spotlight exclusions for Electron apps (reduces mds_stores CPU usage)
-              # Note: postActivation runs as root, so we must use absolute paths
-              USER_HOME="/Users/${config.system.primaryUser}"
-              SPOTLIGHT_EXCLUSIONS=(
-                "$USER_HOME/Library/Application Support/1Password"
-                "$USER_HOME/Library/Application Support/Discord"
-                "$USER_HOME/Library/Application Support/Eagle"
-                "$USER_HOME/Library/Application Support/Fastmail"
-                "$USER_HOME/Library/Application Support/Google/Chrome"
-                "$USER_HOME/Library/Application Support/Granola"
-                "$USER_HOME/Library/Application Support/LM Studio"
-                "$USER_HOME/Library/Application Support/Marco"
-                "$USER_HOME/Library/Application Support/Raindrop.io"
-                "$USER_HOME/Library/Application Support/Signal"
-                "$USER_HOME/Library/Application Support/Slack"
-                "$USER_HOME/Library/Caches"
-                "$USER_HOME/.cargo"
-                "$USER_HOME/.rustup"
-                "$USER_HOME/.npm"
-                "$USER_HOME/.pnpm"
-              )
-
-              for dir in "''${SPOTLIGHT_EXCLUSIONS[@]}"; do
-                if [ -d "$dir" ]; then
-                  # Add .metadata_never_index file to prevent Spotlight indexing
-                  touch "$dir/.metadata_never_index"
-                fi
-              done
-
-              # /usr/bin/killall ControlCenter Dock SystemUIServer cfprefsd
             '';
         };
 
@@ -143,10 +112,6 @@ in
 
         defaults = {
           CustomUserPreferences = {
-            "com.apple.DiskUtility" = {
-              SidebarShowAllDevices = true;
-            };
-
             NSGlobalDomain = {
               NSUseAnimatedFocusRing = false; # Disable the over-the-top focus ring animation
 
@@ -163,38 +128,8 @@ in
               EnhancedBackgroundContrastEnabled = false;
             };
 
-            "com.apple.SoftwareUpdate" = {
-              # Check for software updates daily, not just once per week
-              ScheduleFrequency = 1;
-
-              # Download newly available updates in background
-              AutomaticDownload = 1;
-
-              # Install System data files & security updates
-              CriticalUpdateInstall = 1;
-
-              # Don't download apps purchased on other Macs
-              ConfigDataInstall = 0;
-
-              # Enable the automatic update check
-              AutomaticCheckEnabled = true;
-            };
-
-            "com.apple.TextEdit" = {
-              # Open and save files as UTF-8 in TextEdit
-              PlainTextEncoding = 4;
-              PlainTextEncodingForWrite = 4;
-
-              # Use plain text mode for new TextEdit documents
-              RichText = 0;
-            };
-
             "com.apple.TextInputMenu" = {
               visible = false; # Disable the flag / keyboard icon.
-            };
-
-            "com.apple.TimeMachine" = {
-              DoNotOfferNewDisksForBackup = true;
             };
           };
 

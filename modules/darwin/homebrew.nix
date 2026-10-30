@@ -34,7 +34,6 @@ mkSystemModule {
         "dash"
         "fastmail"
         "font-monaspace"
-        "ghostty"
         "jithin-sabu/tap/purge"
         "keka"
         "little-snitch"
