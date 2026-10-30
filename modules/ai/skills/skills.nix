@@ -146,7 +146,6 @@ in
             subdir = "skills/engineering";
             ids = [
               "codebase-design"
-              # "resolving-merge-conflicts"
             ];
           };
           mattpocock-productivity = {
@@ -155,7 +154,6 @@ in
             manual = true;
             ids = [
               "grilling"
-              # "writing-for-agents"
             ];
           };
           writing = {

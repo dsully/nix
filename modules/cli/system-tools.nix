@@ -25,11 +25,9 @@ mkUserModule {
           iperf3
           ipmitool
           just
-          lla
           mdterm
           moor
           p7zip
-          procs
           q
           rip2
           rnr

@@ -2,6 +2,7 @@
   mkUserModule,
   config,
   lib,
+  pkgs,
   ...
 }: let
   bunInstallPath = "${config.home.homeDirectory}/.bun";
@@ -39,8 +40,12 @@ in
 
         programs.bun.enable = true;
 
-        home.sessionVariables = {
-          BUN_INSTALL = bunInstallPath;
+        home = {
+          packages = [pkgs.nodejs pkgs.yarn];
+
+          sessionVariables = {
+            BUN_INSTALL = bunInstallPath;
+          };
         };
       }
 

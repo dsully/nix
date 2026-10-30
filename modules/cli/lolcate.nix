@@ -9,6 +9,12 @@ mkUserModule {
   name = "lolcate";
 
   home = lib.mkMerge [
+    {
+      home.packages = [
+        my.pkgs.lolcate-rs
+      ];
+    }
+
     (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       systemd.user.services.lolcate = {
         Unit.Description = "Update lolcate database";

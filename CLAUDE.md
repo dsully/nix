@@ -55,7 +55,7 @@ Hand-rolled `flake-parts` flake. `packages/` is auto-discovered: every `*.nix` f
 
 `lib/hostLib.nix` passes `userModuleTarget` as a specialArg:
 
-- `"system"` — `mkUserModule` applies `system`, `casks`, `user`; `mkSystemModule` applies `config`.
+- `"system"` — `mkUserModule` applies `system`, `casks`; `mkSystemModule` applies `config`.
 - `"home"` (with `homeUser`) — `mkUserModule` applies `home` (and enabled `parts`) at the top level and declares `homeOptions`; `mkSystemModule` contributes nothing.
 
 Discovery excludes `hosts`/`users` everywhere, `linux` on darwin, `darwin` on system-manager, and both `darwin` and `linux` in home configs. So `modules/darwin/` and `modules/linux/` are system-only; every other category must evaluate in both targets. Inside a module, `config` is the config of the current evaluation (home-manager config inside `home`, system config inside `system`). The top-level attribute names returned by a `home` function must not depend on `cfg`/`userCfg`.

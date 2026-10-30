@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   mkUserModule,
   pkgs,
@@ -23,36 +22,6 @@ in
     home = {
       home = {
         enableNixpkgsReleaseCheck = false;
-
-        activation = {
-          neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
-            #!/bin/bash
-
-            if ! [ -d "$HOME/.config/nvim" ]; then
-                ${lib.getExe pkgs.git} clone git@github.com:${userName}/nvim.git ~/.config/nvim
-            fi
-          '';
-
-          # nix-darwin's brew bundle runs under sudo without XDG_CONFIG_HOME, so it reads ~/.homebrew/trust.json.
-          homebrewTrust = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
-            trust="${config.xdg.configHome}/homebrew/trust.json"
-            legacy="${homeDir}/.homebrew/trust.json"
-            merge='reduce .[] as $f ({}; reduce ($f|keys[]) as $k (.; .[$k] = ((.[$k] // []) + $f[$k] | unique)))'
-
-            run mkdir -p "$(dirname "$trust")" "$(dirname "$legacy")"
-
-            if [ -f "$legacy" ] && [ ! -L "$legacy" ]; then
-              if [ -f "$trust" ]; then
-                run sh -c '${lib.getExe pkgs.jq} -s "$3" "$1" "$2" > "$1.tmp" && cat "$1.tmp" > "$1" && rm "$1.tmp"' _ "$trust" "$legacy" "$merge"
-                run mv "$legacy" "$legacy.bak"
-              else
-                run mv "$legacy" "$trust"
-              fi
-            fi
-
-            run ln -sfn "$trust" "$legacy"
-          '');
-        };
 
         file = {
           "iCloud" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -93,18 +62,7 @@ in
 
         sessionPath = [config.xdg.binHome "${config.home.homeDirectory}/.cargo/bin"];
 
-        sessionVariables =
-          # These are here instead of homebrew.nix so they belong to home-manager instead of nix-darwin
-          lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
-            HOMEBREW_NO_ANALYTICS = "1";
-            HOMEBREW_NO_ASK = "1";
-            HOMEBREW_NO_COMPAT = "1";
-            HOMEBREW_NO_ENV_HINTS = "1";
-            HOMEBREW_NO_INSTALL_CLEANUP = "1";
-          }
-          // {
-            XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
-          };
+        sessionVariables.XDG_STATE_HOME = "${config.home.homeDirectory}/.local/state";
       };
 
       manual.manpages.enable = false;

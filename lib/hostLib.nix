@@ -25,7 +25,6 @@
   perSystem =
     {
       self = packages;
-      devshell = inputs.devshell.legacyPackages.${system};
       llm-agents = inputs.llm-agents.packages.${system};
       nix-auth = inputs.nix-auth.packages.${system};
     }

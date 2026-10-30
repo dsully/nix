@@ -30,7 +30,7 @@
 
   # Platform-specific trusted users
   trusted_users =
-    ["root" "dsully"]
+    ["root" config.system.userName]
     ++ (
       if pkgs.stdenv.hostPlatform.isDarwin
       then ["@admin"]

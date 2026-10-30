@@ -14,7 +14,6 @@ mkUserModule {
         [
           devmoji-log
           dirstat-rs
-          lolcate-rs
           magic-opener
           nix-package-updater
         ]

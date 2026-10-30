@@ -7,6 +7,8 @@ mkUserModule {
   name = "procs";
 
   home = {
+    home.packages = [pkgs.procs];
+
     xdg.configFile."procs/config.toml".source = (pkgs.formats.toml {}).generate "procs-config" {
       columns = [
         {

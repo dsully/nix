@@ -1,4 +1,7 @@
 {
+  config,
+  inputs,
+  lib,
   mkUserModule,
   my,
   pkgs,
@@ -11,6 +14,12 @@ in
 
     home = {
       home = {
+        activation.neovim = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary" "installPackages"] ''
+          if ! [ -d "$HOME/.config/nvim" ]; then
+              ${lib.getExe pkgs.git} clone git@github.com:${config.system.userName}/nvim.git ~/.config/nvim
+          fi
+        '';
+
         packages = with pkgs;
           [
             commitlint-rs

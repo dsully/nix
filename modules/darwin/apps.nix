@@ -60,13 +60,6 @@ mkSystemModule {
             DisablePrintPreview = true;
           };
 
-          "com.mitchellh.ghostty" = {
-            SUAutomaticallyUpdate = false;
-            SUEnableAutomaticChecks = false;
-            SUHasLaunchedBefore = true;
-            SUSendProfileInfo = false;
-          };
-
           "com.quip.Desktop" = {
             SUAutomaticallyUpdate = false;
             SUEnableAutomaticChecks = false;

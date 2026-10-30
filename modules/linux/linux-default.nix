@@ -24,7 +24,7 @@ mkSystemModule {
 
     # Shared sshd hardening + AcceptEnv (so jarvis can pass SSH_CLIENT_* paths,
     # consumed by the `tower` fish fn). Applies to every Linux host; Darwin hosts
-    # get the equivalent via modules/darwin/common.nix. Takes effect only after
+    # get the equivalent via modules/darwin/darwin-default.nix. Takes effect only after
     # sshd is reloaded. NOTE: no Subsystem here -- the stock sshd_config already
     # defines `Subsystem sftp`, and a duplicate definition is fatal to sshd.
     environment.systemPackages = [pkgs.fish system-manager];

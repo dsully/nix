@@ -20,8 +20,6 @@ mkUserModule {
 
         KeepAlive = true;
         RunAtLoad = true;
-        # StandardOutPath = cfg.logFile;
-        # StandardErrorPath = cfg.logFile;
       };
       domain = lib.mkDefault "gui";
     };

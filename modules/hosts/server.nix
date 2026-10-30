@@ -25,22 +25,6 @@ mkSystemManagerHost {
   # root@server: activate with `just switch-root`.
   extraHomeUsers.root.userConfig = {
     ai.enable = true;
-    btop.enable = true;
-    delta.enable = true;
-    direnv.enable = true;
-    dotfiles.enable = true;
-    editor.enable = true;
-    fd.enable = true;
-    fish.enable = true;
-    fzf.enable = true;
-    git.enable = true;
-    home-base.enable = true;
-    lla.enable = true;
-    pager.enable = true;
-    procs.enable = true;
-    ripgrep.enable = true;
-    system-tools.enable = true;
-    vivid.enable = true;
-    zoxide.enable = true;
+    core-shell.enable = true;
   };
 }

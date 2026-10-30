@@ -30,14 +30,12 @@
 
   piDefaultPackages = lib.unique (
     [
-      # "npm:context-mode"
       # The extension injects core ponytail from its SKILL.md path; audit + review come
       # hidden from agent-skills below, reachable through its /ponytail-* aliases.
       {
         source = "npm:@dietrichgebert/ponytail";
         skills = [];
       }
-      # "git:github.com/light4/pi-session-manager@v0.2.16"
       "npm:@ff-labs/pi-fff"
       # Installed but loads nothing: its 11 UI tools cost ~3k prompt tokens every turn.
       # Enable per repo with the `pi-computer-use` fish function, which adds an

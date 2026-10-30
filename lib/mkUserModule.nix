@@ -4,17 +4,17 @@
 # The same module file is evaluated twice, selected by the `userModuleTarget`
 # specialArg:
 #
-#   "system": inside nix-darwin / system-manager. `system`, `casks`, and `user`
-#             apply once when any user enables the module. `home` is ignored.
+#   "system": inside nix-darwin / system-manager. `system` and `casks` apply
+#             once when any user enables the module. `home` is ignored.
 #   "home":   inside the standalone home-manager config of user `homeUser`.
-#             `home` (and enabled parts) apply at the top level. `system`,
-#             `casks`, and `user` are ignored.
+#             `home` (and enabled parts) apply at the top level. `system` and
+#             `casks` are ignored.
 #
 # In both targets the outer module's `config` is the config of the current
 # evaluation: the home-manager config inside `home`, the system config inside
 # `system`.
 #
-# Signature: { name, system?, casks?, home?, user?, extraOptions?, requires?, parts? } -> module
+# Signature: { name, system?, casks?, home?, homeOptions?, extraOptions?, default?, requires?, needs?, parts? } -> module
 #
 # Fields:
 #
@@ -35,9 +35,6 @@
 #   homeOptions:  (optional) Home-manager option declarations (e.g. `fishSecrets`)
 #                 that other modules write to. Declared in the "home" target
 #                 whether or not the module is enabled.
-#
-#   user:         (optional) Per-user account config, merged into
-#                 users.users.<username>. Attrset or ({ cfg, username } -> attrset).
 #
 #   extraOptions: (optional) Custom per-user option declarations (attrset of mkOption defs).
 #
@@ -62,16 +59,12 @@
   casks ? [],
   home ? {},
   homeOptions ? {},
-  user ? {},
   extraOptions ? {},
   default ? true,
   requires ? [],
   needs ? [],
   parts ? {},
 }: let
-  isUserFn = builtins.isFunction user;
-  hasUser = user != {} || isUserFn;
-  hasParts = parts != {};
   applyIfFn = value: args:
     if builtins.isFunction value
     then value args
@@ -109,26 +102,13 @@ in {
               ++ lib.optional (casks != []) (forPlatform {
                 darwin = {homebrew.casks = casks;};
               })
-              ++ lib.optionals hasParts (
-                lib.mapAttrsToList (
-                  partName: partDef: let
-                    partUsers = lib.filterAttrs (_: u: u.${name}.${partName}.enable) enabledUsers;
-                  in
-                    lib.mkIf (partUsers != {}) (applyIfFn (partDef.system or {}) {inherit partUsers;})
-                )
-                parts
+              ++ lib.mapAttrsToList (
+                partName: partDef: let
+                  partUsers = lib.filterAttrs (_: u: u.${name}.${partName}.enable) enabledUsers;
+                in
+                  lib.mkIf (partUsers != {}) (applyIfFn (partDef.system or {}) {inherit partUsers;})
               )
-              ++ lib.optional hasUser {
-                users.users =
-                  lib.mapAttrs (
-                    username: userCfg:
-                      applyIfFn user {
-                        cfg = userCfg.${name};
-                        inherit username;
-                      }
-                  )
-                  enabledUsers;
-              }
+              parts
             )
           );
 

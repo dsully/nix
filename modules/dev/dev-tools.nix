@@ -24,37 +24,23 @@ mkUserModule {
           dive
           gibo
           gnused
-          go
           hyperfine
           jq
-          nodejs
           scc
           sq
           sqlite
           tree-sitter
           typos
           xan
-          yarn
           yq-go
         ]
         ++ (with my.pkgs; [
           debtmap
         ]);
-
-      sessionVariables = {
-        GOPATH = "${config.xdg.dataHome}/go";
-      };
     };
 
-    programs = {
-      go = {
-        enable = true;
-        env.GOPATH = "${config.xdg.dataHome}/go";
-      };
-
-      uv.tool.packages = [
-        "big-code-analysis-cli"
-      ];
-    };
+    programs.uv.tool.packages = [
+      "big-code-analysis-cli"
+    ];
   };
 }

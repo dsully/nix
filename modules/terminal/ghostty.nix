@@ -1,11 +1,23 @@
 {
   mkUserModule,
+  forPlatform,
   lib,
   pkgs,
   ...
 }:
 mkUserModule {
   name = "ghostty";
+
+  casks = ["ghostty"];
+
+  system = forPlatform {
+    darwin.system.defaults.CustomUserPreferences."com.mitchellh.ghostty" = {
+      SUAutomaticallyUpdate = false;
+      SUEnableAutomaticChecks = false;
+      SUHasLaunchedBefore = true;
+      SUSendProfileInfo = false;
+    };
+  };
 
   home = {
     programs.ghostty = {
