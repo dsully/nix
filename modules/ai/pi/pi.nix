@@ -308,8 +308,6 @@ in
             });
           };
 
-          ai.superpowers.agents = ["pi"];
-
           fish = {
             functions.pi-bolt = {
               description = "Wrapper around pi-bolt for resume";

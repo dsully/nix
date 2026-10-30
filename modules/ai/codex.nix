@@ -49,7 +49,6 @@ in
 
         programs = {
           agent-skills.targets.codex.enable = true;
-          ai.superpowers.agents = ["codex"];
 
           codex = {
             package = pkgs.llm-agents.codex;
