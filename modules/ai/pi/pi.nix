@@ -49,7 +49,6 @@
       # "npm:pi-blackhole"
       "npm:pi-away"
       "npm:pi-background"
-      "npm:pi-checkpoints"
       "npm:pi-codemode-toggle"
       "npm:pi-context-view"
       "npm:pi-hashline-edit-pro-lean"
@@ -60,12 +59,22 @@
         source = "npm:pi-polish";
         extensions = ["extensions/tools.ts"];
       }
+      # Collapsed rows only; expanded rows still use pi-polish. The thinking merger would fight quiet-thinking.
+      {
+        source = "npm:@pi-kaush/pi-tool-call-markers";
+        extensions = ["src/index.ts"];
+      }
       # "npm:pi-resume-search"
       "npm:@cortexkit/pi-magic-context"
+      # Snapshots per turn: hashline replace/insert carry no path, so edit/write-hooked checkpointers miss them.
+      "npm:@ian-pascoe/pi-git-checkpoints"
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@tifan/pi-copy-response"
       "npm:@vanillagreen/pi-session-manager"
+      "npm:@mrclrchtr/supi-cache"
+      "npm:@mrclrchtr/supi-insights"
+      "npm:@mrclrchtr/supi-review"
     ]
     ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
     ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
