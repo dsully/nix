@@ -228,7 +228,10 @@ in
             fixup = "!git commit --fixup $(git rev-parse HEAD)";
           };
 
-          advice.skippedCherryPicks = false;
+          advice = {
+            addIgnoredFile = false;
+            skippedCherryPicks = false;
+          };
 
           branch = {
             autoSetupMerge = true;

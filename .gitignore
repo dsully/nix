@@ -8,5 +8,5 @@ result-*
 .pi/
 node_modules
 
-AGENTS.md
-INDEX.md
+/AGENTS.md
+/INDEX.md
