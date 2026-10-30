@@ -5,6 +5,9 @@ export NIXPKGS_ALLOW_UNFREE := "1"
 export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM := "1"
 export NH_PRESERVE_ENV := "1"
 
+# Boehm GC grows the heap in small steps; starting larger cuts ~15% eval CPU.
+export GC_INITIAL_HEAP_SIZE := "4G"
+
 #
 
 NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
