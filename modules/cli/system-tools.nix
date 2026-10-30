@@ -16,6 +16,7 @@ mkUserModule {
           _1password-cli
           croc
           curl
+          dirstat-rs
           dua
           dust
           fclones

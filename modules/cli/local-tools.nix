@@ -9,11 +9,9 @@ mkUserModule {
 
   home = {
     home = {
-      # Handle merging nixpkgs, the packages in this flake and allowing dependent to use the packages from this flake.
       packages = with my.pkgs;
         [
           devmoji-log
-          dirstat-rs
           magic-opener
           nix-package-updater
         ]
