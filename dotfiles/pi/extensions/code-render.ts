@@ -9,11 +9,11 @@ import {
 } from "@earendil-works/pi-tui";
 
 const PATCH = Symbol.for("pi-code-render.markdown-patch");
-const CARD_BG = "toolSuccessBg" as const;
-const COPY_LABEL = "[COPY]";
+const CARD_BG = "mdCodeBlockBg" as const;
+const COPY_LABEL = "📋 copy";
 /**
- * Zero-width prefix on the rendered label: prose or inline code can end with
- * the literal `[COPY]`, and such a row would hijack the anchor search.
+ * Zero-width prefix on the rendered label: prose or inline code can contain
+ * the literal label, and such a row would hijack the anchor search.
  */
 const COPY_ANCHOR = `\u200b${COPY_LABEL}`;
 const STATUS_KEY = "pi-code-render";
@@ -26,7 +26,11 @@ type CodeToken = {
   type?: string;
   lang?: string;
   text?: string;
+  tokens?: CodeToken[];
+  items?: CodeToken[];
 };
+
+type MarkdownInternals = { tokensFor?: (width: number) => { tokens: CodeToken[] } | undefined };
 
 type CopyHit = {
   y: number;
@@ -87,6 +91,16 @@ function locateCopyHits(plainLines: readonly string[], sources: readonly string[
   return hits;
 }
 
+/** Sources of the code tokens rendered as cards, in document order (lists and quotes nest them). */
+function cardedSources(tokens: readonly CodeToken[], carded: WeakSet<CodeToken>, out: string[] = []): string[] {
+  for (const token of tokens) {
+    if (carded.has(token)) out.push(token.text ?? "");
+    cardedSources(token.tokens ?? [], carded, out);
+    cardedSources(token.items ?? [], carded, out);
+  }
+  return out;
+}
+
 function buildCard(
   highlighted: readonly string[],
   cardWidth: number,
@@ -95,23 +109,11 @@ function buildCard(
   accent: (value: string) => string,
 ): string[] {
   const innerWidth = Math.max(1, cardWidth - CARD_PAD.length * 2);
-  const buttonWidth = visibleWidth(COPY_LABEL);
   const align = (line: string): string => (line.startsWith(codeIndent) ? line.slice(codeIndent.length) : line);
-  const firstLine = highlighted[0] === undefined ? "" : align(highlighted[0]);
-  const firstLineWidth = Math.max(1, innerWidth - buttonWidth - CARD_PAD.length);
-  const wrappedFirstLine = wrapTextWithAnsi(firstLine, firstLineWidth);
-  const firstLineContent = wrappedFirstLine[0] ?? "";
-  const gapWidth = Math.max(1, innerWidth - visibleWidth(firstLineContent) - buttonWidth);
-  const card = [
-    fillRow("", cardWidth, bg),
-    fillRow(`${CARD_PAD}${firstLineContent}${" ".repeat(gapWidth)}${accent(COPY_ANCHOR)}${CARD_PAD}`, cardWidth, bg),
-  ];
+  const header = `${CARD_PAD}${accent(COPY_ANCHOR)}`;
+  const card = [fillRow(header, cardWidth, bg)];
 
-  for (const line of wrappedFirstLine.slice(1)) {
-    card.push(fillRow(`${CARD_PAD}${line}${CARD_PAD}`, cardWidth, bg));
-  }
-
-  for (const line of highlighted.slice(1)) {
+  for (const line of highlighted) {
     const wrapped = wrapTextWithAnsi(align(line), innerWidth);
     for (const wrappedLine of wrapped.length > 0 ? wrapped : [""]) {
       card.push(fillRow(`${CARD_PAD}${wrappedLine}${CARD_PAD}`, cardWidth, bg));
@@ -131,9 +133,8 @@ function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode:
   const originalRender = prototype.render;
   const originalHandleMouse = prototype.handleMouse;
 
-  const captureSources = new WeakMap<Markdown, string[]>();
-  /** Survives cached renders, where renderToken only fires on cold renders. */
-  const knownSources = new WeakMap<Markdown, string[]>();
+  /** Pi caches rendered blocks per token across instances, so renderToken can't be the per-render source of truth. */
+  const carded = new WeakSet<CodeToken>();
   const pressedHits = new WeakMap<Markdown, CopyHit>();
   const layoutCache = new WeakMap<Markdown, LayoutCache>();
 
@@ -171,7 +172,6 @@ function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode:
       return originalRenderToken.call(this, normalized, width, nextTokenType, styleContext);
     }
 
-    captureSources.get(this)?.push(source);
     const rendered = originalRenderToken.call(this, normalized, width, nextTokenType, styleContext);
 
     // Scan backwards for the closing fence: code content may itself contain
@@ -194,6 +194,7 @@ function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode:
       (value) => theme.bg(CARD_BG, value),
       (value) => theme.fg("accent", value),
     );
+    carded.add(token);
     if (nextTokenType && nextTokenType !== "space") card.push("");
     return card;
   };
@@ -204,28 +205,12 @@ function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode:
     if (cached?.key === key) return cached.lines;
 
     if (isPlainTextContext(this)) {
-      knownSources.delete(this);
       return cacheLayout(this, key, originalRender.call(this, width));
     }
 
-    const currentSources: string[] = [];
-    captureSources.set(this, currentSources);
-    let lines: string[];
-    try {
-      lines = originalRender.call(this, width);
-    } finally {
-      captureSources.delete(this);
-    }
-
-    // Never key this on the source text: an indented code block has no ```
-    // but is still rendered as a card.
-    if (currentSources.length > 0) {
-      knownSources.set(this, currentSources);
-    } else if (!lines.some((line) => line.includes(COPY_ANCHOR))) {
-      knownSources.delete(this);
-    }
-
-    const sources = knownSources.get(this) ?? [];
+    const lines = originalRender.call(this, width);
+    const tokens = (this as unknown as MarkdownInternals).tokensFor?.(width)?.tokens ?? [];
+    const sources = cardedSources(tokens, carded);
     if (sources.length === 0) return cacheLayout(this, key, lines);
 
     const plainLines = lines.map((line) => stripTerminalSequences(line));

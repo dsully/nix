@@ -395,6 +395,8 @@ in
               enableSkillCommands = false;
 
               hideThinkingBlock = true;
+              outputPad = 0;
+
               hooks = ai.hooks.pi;
               quietStartup = true;
               skipApprovals = true;
