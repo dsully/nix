@@ -112,6 +112,11 @@ up:
     @nix flake update
     @nix flake update llm-agents
 
+# List packages not run in DAYS (from the exec-log daemon)
+[group('nix')]
+unused days="90":
+    @nix-unused {{ days }}
+
 # List all generations of the system profile
 [group('nix')]
 history:
