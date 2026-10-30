@@ -23,11 +23,11 @@
     "beautiful-rust": {
       "flake": false,
       "locked": {
-        "lastModified": 1793202086,
-        "narHash": "sha256-fNh9YX7CVV1uCe3A6kM7or+51frv9rY+a6V6LyLZkh8=",
+        "lastModified": 1793369775,
+        "narHash": "sha256-Mq7CFygDuuK5er1+pBwgItGVjwN4jPPqpqG7khBpPTI=",
         "owner": "morganlinton",
         "repo": "BeautifulRust",
-        "rev": "f92961282b83e11757f076e787b4725b38d07b56",
+        "rev": "40db61c6fee84bd121cf288755f0e2f22a50e995",
         "type": "github"
       },
       "original": {
@@ -252,11 +252,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793318296,
-        "narHash": "sha256-sTzYJXkymjKjX0Wsn0aOQaEfu99BqYGfGxm5g0bMeWc=",
+        "lastModified": 1793337267,
+        "narHash": "sha256-HiJivFTcq8no0L9bac+3MkaPeFy5gP+LLQMZXQNo5O8=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "0eaa3b9e3951e6e2e9349bd5f21a975f3e9b4924",
+        "rev": "467c27cb367fa1059583bcadf28390611f66550b",
         "type": "github"
       },
       "original": {
@@ -512,10 +512,10 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1793316310,
-        "narHash": "sha256-l5HQrbsHjLWXJ0ZQxmCTtFegDfq7/XseM6Bkb5Q/rIU=",
+        "lastModified": 1793368937,
+        "narHash": "sha256-67JuAv86uedVhFGlPvLd3xGAsXRuHSiVPR+ONNVoVk4=",
         "type": "tarball",
-        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1793316310-g0b1328.tar.gz"
+        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1793368937-g8697a6.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -589,11 +589,11 @@
         "userborn": "userborn"
       },
       "locked": {
-        "lastModified": 1793041121,
-        "narHash": "sha256-ZV34Z3i8D8bbPhWcAlr3PpZHtuqqgnELaciSoOblhlg=",
+        "lastModified": 1793363453,
+        "narHash": "sha256-znZDmnxhSYPW+S5jQ+cm2eCZVCmWwlKBftvddvf+4l8=",
         "owner": "numtide",
         "repo": "system-manager",
-        "rev": "81d5c1e8b2924679c1adc7b67e536917c12b3571",
+        "rev": "cba6d1c423c8c88a9f6a093606432e8e447a38f7",
         "type": "github"
       },
       "original": {
