@@ -5,7 +5,7 @@
 }:
 buildGo127Module rec {
   pname = "shell-lsp";
-  version = "0.5.7";
+  version = "0.5.14";
 
   src = fetchFromGitHub {
     owner = "stubbedev";
