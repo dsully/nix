@@ -18,6 +18,7 @@ scripts.check-upstream-packages = "scripts.check_upstream_packages:main"
 scripts.safaricloudtabs = "scripts.safaricloudtabs:app"
 
 [tool.uv]
+index = [ { name = "pypi", url = "https://pypi.org/simple", default = true } ]
 package = true
 build-backend.module-name = "scripts"
 build-backend.module-root = ""

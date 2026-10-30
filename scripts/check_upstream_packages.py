@@ -6,12 +6,10 @@ import re
 import subprocess
 import sys
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 
 from rich.console import Console
-from rich.progress import BarColumn, MofNCompleteColumn, Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
 PLATFORMS = ("aarch64-darwin", "x86_64-linux")
@@ -99,43 +97,40 @@ def collect_packages() -> list[LocalPackage]:
     return packages
 
 
-def search_nixpkgs(pkg: LocalPackage) -> Match | None:
-    """Return a Match if the package exists in nixpkgs for all target platforms."""
+def search_nixpkgs(packages: list[LocalPackage]) -> list[Match]:
+    """Return a Match for every package that is a top-level nixpkgs attribute available on all PLATFORMS.
+
+    Evaluates the flake's locked nixpkgs input directly; `nh search` queries the
+    search.nixos.org index, which misses exact names such as `dirstat-rs`.
+    """
+    names = json.dumps(json.dumps([pkg.pname for pkg in packages]))
+    platforms = " ".join(f'"{p}"' for p in PLATFORMS)
+
+    expr = f"""
+      let
+        pkgs = (builtins.getFlake "{PACKAGES_DIR.parent}").inputs.nixpkgs.legacyPackages.x86_64-linux;
+        inherit (pkgs) lib;
+        available = pkg: lib.all (p: lib.meta.availableOn (lib.systems.elaborate p) pkg) [{platforms}];
+        lookup = n: builtins.tryEval (
+          if pkgs ? ${{n}} && lib.isDerivation pkgs.${{n}} && available pkgs.${{n}}
+          then pkgs.${{n}}.version or "?"
+          else null
+        );
+      in
+        lib.filterAttrs (_: v: v != null)
+          (lib.genAttrs (builtins.fromJSON {names}) (n: let r = lookup n; in if r.success then r.value else null))
+    """
 
     result = subprocess.run(
-        ["nh", "search", "--json", "--platforms", pkg.pname],
+        ["nix", "eval", "--impure", "--json", "--expr", expr],
         capture_output=True,
         text=True,
         check=True,
     )
 
-    if result.returncode != 0:
-        return None
+    upstream: dict[str, str] = json.loads(result.stdout)
 
-    try:
-        data = json.loads(result.stdout)
-    except json.JSONDecodeError:
-        return None
-
-    for entry in data.get("results", []):
-        if entry.get("package_pname") != pkg.pname:
-            continue
-
-        attr = entry.get("package_attr_name", "?")
-
-        # Only top-level `nixpkgs#<pname>` attributes count - skip nested sets
-        # like `emacsPackages.timecop` which are unrelated namespaced packages.
-        if "." in attr:
-            continue
-
-        if all(p in entry.get("package_platforms", []) for p in PLATFORMS):
-            return Match(
-                pkg=pkg,
-                attr=attr,
-                upstream_version=entry.get("package_pversion", "?"),
-            )
-
-    return None
+    return [Match(pkg=pkg, attr=pkg.pname, upstream_version=upstream[pkg.pname]) for pkg in packages if pkg.pname in upstream]
 
 
 def main() -> None:
@@ -145,26 +140,8 @@ def main() -> None:
         console.print(f"[red]No packages found in {PACKAGES_DIR}[/red]")
         sys.exit(1)
 
-    found: list[Match] = []
-
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
-        MofNCompleteColumn(),
-        console=console,
-        transient=True,
-    ) as progress:
-        task = progress.add_task("Searching nixpkgs…", total=len(packages))
-
-        with ThreadPoolExecutor() as executor:
-            futures = {executor.submit(search_nixpkgs, pkg): pkg for pkg in packages}
-
-            for future in as_completed(futures):
-                progress.advance(task)
-
-                if match := future.result():
-                    found.append(match)
+    with console.status("Searching nixpkgs…"):
+        found = search_nixpkgs(packages)
 
     if not found:
         console.print("[green]✓[/green] None of your custom packages are in nixpkgs yet.")
