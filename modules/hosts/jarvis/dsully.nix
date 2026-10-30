@@ -30,7 +30,7 @@
 
     pi-coding-agent = {
       settings.packages = [
-        "npm:pi-claude-bridge"
+        "npm:@gotgenes/pi-anthropic-auth"
       ];
     };
 
