@@ -17,6 +17,7 @@
       ]
       ++ (with perSystem.self; [
         autorebase
+        tripsy-cli
       ]);
   };
 

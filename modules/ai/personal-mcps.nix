@@ -46,6 +46,9 @@ mkUserModule {
         enabled = false;
         stateless = true;
       };
+      tripsy = {
+        command = lib.getExe' my.pkgs.tripsy-cli "tripsy-mcp";
+      };
     };
   };
 }
