@@ -9,6 +9,9 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 const redundant = [
   "batch_web_fetch", // codemode + Promise.allSettled over web_fetch
   "ffgrep", // hashline grep
+  // Their slash commands cover these; review_output stays, /supi-review tells the model to page long reports with it.
+  "cache_forensics",
+  "review_run",
   // pi-superagents registers these unconditionally; they need Plannotator, which is not installed.
   "superpowers_plan_review",
   "superpowers_spec_review",

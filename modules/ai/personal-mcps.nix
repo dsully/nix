@@ -1,6 +1,5 @@
 {
   mkUserModule,
-  config,
   lib,
   my,
   pkgs,
