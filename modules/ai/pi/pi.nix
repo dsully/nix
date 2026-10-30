@@ -173,6 +173,18 @@ in
                 mcpServers = piMcpServers;
               };
 
+              # Mechanical delegation runs on Sonnet per AGENTS.md. Frontmatter outranks a caller's model param.
+              "${piPath}/agents/general-purpose.md" = lib.mkIf (!piSuperpowers) {
+                text = ''
+                  ---
+                  description: General-purpose agent for researching complex questions, searching for code, and executing multi-step tasks. When you are searching for a keyword or file and are not confident that you will find the right match in the first few tries use this agent to perform the search for you.
+                  model: ${config.programs.pi-coding-agent.settings.defaultProvider}/${ai.models.medium.model}
+                  thinking: ${ai.models.medium.reasoning_effort}
+                  prompt_mode: append
+                  ---
+                '';
+              };
+
               # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat
               # would biome-format .ts (its JS/TS default) and fight the oxfmt
               # PostToolUse hook in hooks.nix, and its autofix runs biome/ruff/eslint
@@ -326,6 +338,9 @@ in
               drv.name = "${my.pkgs.pi-bolt.name}-wrapped";
 
               envDefault = {
+                # No editor can open inside pi's bash tool; git would block on it.
+                GIT_EDITOR = "true";
+                GIT_SEQUENCE_EDITOR = "true";
                 FFF_ENABLE_HOME_SCAN = "0";
                 PI_CLIPBOARD_OSC52 = "1";
                 PI_CODING_AGENT_DIR = piPath;
