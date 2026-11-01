@@ -35,6 +35,7 @@ mkUserModule {
         ]
         ++ (with my.pkgs; [
           debtmap
+          lini
         ]);
     };
 
