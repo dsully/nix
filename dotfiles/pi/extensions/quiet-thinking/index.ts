@@ -1,18 +1,25 @@
 import { AssistantMessageComponent, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { dropHiddenThinking, type Part } from "./plan.js";
+import { collapseThinking, presentThought, thinkingLine, type Part, type ThinkingBlock } from "./label.js";
 
 const ORIGINAL = Symbol.for("pi-quiet-thinking.planContent");
 
 type PlanContent = (message: unknown) => Part[];
-type Planner = { planContent?: PlanContent; [ORIGINAL]?: PlanContent };
+type Planner = {
+  planContent?: PlanContent;
+  hiddenThinkingLabel?: string;
+  [ORIGINAL]?: PlanContent;
+};
 
-/** hideThinkingBlock leaves a "Thinking..." line per tool round; drop it. Ctrl+T still expands thinking. */
-export default function (_pi: ExtensionAPI) {
+/** One thought row per message, showing its first line instead of a stack of "│ * Thought". Ctrl+T still expands. */
+export default function quietThinking(_pi: ExtensionAPI) {
   const proto = AssistantMessageComponent.prototype as unknown as Planner;
   const original = (proto[ORIGINAL] ??= proto.planContent);
-  // shortcut: patches a private method; if a pi update renames it, this silently does nothing.
+  // shortcut: patches a private method; if a pi update renames it, the Thought stack stays.
   if (typeof original !== "function") return;
-  proto.planContent = function (this: unknown, message) {
-    return dropHiddenThinking(original.call(this, message));
+  proto.planContent = function (this: Planner, message) {
+    const line = thinkingLine((message as { content?: ThinkingBlock[] } | undefined)?.content);
+    const presented = presentThought(this.hiddenThinkingLabel, line);
+    if (presented) this.hiddenThinkingLabel = presented;
+    return collapseThinking(original.call(this, message));
   };
 }
