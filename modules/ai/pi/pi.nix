@@ -59,10 +59,10 @@
         source = "npm:pi-polish";
         extensions = ["extensions/tools.ts"];
       }
-      # Collapsed rows only; expanded rows still use pi-polish. The thinking merger would fight quiet-thinking.
+      # Collapsed rows only; expanded rows still use pi-polish. The merger draws "│ * Thought".
       {
         source = "npm:@pi-kaush/pi-tool-call-markers";
-        extensions = ["src/index.ts"];
+        extensions = ["src/index.ts" "src/thinking-block-merger.ts"];
       }
       # "npm:pi-resume-search"
       "npm:@cortexkit/pi-magic-context"
@@ -89,7 +89,13 @@
   config.programs.pi-coding-agent.settings.packages;
 
   piExtensions =
-    lib.filterAttrs (name: type: (type == "directory" || (type == "regular" && lib.hasSuffix ".ts" name)))
+    lib.filterAttrs (
+      name: type:
+        type
+        == "directory"
+        && name != "quiet-thinking"
+        || type == "regular" && lib.hasSuffix ".ts" name
+    )
     (builtins.readDir ../../../dotfiles/pi/extensions);
 
   rulesSkills = pkgs.linkFarm "pi-rules-skills" (lib.mapAttrsToList (file: _: let
@@ -300,6 +306,14 @@ in
                   {
                     pkg = "pi-hashline-edit-pro-lean";
                     patch = ./pi-hashline-lean-edit-output-schema.patch;
+                  }
+                  {
+                    pkg = "@pi-kaush/pi-tool-call-markers";
+                    patch = ./pi-tool-call-markers-hashline-diffs.patch;
+                  }
+                  {
+                    pkg = "@pi-kaush/pi-tool-call-markers";
+                    patch = ./pi-tool-call-markers-thought-grouping.patch;
                   }
                   {
                     pkg = "pi-gortex";

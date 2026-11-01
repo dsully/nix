@@ -14,7 +14,7 @@ index b4b1286..ad32aeb 100644
  ]);
  const PRESENTATION_PATCHED = Symbol.for("kg.pi.toolPresentation.v3");
  const LEGACY_PRESENTATION_PATCHED = Symbol.for("kg.pi.toolPresentation.v2");
-@@ -677,6 +682,41 @@ function renderedEditDiffStat(row: ToolExecutionRow): string | undefined {
+@@ -677,4 +682,39 @@ function renderedEditDiffStat(row: ToolExecutionRow): string | undefined {
    return added + removed === 0 ? "applied" : `+${added}/-${removed}`;
  }
  
@@ -54,10 +54,7 @@ index b4b1286..ad32aeb 100644
 +}
 +
  function outcomeSummary(row: ToolExecutionRow): string | undefined {
-   // Self-rendered tools own their result framing; the built-in heuristics
-   // (line counts, diff stats) describe default-shell rows only, so their
-@@ -988,6 +1028,7 @@ function collapsedSeam(
-   // Codemode rows pair the script's nested calls with its `@options` params;
+@@ -988,5 +1028,6 @@ function collapsedSeam(
    // with neither, they fall through to the ordinary summary paths.
    const source =
 +    hashlineEditLabel(row) ??
@@ -79,3 +76,12 @@ index b4b1286..ad32aeb 100644
    return {
      anchor,
      content: fgCollapsed(theme, color, text || "(no arguments)"),
+@@ -1032,6 +1075,8 @@ function collapsedOutcome(
+     const elapsed = liveElapsedText(row);
+     return theme.fg("warning", elapsed ? `… · ${elapsed}` : "…");
+   }
++  const hashlinePreview = hashlineDiffPreview(row, theme);
++  if (hashlinePreview) return hashlinePreview;
+   if (row.getRenderShell?.() === "self") {
+     const editStat = renderedEditDiffStat(row);
+     if (editStat) return fgCollapsed(theme, "toolOutput", `→ ${editStat}`);
