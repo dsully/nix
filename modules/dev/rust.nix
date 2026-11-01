@@ -1,16 +1,16 @@
 {
   lib,
   mkUserModule,
-  perSystem,
+  my,
   pkgs,
   ...
 }: let
-  inherit (perSystem.self) mbx;
+  inherit (my.pkgs) mbx;
   cargoShimDir = "${mbx}/libexec/mbx";
 
   # rust-analyzer reads its user file from dirs::config_dir(), which ignores XDG on macOS.
   rustAnalyzerConfig = "${
-    if pkgs.stdenv.isDarwin
+    if pkgs.stdenv.hostPlatform.isDarwin
     then "Library/Application Support"
     else ".config"
   }/rust-analyzer/rust-analyzer.toml";
