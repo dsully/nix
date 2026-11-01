@@ -89,7 +89,6 @@ mkSystemModule {
         "wBlock" = 6746388723;
         "Weatherling" = 6813641198;
         "WiFi Signal" = 525912054;
-        "Wipr" = 1662217862;
         "WordService" = 899972312;
         "Yoink" = 457622435;
       };

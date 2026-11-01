@@ -36,7 +36,6 @@ mkSystemModule {
             "ExtensionsToolbarConfiguration BrowserStandaloneTabBarToolbarIdentifier-v2" = {
               UserRemovedToolbarItemIdentifiers = [
                 "WebExtension-com.kagimacOS.Kagi-Search.Extension (TFVG979488)"
-                "WebExtension-site.kaylees.Wipr2.WiprBlockerExtra (4449XA862Y)"
                 "WebExtension-com.github.File-Icons-for-GitHub-and-GitLab.Extension (QDQF927NNA)"
                 "com.levbruk.JSONPeep.Extension (9566HLBRN7) Permissions"
                 "WebExtension-com.sindresorhus.Refined-GitHub.Extension (YG56YK5RN5)"
