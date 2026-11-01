@@ -121,6 +121,10 @@ in
             subdir = "skills";
             all = true;
           };
+          impeccable = {
+            path = import ../../../packages/impeccable-skill.nix {inherit pkgs;};
+            ids = ["impeccable"];
+          };
           essentials = {
             enable = lib.mkDefault false;
             input = "wshobson-agents";
