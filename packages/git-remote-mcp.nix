@@ -6,14 +6,14 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "git-remote-mcp";
-  version = "0.1.0";
+  version = "0.1.1";
 
   src = fetchGit {
     url = "https://github.com/dsully/git-remote-mcp";
-    rev = "ff7ae4ddd1d332634d940613e5a4fb97693e4563";
+    rev = "d09a1e47a9853d8d77ba1852f855c0b6d1ff2ffc";
   };
 
-  cargoHash = "sha256-9lxVK1RUDw37FFe9PVQW5cdrmEUq1cwCazLJ0beq3UU=";
+  cargoHash = "sha256-NhgxZQiQgIq57tIy52kAe608utbTfFxV5RtatCAJ7AQ=";
   doCheck = false;
 
   nativeBuildInputs = [
