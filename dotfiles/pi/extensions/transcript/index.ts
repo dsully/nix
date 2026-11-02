@@ -1,8 +1,8 @@
 import { AssistantMessageComponent, ToolExecutionComponent, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { collapseThinking, presentThought, thinkingLine, type Part, type ThinkingBlock } from "./label.js";
-import { installKeepNative } from "../quiet-tools/native.js";
-import { nestedResultRenderer } from "../quiet-tools/render.js";
-import { usesPiFallback } from "../quiet-tools/subagent.js";
+import { installKeepNative } from "./native.js";
+import { nestedResultRenderer } from "./render.js";
+import { usesPiFallback } from "./subagent.js";
 import { thoughtToolRows } from "./grouping.js";
 
 const PLAN_ORIGINAL = Symbol.for("pi-quiet-thinking.planContent");

@@ -88,13 +88,15 @@
     else p.source)
   config.programs.pi-coding-agent.settings.packages;
 
+  # Transcript renderers, toggled as a group by programs.pi-coding-agent.uiExtensions.enable.
+  piUiPackages = ["npm:pi-polish" "npm:@pi-kaush/pi-tool-call-markers"];
+  piUiExtensions = ["code-render.ts" "transcript"];
+
   piExtensions =
     lib.filterAttrs (
       name: type:
-        type
-        == "directory"
-        && name != "quiet-thinking"
-        || type == "regular" && lib.hasSuffix ".ts" name
+        (type == "directory" && name != "quiet-thinking" || type == "regular" && lib.hasSuffix ".ts" name)
+        && (config.programs.pi-coding-agent.uiExtensions.enable || !lib.elem name piUiExtensions)
     )
     (builtins.readDir ../../../dotfiles/pi/extensions);
 
@@ -142,6 +144,12 @@ in
         type = lib.types.listOf lib.types.str;
         default = [];
         description = "Package sources removed from the default pi packages list.";
+      };
+
+      uiExtensions.enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Load the transcript-rendering extensions (pi-polish, pi-tool-call-markers, code-render, transcript). Disabled packages stay installed.";
       };
 
       mcpDescriptions = lib.mkOption {
@@ -429,7 +437,16 @@ in
 
               npmCommand = [(lib.getExe bunRuntime)];
 
-              packages = lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages;
+              packages = map (p:
+                if config.programs.pi-coding-agent.uiExtensions.enable || !lib.elem (p.source or p) piUiPackages
+                then p
+                else
+                  (lib.optionalAttrs (builtins.isAttrs p) p)
+                  // {
+                    source = p.source or p;
+                    extensions = [];
+                  })
+              (lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages);
 
               terminal = {
                 showTerminalProgress = true;
