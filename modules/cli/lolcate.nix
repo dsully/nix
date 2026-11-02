@@ -45,26 +45,27 @@ in
       })
 
       (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-        home.activation.lolcateSign = lib.hm.dag.entryAfter ["writeBoundary"]
-        # bash
-        ''
-          src=${lib.getExe my.pkgs.lolcate-rs}
-          dst=${lib.escapeShellArg signedLolcate}
-          want="$src ''${XCODE_SIGN_IDENTITY:-}"
+        home.activation.lolcateSign =
+          lib.hm.dag.entryAfter ["writeBoundary"]
+          # bash
+          ''
+            src=${lib.getExe my.pkgs.lolcate-rs}
+            dst=${lib.escapeShellArg signedLolcate}
+            want="$src ''${XCODE_SIGN_IDENTITY:-}"
 
-          if [[ ! -x "$dst" || "$(cat "$dst.stamp" 2>/dev/null)" != "$want" ]]; then
-            run mkdir -p "$(dirname "$dst")"
-            run install -m 755 "$src" "$dst"
+            if [[ ! -x "$dst" || "$(cat "$dst.stamp" 2>/dev/null)" != "$want" ]]; then
+              run mkdir -p "$(dirname "$dst")"
+              run install -m 755 "$src" "$dst"
 
-            if [[ -z "''${XCODE_SIGN_IDENTITY:-}" ]]; then
-              warnEcho "XCODE_SIGN_IDENTITY unset: $dst stays ad-hoc signed; Full Disk Access will reset on rebuild"
-            elif run /usr/bin/codesign --force --sign "$XCODE_SIGN_IDENTITY" --identifier org.sully.lolcate "$dst"; then
-              [[ -v DRY_RUN ]] || printf '%s' "$want" > "$dst.stamp"
-            else
-              warnEcho "codesign failed for $dst (keychain locked?)"
+              if [[ -z "''${XCODE_SIGN_IDENTITY:-}" ]]; then
+                warnEcho "XCODE_SIGN_IDENTITY unset: $dst stays ad-hoc signed; Full Disk Access will reset on rebuild"
+              elif run /usr/bin/codesign --force --sign "$XCODE_SIGN_IDENTITY" --identifier org.sully.lolcate "$dst"; then
+                [[ -v DRY_RUN ]] || printf '%s' "$want" > "$dst.stamp"
+              else
+                warnEcho "codesign failed for $dst (keychain locked?)"
+              fi
             fi
-          fi
-        '';
+          '';
 
         launchd.agents.lolcate = {
           enable = true;
