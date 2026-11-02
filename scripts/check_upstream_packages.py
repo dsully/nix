@@ -108,7 +108,7 @@ def search_nixpkgs(packages: list[LocalPackage]) -> list[Match]:
 
     expr = f"""
       let
-        pkgs = (builtins.getFlake "{PACKAGES_DIR.parent}").inputs.nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = (builtins.getFlake "git+file://{PACKAGES_DIR.parent}").inputs.nixpkgs.legacyPackages.x86_64-linux;
         inherit (pkgs) lib;
         available = pkg: lib.all (p: lib.meta.availableOn (lib.systems.elaborate p) pkg) [{platforms}];
         lookup = n: builtins.tryEval (
