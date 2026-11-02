@@ -15,7 +15,7 @@ if status is-interactive
                     set -l venv_path "$check_dir/$vp"
                     set -l activate_script "$venv_path/bin/activate.fish"
 
-                    if test -f "$activate_script" && test "$current_venv" != "$venv_path"
+                    if test -f "$activate_script"; and begin; test "$current_venv" != "$venv_path"; or not contains -- "$venv_path/bin" $PATH; end
                         # An inherited $VIRTUAL_ENV arrives without the deactivate function.
                         if test -n "$current_venv"; and functions -q deactivate
                             # @fish-lsp-disable-next-line 7001
@@ -37,7 +37,7 @@ if status is-interactive
                 end
             end
 
-            set -l parent (dirname "$check_dir")
+            set -l parent (path dirname -- "$check_dir")
 
             if test "$parent" = "$HOME"; or test "$check_dir" = /
                 break
@@ -52,7 +52,7 @@ if status is-interactive
         end
     end
 
-    function __auto_venv --on-variable PWD
+    function __auto_venv --on-variable PWD --on-event fish_prompt
         # Guard against re-entrancy: deactivate/source can mutate state that
         # re-fires the PWD handler before this call returns, blowing the stack.
         if set -q __auto_venv_running
@@ -62,6 +62,4 @@ if status is-interactive
         __auto_venv_walk
         set -e __auto_venv_running
     end
-
-    __auto_venv
 end
