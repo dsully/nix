@@ -38,7 +38,6 @@ mkSystemModule {
         "keka"
         "little-snitch"
         "markdown-preview"
-        "marked-app"
         "monodraw"
         "processspy"
         "raindropio"
@@ -70,6 +69,7 @@ mkSystemModule {
         "JSONPeep" = 1458969831;
         "Kagi Search" = 1622835804;
         "MarkChart" = 6475648822;
+        "Marked" = 6747497179;
         "Netutilus" = 6758589382;
         "One Thing" = 1604176982;
         "Parcel" = 375589283;
