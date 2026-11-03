@@ -26,7 +26,12 @@ Subject line: <type>(<scope>): <summary>
 - scope: optional, one word naming the area affected
 - summary: imperative mood, lowercase, under 60 characters. Say what the change does, not which files it touches.
 
-Body: optional. Most commits need none. Add one only for something a reviewer cannot get from the subject: a non-obvious behavior, a limitation, or a breaking change. Keep it to 1-3 short lines.
+Body: required unless the subject says everything (a typo, a version bump, a one-line fix). Separate it from the subject with a blank line and wrap at 72 columns. Write for a reviewer reading git log a year from now:
+- what the change does in behavior terms: inputs, outputs, defaults, flags, thresholds, fallbacks, what a user now sees
+- why, when the diff shows it: a code comment, an error message, a referenced radar or issue
+- anything a reviewer could miss: a limitation, a migration, a breaking change
+
+Use short prose paragraphs, or one \"- \" bullet per independent change when the commit makes several. Scale to the diff: 2-4 lines for a small change, a paragraph or bullet per part for a large one. Name concrete values (flag names, limits, endpoints) instead of words like \"improve\", \"update\" or \"support\".
 
 Never:
 - list the files, modules, functions, or classes added or changed
@@ -58,6 +63,19 @@ Output only the commit message as plain text, with no backticks or other formatt
         set_color normal
         return 1
     end
+
+    set -l wrapped
+    for line in (string split \n -- $msg)
+        set -l lead (string match -r '^\s*(?:[-*] |\d+\. )?' -- $line)
+        set -l n (string length -- "$lead")
+        set -l prefix "$lead"
+        # fold -s breaks after the space, leaving trailing whitespace on each line.
+        for part in (string sub -s (math $n + 1) -- $line | fold -s -w (math 72 - $n) | string trim --right)
+            set -a wrapped "$prefix$part"
+            set prefix (string repeat -n $n ' ')
+        end
+    end
+    set msg (string join \n -- $wrapped | string collect)
 
     if test -n "$issue"
         set msg (string join \n "$msg" "" "Fixes: $issue" | string collect)
