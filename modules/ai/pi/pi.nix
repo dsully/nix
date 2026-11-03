@@ -97,6 +97,7 @@
       name: type:
         (type == "directory" && name != "quiet-thinking" || type == "regular" && lib.hasSuffix ".ts" name)
         && (config.programs.pi-coding-agent.uiExtensions.enable || !lib.elem name piUiExtensions)
+        && !lib.elem name config.programs.pi-coding-agent.excludeExtensions
     )
     (builtins.readDir ../../../dotfiles/pi/extensions);
 
@@ -144,6 +145,13 @@ in
         type = lib.types.listOf lib.types.str;
         default = [];
         description = "Package sources removed from the default pi packages list.";
+      };
+
+      excludeExtensions = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        example = ["todo" "history.ts"];
+        description = "Entries under dotfiles/pi/extensions (directory or .ts file name) not linked into pi.";
       };
 
       uiExtensions.enable = lib.mkOption {
