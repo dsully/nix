@@ -15,11 +15,6 @@ function formatListLine(t: Task, depth: number): string {
   return `${"  ".repeat(depth)}[${t.status}] #${t.id} ${sanitizeTerminalText(t.subject)}${form}${block}`;
 }
 
-/**
- * Multi-line presentation for the `get` action. Order of rows is pinned by
- * pre-refactor `todo.ts:354-376` — description, activeForm, blockedBy, blocks,
- * owner — so envelope-level snapshot tests stay byte-equivalent.
- */
 function formatGetLines(task: Task, state: TaskState): string {
   const blocks = deriveBlocks(state.tasks).get(task.id) ?? [];
   const lines = [`#${task.id} [${task.status}] ${sanitizeTerminalText(task.subject)}`];
@@ -92,8 +87,6 @@ export function formatContent(op: Op, state: TaskState): string {
  * Build the LLM-facing tool envelope after the store has committed the
  * reducer's new state. `details` is the persistence + replay snapshot —
  * `state/replay.ts` consumes this exact shape on session lifecycle events.
- *
- * Mirrors `packages/rpiv-ask-user-question/tool/response-envelope.ts:13-47`.
  */
 export function buildToolResult(
   action: TaskAction,

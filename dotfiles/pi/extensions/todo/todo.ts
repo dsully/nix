@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { applyTaskMutation, changesState } from "./state/state-reducer.js";
-import { commitState, getRenderState, getState, sid } from "./state/store.js";
+import { getRenderState, getState, setState, sid } from "./state/store.js";
 import { prepareTodoArguments } from "./tool/normalize-params.js";
 import { buildToolResult } from "./tool/response-envelope.js";
 import {
@@ -37,7 +37,7 @@ export function registerTodoTool(pi: ExtensionAPI): void {
 
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       const result = applyTaskMutation(getState(sid(ctx)), params.action, params as TaskMutationParams);
-      commitState(sid(ctx), result.state);
+      setState(sid(ctx), result.state);
       const toolResult = buildToolResult(params.action, params as TaskMutationParams, result.state, result.op);
       // A call made through another tool (codemode's ctx.executeTool) never lands as a toolResult, so persist explicitly.
       if (changesState(result.op)) pi.appendEntry(STATE_ENTRY_TYPE, toolResult.details);

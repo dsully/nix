@@ -1,6 +1,6 @@
 import { visibleWidth } from "@earendil-works/pi-tui";
 import { formatWorkspaceLabel } from "./format.js";
-import { truncatePlainText, truncateStyledText } from "./text.js";
+import { stripControls, truncatePlainText, truncateStyledText } from "./text.js";
 
 const SURFACE_TITLE_MAX_WIDTH = 48;
 const SURFACE_TITLE_RATIO = 0.42;
@@ -79,9 +79,6 @@ interface SurfaceRowOptions {
   reserveRightPadding?: boolean;
 }
 
-const ANSI_PATTERN = /\x1b\][^\x07]*(?:\x07|\x1b\\)|\x1b\[[0-?]*[ -/]*[@-~]/g;
-const CONTROL_PATTERN = /\x1b\][^\x07]*(?:\x07|\x1b\\)|\x1b\[[0-?]*[ -/]*[@-~]/;
-
 function identity(text: string): string {
   return text;
 }
@@ -98,12 +95,8 @@ function chunk(role: SurfaceChunkRole, text: string): SurfaceChunk {
   return { role, text };
 }
 
-function stripControls(text: string): string {
-  return text.replace(ANSI_PATTERN, "").replace(/[\r\n\t]/g, " ");
-}
-
 function truncateSurfaceText(text: string, width: number, ellipsis: string): string {
-  if (CONTROL_PATTERN.test(text) || CONTROL_PATTERN.test(ellipsis)) return truncateStyledText(text, width, ellipsis);
+  if (text.includes("\x1b") || ellipsis.includes("\x1b")) return truncateStyledText(text, width, ellipsis);
   return truncatePlainText(text, width, ellipsis);
 }
 

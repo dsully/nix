@@ -16,7 +16,7 @@ export function forwardToInner<T extends object>(frame: T, inner: object): T {
       return true;
     },
     has: (own, prop) => prop in own || prop in target,
-    // Lets outer layers wrap a callback with Object.defineProperty, as resume-sessions does with onSubmit.
+    // Lets outer layers wrap a callback with Object.defineProperty, as history.ts does with onSubmit.
     defineProperty: (own, prop, descriptor) => Reflect.defineProperty(prop in own ? own : target, prop, descriptor),
   });
 }

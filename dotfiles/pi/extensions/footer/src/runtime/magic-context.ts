@@ -10,7 +10,7 @@ export const MAGIC_CONTEXT_STATUS_KEY = "magic-context";
 
 const STATUS = /^mc:\s*([\d.]+)\s*([KM]?)\s*\(([\d.]+)%\)/;
 
-export interface StatusUsage {
+interface StatusUsage {
   tokens: number;
   percent: number;
 }

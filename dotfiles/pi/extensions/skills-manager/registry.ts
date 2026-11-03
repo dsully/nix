@@ -1,6 +1,6 @@
-import { existsSync, readFileSync, realpathSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { rm } from "node:fs/promises";
-import { basename, dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { basename, dirname, isAbsolute, relative, resolve } from "node:path";
 import {
   DefaultPackageManager,
   getAgentDir,
@@ -10,12 +10,8 @@ import {
   type PathMetadata,
   type SlashCommandInfo,
 } from "@earendil-works/pi-coding-agent";
+import { gitRoot } from "../lib/git-root.js";
 import { type SkillEntry, type SkillGroup, type SkillRegistry, type SkillScope, sortSkillsBySection } from "./types.js";
-
-function projectRoot(cwd: string): string {
-  for (let dir = cwd; dirname(dir) !== dir; dir = dirname(dir)) if (existsSync(join(dir, ".git"))) return dir;
-  return cwd;
-}
 
 function isInside(path: string, root: string): boolean {
   const rel = relative(root, path);
@@ -78,7 +74,7 @@ export async function loadSkillRegistry(
   const agentDir = getAgentDir();
   const settingsManager = SettingsManager.create(cwd, agentDir, { projectTrusted });
   const resolved = await new DefaultPackageManager({ cwd, agentDir, settingsManager }).resolve();
-  const root = projectRoot(cwd);
+  const root = gitRoot(cwd) ?? cwd;
   const seen = new Set<string>();
   const entries: SkillEntry[] = [];
   const add = (entry: SkillEntry | null) => {

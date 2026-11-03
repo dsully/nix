@@ -1,8 +1,8 @@
-import type { Task, TaskStatus } from "../tool/types.js";
+import type { Task } from "../tool/types.js";
 import type { TaskState } from "./state.js";
 
 /** Tasks excluding deleted tombstones — the canonical "what's visible". */
-export function selectVisibleTasks(state: TaskState): readonly Task[] {
+function selectVisibleTasks(state: TaskState): readonly Task[] {
   return state.tasks.filter((t) => t.status !== "deleted");
 }
 
@@ -11,12 +11,12 @@ export function selectVisibleTasks(state: TaskState): readonly Task[] {
  * (`completed`, `inProgress`, `pending`) to match the `/todos` header part
  * order pinned by `todo.command.test.ts`.
  */
-export interface TasksByStatus {
+interface TasksByStatus {
   pending: readonly Task[];
   inProgress: readonly Task[];
   completed: readonly Task[];
 }
-export function selectTasksByStatus(state: TaskState): TasksByStatus {
+function selectTasksByStatus(state: TaskState): TasksByStatus {
   const visible = selectVisibleTasks(state);
   return {
     pending: visible.filter((t) => t.status === "pending"),
@@ -26,7 +26,7 @@ export function selectTasksByStatus(state: TaskState): TasksByStatus {
 }
 
 /** Total counts for the overlay heading (`Todos (n/m)`) and `/todos` header. */
-export interface TodoCounts {
+interface TodoCounts {
   total: number;
   pending: number;
   inProgress: number;
@@ -67,7 +67,7 @@ export function selectTaskSubjectById(state: TaskState, id: number): string | un
  * selector reserves one more slot internally for the summary row. Returns
  * the visible task slice plus the overflow summary parts.
  */
-export interface OverlayLayout {
+interface OverlayLayout {
   visible: readonly Task[];
   hiddenCompleted: number;
   truncatedTail: number;
@@ -102,5 +102,3 @@ export function selectOverlayLayout(state: TaskState, budget: number): OverlayLa
 export function selectHasActive(state: TaskState): boolean {
   return selectVisibleTasks(state).some((t) => t.status === "in_progress" || t.status === "pending");
 }
-
-export const ACTIVE_STATUSES: ReadonlySet<TaskStatus> = new Set(["pending", "in_progress"]);

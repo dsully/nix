@@ -11,8 +11,8 @@ import {
   evictSession,
   getActiveRenderSession,
   getRenderState,
-  replaceState,
   setActiveRenderSession,
+  setState,
   sid,
 } from "./state/store.js";
 import { COLLAPSE_KEY, TodoOverlay } from "./todo-overlay.js";
@@ -52,7 +52,7 @@ export default function (pi: ExtensionAPI) {
     let isForeground = false;
     try {
       const id = sid(ctx);
-      replaceState(id, replayFromBranch(ctx));
+      setState(id, replayFromBranch(ctx));
       isForeground = id === getActiveRenderSession();
     } catch (e) {
       if (!isStaleCtxError(e)) throw e;
@@ -64,7 +64,7 @@ export default function (pi: ExtensionAPI) {
     let id: string;
     try {
       id = sid(ctx);
-      replaceState(id, replayFromBranch(ctx));
+      setState(id, replayFromBranch(ctx));
     } catch (e) {
       if (!isStaleCtxError(e)) throw e;
       return;

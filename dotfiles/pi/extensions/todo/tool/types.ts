@@ -36,7 +36,7 @@ export interface TaskDetails {
 }
 
 /** One item of a batch `create` `tasks[]` payload. */
-export interface CreateTaskInput {
+interface CreateTaskInput {
   subject: string;
   description?: string;
   activeForm?: string;

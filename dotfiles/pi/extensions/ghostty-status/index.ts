@@ -18,9 +18,8 @@ import {
   statusSequences,
   titleSequences,
   type BlockedKind,
-  type StatusPhase,
   type StatusReport,
-} from "./status.ts";
+} from "./status.js";
 
 const TICK_MS = 200;
 const KEEPALIVE_TICKS = 5;
@@ -69,8 +68,7 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     if (!force && bytes === lastWritten) return;
     lastWritten = bytes;
     process.stdout.write(bytes);
-    const phase: StatusPhase = next.phase;
-    if (phase === "idle") stopTicker();
+    if (next.phase === "idle") stopTicker();
     else startTicker();
   };
 
@@ -94,12 +92,8 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     timer = undefined;
   };
 
-  const bind = (next: { cwd: string }) => {
-    folder = next.cwd.split("/").filter(Boolean).pop() || "pi";
-  };
-
-  pi.on("session_start", async (_event, next) => {
-    bind(next);
+  pi.on("session_start", async (_event, ctx) => {
+    folder = ctx.cwd.split("/").filter(Boolean).pop() || "pi";
     running = false;
     compacting = false;
     promptDepth = 0;
@@ -116,13 +110,12 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     lastWritten = "";
   });
 
-  // Pi rewrites OSC 0 to "π - <name> - <cwd>" just before this event reaches extensions.
+  // Pi rewrites OSC 0 to "Pi-Bolt - <name> - <cwd>" just before this event reaches extensions.
   pi.on("session_info_changed", async () => {
     write(true);
   });
 
-  pi.on("session_before_compact", async (_event, next) => {
-    bind(next);
+  pi.on("session_before_compact", async () => {
     compacting = true;
     activity = "📦";
     write();
@@ -140,8 +133,7 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     write();
   });
 
-  pi.on("agent_start", async (_event, next) => {
-    bind(next);
+  pi.on("agent_start", async () => {
     running = true;
     outcome = "completed";
     summary = "";
@@ -149,16 +141,14 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     write();
   });
 
-  pi.on("turn_start", async (_event, next) => {
-    bind(next);
+  pi.on("turn_start", async () => {
     running = true;
     outcome = "completed";
     if (!activity) activity = "💭";
     write();
   });
 
-  pi.on("tool_execution_start", async (event, next) => {
-    bind(next);
+  pi.on("tool_execution_start", async (event) => {
     const activityReport = activityFromTool(event.toolName, event.args);
     activity = activityReport.detail;
     if (activityReport.blocked && activityReport.kind) {
@@ -167,23 +157,20 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     write();
   });
 
-  pi.on("tool_execution_end", async (event, next) => {
-    bind(next);
+  pi.on("tool_execution_end", async (event) => {
     blocking.delete(event.toolCallId);
     if (event.isError) activity = `❌ ${event.toolName}`;
     write();
   });
 
-  pi.on("ui_prompt_start", async (event, next) => {
-    bind(next);
+  pi.on("ui_prompt_start", async (event) => {
     promptDepth++;
     promptDetail = event.title || (event.kind === "confirm" ? "✋" : "❓");
     promptKind = event.kind === "confirm" ? "permission" : "question";
     write();
   });
 
-  pi.on("ui_prompt_end", async (_event, next) => {
-    bind(next);
+  pi.on("ui_prompt_end", async () => {
     promptDepth = Math.max(0, promptDepth - 1);
     write();
   });
@@ -193,14 +180,12 @@ export default function ghosttyStatus(pi: ExtensionAPI) {
     if (text) summary = text;
   });
 
-  pi.on("agent_before_settle", async (event, next) => {
-    bind(next);
+  pi.on("agent_before_settle", async (event) => {
     outcome = event.outcome;
     write();
   });
 
-  pi.on("agent_settled", async (_event, next) => {
-    bind(next);
+  pi.on("agent_settled", async () => {
     running = false;
     blocking.clear();
     write();

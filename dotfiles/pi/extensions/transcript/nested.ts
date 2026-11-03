@@ -12,7 +12,7 @@ export function nestedResultLines(text: string, expanded: boolean): string[] {
   return [head ?? "(no result)", ...body];
 }
 
-export type MixedChild = { native: boolean };
+type MixedChild = { native: boolean };
 
 /** Self-rendered rows stay out of the collapsed group so their own nested lines survive. */
 export function splitNative<T extends MixedChild>(children: readonly T[]): Array<{ native: T } | { grouped: T[] }> {

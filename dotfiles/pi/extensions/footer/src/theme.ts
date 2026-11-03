@@ -16,7 +16,7 @@ const BRIGHT = {
   blue: ["#5e81ac", "mdLink"],
 } as const satisfies Record<string, readonly [string, ThemeColor]>;
 
-export type BrightColor = keyof typeof BRIGHT;
+type BrightColor = keyof typeof BRIGHT;
 
 const SEGMENT_COLORS: Record<SegmentId, BrightColor> = {
   git: "white",

@@ -1,5 +1,7 @@
 /** Ghostty tab status sequences. Pure so it can be tested without a TTY. */
 
+import { textOf } from "../lib/text.js";
+
 export type StatusPhase = "idle" | "working" | "blocked" | "done" | "error";
 export type BlockedKind = "permission" | "question";
 
@@ -16,7 +18,7 @@ export interface StatusReport {
 
 const WAITING_TOOLS = new Set(["ask_user_question", "exit_plan_mode", "enter_plan_mode"]);
 
-export const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 const STATUS_EMOJI: Record<Exclude<StatusPhase, "working">, string> = {
   idle: "",
@@ -26,7 +28,7 @@ const STATUS_EMOJI: Record<Exclude<StatusPhase, "working">, string> = {
 };
 
 /** Tab badge. Question waits are distinct from permission waits. */
-export function statusEmoji(report: StatusReport): string {
+function statusEmoji(report: StatusReport): string {
   if (report.phase === "working") return SPINNER[(report.frame ?? 0) % SPINNER.length];
   if (report.phase === "blocked" && report.kind === "question") return "❓";
   return STATUS_EMOJI[report.phase];
@@ -92,11 +94,7 @@ function progressSequence(phase: StatusPhase): string {
 }
 
 function programStatus(report: StatusReport, msg: string): string {
-  const pairs = [
-    `state=${report.phase === "idle" ? "idle" : report.phase}`,
-    "app=pi",
-    `msg=${Buffer.from(msg, "utf8").toString("base64")}`,
-  ];
+  const pairs = [`state=${report.phase}`, "app=pi", `msg=${Buffer.from(msg, "utf8").toString("base64")}`];
   if (report.phase === "blocked" && report.kind) pairs.push(`kind=${report.kind}`);
   return osc(7501, pairs.join(":"));
 }
@@ -136,21 +134,8 @@ export function assistantSummary(messages: unknown): string {
   for (let i = messages.length - 1; i >= 0; i--) {
     const message = messages[i] as { role?: string; content?: unknown };
     if (message?.role !== "assistant") continue;
-    const text = contentText(message.content);
+    const text = textOf(message.content, " ");
     if (text) return sanitize(text, 48);
   }
   return "";
-}
-
-function contentText(content: unknown): string {
-  if (typeof content === "string") return content;
-  if (!Array.isArray(content)) return "";
-  return content
-    .map((part) =>
-      part && typeof part === "object" && (part as { type?: string }).type === "text"
-        ? String((part as { text?: string }).text ?? "")
-        : "",
-    )
-    .filter(Boolean)
-    .join(" ");
 }

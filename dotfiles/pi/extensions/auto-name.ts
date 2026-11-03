@@ -10,6 +10,7 @@
  */
 import { randomUUID } from "node:crypto";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { textOf } from "./lib/text.js";
 
 // Same marker type as the npm package, so sessions it named stay auto-owned.
 const CUSTOM_TYPE = "auto-session-name";
@@ -38,22 +39,13 @@ function clean(text: string): string {
     .trim();
 }
 
-function joinTextParts(content: unknown): string {
-  if (typeof content === "string") return content;
-  if (!Array.isArray(content)) return "";
-  return (content as Array<{ type?: string; text?: string }>)
-    .filter((part) => part?.type === "text" && typeof part.text === "string")
-    .map((part) => part.text)
-    .join("\n");
-}
-
 function extractConversation(entries: AnyEntry[]): SessionMessage[] {
   const out: SessionMessage[] = [];
   for (const entry of entries) {
     if (entry.type !== "message" || !entry.message) continue;
     const role = entry.message.role;
     if (role !== "user" && role !== "assistant") continue;
-    const text = clean(joinTextParts(entry.message.content));
+    const text = clean(textOf(entry.message.content));
     if (text) out.push({ role, text });
   }
   return out;
@@ -147,13 +139,7 @@ async function generateTitle(ctx: ExtensionContext, messages: SessionMessage[]):
       );
       call.catch(() => {});
       const response = await withTimeout(call, REQUEST_TIMEOUT_MS);
-      const blocks: Array<{ type: string; text?: string }> = response.content ?? [];
-      const title = shortenTitle(
-        blocks
-          .filter((block) => block.type === "text")
-          .map((block) => block.text ?? "")
-          .join(" "),
-      );
+      const title = shortenTitle(textOf(response.content, " "));
       if (title.length >= 3) return title;
     } catch {
       // fall through to the first user message
@@ -173,10 +159,10 @@ export default function autoName(pi: ExtensionAPI) {
 
   const maybeName = async (ctx: ExtensionContext, force = false): Promise<void> => {
     if (inFlight || !ctx.sessionManager.getSessionFile()) return;
+    if (!force && (userOwned || process.env.TERM === "xterm-rex")) return;
     const messages = extractConversation(ctx.sessionManager.getBranch() as AnyEntry[]);
     const userCount = messages.filter((m) => m.role === "user").length;
     if (userCount === 0) return;
-    if (!force && (userOwned || process.env.TERM === "xterm-rex")) return;
     if (!force && lastNamedAtCount > 0 && userCount - lastNamedAtCount < REFRESH_EVERY_USER_MESSAGES) return;
 
     const ticket = generation;

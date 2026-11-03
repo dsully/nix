@@ -20,7 +20,7 @@ export function formatStatusLabel(status: TaskStatus): string {
 // Status presentation tables — the single source of truth for glyph/color.
 // ---------------------------------------------------------------------------
 
-export const STATUS_GLYPH: Record<TaskStatus, string> = {
+const STATUS_GLYPH: Record<TaskStatus, string> = {
   pending: "○",
   in_progress: "◐",
   completed: "●",
@@ -32,7 +32,7 @@ export const STATUS_GLYPH: Record<TaskStatus, string> = {
  * successful delete is visually distinct from the error branch (which uses
  * `error` + `✗`).
  */
-export const STATUS_COLOR: Record<TaskStatus, "dim" | "warning" | "success" | "muted"> = {
+const STATUS_COLOR: Record<TaskStatus, "dim" | "warning" | "success" | "muted"> = {
   pending: "dim",
   in_progress: "warning",
   completed: "success",
@@ -43,7 +43,7 @@ export const STATUS_COLOR: Record<TaskStatus, "dim" | "warning" | "success" | "m
  * Per-action prefix glyph for renderCall. `+` create, `→` update, `×` delete,
  * `›` get, `☰` list, `∅` clear.
  */
-export const ACTION_GLYPH: Record<TaskAction, string> = {
+const ACTION_GLYPH: Record<TaskAction, string> = {
   create: "+",
   update: "→",
   delete: "×",
@@ -58,7 +58,7 @@ export const ACTION_GLYPH: Record<TaskAction, string> = {
  * overlay caller never renders a `deleted` row but uses `✗` in its
  * error-toned palette.
  */
-export function overlayStatusGlyph(status: TaskStatus, theme: Theme): string {
+function overlayStatusGlyph(status: TaskStatus, theme: Theme): string {
   switch (status) {
     case "pending":
       return theme.fg("dim", "○");

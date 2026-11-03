@@ -15,6 +15,7 @@ interface Section {
 class InspectPopup implements Component {
   private selected = 0;
   private scroll = 0;
+  private followSelection = true;
   private readonly expanded = new Set<number>();
 
   constructor(
@@ -28,15 +29,17 @@ class InspectPopup implements Component {
   handleInput(data: string): void {
     const last = this.sections.length - 1;
     if (matchesKey(data, Key.escape) || data === "q") return this.done();
-    if (matchesKey(data, Key.up) || data === "k") this.selected = Math.max(0, this.selected - 1);
+    const page = matchesKey(data, Key.pageUp) ? -1 : matchesKey(data, Key.pageDown) ? 1 : 0;
+    if (page) this.scroll += page * this.viewHeight();
+    else if (matchesKey(data, Key.up) || data === "k") this.selected = Math.max(0, this.selected - 1);
     else if (matchesKey(data, Key.down) || data === "j") this.selected = Math.min(last, this.selected + 1);
     else if (matchesKey(data, Key.home)) this.selected = 0;
     else if (matchesKey(data, Key.end)) this.selected = last;
-    else if (matchesKey(data, Key.pageUp)) this.scroll -= this.viewHeight();
-    else if (matchesKey(data, Key.pageDown)) this.scroll += this.viewHeight();
     else if (matchesKey(data, Key.enter) || matchesKey(data, Key.space)) this.toggle(this.selected);
     else if (data === "a") this.toggleAll();
     else return;
+    // Paging scrolls freely; any other key brings the selection back into view.
+    this.followSelection = !page;
     this.tui.requestRender();
   }
 
@@ -62,8 +65,10 @@ class InspectPopup implements Component {
 
     const height = this.viewHeight();
     const maxScroll = Math.max(0, body.length - height);
-    if (selectedTop < this.scroll) this.scroll = selectedTop;
-    if (selectedBottom > this.scroll + height) this.scroll = Math.min(selectedTop, selectedBottom - height);
+    if (this.followSelection) {
+      if (selectedTop < this.scroll) this.scroll = selectedTop;
+      if (selectedBottom > this.scroll + height) this.scroll = Math.min(selectedTop, selectedBottom - height);
+    }
     this.scroll = Math.min(Math.max(0, this.scroll), maxScroll);
 
     const edge = (left: string, label: string, right: string) =>

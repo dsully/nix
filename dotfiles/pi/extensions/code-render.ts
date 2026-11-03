@@ -7,8 +7,8 @@ import {
   type TuiMouseEvent,
   type TuiMouseEventResult,
 } from "@earendil-works/pi-tui";
+import { patchMethod } from "./lib/patch.js";
 
-const PATCH = Symbol.for("pi-code-render.markdown-patch");
 const CARD_BG = "mdCodeBlockBg" as const;
 const COPY_LABEL = "📋 copy";
 /**
@@ -45,17 +45,15 @@ type LayoutCache = {
   lines: string[];
 };
 
-/**
- * `Omit` drops the private members before re-declaring them, so the
- * intersection does not collapse to `never`.
- */
-type MarkdownWithPrivateRenderer = Omit<Markdown, "renderToken" | "render" | "handleMouse"> & {
-  renderToken: (token: CodeToken, width: number, nextTokenType?: string, styleContext?: unknown) => string[];
-  render: (width: number) => string[];
-  handleMouse?: (event: TuiMouseEvent) => TuiMouseEventResult | undefined;
-};
-
-type PatchRecord = { restore: () => void };
+type RenderToken = (
+  this: Markdown,
+  token: CodeToken,
+  width: number,
+  nextTokenType?: string,
+  styleContext?: unknown,
+) => string[];
+type Render = (this: Markdown, width: number) => string[];
+type HandleMouse = (this: Markdown, event: TuiMouseEvent) => TuiMouseEventResult | undefined;
 
 function languageFromInfo(info: unknown): string {
   return typeof info === "string" ? (info.trim().split(/\s+/, 1)[0] ?? "") : "";
@@ -125,13 +123,7 @@ function buildCard(
 }
 
 function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode: (source: string) => void): () => void {
-  const prototype = Markdown.prototype as unknown as MarkdownWithPrivateRenderer &
-    Record<PropertyKey, PatchRecord | undefined>;
-  prototype[PATCH]?.restore();
-
-  const originalRenderToken = prototype.renderToken;
-  const originalRender = prototype.render;
-  const originalHandleMouse = prototype.handleMouse;
+  const prototype = Markdown.prototype;
 
   /** Pi caches rendered blocks per token across instances, so renderToken can't be the per-render source of truth. */
   const carded = new WeakSet<CodeToken>();
@@ -152,119 +144,127 @@ function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode:
     return lines;
   };
 
-  const patchedRenderToken = function (
-    this: Markdown,
-    token: CodeToken,
-    width: number,
-    nextTokenType?: string,
-    styleContext?: unknown,
-  ): string[] {
-    if (token?.type !== "code") {
-      return originalRenderToken.call(this, token, width, nextTokenType, styleContext);
-    }
+  const restoreRenderToken = patchMethod<RenderToken>(
+    prototype,
+    "renderToken",
+    "pi-code-render.renderToken",
+    (originalRenderToken) =>
+      originalRenderToken &&
+      function (
+        this: Markdown,
+        token: CodeToken,
+        width: number,
+        nextTokenType?: string,
+        styleContext?: unknown,
+      ): string[] {
+        if (token?.type !== "code") {
+          return originalRenderToken.call(this, token, width, nextTokenType, styleContext);
+        }
 
-    const normalized = normalizeCodeToken(token, languageFromInfo(token.lang));
-    const source = token.text ?? "";
+        const normalized = normalizeCodeToken(token, languageFromInfo(token.lang));
+        const source = token.text ?? "";
 
-    // Plain contexts (user messages, thinking) and empty tokens from stray or
-    // unterminated fences keep Pi's native presentation.
-    if (isPlainTextContext(this) || source.trim() === "") {
-      return originalRenderToken.call(this, normalized, width, nextTokenType, styleContext);
-    }
+        // Plain contexts (user messages, thinking) and empty tokens from stray or
+        // unterminated fences keep Pi's native presentation.
+        if (isPlainTextContext(this) || source.trim() === "") {
+          return originalRenderToken.call(this, normalized, width, nextTokenType, styleContext);
+        }
 
-    const rendered = originalRenderToken.call(this, normalized, width, nextTokenType, styleContext);
+        const rendered = originalRenderToken.call(this, normalized, width, nextTokenType, styleContext);
 
-    // Scan backwards for the closing fence: code content may itself contain
-    // bare fence rows, and only the last one is the one Pi appended.
-    let closingFence = -1;
-    for (let lineIndex = rendered.length - 1; lineIndex > 0; lineIndex--) {
-      if (stripTerminalSequences(rendered[lineIndex] ?? "").trim() === "```") {
-        closingFence = lineIndex;
-        break;
-      }
-    }
+        // Scan backwards for the closing fence: code content may itself contain
+        // bare fence rows, and only the last one is the one Pi appended.
+        let closingFence = -1;
+        for (let lineIndex = rendered.length - 1; lineIndex > 0; lineIndex--) {
+          if (stripTerminalSequences(rendered[lineIndex] ?? "").trim() === "```") {
+            closingFence = lineIndex;
+            break;
+          }
+        }
 
-    if (closingFence < 1) return rendered; // Pi's output shape changed; bail out.
+        if (closingFence < 1) return rendered; // Pi's output shape changed; bail out.
 
-    const theme = getTheme();
-    const card = buildCard(
-      rendered.slice(1, closingFence),
-      Math.max(1, width),
-      (this as unknown as { theme?: { codeBlockIndent?: string } }).theme?.codeBlockIndent ?? "  ",
-      (value) => theme.bg(CARD_BG, value),
-      (value) => theme.fg("accent", value),
-    );
-    carded.add(token);
-    if (nextTokenType && nextTokenType !== "space") card.push("");
-    return card;
+        const theme = getTheme();
+        const card = buildCard(
+          rendered.slice(1, closingFence),
+          Math.max(1, width),
+          (this as unknown as { theme?: { codeBlockIndent?: string } }).theme?.codeBlockIndent ?? "  ",
+          (value) => theme.bg(CARD_BG, value),
+          (value) => theme.fg("accent", value),
+        );
+        carded.add(token);
+        if (nextTokenType && nextTokenType !== "space") card.push("");
+        return card;
+      },
+  );
+
+  const restoreRender = patchMethod<Render>(
+    prototype,
+    "render",
+    "pi-code-render.render",
+    (originalRender) =>
+      originalRender &&
+      function (this: Markdown, width: number): string[] {
+        const key = `${width}\u0000${getText(this)}`;
+        const cached = layoutCache.get(this);
+        if (cached?.key === key) return cached.lines;
+
+        if (isPlainTextContext(this)) {
+          return cacheLayout(this, key, originalRender.call(this, width));
+        }
+
+        const lines = originalRender.call(this, width);
+        const tokens = (this as unknown as MarkdownInternals).tokensFor?.(width)?.tokens ?? [];
+        const sources = cardedSources(tokens, carded);
+        if (sources.length === 0) return cacheLayout(this, key, lines);
+
+        const plainLines = lines.map((line) => stripTerminalSequences(line));
+        return cacheLayout(this, key, lines, locateCopyHits(plainLines, sources));
+      },
+  );
+
+  const restoreHandleMouse = patchMethod<HandleMouse>(
+    prototype,
+    "handleMouse",
+    "pi-code-render.handleMouse",
+    (originalHandleMouse) =>
+      function (this: Markdown, event: TuiMouseEvent): TuiMouseEventResult | undefined {
+        if (event.button !== "left") return originalHandleMouse?.call(this, event);
+
+        const hitAt = (y: number, x: number): CopyHit | undefined =>
+          layoutCache.get(this)?.hits.find((item) => item.y === y && x >= item.startX && x < item.endX);
+
+        if (event.type === "press") {
+          const hit = hitAt(event.y, event.x);
+          if (!hit) {
+            pressedHits.delete(this);
+            return originalHandleMouse?.call(this, event);
+          }
+          pressedHits.set(this, hit);
+          return { handled: true, capture: true };
+        }
+
+        const pressed = pressedHits.get(this);
+        if (!pressed) return originalHandleMouse?.call(this, event);
+
+        // A held button reports motion at cell granularity, so a plain click
+        // routinely arrives as press, drag, release; only the release decides.
+        if (event.type === "release") {
+          pressedHits.delete(this);
+          const hit = hitAt(event.y, event.x);
+          if (hit?.y === pressed.y && hit.source === pressed.source) copyCode(pressed.source);
+          return { handled: true };
+        }
+
+        return { handled: true, render: false };
+      },
+  );
+
+  return () => {
+    restoreRenderToken();
+    restoreRender();
+    restoreHandleMouse();
   };
-
-  const patchedRender = function (this: Markdown, width: number): string[] {
-    const key = `${width}\u0000${getText(this)}`;
-    const cached = layoutCache.get(this);
-    if (cached?.key === key) return cached.lines;
-
-    if (isPlainTextContext(this)) {
-      return cacheLayout(this, key, originalRender.call(this, width));
-    }
-
-    const lines = originalRender.call(this, width);
-    const tokens = (this as unknown as MarkdownInternals).tokensFor?.(width)?.tokens ?? [];
-    const sources = cardedSources(tokens, carded);
-    if (sources.length === 0) return cacheLayout(this, key, lines);
-
-    const plainLines = lines.map((line) => stripTerminalSequences(line));
-    return cacheLayout(this, key, lines, locateCopyHits(plainLines, sources));
-  };
-
-  const patchedHandleMouse = function (this: Markdown, event: TuiMouseEvent): TuiMouseEventResult | undefined {
-    if (event.button !== "left") return originalHandleMouse?.call(this, event);
-
-    const hitAt = (y: number, x: number): CopyHit | undefined =>
-      layoutCache.get(this)?.hits.find((item) => item.y === y && x >= item.startX && x < item.endX);
-
-    if (event.type === "press") {
-      const hit = hitAt(event.y, event.x);
-      if (!hit) {
-        pressedHits.delete(this);
-        return originalHandleMouse?.call(this, event);
-      }
-      pressedHits.set(this, hit);
-      return { handled: true, capture: true };
-    }
-
-    const pressed = pressedHits.get(this);
-    if (!pressed) return originalHandleMouse?.call(this, event);
-
-    // A held button reports motion at cell granularity, so a plain click
-    // routinely arrives as press, drag, release; only the release decides.
-    if (event.type === "release") {
-      pressedHits.delete(this);
-      const hit = hitAt(event.y, event.x);
-      if (hit?.y === pressed.y && hit.source === pressed.source) copyCode(pressed.source);
-      return { handled: true };
-    }
-
-    return { handled: true, render: false };
-  };
-
-  prototype.renderToken = patchedRenderToken;
-  prototype.render = patchedRender;
-  prototype.handleMouse = patchedHandleMouse;
-
-  const record: PatchRecord = {
-    restore() {
-      if (prototype.renderToken === patchedRenderToken) prototype.renderToken = originalRenderToken;
-      if (prototype.render === patchedRender) prototype.render = originalRender;
-      if (prototype.handleMouse === patchedHandleMouse) {
-        if (originalHandleMouse) prototype.handleMouse = originalHandleMouse;
-        else delete prototype.handleMouse;
-      }
-      if (prototype[PATCH] === record) delete prototype[PATCH];
-    },
-  };
-  prototype[PATCH] = record;
-  return record.restore;
 }
 
 export default function (pi: ExtensionAPI) {

@@ -74,7 +74,7 @@ export function liveDescendants(taskList: readonly Task[], id: number): Task[] {
   return out;
 }
 
-export interface TreeRow {
+interface TreeRow {
   task: Task;
   depth: number;
 }

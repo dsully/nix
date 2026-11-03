@@ -78,12 +78,3 @@ export function formatWorkspaceLabel(cwd: string, name: string, width: number, s
   if (surfaceWidth <= SMART_PARENT_MAX_SURFACE_WIDTH) return fitSafePath(parentPathLabel(safePath), budget);
   return fitSafePath(safePath, budget);
 }
-
-export function stripControls(text: string): string {
-  return text
-    .replace(/\x1b\][^\x07]*(?:\x07|\x1b\\)/g, "")
-    .replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, "")
-    .replace(/[\r\n\t]/g, " ")
-    .replace(/ +/g, " ")
-    .trim();
-}

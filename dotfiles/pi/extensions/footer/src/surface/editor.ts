@@ -12,7 +12,7 @@ import {
 } from "@earendil-works/pi-tui";
 import { shortcutConflict } from "../input/keybinding.js";
 import type { PromptStash } from "../input/stash.js";
-import { stripControls } from "./format.js";
+import { stripControls } from "./text.js";
 import { forwardToInner } from "./forward.js";
 import { measureInputSurfaceFrame, renderInputSurfaceFrame, STASH_SHORTCUT } from "./frame.js";
 import { StatusLineRenderer } from "./status-line.js";
@@ -20,7 +20,7 @@ import { formatSurfaceScrollIndicator } from "./layout.js";
 import { stylesFor } from "../theme.js";
 import type { FooterState } from "../types.js";
 
-export interface FooterEditorOptions {
+interface FooterEditorOptions {
   readonly getTheme: () => Theme;
   readonly stash?: PromptStash;
   readonly onStashError?: (message: string) => void;

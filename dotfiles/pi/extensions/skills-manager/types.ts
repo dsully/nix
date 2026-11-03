@@ -3,7 +3,7 @@ export type SkillScope = "user" | "project" | "temporary";
 /** Where the manager lists a skill: in the project tree, user-wide, or loaded for this session from elsewhere. */
 export type SkillGroup = "local" | "global" | "temporary";
 export type SkillSection = SkillGroup | "disabled";
-export type SkillOrigin = "package" | "top-level";
+type SkillOrigin = "package" | "top-level";
 export type Mode = "browse" | "preview" | "delete-confirm" | "deleting";
 
 /** One skill in the inventory. The body is not held here: the preview reads

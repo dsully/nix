@@ -2,7 +2,7 @@ import type { FooterStyles } from "./theme.js";
 
 export type SegmentId = "git" | "context" | "tokens" | "model";
 export type WidthMode = "full" | "compact" | "minimal";
-export type ActivityKind = "working" | "compaction" | "branchSummary" | "retry";
+type ActivityKind = "working" | "compaction" | "branchSummary" | "retry";
 export interface ActivityStatus {
   readonly kind: ActivityKind;
   render(width: number): string;
@@ -38,12 +38,6 @@ export interface FooterState {
   };
   usage: UsageTotals;
   version: number;
-}
-
-export interface Rgb {
-  r: number;
-  g: number;
-  b: number;
 }
 
 export interface SegmentData {

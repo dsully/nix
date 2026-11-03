@@ -12,7 +12,7 @@ import {
 import type { ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
 import { ListLineText, ScrollableSkillPreview, SearchInputLine } from "./components.js";
 import { DEFAULT_LIST_ROWS, DEFAULT_POPUP_MAX_HEIGHT, DEFAULT_POPUP_WIDTH } from "./constants.js";
-import { glyphs } from "./glyphs.js";
+import { GLYPHS } from "./glyphs.js";
 import { responsiveBrowsePageSelection, responsiveBrowseWindow } from "./layout.js";
 import { isDeletableSkill, isTogglableSkill, skillStorageTarget } from "./registry.js";
 import { packageLabel, renderCenteredDialog, renderFrame, skillEntityTitle, skillKeyHints } from "./ui.js";
@@ -268,7 +268,7 @@ class SkillsManagerDialog implements Focusable {
   private renderBrowse(width: number): string[] {
     const innerWidth = Math.max(1, width - 4);
     const root = new Container();
-    const glyph = glyphs();
+    const glyph = GLYPHS;
     root.addChild(new SearchInputLine(this.browseInput, this.theme));
     root.addChild(new Spacer(1));
     const list = new Container();

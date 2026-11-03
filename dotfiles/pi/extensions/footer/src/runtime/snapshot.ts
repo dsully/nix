@@ -2,20 +2,20 @@ import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { UsageTotals } from "../types.js";
 import { parseMagicContextStatus } from "./magic-context.js";
 
-export interface StateModelInputs {
+interface StateModelInputs {
   id?: string;
   name?: string;
   provider?: string;
   contextWindow?: number;
 }
 
-export interface StateContextUsageInputs {
+interface StateContextUsageInputs {
   tokens: number | null;
   contextWindow: number;
   percent: number | null;
 }
 
-export interface StateThinkingInputs {
+interface StateThinkingInputs {
   model?: StateModelInputs;
   thinkingLevel: string;
 }
@@ -29,7 +29,7 @@ export interface StateInputs extends StateLifecycleInputs {
   usage: UsageTotals;
 }
 
-export interface StateUsageInputs {
+interface StateUsageInputs {
   input?: number;
   output?: number;
   cacheRead?: number;
@@ -56,7 +56,7 @@ function emptyUsageTotals(): UsageTotals {
   return { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
 }
 
-export function usageTotalsFromUsage(usage: StateUsageInputs | undefined): UsageTotals {
+function usageTotalsFromUsage(usage: StateUsageInputs | undefined): UsageTotals {
   return {
     input: usage?.input ?? 0,
     output: usage?.output ?? 0,

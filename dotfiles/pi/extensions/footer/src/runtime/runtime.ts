@@ -10,7 +10,7 @@ import { Footer } from "../surface/footer.js";
 import { MAGIC_CONTEXT_STATUS_KEY } from "./magic-context.js";
 import { RuntimeRefreshSession } from "./refresh-session.js";
 
-export interface DraftStore {
+interface DraftStore {
   loadDraft(sessionId: string): string | null;
   saveDraft(sessionId: string, text: string | null): void;
 }

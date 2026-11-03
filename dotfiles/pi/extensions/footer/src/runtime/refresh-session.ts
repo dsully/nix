@@ -22,18 +22,18 @@ import {
 } from "./state.js";
 import type { FooterState, UsageTotals } from "../types.js";
 
-export interface RuntimeMessageEndInput {
+interface RuntimeMessageEndInput {
   type?: MessageEndEvent["type"];
   message: StateMessageInputs;
 }
 
-export interface RuntimeSessionCompactInput {
+interface RuntimeSessionCompactInput {
   type?: SessionCompactEvent["type"];
   compactionEntry: StateSessionEntry;
   willRetry?: boolean;
 }
 
-export interface RuntimeRefreshSessionHost {
+interface RuntimeRefreshSessionHost {
   getThinkingLevel(): string;
   getBranch(): string | null;
   requestRender(): void;

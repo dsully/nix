@@ -28,7 +28,7 @@ function isTask(value: unknown): value is Task {
  * session (e.g. a `tasks[]` another extension truncated with a marker string)
  * is skipped whole, so replay keeps the last valid one.
  */
-export function isTaskDetails(value: unknown): value is TaskDetails {
+function isTaskDetails(value: unknown): value is TaskDetails {
   if (!value || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
   return Array.isArray(v.tasks) && v.tasks.every(isTask) && Number.isSafeInteger(v.nextId);

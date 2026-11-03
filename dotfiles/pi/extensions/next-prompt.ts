@@ -2,6 +2,7 @@ import type { AgentMessage } from "@earendil-works/pi-agent-core";
 import { normalizeContext } from "@earendil-works/pi-ai";
 import { convertToLlm, CustomEditor, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Key, matchesKey, renderFakeCursor, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { textOf } from "./lib/text.js";
 
 const PROMPT = `[Suggestion mode] Predict what the user will type next in this conversation. Write it the way they would: a short instruction, question or reply in their language and tone, under 12 words. A good suggestion is the obvious next step, such as approving something you proposed or asking for the follow-up they are likely to want. Reply with only the suggestion, no quotes. If there is no obvious next step, reply with nothing.`;
 const MAX_LENGTH = 100;
@@ -51,9 +52,7 @@ export default function (pi: ExtensionAPI) {
           })
           .result();
         if (controller.signal.aborted || answer.stopReason !== "stop") return;
-        const text = answer.content
-          .map((part) => (part.type === "text" ? part.text : ""))
-          .join("")
+        const text = textOf(answer.content, "")
           .trim()
           .replace(/^["'`]|["'`]$/g, "");
         if (!text || text.includes("\n") || text.length > MAX_LENGTH) return;

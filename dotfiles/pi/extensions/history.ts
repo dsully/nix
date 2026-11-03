@@ -3,9 +3,12 @@
  *
  * - Up/Down: prompts from previous sessions are preloaded into the editor history.
  * - Ctrl+R: searchable picker above the editor; Enter puts the prompt in the editor.
+ * - /resume opens pi-session-manager's /sessions. Pi matches built-in commands before extension commands,
+ *   so a registered /resume never runs; the submitted text is rewritten instead.
  */
 
 import { relative } from "node:path";
+import { textOf } from "./lib/text.js";
 import {
   CustomEditor,
   type ExtensionAPI,
@@ -50,16 +53,33 @@ export default function (pi: ExtensionAPI) {
         baseFactory?.(tui, theme, keybindings) ??
         new CustomEditor(tui, theme, keybindings, { embedWorkingStatus: true });
       for (const prompt of [...previous].reverse()) editor.addToHistory?.(prompt.text);
+      // pi assigns onSubmit after the factory returns, so wrap whatever it sets.
+      let submit: ((text: string) => void) | undefined;
+      Object.defineProperty(editor, "onSubmit", {
+        configurable: true,
+        get: () => submit && ((text: string) => submit?.(text.trim() === "/resume" ? "/sessions" : text)),
+        set: (fn) => {
+          submit = fn;
+        },
+      });
       return editor;
     };
     ctx.ui.setEditorComponent(ownFactory);
   };
 
+  // Prompts load asynchronously; a session that ended meanwhile has a stale ctx that throws on use.
+  let generation = 0;
   pi.on("session_start", (_event, ctx) => {
+    if (ctx.mode !== "tui") return;
+    const started = ++generation;
     void loadPrompts(ctx.cwd).then((prompts) => {
+      if (started !== generation) return;
       previous = prompts;
       installEditor(ctx);
     });
+  });
+  pi.on("session_shutdown", () => {
+    generation++;
   });
 
   pi.registerShortcut("ctrl+r", {
@@ -292,7 +312,7 @@ function userPrompts(entries: Iterable<{ type: string; timestamp: string; messag
     if (entry.type !== "message") continue;
     const message = entry.message as { role?: string; content?: unknown };
     if (message.role !== "user") continue;
-    const text = extractText(message.content);
+    const text = textOf(message.content).trim();
     if (text) prompts.push({ text, timestamp: Date.parse(entry.timestamp) });
   }
   return prompts.reverse();
@@ -316,14 +336,4 @@ async function loadPrompts(cwd: string): Promise<Prompt[]> {
   } catch {
     return [];
   }
-}
-
-function extractText(content: unknown): string {
-  if (typeof content === "string") return content.trim();
-  if (!Array.isArray(content)) return "";
-  return content
-    .filter((part) => part?.type === "text" && typeof part.text === "string")
-    .map((part) => part.text.trim())
-    .filter(Boolean)
-    .join("\n");
 }

@@ -13,7 +13,7 @@ function formatScalar(value: unknown): string {
   return JSON.stringify(value);
 }
 
-export function formatYamlValue(key: string, value: unknown, indent = ""): string[] {
+function formatYamlValue(key: string, value: unknown, indent = ""): string[] {
   if (typeof value === "string" && value.includes("\n")) {
     return [`${indent}${key}: |`, ...value.split("\n").map((line) => `${indent}  ${line}`)];
   }

@@ -9,7 +9,7 @@ import type {
 
 const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
-export function formatTokens(count: number | null | undefined): string {
+function formatTokens(count: number | null | undefined): string {
   if (count === null || count === undefined || !Number.isFinite(count)) return "?";
   const abs = Math.abs(count);
   if (abs < 1000) return `${Math.round(count)}`;

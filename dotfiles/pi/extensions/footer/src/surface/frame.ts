@@ -1,5 +1,5 @@
 import { stripTerminalSequences, visibleWidth } from "@earendil-works/pi-tui";
-import { truncateStyledText } from "./text.js";
+import { stripControls, truncateStyledText } from "./text.js";
 import {
   planSurfaceBottomFrame,
   planSurfaceRow,
@@ -17,14 +17,14 @@ import type { ActivityStatus, FooterState } from "../types.js";
 export const STASH_SHORTCUT = "alt+s";
 const DRAFT_LABEL = "\uf48d";
 
-export interface InputSurfaceFrameMetrics {
+interface InputSurfaceFrameMetrics {
   safeWidth: number;
   innerWidth: number;
   editorContentWidth: number;
   autocompleteIndent: number;
 }
 
-export interface InputSurfaceFrameInput {
+interface InputSurfaceFrameInput {
   state: FooterState;
   width: number;
   styles: FooterStyles;
@@ -46,16 +46,9 @@ function identity(text: string): string {
   return text;
 }
 
-function stripControlsPreservingSpaces(text: string): string {
-  return text
-    .replace(/\x1b\][^\x07]*(?:\x07|\x1b\\)/g, "")
-    .replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, "")
-    .replace(/[\r\n\t]/g, " ");
-}
-
 function resolveStatus(input: InputSurfaceFrameInput, budget: number): string {
   const status = input.status(budget);
-  return status && !input.focused ? input.styles.dim(stripControlsPreservingSpaces(status)) : status;
+  return status && !input.focused ? input.styles.dim(stripControls(status)) : status;
 }
 
 function planTopFrame(input: InputSurfaceFrameInput, metrics: InputSurfaceFrameMetrics) {

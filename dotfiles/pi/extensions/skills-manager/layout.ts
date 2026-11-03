@@ -1,12 +1,12 @@
 import { DEFAULT_LIST_ROWS, DEFAULT_POPUP_MAX_HEIGHT } from "./constants.js";
 import type { OverlaySize } from "./types.js";
 
-export const BROWSE_FRAME_ROWS = 2;
-export const BROWSE_SEARCH_ROWS = 1;
-export const BROWSE_SEARCH_GAP_ROWS = 1;
-export const BROWSE_FOOTER_GAP_ROWS = 1;
-export const BROWSE_FOOTER_ROWS = 1;
-export const BROWSE_NON_LIST_ROWS =
+const BROWSE_FRAME_ROWS = 2;
+const BROWSE_SEARCH_ROWS = 1;
+const BROWSE_SEARCH_GAP_ROWS = 1;
+const BROWSE_FOOTER_GAP_ROWS = 1;
+const BROWSE_FOOTER_ROWS = 1;
+const BROWSE_NON_LIST_ROWS =
   BROWSE_FRAME_ROWS + BROWSE_SEARCH_ROWS + BROWSE_SEARCH_GAP_ROWS + BROWSE_FOOTER_GAP_ROWS + BROWSE_FOOTER_ROWS;
 
 const DEFAULT_POPUP_MAX_HEIGHT_RATIO = 0.86;
@@ -14,7 +14,7 @@ const FALLBACK_TERMINAL_ROWS = Math.ceil((DEFAULT_LIST_ROWS + BROWSE_NON_LIST_RO
 
 type ParsedPopupMaxHeight = { kind: "rows"; rows: number } | { kind: "percent"; ratio: number; text: string };
 
-export interface BrowseWindow {
+interface BrowseWindow {
   listRows: number;
   startIndex: number;
   endIndex: number;

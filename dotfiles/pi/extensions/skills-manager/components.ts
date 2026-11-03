@@ -12,7 +12,7 @@ import {
 } from "@earendil-works/pi-tui";
 import { getMarkdownTheme, type Theme } from "@earendil-works/pi-coding-agent";
 import { buildFrontmatterBlock, readSkillBody, type SkillBody } from "./format.js";
-import { glyphs } from "./glyphs.js";
+import { GLYPHS } from "./glyphs.js";
 import { isDeletableSkill, isTogglableSkill } from "./registry.js";
 import {
   inlineLine,
@@ -102,7 +102,7 @@ export class ScrollableSkillPreview implements Component {
     content.addChild(new Text(skillEntityTitle(this.theme, this.skill.name), 0, 0));
     content.addChild(
       new Text(
-        `${this.theme.fg("muted", this.skill.group)}${this.theme.fg("dim", ` ${glyphs().bullet.trim()} `)}${this.theme.fg("muted", source)}${this.theme.fg("dim", ` ${glyphs().bullet.trim()} `)}${status}`,
+        `${this.theme.fg("muted", this.skill.group)}${this.theme.fg("dim", ` ${GLYPHS.bullet.trim()} `)}${this.theme.fg("muted", source)}${this.theme.fg("dim", ` ${GLYPHS.bullet.trim()} `)}${status}`,
         0,
         0,
       ),
@@ -137,7 +137,7 @@ export class ScrollableSkillPreview implements Component {
       maxScroll > 0
         ? this.theme.fg(
             "dim",
-            ` ${glyphs().bullet.trim()} ${this.scrollOffset + 1}-${Math.min(totalLines, this.scrollOffset + visibleHeight)}/${totalLines}`,
+            ` ${GLYPHS.bullet.trim()} ${this.scrollOffset + 1}-${Math.min(totalLines, this.scrollOffset + visibleHeight)}/${totalLines}`,
           )
         : "";
     const hints: Array<[string, string]> = [["-/=", "page"]];

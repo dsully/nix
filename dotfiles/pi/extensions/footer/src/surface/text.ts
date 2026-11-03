@@ -1,7 +1,11 @@
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { stripTerminalSequences, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
 const graphemes = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 
+/** Drops terminal escape sequences and turns line breaks and tabs into spaces. */
+export function stripControls(text: string): string {
+  return stripTerminalSequences(text).replace(/[\r\n\t]/g, " ");
+}
 /** Most rendered lines already fit. Avoid parsing their ANSI and graphemes twice. */
 export function truncateStyledText(text: string, width: number, ellipsis = ""): string {
   const safeWidth = Number.isFinite(width) ? Math.max(0, Math.floor(width)) : 0;
