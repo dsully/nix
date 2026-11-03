@@ -140,6 +140,7 @@ in
           "Workspace.terminalFontPointSize" = 16;
           "Workspace.terminalFontSmoothing" = 1;
           "Workspace.terminalPaddingColor" = "background";
+          "Workspace.terminalPaddingY" = 10;
           "Workspace.terminalSmoothScrolling" = 1;
           "Workspace.terminalUsesDisplayP3" = 1;
           "Workspace.terminalUseThemePalette" = 0;
