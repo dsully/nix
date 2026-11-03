@@ -15,6 +15,7 @@ classifiers = [
 ]
 dependencies = [ "rich", "typer" ]
 scripts.check-upstream-packages = "scripts.check_upstream_packages:main"
+scripts.nix-top = "scripts.nix_top:app"
 scripts.safaricloudtabs = "scripts.safaricloudtabs:app"
 
 [tool.uv]
