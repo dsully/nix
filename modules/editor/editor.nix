@@ -24,8 +24,6 @@ in
           [
             commitlint-rs
             crates-lsp
-            docker-compose-language-service
-            dockerfile-language-server
             emmylua-ls
             emmylua-check
             fish-lsp
@@ -59,10 +57,9 @@ in
             swiftlint
             xcodegen
           ]
-          ++ [
-            luajitPackages.busted
-            luajitPackages.luarocks
-            luajitPackages.nlua
+          ++ lib.optionals stdenv.hostPlatform.isLinux [
+            docker-compose-language-service
+            dockerfile-language-server
           ]
           ++ (with my.pkgs; [
             neovim

@@ -51,7 +51,6 @@ in
           rustcat
           rustup
           samply
-          sccache
         ];
 
         # mbx's cargo shim must precede rustup's ~/.cargo/bin/cargo; it drops itself from PATH to find the real one.

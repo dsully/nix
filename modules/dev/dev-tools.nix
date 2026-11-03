@@ -18,20 +18,13 @@ mkUserModule {
       packages = with pkgs;
         [
           ast-grep
-          codebook
-          cyme
-          difftastic
-          dive
           gibo
           gnused
           hyperfine
           jq
           scc
-          sq
           sqlite
-          tree-sitter
           typos
-          xan
         ]
         ++ (with my.pkgs; [
           debtmap

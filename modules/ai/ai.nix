@@ -28,11 +28,6 @@ in
       home = {
         packages =
           (
-            with pkgs; [
-              entire
-            ]
-          )
-          ++ (
             with pkgs.llm-agents;
               lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
                 agent-browser
