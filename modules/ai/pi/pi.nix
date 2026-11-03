@@ -67,7 +67,7 @@
       # "npm:pi-resume-search"
       "npm:@cortexkit/pi-magic-context"
       # Snapshots per turn: hashline replace/insert carry no path, so edit/write-hooked checkpointers miss them.
-      "npm:@ian-pascoe/pi-git-checkpoints"
+      "npm:pi-rewind-hook"
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
       "npm:@tifan/pi-copy-response"
@@ -451,6 +451,8 @@ in
                     extensions = [];
                   })
               (lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages);
+
+              rewind.retention.maxAgeDays = 7;
 
               terminal = {
                 showTerminalProgress = true;
