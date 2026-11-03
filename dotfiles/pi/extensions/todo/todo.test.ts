@@ -2,8 +2,9 @@ import { expect, test } from "bun:test";
 import { replayFromBranch } from "./state/replay.js";
 import { EMPTY_STATE, type TaskState } from "./state/state.js";
 import { applyTaskMutation } from "./state/state-reducer.js";
-import { browserRows, treeRows } from "./state/task-graph.js";
+import { browserRows, openBlockers, treeRows } from "./state/task-graph.js";
 import { prepareTodoArguments } from "./tool/normalize-params.js";
+import { formatElapsed } from "./view/elapsed.js";
 import type { TaskAction, TaskMutationParams } from "./tool/types.js";
 
 function run(steps: Array<[TaskAction, TaskMutationParams]>): TaskState {
@@ -114,4 +115,48 @@ test("a missing action is inferred, including for parentId-only updates", () => 
   expect(prepareTodoArguments({ id: 3, parentId: null }).action).toBe("update");
   expect(prepareTodoArguments({ subject: "x" }).action).toBe("create");
   expect(prepareTodoArguments({ id: 3 }).action).toBe("get");
+});
+
+test("starting or completing a task with open blockers applies the update and reports them", () => {
+  const state = run([
+    ["create", { subject: "a" }],
+    ["create", { subject: "b" }],
+    ["create", { subject: "c", blockedBy: [1, 2] }],
+    ["update", { id: 2, status: "completed" }],
+  ]);
+  const { state: next, op } = applyTaskMutation(state, "update", { id: 3, status: "in_progress" });
+  expect(byId(next, 3)?.status).toBe("in_progress");
+  expect(op.kind === "update" && op.openBlockers).toEqual([1]);
+  const edit = applyTaskMutation(next, "update", { id: 3, subject: "c2" }).op;
+  expect(edit.kind === "update" && edit.openBlockers).toEqual([]);
+});
+
+test("startedAt is stamped on entering in_progress and dropped on leaving it", () => {
+  const state = run([["create", { subject: "a" }]]);
+  const started = applyTaskMutation(state, "update", { id: 1, status: "in_progress" }, 1000).state;
+  expect(byId(started, 1)?.startedAt).toBe(1000);
+  const edited = applyTaskMutation(started, "update", { id: 1, subject: "b" }, 2000).state;
+  expect(byId(edited, 1)?.startedAt).toBe(1000);
+  const done = applyTaskMutation(edited, "update", { id: 1, status: "completed" }, 3000).state;
+  expect(byId(done, 1)?.startedAt).toBeUndefined();
+});
+
+test("elapsed time uses the two largest units that apply", () => {
+  expect(formatElapsed(42_000)).toBe("42s");
+  expect(formatElapsed(192_000)).toBe("3m 12s");
+  expect(formatElapsed(3_900_000)).toBe("1h 5m");
+  expect(formatElapsed(-5)).toBe("0s");
+});
+
+test("open blockers skip finished, deleted and unknown tasks", () => {
+  const state = run([
+    ["create", { subject: "done" }],
+    ["create", { subject: "wip" }],
+    ["create", { subject: "todo" }],
+    ["create", { subject: "gone" }],
+    ["update", { id: 1, status: "completed" }],
+    ["update", { id: 2, status: "in_progress" }],
+    ["delete", { id: 4 }],
+  ]);
+  expect(openBlockers([1, 2, 3, 4, 9], state.tasks)).toEqual([2, 3]);
 });

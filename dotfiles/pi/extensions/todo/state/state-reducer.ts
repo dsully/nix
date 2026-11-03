@@ -1,12 +1,20 @@
 import type { Task, TaskAction, TaskMutationParams, TaskStatus } from "../tool/types.js";
 import { isTransitionValid } from "./invariants.js";
 import type { TaskState } from "./state.js";
-import { detectCycle, liveDescendants } from "./task-graph.js";
+import { detectCycle, liveDescendants, openBlockers } from "./task-graph.js";
 
 /** A new action must also be added to the exhaustive `formatContent` switch in `tool/response-envelope.ts`. */
 export type Op =
   | { kind: "create"; taskIds: number[] }
-  | { kind: "update"; id: number; fromStatus: TaskStatus; toStatus: TaskStatus; changed: boolean }
+  | {
+      kind: "update";
+      id: number;
+      fromStatus: TaskStatus;
+      toStatus: TaskStatus;
+      changed: boolean;
+      /** Unfinished blockers of a task just moved to in_progress or completed. */
+      openBlockers: number[];
+    }
   | { kind: "delete"; id: number; subject: string; promoted: number[] }
   | { kind: "list"; statusFilter?: TaskStatus; includeDeleted: boolean }
   | { kind: "get"; task: Task }
@@ -162,7 +170,12 @@ function taskChanged(before: Task, after: Task): boolean {
  * dangling/deleted blockedBy, self-block, cycles). Decision: validation stays
  * in-reducer.
  */
-export function applyTaskMutation(state: TaskState, action: TaskAction, params: TaskMutationParams): ApplyResult {
+export function applyTaskMutation(
+  state: TaskState,
+  action: TaskAction,
+  params: TaskMutationParams,
+  now = Date.now(),
+): ApplyResult {
   switch (action) {
     case "create": {
       const batch = params.tasks;
@@ -311,6 +324,11 @@ export function applyTaskMutation(state: TaskState, action: TaskAction, params: 
       else delete updated.blockedBy;
       if (newMetadata === undefined) delete updated.metadata;
       else updated.metadata = newMetadata;
+      if (newStatus !== "in_progress") delete updated.startedAt;
+      else if (current.status !== "in_progress") updated.startedAt = now;
+
+      const advanced = newStatus !== current.status && (newStatus === "in_progress" || newStatus === "completed");
+      const blockers = advanced ? openBlockers(newBlockedBy, state.tasks) : [];
 
       const newTasks = [...state.tasks];
       newTasks[idx] = updated;
@@ -323,6 +341,7 @@ export function applyTaskMutation(state: TaskState, action: TaskAction, params: 
           fromStatus: current.status,
           toStatus: newStatus,
           changed: taskChanged(current, updated),
+          openBlockers: blockers,
         },
       };
     }

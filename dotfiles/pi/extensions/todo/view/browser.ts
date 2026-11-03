@@ -77,7 +77,7 @@ export class TodoBrowser implements Component {
       const children = liveChildren(state.tasks, row.task.id);
       const progress = { done: children.filter((c) => c.status === "completed").length, total: children.length };
       const arrow = row.hasChildren ? (this.folded.has(row.task.id) ? "▸ " : "▾ ") : "  ";
-      const line = `${"  ".repeat(row.depth)}${theme.fg("dim", arrow)}${formatOverlayTaskLine(row.task, theme, true, progress)}`;
+      const line = `${"  ".repeat(row.depth)}${theme.fg("dim", arrow)}${formatOverlayTaskLine(row.task, theme, true, state.tasks, progress)}`;
       return row.task.id === this.selectedId ? theme.bg("selectedBg", line) : line;
     });
 

@@ -18,7 +18,8 @@ function isTask(value: unknown): value is Task {
     optional(t.owner, isString) &&
     optional(t.parentId, (v) => Number.isSafeInteger(v)) &&
     optional(t.blockedBy, (v) => Array.isArray(v) && v.every((id) => Number.isSafeInteger(id))) &&
-    optional(t.metadata, (v) => typeof v === "object" && v !== null)
+    optional(t.metadata, (v) => typeof v === "object" && v !== null) &&
+    optional(t.startedAt, (v) => Number.isSafeInteger(v))
   );
 }
 

@@ -1,8 +1,10 @@
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
 import { selectTaskSubjectById } from "../state/selectors.js";
+import { openBlockers } from "../state/task-graph.js";
 import type { TaskState } from "../state/state.js";
 import { sanitizeTerminalText } from "../tool/sanitize.js";
+import { formatElapsed } from "./elapsed.js";
 import type { Task, TaskAction, TaskDetails, TaskMutationParams, TaskStatus } from "../tool/types.js";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
@@ -11,6 +13,9 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
   completed: "completed",
   deleted: "deleted",
 };
+
+const SPINNER = ["✳", "✴", "✵", "✶", "✷", "✸", "✹", "✺", "✻", "✼", "✽"];
+export const SPINNER_MS = 150;
 
 export function formatStatusLabel(status: TaskStatus): string {
   return STATUS_LABEL[status];
@@ -79,9 +84,14 @@ export function formatOverlayTaskLine(
   t: Task,
   theme: Theme,
   showId: boolean,
+  tasks: readonly Task[],
   progress?: { done: number; total: number },
+  spin = false,
 ): string {
-  const glyph = overlayStatusGlyph(t.status, theme);
+  const glyph =
+    spin && t.status === "in_progress"
+      ? theme.fg("warning", SPINNER[Math.floor(Date.now() / SPINNER_MS) % SPINNER.length])
+      : overlayStatusGlyph(t.status, theme);
   const subjectColor =
     t.status === "in_progress" ? "accent" : t.status === "completed" || t.status === "deleted" ? "muted" : "text";
   let subject = theme.fg(subjectColor, sanitizeTerminalText(t.subject));
@@ -95,8 +105,12 @@ export function formatOverlayTaskLine(
   if (t.status === "in_progress" && t.activeForm) {
     line += ` ${theme.fg("muted", `(${sanitizeTerminalText(t.activeForm)})`)}`;
   }
-  if (t.blockedBy && t.blockedBy.length > 0) {
-    line += ` ${theme.fg("muted", `⛓ ${t.blockedBy.map((id) => `#${id}`).join(",")}`)}`;
+  if (t.status === "in_progress" && t.startedAt !== undefined) {
+    line += ` ${theme.fg("dim", formatElapsed(Date.now() - t.startedAt))}`;
+  }
+  const blockers = t.status === "completed" ? [] : openBlockers(t.blockedBy, tasks);
+  if (blockers.length) {
+    line += ` ${theme.fg("dim", `› blocked by ${blockers.map((id) => `#${id}`).join(", ")}`)}`;
   }
   return line;
 }

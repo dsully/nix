@@ -5,12 +5,14 @@
  */
 
 import type { ExtensionAPI, ExtensionUIContext } from "@earendil-works/pi-coding-agent";
+import { newReminderState, noteTodoUse, noteTurnEnd, type ReminderState, takeReminder } from "./state/reminder.js";
 import { replayFromBranch } from "./state/replay.js";
 import {
   clearActiveRenderSession,
   evictSession,
   getActiveRenderSession,
   getRenderState,
+  getState,
   setActiveRenderSession,
   setState,
   sid,
@@ -23,9 +25,24 @@ function isStaleCtxError(e: unknown): boolean {
   return /stale after session replacement/.test(String(e));
 }
 
+function liveSid(ctx: Parameters<typeof sid>[0]): string | undefined {
+  try {
+    return sid(ctx);
+  } catch (e) {
+    if (!isStaleCtxError(e)) throw e;
+    return undefined;
+  }
+}
+
 export default function (pi: ExtensionAPI) {
   let todoOverlay: TodoOverlay | undefined;
   let uiCtx: ExtensionUIContext | undefined;
+  const reminders = new Map<string, ReminderState>();
+  const reminderFor = (id: string): ReminderState => {
+    let r = reminders.get(id);
+    if (!r) reminders.set(id, (r = newReminderState()));
+    return r;
+  };
 
   function updateTodoOverlay(resetCompletedDisplayState = false): void {
     const hasVisibleTasks = getRenderState().tasks.some((task) => task.status !== "deleted");
@@ -89,6 +106,7 @@ export default function (pi: ExtensionAPI) {
       s = "";
     }
     evictSession(s);
+    reminders.delete(s);
     if (s !== "" && s !== getActiveRenderSession()) return;
     uiCtx = undefined;
     // dispose() calls setWidget on a possibly stale ui proxy, which can throw; the pointer must still clear.
@@ -101,9 +119,31 @@ export default function (pi: ExtensionAPI) {
   });
 
   // Reads live state at render time: the branch is stale here because message_end runs after tool_execution_end.
-  pi.on("tool_execution_end", async (event) => {
-    if (event.toolName !== TOOL_NAME || event.isError) return;
-    updateTodoOverlay();
+  pi.on("tool_execution_end", async (event, ctx) => {
+    if (event.toolName !== TOOL_NAME) return;
+    const id = liveSid(ctx);
+    if (id !== undefined) noteTodoUse(reminderFor(id));
+    if (!event.isError) updateTodoOverlay();
+  });
+
+  pi.on("turn_end", async (event, ctx) => {
+    const id = liveSid(ctx);
+    if (id === undefined) return;
+    const { message } = event;
+    const textOnly = event.toolResults.length === 0 && message.role === "assistant" && message.stopReason === "stop";
+    noteTurnEnd(reminderFor(id), textOnly, getState(id).tasks);
+  });
+
+  // Request-local: the reminder reaches the next provider call only and is never persisted.
+  pi.on("context", async (event, ctx) => {
+    const id = liveSid(ctx);
+    const last = event.messages.at(-1);
+    if (id === undefined || last?.role !== "user") return;
+    const text = takeReminder(reminderFor(id), getState(id).tasks);
+    if (!text) return;
+    // Edit in place: a changed messages array makes pi rebuild the system messages, which misses the prompt cache.
+    const content = typeof last.content === "string" ? [{ type: "text" as const, text: last.content }] : last.content;
+    last.content = [...content, { type: "text", text }];
   });
 
   pi.on("agent_start", async () => {

@@ -57,6 +57,13 @@ export function deriveBlocks(taskList: readonly Task[]): Map<number, number[]> {
 }
 
 /** Live (non-deleted) direct children of `parentId`, in list order. */
+/** Blockers in `blockedBy` that are still pending or in progress. */
+export function openBlockers(blockedBy: readonly number[] | undefined, taskList: readonly Task[]): number[] {
+  return (blockedBy ?? []).filter((dep) => {
+    const status = taskList.find((t) => t.id === dep)?.status;
+    return status === "pending" || status === "in_progress";
+  });
+}
 export function liveChildren(taskList: readonly Task[], parentId: number): Task[] {
   return taskList.filter((t) => t.parentId === parentId && t.status !== "deleted");
 }

@@ -20,6 +20,8 @@ export interface Task {
   description?: string;
   activeForm?: string;
   status: TaskStatus;
+  /** Epoch ms when the task last entered in_progress; absent otherwise. */
+  startedAt?: number;
   parentId?: number;
   blockedBy?: number[];
   owner?: string;

@@ -57,7 +57,10 @@ export function formatContent(op: Op, state: TaskState): string {
         return `No change: #${op.id} already matches the requested values (status: ${op.toStatus})`;
       }
       const transition = op.fromStatus !== op.toStatus ? ` (${op.fromStatus} → ${op.toStatus})` : "";
-      return `Updated #${op.id}${transition}`;
+      const blocked = op.openBlockers.length
+        ? `; warning: still blocked by ${op.openBlockers.map((id) => `#${id}`).join(", ")}`
+        : "";
+      return `Updated #${op.id}${transition}${blocked}`;
     }
     case "delete":
       const moved = op.promoted.length

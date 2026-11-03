@@ -8,7 +8,8 @@ import { type KeyId, type TUI, truncateToWidth } from "@earendil-works/pi-tui";
 import { selectHasActive, selectOverlayLayout, selectShowTaskIds, selectTodoCounts } from "./state/selectors.js";
 import { getRenderState } from "./state/store.js";
 import { liveChildren, treeRows } from "./state/task-graph.js";
-import { formatOverlayTaskLine, formatStatusLabel } from "./view/format.js";
+import type { Task } from "./tool/types.js";
+import { formatOverlayTaskLine, formatStatusLabel, SPINNER_MS } from "./view/format.js";
 
 const WIDGET_KEY = "rpiv-todos";
 const MAX_WIDGET_LINES = 12;
@@ -22,6 +23,7 @@ export class TodoOverlay {
   private hiddenCompletedTaskIds = new Set<number>();
   private lastNextId: number | undefined;
   private collapsed = false;
+  private ticker: ReturnType<typeof setInterval> | undefined;
 
   setUICtx(ctx: ExtensionUIContext): void {
     // Identity-compare so repeat session_start handlers are idempotent;
@@ -44,6 +46,7 @@ export class TodoOverlay {
         this.widgetRegistered = false;
         this.tui = undefined;
       }
+      this.syncTicker([]);
       return;
     }
 
@@ -65,6 +68,19 @@ export class TodoOverlay {
       this.widgetRegistered = true;
     } else {
       this.tui?.requestRender();
+    }
+    this.syncTicker(visible);
+  }
+
+  /** Re-render while an in_progress row shows its spinner and elapsed time. */
+  private syncTicker(visible: readonly Task[]): void {
+    const timed = visible.some((t) => t.status === "in_progress");
+    if (timed && !this.ticker) {
+      this.ticker = setInterval(() => this.tui?.requestRender(), SPINNER_MS);
+      this.ticker.unref?.();
+    } else if (!timed && this.ticker) {
+      clearInterval(this.ticker);
+      this.ticker = undefined;
     }
   }
 
@@ -133,7 +149,12 @@ export class TodoOverlay {
 
     const headingColor = hasActive ? "accent" : "dim";
     const headingIcon = hasActive ? "●" : "○";
-    const headingText = `Todos (${counts.completed}/${counts.total})`;
+    const parts = [
+      counts.completed && `${counts.completed} done`,
+      counts.inProgress && `${counts.inProgress} in progress`,
+      counts.pending && `${counts.pending} open`,
+    ].filter(Boolean);
+    const headingText = `${counts.total} ${counts.total === 1 ? "task" : "tasks"} (${parts.join(", ")})`;
     const heading = truncate(`${theme.fg(headingColor, headingIcon)} ${theme.fg(headingColor, headingText)}`);
 
     if (this.collapsed) {
@@ -151,7 +172,7 @@ export class TodoOverlay {
       const progress = { done: children.filter((c) => c.status === "completed").length, total: children.length };
       const indent = "  ".repeat(depth.get(task.id) ?? 0);
       lines.push(
-        truncate(`${theme.fg("dim", "├─")} ${indent}${formatOverlayTaskLine(task, theme, showIds, progress)}`),
+        truncate(`${theme.fg("dim", "├─")} ${indent}${formatOverlayTaskLine(task, theme, showIds, snapshot.tasks, progress, true)}`),
       );
     }
 
@@ -198,6 +219,7 @@ export class TodoOverlay {
   }
 
   dispose(): void {
+    this.syncTicker([]);
     if (this.uiCtx) this.uiCtx.setWidget(WIDGET_KEY, undefined);
     this.widgetRegistered = false;
     this.tui = undefined;
