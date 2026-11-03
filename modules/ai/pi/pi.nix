@@ -81,7 +81,7 @@
   );
 
   # Package entries may be a source string or an attrset with one; other modules
-  # (gortex) append to settings.packages, so read the merged option, not piDefaultPackages.
+  # append to settings.packages, so read the merged option, not piDefaultPackages.
   declaredPackageSources = map (p:
     if builtins.isString p
     then p
@@ -322,10 +322,6 @@ in
                   {
                     pkg = "@pi-kaush/pi-tool-call-markers";
                     patch = ./pi-tool-call-markers-thought-grouping.patch;
-                  }
-                  {
-                    pkg = "pi-gortex";
-                    patch = ./pi-gortex-hide-memory-tools.patch;
                   }
                 ]}
             '';

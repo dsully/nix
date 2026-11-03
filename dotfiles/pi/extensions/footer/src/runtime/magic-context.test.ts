@@ -21,5 +21,4 @@ test("has no reading before the first usage or at a rounded-away percentage", ()
 
 test("ignores other extensions' status lines", () => {
   expect(parseMagicContextStatus(undefined)).toBeUndefined();
-  expect(parseMagicContextStatus("gortex: indexing")).toBeUndefined();
 });
