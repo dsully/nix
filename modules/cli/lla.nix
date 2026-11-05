@@ -2,6 +2,7 @@
   mkUserModule,
   config,
   lib,
+  my,
   pkgs,
   ...
 }: let
@@ -11,9 +12,7 @@ in
     name = "lla";
 
     home = {
-      home.packages = with pkgs; [
-        lla
-      ];
+      home.packages = [my.pkgs.lla];
 
       programs.fish.functions.ls = {
         wraps = "lla";
@@ -52,7 +51,7 @@ in
             else if test (count $paths) -eq 1; and not test -d $paths[1]
                 ${pkgs.coreutils}/bin/ls $argv
             else
-                ${lib.getExe pkgs.lla} $args
+                ${lib.getExe my.pkgs.lla} --hyperlink=auto $args
             end
           '';
       };
