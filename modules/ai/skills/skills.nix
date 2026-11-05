@@ -212,7 +212,9 @@ in
                 "cleanup"
                 "comment-sicko"
                 "dead-code-finder"
+                "just"
                 "prompt-optimizer"
+                "tailscale"
                 "visual-explainer"
               ]
               ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin "swiftui";
