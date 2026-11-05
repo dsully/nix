@@ -122,9 +122,11 @@
         stateless = true;
       };
       safari-mcp = {
-        command = "/usr/bin/safaridriver";
-        args = ["--mcp"];
+        command = lib.getExe my.pkgs.safari-mcp;
         enabled = false;
+        env = {
+          SAFARI_PROFILE = "Work";
+        };
         stateless = true;
       };
     };
