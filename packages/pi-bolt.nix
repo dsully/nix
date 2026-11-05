@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "darwin-arm64";
-      hash = "sha256-2lUnPhmRd4w78Pg/vdRbmrjiKHUItUFcFSEuy5dW6rY=";
+      hash = "sha256-o36FXkKOpPt3UXR1GoiIafsliN3XOC1DvPC45aisd8U=";
     };
     x86_64-linux = {
       suffix = "linux-x64";
-      hash = "sha256-B81u/om5Zdvz3DWCQEWOcDY92gytFAWQwQmo9gBtiDg=";
+      hash = "sha256-eIZl7/6FmYVl+VdAWxYJFRUQZD4aUL6eq+Cj/6lNR8o=";
     };
   };
   source =
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "pi-bolt";
-    version = "1.0.9";
+    version = "1.1.0";
 
     src = pkgs.fetchurl {
       url = "https://github.com/opensec-git/Pi-Bolt/releases/download/bolt-v${version}/${pname}-${source.suffix}.tar.xz";
