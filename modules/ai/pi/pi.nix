@@ -46,14 +46,11 @@
       }
       # "npm:pi-agent-browser-native"
       # "npm:pi-autoresearch"
-      # "npm:pi-blackhole"
       "npm:pi-away"
       "npm:pi-background"
-      "npm:pi-codemode-toggle"
       "npm:pi-context-view"
       "npm:pi-hashline-edit-pro-lean"
       "npm:pi-heads-up"
-      "npm:pi-inspector"
       # chrome.ts would take over the working label, spinner, and editor that whimsical and footer own.
       {
         source = "npm:pi-polish";
@@ -70,11 +67,7 @@
       "npm:pi-rewind-hook"
       "npm:@ssk_dev/pi-docs-slim"
       "npm:@ssk_dev/rpiv-ask-user-question-lean"
-      "npm:@tifan/pi-copy-response"
       "npm:@vanillagreen/pi-session-manager"
-      "npm:@mrclrchtr/supi-cache"
-      "npm:@mrclrchtr/supi-insights"
-      "npm:@mrclrchtr/supi-review"
     ]
     ++ lib.optional (!piSuperpowers) "npm:@ssk_dev/pi-subagents-lean"
     ++ lib.optional piSuperpowers "npm:@teelicht/pi-superagents"
