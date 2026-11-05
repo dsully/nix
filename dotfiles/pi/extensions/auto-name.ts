@@ -6,7 +6,6 @@
  *   /autoname refresh  regenerate the name now, even over a manual one
  *
  * PI_AUTONAME_MODEL="provider/model-id" picks the namer; default is the session model.
- * Under rex (TERM=xterm-rex) nothing is named automatically; /autoname refresh still works.
  */
 import { randomUUID } from "node:crypto";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
@@ -159,7 +158,7 @@ export default function autoName(pi: ExtensionAPI) {
 
   const maybeName = async (ctx: ExtensionContext, force = false): Promise<void> => {
     if (inFlight || !ctx.sessionManager.getSessionFile()) return;
-    if (!force && (userOwned || process.env.TERM === "xterm-rex")) return;
+    if (!force && userOwned) return;
     const messages = extractConversation(ctx.sessionManager.getBranch() as AnyEntry[]);
     const userCount = messages.filter((m) => m.role === "user").length;
     if (userCount === 0) return;
