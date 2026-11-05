@@ -101,7 +101,7 @@
         command = lib.getExe my.pkgs.mcp-server-git-rs;
         args = [
           "--features"
-          "inspection,remotes,worktrees,notes"
+          "inspection,worktrees"
         ];
         enabled = false;
       };

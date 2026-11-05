@@ -56,12 +56,12 @@
         source = "npm:pi-polish";
         extensions = ["extensions/tools.ts"];
       }
+      # "npm:@pi-kaush/pi-browser"
       # Collapsed rows only; expanded rows still use pi-polish. The merger draws "│ * Thought".
       {
         source = "npm:@pi-kaush/pi-tool-call-markers";
         extensions = ["src/index.ts" "src/thinking-block-merger.ts"];
       }
-      # "npm:pi-resume-search"
       "npm:@cortexkit/pi-magic-context"
       # Snapshots per turn: hashline replace/insert carry no path, so edit/write-hooked checkpointers miss them.
       "npm:pi-rewind-hook"
