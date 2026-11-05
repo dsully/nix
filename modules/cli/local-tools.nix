@@ -18,7 +18,6 @@ mkUserModule {
         ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
           fishPlugins.macos
           iproute2mac
-          safari-rs
         ];
     };
   };

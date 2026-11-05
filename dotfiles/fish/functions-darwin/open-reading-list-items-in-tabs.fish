@@ -1,6 +1,0 @@
-function open-reading-list-items-in-tabs -d "Open Reading List tabs in Safari"
-
-    for url in (command safari reading-list | command tail -r)
-        command /usr/bin/open $url
-    end
-end
