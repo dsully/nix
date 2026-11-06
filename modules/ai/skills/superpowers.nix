@@ -1,6 +1,5 @@
 {
   config,
-  hideFromModel,
   inputs,
   lib,
   ...
@@ -29,26 +28,17 @@ in {
 
   config = lib.mkIf (cfg.agents != []) {
     programs.agent-skills = {
+
       sources.superpowers = {
         input = "superpowers";
         subdir = "skills";
       };
-      skills.explicit =
-        lib.optionalAttrs (otherAgents != []) (lib.genAttrs skillIds (id: {
-          from = "superpowers";
-          path = id;
-          agents = otherAgents;
-        }))
-        # pi-superagents drives these via /sp-* and finds them by frontmatter name, so pi
-        # gets copies hidden from the model's skill list (saves prompt tokens every turn).
-        // lib.optionalAttrs (lib.elem "pi" cfg.agents) (lib.listToAttrs (map (id:
-          lib.nameValuePair "pi-${id}" {
-            from = "superpowers";
-            path = id;
-            agents = ["pi"];
-            transform = hideFromModel;
-          })
-        skillIds));
+
+      skills.explicit = lib.optionalAttrs (otherAgents != []) (lib.genAttrs skillIds (id: {
+        from = "superpowers";
+        path = id;
+        agents = otherAgents;
+      }));
     };
   };
 }

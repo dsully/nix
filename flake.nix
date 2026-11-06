@@ -67,8 +67,6 @@
     softaworks.url = "github:softaworks/agent-toolkit";
     softaworks.flake = false;
 
-    superpowers.url = "github:obra/superpowers";
-    superpowers.flake = false;
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;
   };
