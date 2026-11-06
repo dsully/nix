@@ -10,13 +10,13 @@
 }:
 buildNpmPackage rec {
   pname = "safari-mcp";
-  version = "2.23.0";
+  version = "2.23.0-cc9a0821";
 
   src = fetchFromGitHub {
     owner = "achiya-automation";
     repo = "safari-mcp";
     tag = "v${version}";
-    hash = "sha256-CA1w5445djKoHT/lA0Q2/OPM4LKIMCyluo5rLj/5bKw=";
+    hash = "sha256-1ZilAyOxuoNADXYTNRD/8vfgd7ItExlHTDDS4SdbvbA=";
   };
 
   npmDepsHash = "sha256-l40gzW0kuiZM3saAUlb3AHkhgcu2027fJcwSAaifK7A=";
