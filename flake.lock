@@ -73,11 +73,11 @@
     "claude-plugins-official": {
       "flake": false,
       "locked": {
-        "lastModified": 1793917706,
-        "narHash": "sha256-BvmIjJKv8a6Jau+3Ky5EY6Jt7CLGdARUVLir/2ME8/c=",
+        "lastModified": 1793930645,
+        "narHash": "sha256-kc5BdpZz9Mb7lSmEjiVxDy8vU0Cb4+rb2uaYdTE7nfE=",
         "owner": "anthropics",
         "repo": "claude-plugins-official",
-        "rev": "d189be9fc7a63d53d4e2af59accdd70e933e41e9",
+        "rev": "1aa4a4b10e6c5e8694d0f72a03dbac4e93bcafd8",
         "type": "github"
       },
       "original": {
@@ -252,11 +252,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1793922383,
-        "narHash": "sha256-qBTj8/nkQqUaZ0uSa25wivdupQ8hAPG3Li8ic/IYz/8=",
+        "lastModified": 1793924293,
+        "narHash": "sha256-63wxsZgMONe7PlnlAf7da/1pFlUdepPzMgOcUMHCOAI=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "74670f91846d94d182b4b385880c9348426b4158",
+        "rev": "fb975ebe2da5ba2ce754d3a43306a21fefa032d5",
         "type": "github"
       },
       "original": {
@@ -543,7 +543,6 @@
         "ponytail": "ponytail",
         "rex": "rex",
         "softaworks": "softaworks",
-        "superpowers": "superpowers",
         "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
       }
@@ -561,22 +560,6 @@
       "original": {
         "owner": "softaworks",
         "repo": "agent-toolkit",
-        "type": "github"
-      }
-    },
-    "superpowers": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1793744227,
-        "narHash": "sha256-rP5YsyGuPd9YSW/Fj3aukrq1bLuV+nwwQMK4JaZQgkI=",
-        "owner": "obra",
-        "repo": "superpowers",
-        "rev": "22f0b463e7a5e579904dd6211a520321035526f7",
-        "type": "github"
-      },
-      "original": {
-        "owner": "obra",
-        "repo": "superpowers",
         "type": "github"
       }
     },
