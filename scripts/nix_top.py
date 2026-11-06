@@ -25,11 +25,15 @@ DEFAULT_ROOTS = ("/run/current-system", str(Path.home() / ".local/state/nix/prof
 HASHED = re.compile(r"/nix/store/[0-9a-z]{32}-")
 GENERATION = re.compile(r"^(?P<profile>.+)-\d+-link$")
 PROCESS = re.compile(r"(?:\{libproc|^/proc)/(\d+)/")
-PROFILE_NAMES = {"current-home": "home", "current-system": "system", "home-manager": "home"}
+PROFILE_NAMES = {"current-home": "home", "current-system": "system", "home-manager": "home", "system-manager": "system", "system-manager-current": "system"}
+# system-manager keeps no unnumbered profile link; this gcroot marks its current generation instead.
+CURRENT_LINKS = {"system-manager": Path("/nix/var/nix/gcroots/system-manager-current")}
+SYSTEM_PROFILE = "/nix/var/nix/profiles/" + ("system-manager-profiles/system-manager" if CURRENT_LINKS["system-manager"].exists() else "system")
 DEAD = "dead"
 PROCESSES = "processes"
 ACTIONS = {
     DEAD: "nix-collect-garbage",
+    "old system": f"sudo $(command -v nh) clean profile {SYSTEM_PROFILE}",  # sudo's secure_path drops the user profile holding nh
     "old home": "nh clean profile ~/.local/state/nix/profiles/home-manager",
     "old profile": "nh clean profile ~/.local/state/nix/profiles/profile",
 }
@@ -122,7 +126,8 @@ def root_label(link: str, processes: Mapping[str, str]) -> str:
     if m := GENERATION.match(link):
         profile = Path(m["profile"])
         name = PROFILE_NAMES.get(profile.name, profile.name)
-        current = profile.is_symlink() and profile.readlink().name == path.name
+        pointer = CURRENT_LINKS.get(profile.name, profile)
+        current = pointer.is_symlink() and pointer.resolve() == path.resolve()
 
         return name if current else f"old {name}"
 

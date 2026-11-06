@@ -1,6 +1,9 @@
 from pathlib import Path
 from typing import Any
 
+import pytest
+
+from scripts import nix_top
 from scripts.nix_top import GcState, collapse, kept_by, parse, pname, reclaimable, referrers, root_label, split_name, strip_hashes, top_rows, version
 
 S = "/nix/store/"
@@ -67,6 +70,18 @@ def test_root_label_names_generations_processes_and_dev_shells(tmp_path: Path) -
     assert root_label("{censored}", {}) == "process censored ?"
     assert root_label("/src/proj/.direnv/flake-profile-1-link", {}) == "direnv proj"
     assert root_label("/src/proj/.direnv/nix-profile", {}) == "direnv proj"
+
+
+def test_root_label_finds_current_system_manager_generation_via_gcroot(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    current = tmp_path / "system-manager-current"
+    current.symlink_to(tmp_path / "store-b")
+    (tmp_path / "system-manager-1-link").symlink_to(tmp_path / "store-a")
+    (tmp_path / "system-manager-2-link").symlink_to(tmp_path / "store-b")
+    monkeypatch.setitem(nix_top.CURRENT_LINKS, "system-manager", current)
+
+    assert root_label(str(tmp_path / "system-manager-2-link"), {}) == "system"
+    assert root_label(str(tmp_path / "system-manager-1-link"), {}) == "old system"
+    assert root_label(str(current), {}) == "system"
 
 
 def test_kept_by_follows_references_and_derivers_and_marks_dead() -> None:
