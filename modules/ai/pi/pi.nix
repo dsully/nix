@@ -199,16 +199,6 @@ in
                 '';
               };
 
-              # pi-lens owns diagnostics + LSP, but not file mutation: its autoformat
-              # would biome-format .ts (its JS/TS default) and fight the oxfmt
-              # PostToolUse hook in hooks.nix, and its autofix runs biome/ruff/eslint
-              # --fix. Turn both off so the hook is the single formatter of record;
-              # LSP, lint dispatch, and diagnostics stay on. Read-only file is fine —
-              # pi-lens only reads this, never rewrites it.
-              # ".pi-lens/config.json".source = jsonFormat.generate "pi-lens-config.json" {
-              #   format.enabled = false;
-              #   autofix.enabled = false;
-              # };
               "${config.xdg.configHome}/cortexkit/magic-context.jsonc".source = jsonFormat.generate "magic-context.jsonc" config.programs.pi-coding-agent.magicContext;
             };
 
