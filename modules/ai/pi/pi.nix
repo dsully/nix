@@ -41,7 +41,6 @@
     # "npm:pi-agent-browser-native"
     # "npm:pi-autoresearch"
     "npm:pi-away"
-    "npm:pi-background"
     "npm:pi-context-view"
     "npm:pi-hashline-edit-pro-lean"
     "npm:pi-heads-up"

@@ -43,7 +43,7 @@ type NativeRow = {
 
 const NATIVE_TOOLS = new Set(["bg_run", "bg_status", "bg_kill"]);
 
-/** Background rows keep pi-background's └ line. Markers owns every other collapsed row, including subagent plans. */
+/** Background rows keep the background extension's └ line. Markers owns every other collapsed row, including subagent plans. */
 export function keepsNative(row: NativeRow): boolean {
   return NATIVE_TOOLS.has(row.toolName ?? "");
 }

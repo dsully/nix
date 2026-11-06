@@ -22,7 +22,7 @@ type Host = {
 };
 type HostRender = (this: Host, width: number) => string[];
 
-/** Let pi-background draw bg_run, bg_status, and bg_kill, including the nested └ line. */
+/** Let the background extension draw bg_run, bg_status, and bg_kill, including the nested └ line. */
 export function installKeepNative(): void {
   const toolProto = ToolExecutionComponent.prototype as { [PRESENTATION]?: { originalRender?: RowRender } };
   const nativeRender = toolProto[PRESENTATION]?.originalRender;
