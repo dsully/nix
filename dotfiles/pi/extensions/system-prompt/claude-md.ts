@@ -6,7 +6,7 @@ import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-export default function (pi: ExtensionAPI) {
+export function claudeMd(pi: ExtensionAPI) {
   pi.on("before_agent_start", (event) => {
     const files = event.systemPromptOptions.contextFiles;
     const loaded = new Set(files.map((f) => realpathSync(f.path)));

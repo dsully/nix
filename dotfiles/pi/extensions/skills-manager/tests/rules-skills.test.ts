@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "bun:test";
-import { rulesSkillsFor } from "./match.js";
+import { rulesSkillsFor } from "../rules-skills.js";
 
 const repo = (files: string[]) => {
   const dir = mkdtempSync(join(tmpdir(), "rules-skills-"));

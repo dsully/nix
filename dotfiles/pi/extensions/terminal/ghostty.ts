@@ -3,8 +3,7 @@
  *
  * Titles go out as OSC 2 (window) and OSC 1 (tab). Ghostty 1.3.1 ignores
  * OSC 1, so its tab shows the OSC 2 title. OSC 9;4 is the progress mark under
- * the tab bar. OSC 7501 is the program-status protocol for terminals that
- * understand it; 1.3.1 ignores it.
+ * the tab bar. OSC 7501 is left to pi, which sends it only to terminals that answer its query.
  *
  * Leave terminal.showTerminalProgress off. Its keepalive rewrites OSC 9;4;3
  * and would cover the paused "waiting for you" state.
@@ -29,7 +28,7 @@ interface Block {
   kind: BlockedKind;
 }
 
-export default function ghosttyStatus(pi: ExtensionAPI) {
+export function ghosttyStatus(pi: ExtensionAPI) {
   if (process.env.TERM !== "xterm-ghostty") return;
   let running = false;
   let compacting = false;

@@ -63,14 +63,13 @@ export function titleSequences(report: StatusReport): string {
   return [osc(2, window), osc(1, tab), report.phase === "idle" ? osc(9, "3;") : osc(9, `3;${tab}`)].join("");
 }
 
-/** OSC bytes for one report. Ghostty 1.3.1 reads the title and OSC 9;4; newer builds also read OSC 7501. */
+/** OSC bytes for one report: titles and the OSC 9;4 progress mark. */
 export function statusSequences(report: StatusReport): string {
-  const msg = sanitize(report.detail, 180) || statusEmoji(report) || "idle";
-  return [titleSequences(report), progressSequence(report.phase), programStatus(report, msg)].join("");
+  return titleSequences(report) + progressSequence(report.phase);
 }
 
 export function clearSequences(): string {
-  return [osc(9, "4;0"), osc(9, "3;"), osc(7501, "state=clear:app=pi"), osc(0, "")].join("");
+  return [osc(9, "4;0"), osc(9, "3;"), osc(0, "")].join("");
 }
 
 /** Ghostty drops OSC 9;4 unless it is repeated during long work. */
@@ -91,12 +90,6 @@ function progressSequence(phase: StatusPhase): string {
     default:
       return osc(9, "4;0");
   }
-}
-
-function programStatus(report: StatusReport, msg: string): string {
-  const pairs = [`state=${report.phase}`, "app=pi", `msg=${Buffer.from(msg, "utf8").toString("base64")}`];
-  if (report.phase === "blocked" && report.kind) pairs.push(`kind=${report.kind}`);
-  return osc(7501, pairs.join(":"));
 }
 
 function osc(code: number, body: string): string {

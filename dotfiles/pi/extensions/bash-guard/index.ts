@@ -1,7 +1,8 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { searchesTooBroadly } from "./match.js";
+import { interception } from "./interceptor.js";
+import { searchesTooBroadly } from "./root-search.js";
 
-const REASON = [
+const ROOT_SEARCH_REASON = [
   "Searching from / (find, fd) or all of /nix/store (find, fd, rg, grep) is not allowed.",
   "For Nix files or derivations: `nix-locate <path>` finds the package that provides a file,",
   "`nix search nixpkgs <name>` finds packages, `nix eval --raw <flake>#<pkg>.outPath` or `nix path-info <installable>`",
@@ -12,6 +13,11 @@ const REASON = [
 export default function (pi: ExtensionAPI) {
   pi.on("tool_call", async (event) => {
     const command = (event.input as { command?: unknown }).command;
-    if (typeof command === "string" && searchesTooBroadly(command)) return { block: true, reason: REASON };
+    if (typeof command !== "string") return;
+    // Any tool taking a shell command (bash, bg_run) is checked for root searches.
+    if (searchesTooBroadly(command)) return { block: true, reason: ROOT_SEARCH_REASON };
+    if (event.toolName !== "bash") return;
+    const reason = interception(command, pi.getActiveTools());
+    if (reason) return { block: true, reason };
   });
 }

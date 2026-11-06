@@ -35,7 +35,7 @@ const rules: Record<string, string[]> = {
   ],
 };
 
-export default function (pi: ExtensionAPI) {
+export function toolDiet(pi: ExtensionAPI) {
   const hidden = new Set(process.env.PI_SUBAGENT_SESSION ? redundant : [...redundant, ...childOnly]);
 
   // Not session_start: pi-fff re-activates its tools from its own session_start handler.

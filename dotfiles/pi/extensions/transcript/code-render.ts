@@ -7,7 +7,7 @@ import {
   type TuiMouseEvent,
   type TuiMouseEventResult,
 } from "@earendil-works/pi-tui";
-import { patchMethod } from "./lib/patch.js";
+import { patchMethod } from "../lib/patch.js";
 
 const CARD_BG = "mdCodeBlockBg" as const;
 const COPY_LABEL = "📋 copy";
@@ -16,8 +16,6 @@ const COPY_LABEL = "📋 copy";
  * the literal label, and such a row would hijack the anchor search.
  */
 const COPY_ANCHOR = `\u200b${COPY_LABEL}`;
-const STATUS_KEY = "pi-code-render";
-const STATUS_CLEAR_MS = 2000;
 
 /** Left/right padding inside a code card, in terminal columns. */
 const CARD_PAD = "  ";
@@ -267,35 +265,13 @@ function installPatch(getTheme: () => ExtensionContext["ui"]["theme"], copyCode:
   };
 }
 
-export default function (pi: ExtensionAPI) {
+export function codeRender(pi: ExtensionAPI) {
   let restore: (() => void) | undefined;
   let themeContext: ExtensionContext | undefined;
-  let statusTimer: ReturnType<typeof setTimeout> | undefined;
-
-  /** Transient footer feedback; ui.notify("info") would persist in the transcript. */
-  const showCopiedStatus = (message: string) => {
-    const ctx = themeContext;
-    if (!ctx) return;
-    try {
-      if (statusTimer) clearTimeout(statusTimer);
-      ctx.ui.setStatus(STATUS_KEY, message);
-      statusTimer = setTimeout(() => {
-        statusTimer = undefined;
-        try {
-          ctx.ui.setStatus(STATUS_KEY, undefined);
-        } catch {
-          // Stale ctx after reload or session replacement; nothing to clear.
-        }
-      }, STATUS_CLEAR_MS);
-    } catch {
-      // Stale ctx; fall back silently.
-    }
-  };
 
   const copyCode = async (source: string, ctx: ExtensionContext) => {
     try {
       await copyToClipboard(source);
-      showCopiedStatus("Code copied");
     } catch (error) {
       ctx.ui.notify(error instanceof Error ? error.message : String(error), "warning");
     }
@@ -306,10 +282,6 @@ export default function (pi: ExtensionAPI) {
     restore?.();
     restore = undefined;
     themeContext = undefined;
-    if (statusTimer) {
-      clearTimeout(statusTimer);
-      statusTimer = undefined;
-    }
   };
 
   pi.on("session_start", (_event, ctx) => {

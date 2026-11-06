@@ -1,11 +1,15 @@
 /**
  * Pi skills manager: /skill browses, previews and inserts skills, and
  * enables, disables or deletes project skills. Also loads Claude Code
- * project skills (`.claude/skills` within the current git repo).
+ * project skills (`.claude/skills` within the current git repo) and the
+ * language rules skills.
  */
 
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { join } from "node:path";
+import { getAgentDir, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { gitRoot } from "../lib/git-root.js";
 import { claudeSkillDirs } from "./claude-skills.js";
+import { rulesSkillsFor } from "./rules-skills.js";
 
 function errorMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
@@ -13,7 +17,13 @@ function errorMessage(error: unknown): string {
 }
 
 export default function skillsManager(pi: ExtensionAPI): void {
-  pi.on("resources_discover", (event) => ({ skillPaths: claudeSkillDirs(event.cwd) }));
+  // pi.nix links the rules skills into <agent dir>/rules-skills; only the ones matching the repo's languages load.
+  pi.on("resources_discover", (event) => ({
+    skillPaths: [
+      ...claudeSkillDirs(event.cwd),
+      ...rulesSkillsFor(gitRoot(event.cwd) ?? event.cwd).map((name) => join(getAgentDir(), "rules-skills", name)),
+    ],
+  }));
 
   pi.registerCommand("skill", {
     description: "Pi skills manager view. Native skills remain /skill:name.",

@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { searchesTooBroadly } from "./match.js";
+import { searchesTooBroadly } from "./root-search.js";
 
 test.each([
   "find / -name foo",

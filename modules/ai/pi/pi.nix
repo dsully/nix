@@ -83,13 +83,12 @@
 
   # Transcript renderers, toggled as a group by programs.pi-coding-agent.uiExtensions.enable.
   piUiPackages = ["npm:pi-polish" "npm:@pi-kaush/pi-tool-call-markers"];
-  piUiExtensions = ["code-render.ts" "transcript"];
 
   piExtensions =
     lib.filterAttrs (
       name: type:
-        (type == "directory" && name != "quiet-thinking" || type == "regular" && lib.hasSuffix ".ts" name)
-        && (config.programs.pi-coding-agent.uiExtensions.enable || !lib.elem name piUiExtensions)
+        (type == "directory" || type == "regular" && lib.hasSuffix ".ts" name)
+        && (config.programs.pi-coding-agent.uiExtensions.enable || name != "transcript")
         && !lib.elem name config.programs.pi-coding-agent.excludeExtensions
     )
     (builtins.readDir ../../../dotfiles/pi/extensions);
@@ -150,7 +149,7 @@ in
       uiExtensions.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Load the transcript-rendering extensions (pi-polish, pi-tool-call-markers, code-render, transcript). Disabled packages stay installed.";
+        description = "Load the transcript-rendering extensions (pi-polish, pi-tool-call-markers, transcript). Disabled packages stay installed.";
       };
 
       mcpDescriptions = lib.mkOption {
@@ -189,7 +188,7 @@ in
             // {
               ".pi".source = config.lib.file.mkOutOfStoreSymlink "${config.xdg.configHome}/pi";
 
-              # pi has no path-scoped rules; extensions/rules-skills registers the matching ones as skills per repo.
+              # pi has no path-scoped rules; extensions/skills-manager registers the matching ones as skills per repo.
               "${piPath}/rules-skills".source = rulesSkills;
 
               "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {

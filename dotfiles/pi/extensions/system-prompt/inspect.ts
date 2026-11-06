@@ -103,7 +103,7 @@ class InspectPopup implements Component {
   }
 }
 
-export default function (pi: ExtensionAPI) {
+export function inspectSystemPrompt(pi: ExtensionAPI) {
   const handler = async (args: string, ctx: ExtensionCommandContext) => {
     if (!ctx.hasUI) return;
     const filter = args.trim().toLowerCase();

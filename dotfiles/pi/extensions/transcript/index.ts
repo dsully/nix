@@ -1,5 +1,6 @@
 import { AssistantMessageComponent, ToolExecutionComponent, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { patchMethod } from "../lib/patch.js";
+import { codeRender } from "./code-render.js";
 import { collapseThinking, presentThought, thinkingLine, type Part, type ThinkingBlock } from "./label.js";
 import { installKeepNative } from "./native.js";
 import { nestedResultRenderer } from "./render.js";
@@ -76,4 +77,5 @@ export default function transcript(pi: ExtensionAPI) {
   collapseSubagentResults();
   installKeepNative();
   pi.on("session_start", () => installKeepNative());
+  codeRender(pi);
 }
