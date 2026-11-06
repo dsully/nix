@@ -28,7 +28,6 @@ in {
 
   config = lib.mkIf (cfg.agents != []) {
     programs.agent-skills = {
-
       sources.superpowers = {
         input = "superpowers";
         subdir = "skills";

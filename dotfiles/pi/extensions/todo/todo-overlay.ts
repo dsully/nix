@@ -172,7 +172,9 @@ export class TodoOverlay {
       const progress = { done: children.filter((c) => c.status === "completed").length, total: children.length };
       const indent = "  ".repeat(depth.get(task.id) ?? 0);
       lines.push(
-        truncate(`${theme.fg("dim", "├─")} ${indent}${formatOverlayTaskLine(task, theme, showIds, snapshot.tasks, progress, true)}`),
+        truncate(
+          `${theme.fg("dim", "├─")} ${indent}${formatOverlayTaskLine(task, theme, showIds, snapshot.tasks, progress, true)}`,
+        ),
       );
     }
 

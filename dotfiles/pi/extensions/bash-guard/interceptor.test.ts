@@ -18,7 +18,12 @@ test.each([
   ["vitest --watch", "bg_run"],
 ])("blocks %p (suggests %s)", (command, tool) => {
   expect(interception(command, all)).toBeDefined();
-  expect(interception(command, all.filter((name) => name !== tool))).toBeUndefined();
+  expect(
+    interception(
+      command,
+      all.filter((name) => name !== tool),
+    ),
+  ).toBeUndefined();
 });
 
 test.each([

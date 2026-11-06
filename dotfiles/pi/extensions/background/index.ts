@@ -38,6 +38,7 @@ const GROUP_HOLD_MS = 2 * 60_000;
 interface Job {
   id: string;
   command: string;
+  cwd: string;
   log: string;
   started: number;
   controller: AbortController;
@@ -94,15 +95,8 @@ function cleanLine(line: string): string {
     .trimEnd();
 }
 
-/** The part of a command worth showing: its first line, without a leading cd, with a script path shortened to its name and at most 50 characters. */
-function shownCommand(command: string): string {
-  const shown = command
-    .split("\n")[0]
-    .replace(/^\s*(cd\s+("[^"]*"|'[^']*'|\S+)\s*(&&|;)\s*)+/, "")
-    // Leading settings such as PYTHONPATH=/some/src, which the path shortening below would cut at their last /
-    .replace(/^(\w+=("[^"]*"|'[^']*'|\S*)\s+)+/, "")
-    .replace(/^\S*\/(?=[^\s/]+(\s|$))/, "");
-  return shown.length > 50 ? `${shown.slice(0, 49)}…` : shown;
+function shownCommand(job: Job): string {
+  return shortCommand(job.command, job.cwd, 50);
 }
 
 /** Compiles wake_on, accepting Python's (?i) prefix that models often write but JavaScript only takes as a flag. */
@@ -110,6 +104,9 @@ function wakePattern(source: string): RegExp {
   const insensitive = source.startsWith("(?i)");
   return new RegExp(insensitive ? source.slice(4) : source, insensitive ? "i" : "");
 }
+
+// Output goes to a pipe, where Python would buffer prints until it exits; unbuffered, wake_on and the logs stay live
+const unbuffered = (env: NodeJS.ProcessEnv = process.env) => ({ ...env, PYTHONUNBUFFERED: "1" });
 
 /** Thrown by the bash operations below when a command moves to the background, carrying the job and its output so far. */
 class MovedToBackground extends Error {
@@ -132,9 +129,7 @@ export default function (pi: ExtensionAPI) {
       { triggerTurn, deliverAs: "followUp" },
     );
 
-  // Jobs started in the same turn usually belong together, like several benchmarks to compare. While some of them
-  // still run, a successful one's result is added to the conversation without waking Pi, so it answers once at the
-  // end instead of after each job. A job that runs on too long doesn't hold the others back for more than GROUP_HOLD_MS.
+  // A success while jobs from its turn still run is added without waking Pi, for one answer at the end; GROUP_HOLD_MS caps the wait
   let turn = 0;
   pi.on("turn_start", async () => {
     turn++;
@@ -224,8 +219,7 @@ export default function (pi: ExtensionAPI) {
   const running = () => [...jobs.values()].filter((job) => job.status === "running");
   // The job open in /bg, left out of the jobs line meanwhile so it isn't shown twice
   let viewing: Job | undefined;
-  // The widget is set once per session and redrawn in place: setting it again would move it below the widgets other
-  // extensions added since, while running jobs belong at the top, next to what Pi is doing now
+  // Set once and redrawn in place: setting it again would move the jobs line below widgets added since
   let redrawJobs = () => {};
   let ticker: NodeJS.Timeout | undefined;
   const showJobs = () => {
@@ -249,7 +243,7 @@ export default function (pi: ExtensionAPI) {
         const detail = silent >= SILENT_AFTER_MS ? ` · no output for ${duration(silent)}` : "";
         const text =
           theme.fg("accent", "⏵ ") +
-          theme.fg("toolTitle", `${job.id} ${shownCommand(job.command)}`) +
+          theme.fg("toolTitle", `${job.id} ${shownCommand(job)}`) +
           theme.fg("dim", ` · ${elapsed(job)}${detail}`);
         return truncateToWidth(text, width);
       });
@@ -265,9 +259,7 @@ export default function (pi: ExtensionAPI) {
     return job;
   };
 
-  // Compact, Claude-Code-style rows instead of pi's default boxed tool and message rendering: quiet grey once done,
-  // with a dot only while running or when something failed
-  // "  └ text" in dim, with long and extra lines wrapped under the text instead of at the left edge
+  // "  └ text" in dim, with long and extra lines wrapped under the text
   const branch = (theme: any, text: string, head?: string) => ({
     invalidate() {},
     render: (width: number) => [
@@ -301,10 +293,10 @@ export default function (pi: ExtensionAPI) {
     return branch(theme, expanded ? text : short);
   };
 
-  // Starts tracking a job: its output goes to a log and the jobs line, and Pi is told when run's promise settles.
-  // A bash command that moves to the background brings its start time and the output it printed before.
+  // A bash command moved to the background brings its start time and earlier output
   const startJob = (
     command: string,
+    cwd: string,
     pattern: RegExp | undefined,
     controller: AbortController,
     run: (onData: (d: Buffer) => void) => Promise<{ exitCode: number | null }>,
@@ -318,6 +310,7 @@ export default function (pi: ExtensionAPI) {
     const job: Job = {
       id,
       command,
+      cwd,
       log,
       started: earlier?.started ?? Date.now(),
       controller,
@@ -365,9 +358,7 @@ export default function (pi: ExtensionAPI) {
     return job;
   };
 
-  // Pi's bash, except that a command still running after AUTO_BACKGROUND_SECS becomes a background job
-  // instead of blocking the turn until it ends or times out. The command keeps running in the same
-  // process; its output so far goes to the job's log, and Pi gets the usual message when it exits.
+  // Pi's bash, except that a command still running after AUTO_BACKGROUND_SECS becomes a job in the same process
   const handoff = (local: BashOperations, toolCallId: string): BashOperations => ({
     exec(command, cwd, options) {
       // Pi's own check, which its exec would otherwise have made
@@ -388,7 +379,7 @@ export default function (pi: ExtensionAPI) {
         lastOutput = Date.now();
         options.onData(d);
       };
-      const env = { ...(options.env ?? process.env), PYTHONUNBUFFERED: "1" };
+      const env = unbuffered(options.env);
       // A timeout moves the command to the background sooner rather than stopping it, so its work isn't lost
       const after = Math.min(options.timeout ?? AUTO_BACKGROUND_SECS, AUTO_BACKGROUND_SECS);
       const running = local.exec(command, cwd, { onData: (d) => sink(d), signal: controller.signal, env });
@@ -406,6 +397,7 @@ export default function (pi: ExtensionAPI) {
           const output = earlier;
           const job = startJob(
             command,
+            cwd,
             undefined,
             controller,
             (onData) => {
@@ -425,10 +417,9 @@ export default function (pi: ExtensionAPI) {
       });
     },
   });
-  // Only Pi's own bash is wrapped; one that another extension replaced, such as a sandbox's, is left alone. By
-  // session_start every extension has registered its tools, whichever order they loaded in.
+  // Only Pi's own bash, not one another extension replaced such as a sandbox's; called once every tool is registered
   let wrapped = false;
-  pi.on("session_start", async () => {
+  const wrapBash = () => {
     if (
       wrapped ||
       !pi
@@ -463,7 +454,7 @@ export default function (pi: ExtensionAPI) {
         }
       },
     });
-  });
+  };
 
   pi.registerTool({
     name: "bg_run",
@@ -473,26 +464,16 @@ export default function (pi: ExtensionAPI) {
       "When the command exits you automatically receive a message with its exit code and the last log lines, so do not poll or sleep waiting for it.",
     promptSnippet: "Run long shell commands (downloads, builds, long test suites) in the background",
     promptGuidelines: [
-      "Use bg_run instead of bash for any command that may take longer than about 30 seconds, in particular: downloading large files, datasets, dumps or model weights; " +
-        "installing heavy packages (torch, tensorflow, CUDA libraries, transformers, large requirement sets) or creating environments with them; cloning large repositories; " +
-        "builds, compiles and docker builds; full test suites of non-trivial projects; training, evaluation, benchmark and data-processing scripts; and anything that sleeps, waits or polls.",
-      "When unsure whether a command is quick, prefer bg_run: a quick job just reports back sooner, while a long bash command blocks the user until it finishes.",
-      "After bg_run, continue with independent work or end your turn; a message with the exit code and log tail arrives automatically when the job exits, so never sleep, poll or tail the log to wait for it.",
-      "Keep using bash for quick commands whose output you need right away, such as git, ls, cat, grep, find, file inspection and short checks.",
-      "Pass wake_on only when you must act before a bg_run job ends, such as a server becoming ready to test against, or when the user asked to follow its progress. Make it a pattern for that one event, which matches once, not a line the job prints for every item, file, epoch or step. To report a job's result, leave wake_on out: the exit message already brings the exit code and last lines.",
-      "Don't redirect a bg_run command's output to a file (> file, 2>&1, nohup): bg_run already saves all of it to the job's log, and redirecting hides the job's progress from the user and from wake_on. If the output should be kept, tell the user where the job's log is.",
-      "bg_run starts only after the other tool calls in the same reply have finished, so editing a file and starting a job that uses it in one reply is safe.",
-      "Use bg_status to check progress of a bg_run job and bg_kill to stop one.",
-      "Unless the user explicitly asks for that bash command, never wait, poll or sleep in bash (while/until loops with sleep, watch, repeated status checks), not even as part of a larger command; start the wait with bg_run and pass wake_on to be woken when the awaited output appears.",
-      "Unless the user explicitly asks otherwise, start long-running processes (training or evaluation runs, servers, watchers) with bg_run, not with & or nohup in bash followed by sleep.",
+      "Use bg_run, not bash, for anything that may run past ~30s (downloads, installs, builds, test suites, servers, watchers); keep bash for quick commands whose output you need now.",
+      "bg_run's exit message (code + log tail) arrives on its own: never sleep, poll, or tail its log. To react to output while it runs, pass wake_on with a regex.",
+      "Don't redirect bg_run output; it already logs. bash times out after 2 minutes unless you pass timeout (max 10).",
     ],
     // Runs after the edits in the same reply, so the job starts from the code pi just wrote
     executionMode: "sequential",
     renderShell: "self",
     renderCall: (args: any, theme, context) => {
       const command = String(args?.command ?? "");
-      // Collapsed, without leading settings such as PYTHONPATH=/some/src, like the jobs line; ctrl+o shows them
-      const short = shortCommand(command, args?.cwd ?? process.cwd()).replace(/^(\w+=("[^"]*"|'[^']*'|\S*)\s+)+/, "");
+      const short = shortCommand(command, args?.cwd ?? process.cwd());
       return row(theme, `Background $ ${short}`, context, `Background $ ${command.trim()}`);
     },
     renderResult: (result, { expanded }, theme) => note(theme, result, expanded),
@@ -508,12 +489,9 @@ export default function (pi: ExtensionAPI) {
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       const pattern = params.wake_on ? wakePattern(params.wake_on) : undefined;
       const controller = new AbortController();
-      // Output goes to a pipe, where Python would buffer prints until it exits; unbuffered, the latest line and wake_on stay live
-      const { id, log } = startJob(params.command, pattern, controller, (onData) =>
-        ops.exec(`export PYTHONUNBUFFERED=1; ${params.command}`, params.cwd ?? ctx.cwd, {
-          onData,
-          signal: controller.signal,
-        }),
+      const cwd = params.cwd ?? ctx.cwd;
+      const { id, log } = startJob(params.command, cwd, pattern, controller, (onData) =>
+        ops.exec(params.command, cwd, { onData, signal: controller.signal, env: unbuffered() }),
       );
       return {
         content: [{ type: "text", text: `Started ${id}; log: ${log}. You will be notified when it exits.` }],
@@ -531,7 +509,6 @@ export default function (pi: ExtensionAPI) {
     renderResult: (result, { expanded }, theme) => note(theme, result, expanded),
     parameters: Type.Object({
       id: Type.Optional(Type.String({ description: "Job id such as bg1; omit to list all jobs" })),
-      lines: Type.Optional(Type.Number({ description: `Log lines to show (default ${TAIL_LINES})` })),
     }),
     async execute(_toolCallId, params) {
       if (!params.id) {
@@ -539,10 +516,7 @@ export default function (pi: ExtensionAPI) {
         return { content: [{ type: "text", text }], details: {} };
       }
       const job = find(params.id);
-      return {
-        content: [{ type: "text", text: `${summary(job)}\n${tail(job.log, params.lines ?? TAIL_LINES)}` }],
-        details: {},
-      };
+      return { content: [{ type: "text", text: `${summary(job)}\n${tail(job.log, TAIL_LINES)}` }], details: {} };
     },
   });
 
@@ -585,10 +559,10 @@ export default function (pi: ExtensionAPI) {
       // Matched by position, since the elapsed time in a label changes while the list is open
       // Ids and commands padded to one width, so the states and times line up
       const idWidth = Math.max(...listed.map((other) => other.id.length));
-      const commandWidth = Math.max(...listed.map((other) => shownCommand(other.command).length));
+      const commandWidth = Math.max(...listed.map((other) => shownCommand(other).length));
       const options = listed.map(
         (other) =>
-          `${other.id.padEnd(idWidth)} ${shownCommand(other.command).padEnd(commandWidth)} · ${state(other)} · ${elapsed(other)}`,
+          `${other.id.padEnd(idWidth)} ${shownCommand(other).padEnd(commandWidth)} · ${state(other)} · ${elapsed(other)}`,
       );
       job = listed[options.indexOf((await ctx.ui.select("Background jobs", options)) ?? "")];
       if (!job) return;
@@ -612,7 +586,7 @@ export default function (pi: ExtensionAPI) {
                 : shown.status === "exited" && shown.exitCode === 0
                   ? "success"
                   : "error";
-            const title = theme.fg(color, " ● ") + theme.fg("toolTitle", `${shown.id} ${shownCommand(shown.command)}`);
+            const title = theme.fg(color, " ● ") + theme.fg("toolTitle", `${shown.id} ${shownCommand(shown)}`);
             const status = theme.fg("muted", `${state(shown)} · ${elapsed(shown)} `);
             const gap = Math.max(1, width - visibleWidth(title) - visibleWidth(status));
             // At most half the terminal, so the conversation above stays in view
@@ -640,25 +614,15 @@ export default function (pi: ExtensionAPI) {
     getArgumentCompletions: (prefix) => {
       const matching = [...jobs.values()].filter((job) => job.id.startsWith(prefix.trim().toLowerCase()));
       return matching.length
-        ? matching.map((job) => ({
-            value: job.id,
-            label: job.id,
-            description: `${shownCommand(job.command)} · ${state(job)}`,
-          }))
+        ? matching.map((job) => ({ value: job.id, label: job.id, description: `${shownCommand(job)} · ${state(job)}` }))
         : null;
     },
     handler: showJob,
   });
-  // "/bg3" without the space isn't a command, so pi would send it to the model as a message; open the job instead
-  pi.on("input", async (event, ctx) => {
-    const id = event.text.trim().match(/^\/(bg\d+)$/i)?.[1];
-    if (!id || !jobs.has(id.toLowerCase())) return { action: "continue" };
-    await showJob(id, ctx);
-    return { action: "handled" };
-  });
 
   // After /reload or a resume, carry on after the ids already in the conversation so "bg3" keeps meaning one job
   pi.on("session_start", async (_event, ctx) => {
+    wrapBash();
     if (ctx.mode === "tui") {
       ctx.ui.setWidget("background-jobs", (tui, theme) => {
         redrawJobs = () => tui.requestRender();
@@ -668,7 +632,7 @@ export default function (pi: ExtensionAPI) {
       stopCtrlB();
       stopCtrlB = ctx.ui.onTerminalInput((data) => {
         if (hinted.size === 0 || !matchesKey(data, Key.ctrl("b"))) return undefined;
-        for (const move of [...hinted.values()]) move();
+        for (const move of hinted.values()) move();
         return { consume: true };
       });
     }
