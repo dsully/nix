@@ -18,7 +18,6 @@ import {
 } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
 import { shortCommand } from "./command.ts";
-import { rexSession, runInTab } from "./rex.ts";
 
 const TAIL_LINES = 20;
 const TAIL_BYTES = 64 * 1024;
@@ -300,7 +299,7 @@ export default function (pi: ExtensionAPI) {
     cwd: string,
     pattern: RegExp | undefined,
     controller: AbortController,
-    run: (onData: (d: Buffer) => void, id: string) => Promise<{ exitCode: number | null }>,
+    run: (onData: (d: Buffer) => void) => Promise<{ exitCode: number | null }>,
     earlier?: { started: number; output: Buffer; lastOutput?: number },
   ) => {
     const id = `bg${next++}`;
@@ -332,7 +331,7 @@ export default function (pi: ExtensionAPI) {
       job.lastOutput = earlier.lastOutput;
     }
 
-    run(onData, id)
+    run(onData)
       .then(({ exitCode }) => {
         job.status = "exited";
         job.exitCode = exitCode;
@@ -491,26 +490,11 @@ export default function (pi: ExtensionAPI) {
       const pattern = params.wake_on ? wakePattern(params.wake_on) : undefined;
       const controller = new AbortController();
       const cwd = params.cwd ?? ctx.cwd;
-      const session = rexSession();
-      const { id, log } = startJob(params.command, cwd, pattern, controller, (onData, id) =>
-        session
-          ? runInTab(
-              session,
-              params.command,
-              cwd,
-              `${id} ${shortCommand(params.command, cwd, 40)}`,
-              controller.signal,
-              onData,
-            )
-          : ops.exec(params.command, cwd, { onData, signal: controller.signal, env: unbuffered() }),
+      const { id, log } = startJob(params.command, cwd, pattern, controller, (onData) =>
+        ops.exec(params.command, cwd, { onData, signal: controller.signal, env: unbuffered() }),
       );
       return {
-        content: [
-          {
-            type: "text",
-            text: `Started ${id}${session ? " in a Rex tab" : ""}; log: ${log}. You will be notified when it exits.`,
-          },
-        ],
+        content: [{ type: "text", text: `Started ${id}; log: ${log}. You will be notified when it exits.` }],
         details: { id, log },
       };
     },
