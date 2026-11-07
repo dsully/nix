@@ -29,7 +29,7 @@ export const RULES: Rule[] = [
   {
     pattern: "^\\s*(find|fd|locate)\\s+.*(-name|-iname|-type|--type|-glob)",
     tool: "find",
-    message: "Use the `find` tool (or `fffind`) instead of find/fd. It respects .gitignore.",
+    message: "Use the `find` tool instead of find/fd. It respects .gitignore.",
   },
   {
     pattern: "^\\s*sed\\s+(-i|--in-place)",

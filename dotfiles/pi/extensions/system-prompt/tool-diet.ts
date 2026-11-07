@@ -22,10 +22,10 @@ const childOnly = ["subagent_done", "caller_ping"];
 
 // Replaces each tool's rules.
 const rules: Record<string, string[]> = {
-  fffind: [
-    "fffind is for paths; use grep for content. Keep patterns to 1-2 terms.",
-    "Exact file: path '**/name.ext'. Whole directory: path 'dir/**' with an empty pattern.",
-  ],
+  // fffind: [
+  //   "fffind is for paths; use grep for content. Keep patterns to 1-2 terms.",
+  //   "Exact file: path '**/name.ext'. Whole directory: path 'dir/**' with an empty pattern.",
+  // ],
 };
 
 export function toolDiet(pi: ExtensionAPI) {
