@@ -14,6 +14,8 @@ import { textOf } from "./lib/text.js";
 // Same marker type as the npm package, so sessions it named stay auto-owned.
 const CUSTOM_TYPE = "auto-session-name";
 const MAX_TITLE_CHARS = 100;
+// Early renames replace titles drawn from a greeting-only first message.
+const EARLY_RENAME_AT = [2, 4];
 const REFRESH_EVERY_USER_MESSAGES = 8;
 const REQUEST_TIMEOUT_MS = 30_000;
 const PER_MESSAGE_CHARS = 350;
@@ -50,7 +52,10 @@ function extractConversation(entries: AnyEntry[]): SessionMessage[] {
   return out;
 }
 
-const truncateChars = (s: string, max: number): string => (s.length <= max ? s : `${s.slice(0, max)}…`);
+const nextNameAt = (namedAt: number): number =>
+  EARLY_RENAME_AT.find((c) => c > namedAt) ?? namedAt + REFRESH_EVERY_USER_MESSAGES;
+
+const truncateChars =(s: string, max: number): string => (s.length <= max ? s : `${s.slice(0, max)}…`);
 
 function truncateWords(s: string, max: number): string {
   if (s.length <= max) return s;
@@ -162,7 +167,7 @@ export default function autoName(pi: ExtensionAPI) {
     const messages = extractConversation(ctx.sessionManager.getBranch() as AnyEntry[]);
     const userCount = messages.filter((m) => m.role === "user").length;
     if (userCount === 0) return;
-    if (!force && lastNamedAtCount > 0 && userCount - lastNamedAtCount < REFRESH_EVERY_USER_MESSAGES) return;
+    if (!force && lastNamedAtCount > 0 && userCount < nextNameAt(lastNamedAtCount)) return;
 
     const ticket = generation;
     inFlight = true;
