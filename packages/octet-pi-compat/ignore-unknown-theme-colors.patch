@@ -1,0 +1,16 @@
+diff --git i/lib/theme-palette.mjs w/lib/theme-palette.mjs
+index 349108d..f1ac950 100644
+--- i/lib/theme-palette.mjs
++++ w/lib/theme-palette.mjs
+@@ -45,8 +45,9 @@ export function parsePiTheme(input) {
+   if (!vars || typeof vars !== 'object' || Array.isArray(vars)) invalid('Pi theme vars must be an object');
+   if (Object.keys(vars).length > 256) throw rpcError(-32602, 'bounds_exceeded Pi theme variables');
+   for (const [key, value] of Object.entries(vars)) { plain(key, 'Pi theme variable', 128); colorValue(value, `Pi theme vars.${key}`); }
+-  fields(document.colors, tokens, 'Pi theme colors');
+-  const colors = { ...document.colors };
++  if (!document.colors || typeof document.colors !== 'object' || Array.isArray(document.colors)) invalid('Pi theme colors must be an object');
++  // Pi forks add tokens (pi-bolt's mdCodeBlockBg); octet has no consumer, so drop them.
++  const colors = Object.fromEntries(Object.entries(document.colors).filter(([token]) => tokens.includes(token)));
+   for (const token of tokens) {
+     if (!Object.hasOwn(colors, token)) {
+       if (!fallbacks[token]) invalid(`Pi theme missing required color ${token}`);

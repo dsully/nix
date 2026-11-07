@@ -1,0 +1,13 @@
+diff --git i/lib/runtime.mjs w/lib/runtime.mjs
+index 281bb0f..fd00e93 100644
+--- i/lib/runtime.mjs
++++ w/lib/runtime.mjs
+@@ -57,7 +57,7 @@ const cancelled = () => rpcError(-32800, 'request cancelled');
+ // exceptions; these are review limits, not a sandbox or computed-import gate.
+ export const REVIEWED_SOURCE_LIMITS = Object.freeze({
+   files: 256,
+-  bytes: 8 * 1024 * 1024,
++  bytes: 32 * 1024 * 1024,
+   fileBytes: 8 * 1024 * 1024,
+ });
+ 

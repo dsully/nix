@@ -39,7 +39,7 @@ in
     '';
 
     meta = {
-      description = "TODO: add description";
+      description = "Pi-compatible coding agent in Rust";
       homepage = "https://github.com/skaft-software/octet";
       license = lib.licenses.mit;
       mainProgram = pname;

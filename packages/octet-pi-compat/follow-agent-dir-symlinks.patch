@@ -1,0 +1,49 @@
+diff --git i/lib/pi-setup.mjs w/lib/pi-setup.mjs
+index f5a029e..ac9ac41 100644
+--- i/lib/pi-setup.mjs
++++ w/lib/pi-setup.mjs
+@@ -1,7 +1,7 @@
+ // Read-only mirror discovery for an existing Pi 1.0.2 setup.
+ // No package-manager calls, installs, factory execution, or reads of auth,
+ // sessions or trust files. Project scope requires explicit host trust.
+-import { closeSync, constants, fstatSync, lstatSync, openSync, readSync, readdirSync } from 'node:fs';
++import { closeSync, constants, fstatSync, lstatSync, openSync, readSync, readdirSync, realpathSync } from 'node:fs';
+ import { homedir } from 'node:os';
+ import { basename, dirname, extname, isAbsolute, join, matchesGlob, relative, resolve, sep } from 'node:path';
+ import { fileURLToPath } from 'node:url';
+@@ -53,6 +53,13 @@ function markIncomplete(ctx, key, limit, message) {
+   diagnostic(ctx, message);
+ }
+ 
++// Home-manager links agent-dir entries into the Nix store; a link placed in the
++// user's own agent directory resolves to its target. Project paths stay refused.
++function canonical(path, ctx) {
++  if (!ctx.agentDir || !within(path, ctx.agentDir)) return path;
++  try { return lstatSync(path).isSymbolicLink() ? realpathSync(path) : path; } catch { return path; }
++}
++
+ // Check every component: lstat on only the leaf still follows linked parents.
+ function safeStat(path, ctx, label, required = false) {
+   path = resolve(path);
+@@ -125,7 +132,7 @@ function directoryEntries(path, ctx, depth = 0) {
+     `directory ${path}: exceeds the ${remaining}-entry mirror budget; remaining entries were skipped`);
+   names = names.slice(0, remaining);
+   ctx.scanned += names.length;
+-  return names.map(name => join(path, name));
++  return names.map(name => canonical(join(path, name), ctx));
+ }
+ 
+ // The adapter has no locked minimatch dependency. Node's matchesGlob honors
+@@ -576,10 +583,10 @@ export function discoverPiSetup({ agentDir, env = process.env, cwd = process.cwd
+     }
+     setup[kind === 'extensions' ? kind : `${kind}Paths`] = files.length > limit ? [] : files;
+   }
+-  const keybindings = join(resolvedAgentDir, 'keybindings.json');
++  const keybindings = canonical(join(resolvedAgentDir, 'keybindings.json'), ctx);
+   if (regularFile(keybindings, ctx, 'keybindings.json')) setup.keybindingsPath = keybindings;
+   for (const name of CONTEXT_FILES) {
+-    const path = join(resolvedAgentDir, name);
++    const path = canonical(join(resolvedAgentDir, name), ctx);
+     if (regularFile(path, ctx, 'context')) { setup.contextPath = path; break; }
+   }
+   setup.resourceLimitsExceeded.push(...ctx.incomplete);
