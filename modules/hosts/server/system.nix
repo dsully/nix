@@ -94,7 +94,6 @@ in {
       etc = lib.mapAttrs (_: v: v // {replaceExisting = true;}) {
         "avahi/smb.service".source = ./files/avahi-smb.service;
         "cockpit/cockpit.conf".source = ./files/cockpit.conf;
-        "default/homebridge".source = ./files/homebridge.default;
         "environment".source = ./files/environment;
         "modprobe.d/blacklist-dsully.conf".source = ./files/modprobe-blacklist-dsully.conf;
         "modprobe.d/i915.conf".source = ./files/modprobe-i915.conf;
@@ -110,7 +109,6 @@ in {
           lix = lib.getExe pkgs.lix;
         };
         "sudoers.d/dsully".source = pkgs.replaceVars ./files/sudoers-dsully {liquidctl = lib.getExe pkgs.liquidctl;};
-        "sudoers.d/homebridge".source = ./files/sudoers-homebridge;
         "sudoers.d/netdata".source = ./files/sudoers-netdata;
         "sudoers.d/vopono".source = pkgs.replaceVars ./files/sudoers-vopono {
           ip = lib.getExe' pkgs.iproute2 "ip";

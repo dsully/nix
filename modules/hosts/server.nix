@@ -14,6 +14,7 @@ mkSystemManagerHost {
 
   extraModules = [
     ./server/containers.nix
+    ./server/homebridge.nix
     ./server/system.nix
   ];
 
