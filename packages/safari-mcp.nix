@@ -15,7 +15,7 @@ buildNpmPackage rec {
   src = fetchFromGitHub {
     owner = "achiya-automation";
     repo = "safari-mcp";
-    tag = "v${version}";
+    rev = "cc9a0821351d60162ab09c5eb5c8a87321f7d718";
     hash = "sha256-1ZilAyOxuoNADXYTNRD/8vfgd7ItExlHTDDS4SdbvbA=";
   };
 
