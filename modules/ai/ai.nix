@@ -39,6 +39,7 @@ in
             mcp-mux
             mcp-server-git-rs
             mcptools
+            octet
           ]);
       };
 
