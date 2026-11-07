@@ -11,6 +11,7 @@
 }: let
   jsonFormat = pkgs.formats.json {};
   piPath = "${config.xdg.configHome}/pi/agent";
+  piCompiledBase = "${config.xdg.dataHome}/pi-bolt";
 
   # Normalize via lib.hm.mcp.transformMcpServer to drop the typed schema's null
   # and empty-default fields. Exposure stays at pi's default "codemode": "deferred"
@@ -272,6 +273,44 @@ in
                   }
                 ]}
             '';
+
+            # AOT-compile the installed extensions into a pi-bolt build the package wrapper prefers.
+            # `pi compile` refuses PIBOLT_NPM and a read-only tree, so it runs from a writable copy.
+            # Non-fatal: a failure keeps the previous build, or the store binary once .nix-source mismatches.
+            piCompileExtensions = lib.hm.dag.entryAfter ["piPatchExtensions"] ''
+              if [[ ! -v DRY_RUN ]]; then
+                _base=${lib.escapeShellArg piCompiledBase}
+                _pkg=${my.pkgs.pi-bolt}
+                _src="$_base/src"
+                mkdir -p "$_base"
+
+                if ! { read -r _s < "$_src/.nix-source"; } 2>/dev/null || [[ $_s != "$_pkg" ]]; then
+                  [[ -d $_src ]] && chmod -R u+w "$_src" && rm -rf "$_src"
+                  cp -R "$_pkg/libexec/pi" "$_src" && chmod -R u+w "$_src" && echo "$_pkg" > "$_src/.nix-source"
+                fi
+
+                rm -rf "$_base/next"
+
+                if env -u PIBOLT_NPM PATH="${lib.makeBinPath [pkgs.gnutar pkgs.gzip]}:$PATH" PI_PACKAGE_DIR="$_src" PI_CODING_AGENT_DIR="${piPath}" "$_src/pi" compile --kit ${my.pkgs.pi-bolt-kit}/archive.tar.gz --runtime ${my.pkgs.pi-bolt-runtime}/archive.tar.gz --out "$_base/next"; then
+
+                  echo "$_pkg" > "$_base/next/.nix-source"
+                  _new="$_base/build-$(date +%s)"
+
+                  mv "$_base/next" "$_new"
+
+                  _prev=$(readlink "$_base/current" || true)
+
+                  ln -sfn "$_new" "$_base/current"
+
+                  for _b in "$_base"/build-*; do
+                    [[ $_b == "$_new" || $_b == "$_prev" ]] || rm -rf "$_b"
+                  done
+
+                else
+                  echo "pi compile failed; see $_base/next.compile.log. pi keeps the previous build or the store binary."
+                fi
+              fi
+            '';
           };
         };
 
@@ -311,10 +350,11 @@ in
               drv.name = "${my.pkgs.pi-bolt.name}-wrapped";
 
               envDefault = {
+                FFF_ENABLE_HOME_SCAN = "0";
                 # No editor can open inside pi's bash tool; git would block on it.
                 GIT_EDITOR = "true";
                 GIT_SEQUENCE_EDITOR = "true";
-                FFF_ENABLE_HOME_SCAN = "0";
+                PIBOLT_COMPILED_DIR = "${piCompiledBase}/current";
                 PI_CLIPBOARD_OSC52 = "1";
                 PI_CODING_AGENT_DIR = piPath;
                 PI_COMPUTER_USE_BROWSER_USE = "1";

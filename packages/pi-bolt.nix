@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "darwin-arm64";
-      hash = "sha256-69KpC1Tnc3Xm73B+OvNBZsXiL9L8A4yynMgIVF1KUys=";
+      hash = "sha256-Celf5elnwEiIkhPOmAdyXLrjxHMd5+eRmXHfUkHSv4k=";
     };
     x86_64-linux = {
       suffix = "linux-x64";
-      hash = "sha256-AGMM3fRYawiWT5kCISDdlCb486OlbO0X+xsNUiC/ito=";
+      hash = "sha256-yrD3hRt/FR/e0jZb023DO3j9NRPU4S8I5wpK1VWrdZs=";
     };
   };
   source =
@@ -19,17 +19,16 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "pi-bolt";
-    version = "1.1.3";
+    version = "1.1.4";
 
     src = pkgs.fetchurl {
       url = "https://github.com/opensec-git/Pi-Bolt/releases/download/bolt-v${version}/${pname}-${source.suffix}.tar.xz";
       inherit (source) hash;
     };
 
-    nativeBuildInputs = [pkgs.makeWrapper];
-
     dontConfigure = true;
     dontBuild = true;
+
     # AOT image verifies its own appended sections; strip/patchelf/re-sign corrupt it.
     dontFixup = true;
 
@@ -37,14 +36,26 @@ in
       runHook preInstall
 
       # The runtime reads package.json, theme/ and export-html/ beside the executable.
-      mkdir -p $out/libexec
+      mkdir -p $out/libexec $out/bin
       cp -R . $out/libexec/pi
 
+      # PIBOLT_COMPILED_DIR: a `pi compile --out` build of this exact package, stamped by .nix-source.
       # PIBOLT_NPM stops self-update into ~/.pi-bolt; PI_PACKAGE_DIR is inherited from parent pi processes, so pin it.
-      makeWrapper $out/libexec/pi/pi $out/bin/pi \
-        --argv0 pi \
-        --set PIBOLT_NPM 1 \
-        --set PI_PACKAGE_DIR $out/libexec/pi
+      cat > $out/bin/pi <<'EOF'
+      #!${pkgs.runtimeShell}
+
+      d=@out@/libexec/pi
+      c=''${PIBOLT_COMPILED_DIR:-}
+
+      if [[ -n $c && -x $c/pi ]] && read -r s < "$c/.nix-source" 2>/dev/null && [[ $s == @out@ ]]; then d=$c; fi
+
+      export PIBOLT_NPM=1 PI_PACKAGE_DIR=$d
+
+      exec -a pi "$d/pi" "$@"
+      EOF
+
+      substituteInPlace $out/bin/pi --subst-var out
+      chmod +x $out/bin/pi
 
       runHook postInstall
     '';
