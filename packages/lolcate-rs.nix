@@ -5,16 +5,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "lolcate-rs";
-  version = "0.2.4";
+  version = "0.3.1";
 
   src = fetchFromGitHub {
     owner = "dsully";
     repo = pname;
-    rev = "334921bd96c92f5e1840ceb1e56d5a01d1f3897a";
-    hash = "sha256-bc9snuZ8ppIRenIeCusQPCZnKzW03vfSDCY2LdRjSAU=";
+    rev = "81ec00ef2d52cf40dd24bbfb47b138f2f558b2d5";
+    hash = "sha256-1mq+zQBIwMos2d8wUAr0x7Jz3e40JAlZoLbO3s/lvEw=";
   };
 
-  cargoHash = "sha256-mynyuvomORKl3mnRoC1CXIcvYh4hWkgfrRj+5pgtPzs=";
+  cargoHash = "sha256-AfIV3dNpQO21b7Ov+BjsbjLN9N2bhsLyi94humR54yg=";
   doCheck = false;
 
   meta = {
