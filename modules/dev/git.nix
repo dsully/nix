@@ -154,6 +154,7 @@ in
           ".compile"
           "compile_commands.json"
           ".nvim/xcodebuild"
+          ".swift-build-server"
           "/.pkl-lsp/"
 
           "# Rust"
