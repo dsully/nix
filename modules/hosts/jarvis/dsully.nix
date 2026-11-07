@@ -19,6 +19,10 @@
         autorebase
         tripsy-cli
       ]);
+
+    sessionVariables = {
+      SAFARI_PROFILE = "Personal";
+    };
   };
 
   programs = {

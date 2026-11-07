@@ -1,6 +1,6 @@
 {
-  mkUserModule,
   lib,
+  mkUserModule,
   my,
   pkgs,
   ...
@@ -52,7 +52,10 @@ mkUserModule {
           "--package=@hexsleeves/tailscale-mcp-server"
           "tailscale-mcp-server"
         ];
-        env.TAILSCALE_TAILNET = "sully.org";
+        enabled = false;
+        env = {
+          TAILSCALE_TAILNET = "sully.org";
+        };
       };
       tripsy = {
         command = lib.getExe' my.pkgs.tripsy-cli "tripsy-mcp";

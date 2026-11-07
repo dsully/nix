@@ -125,7 +125,7 @@
         command = lib.getExe my.pkgs.safari-mcp;
         enabled = false;
         env = {
-          SAFARI_PROFILE = "Work";
+          SAFARI_PROFILE = "";
         };
         stateless = true;
       };
