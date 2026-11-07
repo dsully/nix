@@ -18,7 +18,7 @@ then
       rev = "7ed90e2d4feca6bcd0d23f8d8699a44801a044c8";
     };
 
-    cargoHash = "";
+    cargoHash = "sha256-G7a+vd9/RpXjAu+wpPU1wznTici51Kyr8sgEBGKa3XE=";
     doCheck = false;
 
     nativeBuildInputs = [
