@@ -11,14 +11,14 @@ if stdenv.hostPlatform.isLinux
 then
   rustPlatform.buildRustPackage rec {
     pname = "qbit-port-update";
-    version = "0.0.1";
+    version = "0.0.2";
 
     src = fetchGit {
       url = "git+ssh://git@github.com/dsully/qbit-port-update";
-      rev = "3043e88c53005390ffad5e7b65c18b6284b5a702";
+      rev = "7ed90e2d4feca6bcd0d23f8d8699a44801a044c8";
     };
 
-    cargoHash = "sha256-DNijask9UcPSYXdLixKmFDqexsJuxhf2D4gZyfy8714=";
+    cargoHash = "";
     doCheck = false;
 
     nativeBuildInputs = [
