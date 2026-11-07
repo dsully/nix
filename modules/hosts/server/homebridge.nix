@@ -30,29 +30,30 @@
   '';
 
   # Substitutes each "op-secret:<name>" string with its opnix file.
-  renderConfig = pkgs.writeShellScript "homebridge-config"
-  # bash
-  ''
-    set -euo pipefail
-    umask 077
+  renderConfig =
+    pkgs.writeShellScript "homebridge-config"
+    # bash
+    ''
+      set -euo pipefail
+      umask 077
 
-    out=/var/lib/homebridge/config.json
+      out=/var/lib/homebridge/config.json
 
-    ${lib.getExe pkgs.jq} \
-      ${lib.concatMapStringsSep " " (n: "--rawfile ${n} ${secretFile n}") secrets} \
-      'walk(if type == "string" and startswith("op-secret:") then $ARGS.named[ltrimstr("op-secret:")] // error("no secret for \(.)") else . end)' \
-      ${(pkgs.formats.json {}).generate "homebridge-config.json" settings} > "$out.tmp"
+      ${lib.getExe pkgs.jq} \
+        ${lib.concatMapStringsSep " " (n: "--rawfile ${n} ${secretFile n}") secrets} \
+        'walk(if type == "string" and startswith("op-secret:") then $ARGS.named[ltrimstr("op-secret:")] // error("no secret for \(.)") else . end)' \
+        ${(pkgs.formats.json {}).generate "homebridge-config.json" settings} > "$out.tmp"
 
-    if [ -e "$out" ]; then
-      ${lib.getExe pkgs.jq} -rn --slurpfile old "$out" --slurpfile new "$out.tmp" -f ${driftFilter} >&2 \
-        || echo "config.json drift check failed; overwriting anyway" >&2
-    fi
+      if [ -e "$out" ]; then
+        ${lib.getExe pkgs.jq} -rn --slurpfile old "$out" --slurpfile new "$out.tmp" -f ${driftFilter} >&2 \
+          || echo "config.json drift check failed; overwriting anyway" >&2
+      fi
 
-    chown homebridge:homebridge "$out.tmp"
-    chmod 0640 "$out.tmp"
+      chown homebridge:homebridge "$out.tmp"
+      chmod 0640 "$out.tmp"
 
-    mv "$out.tmp" "$out"
-  '';
+      mv "$out.tmp" "$out"
+    '';
 
   # UI edits are overwritten on the next start; the journal lists the drifted paths.
   settings = {
