@@ -23,11 +23,11 @@
     "beautiful-rust": {
       "flake": false,
       "locked": {
-        "lastModified": 1794153009,
-        "narHash": "sha256-2KrgWBSh2GRd6rnbiYaFV52RxPVo09HxjQggbLgfAwE=",
+        "lastModified": 1794158470,
+        "narHash": "sha256-wXqdHFZ1BgdoVminLY0NvUAKwu1qLol+5bsAGWcggiU=",
         "owner": "morganlinton",
         "repo": "BeautifulRust",
-        "rev": "0166ad7cb50b22883b37aa0f62446f4af64526f8",
+        "rev": "b9718436d77ee7bcf17cdcb6aa27628feb95d97a",
         "type": "github"
       },
       "original": {
@@ -252,11 +252,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1794136683,
-        "narHash": "sha256-cvhBTH6nsE6R6b6uNjoSeuCOH4iaurC5A+/prTxk8Rw=",
+        "lastModified": 1794178147,
+        "narHash": "sha256-RDWuueNfF5JxlTDQUpZfDmpsiG2kXvTW4Cw8COvKJmQ=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "b351c893c53850908a89bc30ea2cbf6437ada413",
+        "rev": "e7ec2cef4fda261e0f92e65ea55ac54948ca3a40",
         "type": "github"
       },
       "original": {
