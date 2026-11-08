@@ -192,6 +192,10 @@ in
         packages = lib.optionals isDarwin [rexCli rexHints rexProjectPicker];
       };
 
+      packageTools.javascript = [
+        "rex-usage" # https://github.com/AlbertoBarrago/rex-usage
+      ];
+
       xdg = {
         # Lua type stub for rex.*, on emmylua_ls's library path (nvim/after/lsp/emmylua_ls.lua).
         dataFile."rex/types/rex.lua".source = ./types/rex.lua;
