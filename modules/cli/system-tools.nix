@@ -17,6 +17,7 @@ mkUserModule {
           croc
           curl
           dirstat-rs
+          diskwatch
           dua
           dust
           fclones
