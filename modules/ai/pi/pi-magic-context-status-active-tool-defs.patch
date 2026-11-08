@@ -1,0 +1,17 @@
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -51657,9 +51657,12 @@
+     modelKey: ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : undefined,
+     modelBytes: safeStringify(ctx.model),
+     system: safeRead(() => readHostSystemPrompt(ctx), undefined),
+-    tools: safeRead(() => (pi.getAllTools?.() ?? []).map((tool) => `${tool.name ?? ""}
++    tools: safeRead(() => {
++      const active = pi.getActiveTools ? new Set(pi.getActiveTools()) : undefined;
++      return (pi.getAllTools?.() ?? []).filter((tool) => !active || active.has(tool.name)).map((tool) => `${tool.name ?? ""}
+ ${tool.description ?? ""}
+-${safeStringify(tool.parameters)}`), [])
++${safeStringify(tool.parameters)}`);
++    }, [])
+   };
+ }
+ 

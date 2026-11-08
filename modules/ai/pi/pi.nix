@@ -40,7 +40,8 @@
       extensions = [];
     }
     # "npm:pi-agent-browser-native"
-    # "npm:pi-autoresearch"
+    # Its tools stay inactive until `/autoresearch <goal>`; `/autoresearch off` removes them.
+    "npm:pi-autoresearch"
     "npm:pi-away"
     "npm:pi-context-view"
     "npm:pi-hashline-edit-pro-lean"
@@ -271,6 +272,10 @@ in
                     pkg = "@pi-kaush/pi-tool-call-markers";
                     patch = ./pi-tool-call-markers-thought-grouping.patch;
                   }
+                  {
+                    pkg = "@cortexkit/pi-magic-context";
+                    patch = ./pi-magic-context-status-active-tool-defs.patch;
+                  }
                 ]}
             '';
 
@@ -370,7 +375,12 @@ in
             # pi writes settings.json itself (model, theme, `pi install`); Nix values win on each switch.
             mutableSettings = true;
 
-            magicContext.historian.pi.model = lib.mkDefault "${ai.models.small.provider}/${ai.models.small.model}";
+            magicContext = {
+              # Keep the 1M window as headroom, but reduce as if it were ~250K.
+              execute_threshold_tokens."${ai.models.large.provider}/${ai.models.large.model}" = lib.mkDefault 250000;
+
+              historian.pi.model = lib.mkDefault "${ai.models.small.provider}/${ai.models.small.model}";
+            };
 
             # pi has no output styles; append the shared default's body, minus its Claude Code frontmatter.
             context = let
