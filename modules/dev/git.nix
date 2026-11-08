@@ -37,6 +37,7 @@ in
 
         packages = with pkgs;
           [
+            deadbranch
             git-dive
             git-ignore
             git-quick-stats
