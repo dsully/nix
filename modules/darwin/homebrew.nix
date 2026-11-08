@@ -80,6 +80,7 @@ mkSystemModule {
         "Slack" = 803453959;
         "Soulver" = 1508732804;
         "TabLinker" = 6758283574;
+        "Telescopo" = 6747908871;
         "TestFlight" = 899247664;
         "Text Lens" = 6743369285;
         "Trackless Links Pro" = 6754613166;
