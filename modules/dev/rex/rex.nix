@@ -206,6 +206,45 @@ in
 
         fish.completions.rex = "command -q rex; and rex completion fish | source";
 
+        fish.functions.rex-ssh = {
+          description = "Run rex against HOST's server over an ssh socket forward";
+          body =
+            # fish
+            ''
+              argparse d/down -- $argv; or return
+              if not set -q argv[1]
+                  echo "usage: rex-ssh HOST [REX ARGS...] | rex-ssh --down HOST" >&2
+                  return 2
+              end
+              set -l host $argv[1]
+              set -l label (string split -f1 . -- $host)
+              set label (string upper -- (string sub -l 1 -- $label))(string sub -s 2 -- $label)
+              # Reuse the port of the host added in the app's Remote Hosts; else a stable per-host port.
+              set -l port (rex hosts --json | ${lib.getExe pkgs.jq} -r --arg l $label '.hosts[] | select(.host.label | ascii_downcase == ($l | ascii_downcase)) | .host.endpoints[] | capture("^http://127[.]0[.]0[.]1:(?<p>[0-9]+)$").p' | head -1)
+              test -n "$port"; or set port (math 47000 + (string split -f1 ' ' -- (echo -n $host | cksum)) % 1000)
+              set -l url http://127.0.0.1:$port
+              if set -q _flag_down
+                  pkill -f -- "-L 127.0.0.1:$port:"
+                  return 0
+              end
+              if not rex -S $url whoami &>/dev/null
+                  set -l endpoint (ssh $host rex whoami --json --autostart=false | ${lib.getExe pkgs.jq} -r .endpoint)
+                  string match -q 'unix://*' -- $endpoint
+                  or begin
+                      echo "rex-ssh: no Rex server socket on $host" >&2
+                      return 1
+                  end
+                  # -S none: an existing ControlMaster connection refuses the forward.
+                  ssh -f -N -S none -o ExitOnForwardFailure=yes \
+                      -L "127.0.0.1:$port:"(string replace unix:// "" -- $endpoint | string unescape --style=url) $host
+                  or return
+                  echo "rex-ssh: $host at $url (app: Add Remote Host \"$label\" with this URL if missing)" >&2
+              end
+              set -q argv[2]; or set -a argv ls
+              rex -S $url $argv[2..]
+            '';
+        };
+
         mcp.servers.superlogical = {
           type = "http";
           url = "https://www.superlogical.com/rex/community-mcp";
