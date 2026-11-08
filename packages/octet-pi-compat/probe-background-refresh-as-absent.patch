@@ -1,0 +1,14 @@
+diff --git i/lib/providers.mjs w/lib/providers.mjs
+index 8a0f962..2b03b79 100644
+--- i/lib/providers.mjs
++++ w/lib/providers.mjs
+@@ -168,6 +168,9 @@ export function modelRegistry(getHost, runtime = {}) {
+     // "no classifier models" case, rather than throw; semantic search then reports itself unavailable.
+     classify: undefined,
+     findOfType: undefined,
++    // Pi 1.5 background model refresh: magic-context probes it with `??`, so it must read as absent, not throw.
++    awaitInitialBackgroundRefresh: undefined,
++    awaitBackgroundRefresh: undefined,
+   };
+   return strict(registry, 'ctx.modelRegistry');
+ }

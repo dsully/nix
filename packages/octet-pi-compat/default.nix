@@ -17,6 +17,7 @@ stdenvNoCC.mkDerivation rec {
     ./follow-agent-dir-symlinks.patch
     ./raise-reviewed-source-limit.patch
     ./ignore-unknown-theme-colors.patch
+    ./probe-background-refresh-as-absent.patch
   ];
 
   dontConfigure = true;

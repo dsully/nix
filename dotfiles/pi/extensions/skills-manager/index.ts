@@ -5,6 +5,7 @@
  * language rules skills.
  */
 
+import { realpathSync } from "node:fs";
 import { join } from "node:path";
 import { getAgentDir, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { gitRoot } from "../lib/git-root.js";
@@ -16,12 +17,22 @@ function errorMessage(error: unknown): string {
   return message.length > 180 ? `${message.slice(0, 179)}…` : message;
 }
 
+function rulesSkillsDir(): string {
+  const linked = join(getAgentDir(), "rules-skills");
+  try {
+    return realpathSync(linked);
+  } catch {
+    return linked;
+  }
+}
+
 export default function skillsManager(pi: ExtensionAPI): void {
   // pi.nix links the rules skills into <agent dir>/rules-skills; only the ones matching the repo's languages load.
+  // Resolved because octet refuses resource paths with symlinked ancestors.
   pi.on("resources_discover", (event) => ({
     skillPaths: [
       ...claudeSkillDirs(event.cwd),
-      ...rulesSkillsFor(gitRoot(event.cwd) ?? event.cwd).map((name) => join(getAgentDir(), "rules-skills", name)),
+      ...rulesSkillsFor(gitRoot(event.cwd) ?? event.cwd).map((name) => join(rulesSkillsDir(), name)),
     ],
   }));
 
