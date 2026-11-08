@@ -55,7 +55,7 @@ function extractConversation(entries: AnyEntry[]): SessionMessage[] {
 const nextNameAt = (namedAt: number): number =>
   EARLY_RENAME_AT.find((c) => c > namedAt) ?? namedAt + REFRESH_EVERY_USER_MESSAGES;
 
-const truncateChars =(s: string, max: number): string => (s.length <= max ? s : `${s.slice(0, max)}…`);
+const truncateChars = (s: string, max: number): string => (s.length <= max ? s : `${s.slice(0, max)}…`);
 
 function truncateWords(s: string, max: number): string {
   if (s.length <= max) return s;
