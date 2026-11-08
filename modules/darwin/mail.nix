@@ -11,7 +11,7 @@ mkSystemModule {
             ConversationViewSortDescending = true;
 
             NSUserKeyEquivalents = {
-              Send = "@\\U21a9";
+              Send = "@↩";
             };
           };
         };
