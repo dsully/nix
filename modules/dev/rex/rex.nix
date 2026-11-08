@@ -115,22 +115,31 @@ in
         darwin.system.defaults.CustomUserPreferences."com.superlogical.rex" = {
           "rex.agents.names-sessions" = 1;
           "rex.client.remoteControl" = true;
+          "rex.developer-mode-enabled" = 1;
           "rex.server.automatic-restart-enabled" = true;
           "rex.server.block-plugin-reload-enabled" = false;
           "rex.server.run-mode" = "bundled";
+          "Workspace.animationStyle" = "natural";
           "Workspace.appearance" = "dark";
           "Workspace.appIconVisibility" = "dockOnly";
           "Workspace.darkThemeID" = nordThemeId;
           "Workspace.darkUsesExtendedThemePalette" = 1;
+          "Workspace.experiments.usesNewQuickSwitcher" = 1;
           "Workspace.inactivePaneFadeMode" = "none";
           "Workspace.interfaceStyle" = "useTheme";
           "Workspace.lightThemeID" = nordThemeId;
           "Workspace.notificationPosition" = "top-right";
           "Workspace.paneDensity" = "compact";
+          "Workspace.prefersGeneratedTitles" = 0;
           "Workspace.showsActivePaneBorder" = 1;
+          "Workspace.showsPaneHeaders" = 1;
           "Workspace.showsProcessesInActivity" = 1;
+          "Workspace.sidebarCollapsed" = 0;
           "Workspace.sidebarPosition" = "left";
-          "Workspace.tabIconCount" = 4;
+          "Workspace.sidebarShowsActivity" = 0;
+          "Workspace.sidebarSwipe" = "off";
+          "Workspace.sidebarTextPointSize" = 15;
+          "Workspace.tabIconCount" = 3;
           "Workspace.tabIconTintMode" = "off";
           "Workspace.tabsFillAvailableSpace" = 1;
           "Workspace.tabStyle" = "vertical";
@@ -145,6 +154,7 @@ in
           "Workspace.terminalUsesDisplayP3" = 1;
           "Workspace.terminalUseThemePalette" = 0;
           "Workspace.tintsPanesWithProgramBackground" = 0;
+          "Workspace.usesPaneGlass" = 1;
           "Workspace.usesStandardInactiveWindowPaneStyles" = false;
         };
       })
