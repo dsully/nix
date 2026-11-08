@@ -2,5 +2,5 @@
 *
 !.gitignore
 !init.lua
-!agent_fork.lua
-!agent-session
+!scratch.lua
+!util.lua
