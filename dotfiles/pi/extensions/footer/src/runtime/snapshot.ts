@@ -1,5 +1,6 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { UsageTotals } from "../types.js";
+import { field } from "../../../lib/field.js";
 import { parseMagicContextStatus } from "./magic-context.js";
 
 interface StateModelInputs {
@@ -67,7 +68,7 @@ function usageTotalsFromUsage(usage: StateUsageInputs | undefined): UsageTotals 
 
 export function usageTotalsFromMessage(message: StateMessageInputs): UsageTotals {
   if (message.role !== "assistant" && message.role !== "toolResult") return emptyUsageTotals();
-  return usageTotalsFromUsage(message.usage);
+  return usageTotalsFromUsage(field(() => message.usage));
 }
 
 export function usageTotalsFromEntry(entry: StateSessionEntry): UsageTotals {

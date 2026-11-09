@@ -21,6 +21,7 @@ import {
   setUsageTotals,
 } from "./state.js";
 import type { FooterState, UsageTotals } from "../types.js";
+import { field } from "../../../lib/field.js";
 
 interface RuntimeMessageEndInput {
   type?: MessageEndEvent["type"];
@@ -174,8 +175,8 @@ export class RuntimeRefreshSession {
   }
 
   private messageUsageKey(message: StateMessageInputs): string | undefined {
-    if (message.role === "assistant" && typeof message.responseId === "string" && message.responseId)
-      return `assistant:${message.responseId}`;
+    const responseId = message.role === "assistant" ? field(() => message.responseId) : undefined;
+    if (typeof responseId === "string" && responseId) return `assistant:${responseId}`;
     if (message.role === "toolResult" && typeof message.toolCallId === "string" && message.toolCallId)
       return `toolResult:${message.toolCallId}`;
     return undefined;

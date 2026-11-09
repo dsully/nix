@@ -1,8 +1,9 @@
 import type { AgentMessage } from "@earendil-works/pi-agent-core";
 import { normalizeContext } from "@earendil-works/pi-ai";
 import { convertToLlm, CustomEditor, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { Key, matchesKey, renderFakeCursor, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { Key, matchesKey, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 import { textOf } from "./lib/text.js";
+import { field } from "./lib/field.js";
 
 const PROMPT = `[Suggestion mode] Predict what the user will type next in this conversation. Write it the way they would: a short instruction, question or reply in their language and tone, under 12 words. A good suggestion is the obvious next step, such as approving something you proposed or asking for the follow-up they are likely to want. Reply with only the suggestion, no quotes. If there is no obvious next step, reply with nothing.`;
 const MAX_LENGTH = 100;
@@ -31,7 +32,8 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("agent_end", async (event, ctx) => {
     const reply = event.messages.at(-1);
-    if (ctx.mode !== "tui" || !ctx.model || reply?.role !== "assistant" || reply.stopReason !== "stop") return;
+    if (ctx.mode !== "tui" || !ctx.model || reply?.role !== "assistant" || field(() => reply.stopReason) !== "stop")
+      return;
     if (ctx.hasPendingMessages()) return;
 
     const controller = new AbortController();
@@ -90,18 +92,21 @@ export default function (pi: ExtensionAPI) {
       const render = editor.render.bind(editor);
       editor.render = (width: number) => {
         const lines = render(width);
-        // An empty editor's first line ends in the fake-cursor cell, plain spaces, then any right border a wrapping editor draws; the suggestion starts under the cursor, in grey
+        // An empty editor's first line ends in the cursor cell, plain spaces, then any right border a wrapping editor draws; the suggestion starts under the cursor, in grey.
+        // Pi draws that cell as a fake cursor; octet's bridge draws a cursor marker and an inverse space.
         const match =
           suggestion && editor.getText() === ""
-            ? lines[1]?.match(/\x1b_pi:fc\x07 \x1b_pi:\/fc\x07( {2,})((?:\x1b\[[\d;]*m|│)*)$/)
+            ? lines[1]?.match(
+                /(\x1b_pi:fc\x07 \x1b_pi:\/fc\x07|\x1b_pi:c\x07\x1b\[7m \x1b\[0m)( {2,})((?:\x1b\[[\d;]*m|│)*)$/,
+              )
             : undefined;
         if (match) {
-          const [tail, blank, border] = match;
+          const [tail, cursor, blank, border] = match;
           const ghost = truncateToWidth(suggestion, blank.length, "…");
           const [first = " ", ...rest] = ghost;
           lines[1] =
             lines[1].slice(0, -tail.length) +
-            renderFakeCursor(ctx.ui.theme.fg("dim", first)) +
+            cursor.replace(" ", () => ctx.ui.theme.fg("dim", first)) +
             ctx.ui.theme.fg("dim", rest.join("")) +
             " ".repeat(blank.length + 1 - visibleWidth(ghost)) +
             border;

@@ -5,6 +5,7 @@ import { expect, test } from "bun:test";
 import { gitRoot } from "./git-root.js";
 import { patchMethod } from "./patch.js";
 import { textOf } from "./text.js";
+import { field } from "./field.js";
 
 test("git root is found from a subdirectory, and is undefined outside a repo", () => {
   const dir = mkdtempSync(join(tmpdir(), "lib-git-root-"));
@@ -55,4 +56,15 @@ test("a wrap that returns undefined leaves the method alone", () => {
   const target = { run: () => 1 };
   patchMethod(target, "run", "test.lib.run", () => undefined);
   expect(target.run()).toBe(1);
+});
+
+test("field reads a value, and a field whose getter throws as undefined", () => {
+  const message = new Proxy({ usage: 1 } as { usage: number; responseId?: string }, {
+    get(target, key) {
+      if (key === "responseId") throw new Error("unsupported_feature");
+      return Reflect.get(target, key);
+    },
+  });
+  expect(field(() => message.usage)).toBe(1);
+  expect(field(() => message.responseId)).toBeUndefined();
 });
