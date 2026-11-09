@@ -1,0 +1,83 @@
+From 19b4f9b0d9a0893a3c1db9105badfde9b2d8f231 Mon Sep 17 00:00:00 2001
+From: Disturbed Ocean <241662633+DisturbedOcean@users.noreply.github.com>
+Date: Sun, 8 Nov 2026 15:53:50 -0800
+Subject: [PATCH] fix(pi-compat): stop repainting on unchanged session
+ publications
+
+Octet republishes the session on every idle UI pump. Each publication
+repainted every mounted surface, and each repaint's editor call woke the
+next pump, so any Pi editor or footer surface looped while a slow
+session_start hook was pending and filled the request catalog.
+
+Repaint after preparation only when the session document changed or a
+render was waiting on the view, and on context/updated only when a
+non-session host fact changed.
+---
+ lib/remote-ui.mjs         | 4 ++--
+ lib/runtime.mjs           | 4 +++-
+ lib/session-transport.mjs | 7 +++++--
+ 3 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/lib/remote-ui.mjs b/lib/remote-ui.mjs
+index b48a4635..35c52a8b 100644
+--- a/lib/remote-ui.mjs
++++ b/lib/remote-ui.mjs
+@@ -542,13 +542,13 @@ export class RemoteUI {
+     // readiness or a publication barrier, which would delay frames under load.
+     const columns = surface.columns, rows = surface.rows;
+     let lines;
+-    try { lines = this.runtime.scope.run(surface.store, () => surface.tui.render(columns)); }
++    try { lines = this.runtime.scope.run(surface.store, () => surface.tui.render(columns)); surface.awaitingSessionView = false; }
+     catch (error) {
+       if (nativeRetirements.get(error) === surface) return;
+       // History-reading components cannot render a missing publication as an
+       // empty session. Retain their last frame without blocking native paint or
+       // retiring the mount; successful preparation requests another render.
+-      if (error?.code === -32002 && error.message === 'session view unavailable') return;
++      if (error?.code === -32002 && error.message === 'session view unavailable') { surface.awaitingSessionView = true; return; }
+       throw error;
+     }
+     // Capture lines and this exact barrier in the same synchronous turn. Never
+diff --git a/lib/runtime.mjs b/lib/runtime.mjs
+index 281bb0f2..935d2b49 100644
+--- a/lib/runtime.mjs
++++ b/lib/runtime.mjs
+@@ -834,10 +834,12 @@ export class Runtime {
+     }
+     const next = plainJSON(params.host, 'host snapshot', 524288);
+     if (Object.hasOwn(next, 'theme')) nativeTheme(next.theme);
++    // Session fields and the revision belong to the routed view, which repaints from preparation.
++    const repaint = Object.entries(next).some(([field, value]) => !field.startsWith('session_') && !isDeepStrictEqual(state.host[field], value));
+     const previous = state.host.git_branch; state.host = { ...state.host, ...next };
+     retainPiProjectTrust(state);
+     if (previous !== state.host.git_branch) for (const listener of state.branchListeners) listener();
+-    for (const surface of this.ui.surfaces.values()) if (surface.store.state === state) this.scope.run(surface.store, () => { surface.tui.invalidate(); surface.requestRender(); });
++    if (repaint) for (const surface of this.ui.surfaces.values()) if (surface.store.state === state) this.scope.run(surface.store, () => { surface.tui.invalidate(); surface.requestRender(); });
+   }
+ 
+   async runEvent(event, value, store, { veto = false } = {}) {
+diff --git a/lib/session-transport.mjs b/lib/session-transport.mjs
+index 82c8ee02..e173a552 100644
+--- a/lib/session-transport.mjs
++++ b/lib/session-transport.mjs
+@@ -36,7 +36,7 @@ export class SessionTransport {
+         || profile.chunk_bytes > 65536 || !integer(frame, 1)) invalid('session transport profile');
+     this.runtime = runtime; this.profile = Object.freeze({ ...profile }); this.frame = frame;
+     this.bytes = 0; this.records = 0; this.views = 0; this.transfers = 0; this.projectionBytes = 0; this.projections = 0;
+-    this.current = new Map(); this.activations = new Map();
++    this.current = new Map(); this.activations = new Map(); this.preparedDigests = new Map();
+   }
+   reserve(d) {
+     const p = this.profile, records = d.entry_count + d.branch_count;
+@@ -133,7 +133,10 @@ export class SessionTransport {
+     try { await hydrate(); }
+     catch (error) { this.drop(view); throw error; }
+     finally { barrier.resolve?.(); if (this.current.get(key) === barrier) barrier.promise = undefined; }
+-    for (const surface of this.runtime.ui.surfaces.values()) if (surface.store.state === store.state) surface.requestRender();
++    // Octet republishes an unchanged session on every idle UI pump; repainting then would request the next pump.
++    const changed = this.preparedDigests.get(key) !== d.sha256;
++    this.preparedDigests.set(key, d.sha256);
++    for (const surface of this.runtime.ui.surfaces.values()) if (surface.store.state === store.state && (changed || surface.awaitingSessionView)) surface.requestRender();
+     return { accepted: true, transfer_id: d.transfer_id, view_revision: d.view_revision, head: d.head, sha256: d.sha256 };
+   }
+   async hydrate(params, store) {

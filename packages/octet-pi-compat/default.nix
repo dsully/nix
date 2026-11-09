@@ -18,6 +18,10 @@ stdenvNoCC.mkDerivation rec {
     ./raise-reviewed-source-limit.patch
     ./ignore-unknown-theme-colors.patch
     ./probe-background-refresh-as-absent.patch
+    # DisturbedOcean/octet branch pi-provider-streams; needs a managed Pi release (packages/pi-release).
+    ./run-extension-provider-streams.patch
+    ./repaint-only-on-session-change.patch
+    ./extension-provider-streams-outside-tool-calls.patch
   ];
 
   dontConfigure = true;
@@ -34,7 +38,7 @@ stdenvNoCC.mkDerivation rec {
   '';
 
   meta = {
-    description = "Octet's Pi adapter, patched to follow home-manager symlinks in the Pi agent dir";
+    description = "Octet's Pi adapter, patched for home-manager symlinks and Pi 1.5 extension-owned providers";
     homepage = "https://github.com/skaft-software/octet";
     license = lib.licenses.mit;
   };

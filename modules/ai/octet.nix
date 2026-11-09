@@ -19,6 +19,7 @@
   ];
 
   piCompat = my.pkgs.octet-pi-compat;
+  piRelease = my.pkgs.pi-release;
 
   octet = wrapperLib.wrapPackage {
     inherit pkgs;
@@ -71,6 +72,12 @@ in
     home = {
       home = {
         packages = [octet];
+
+        # octet-pi-compat runs Pi-owned provider streams from this managed release; pi-bolt ignores install/.
+        file = {
+          "${piPath}/install/current-version".text = "${piRelease.version}\n";
+          "${piPath}/install/releases/${piRelease.version}".source = piRelease;
+        };
 
         # octet refuses symlinked config files, so these are real copies.
         # Skills, AGENTS.md and keybindings reach octet through the pi-compat mirror.
