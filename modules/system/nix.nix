@@ -135,7 +135,7 @@ in {
           keep-outputs = false;
           max-jobs = "auto";
           max-substitution-jobs = 128;
-          narinfo-cache-negative-ttl = 3600;
+          narinfo-cache-negative-ttl = 300;
           stalled-download-timeout = 20;
           substituters = map (x: x.url) substituters;
           trusted-public-keys = map (x: x.key) substituters;
