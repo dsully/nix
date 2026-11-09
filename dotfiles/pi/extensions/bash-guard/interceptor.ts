@@ -22,9 +22,12 @@ export const RULES: Rule[] = [
     message: "Use the `read` tool instead of cat/head/tail; page with offset/limit.",
   },
   {
-    pattern: "^\\s*(grep|rg|ripgrep|ag|ack)\\s+",
+    // Flags the grep tool has no equivalent for (count, file lists, invert, only-matching, ignored files, negated globs) stay in the shell.
+    pattern:
+      "^\\s*(grep|rg|ripgrep|ag|ack)\\s+(?!.*(?<=\\s)(?:-[A-Za-z]*[cLlouUv][A-Za-z]*(?:\\s|$)|--(?:count|files|files-with-matches|files-without-match|invert-match|only-matching|no-ignore|hidden|multiline|exclude)\\b|(?:-g|--i?glob)[\\s=]+['\"]?!))",
     tool: "grep",
-    message: "Use the `grep` tool instead of grep/rg. It respects .gitignore and returns editable anchors.",
+    message:
+      "Use the `grep` tool instead of grep/rg. It respects .gitignore and returns editable anchors. Shell grep/rg is allowed only with flags the tool lacks: -c, -l, -L, -v, -o, -u, -U, --hidden, --no-ignore, --exclude, negated -g/--glob.",
   },
   {
     pattern: "^\\s*(find|fd|locate)\\s+.*(-name|-iname|-type|--type|-glob)",

@@ -9,6 +9,7 @@ test.each([
   ["rg foo src", "grep"],
   ["cd src && grep -n foo bar.ts", "grep"],
   ["FOO=1 rg foo", "grep"],
+  ["rg -g '*.nix' -i foo", "grep"],
   ["find . -name '*.nix'", "find"],
   ["sed -i 's/a/b/' x", "replace"],
   ['echo "hi" > out.txt', "write"],
@@ -34,6 +35,13 @@ test.each([
   'echo "a -> b"',
   "echo hi > /dev/null",
   "nix build .#foo",
+  "rg -c foo src",
+  "cd src && grep -rln foo .",
+  "rg --files-with-matches foo",
+  "grep -v foo x.txt",
+  "rg foo --glob '!*.test.ts'",
+  "rg -g '!vendor' foo",
+  "rg --no-ignore foo",
 ])("allows %p", (command) => {
   expect(interception(command, all)).toBeUndefined();
 });
