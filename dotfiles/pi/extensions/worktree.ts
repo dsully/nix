@@ -5,6 +5,7 @@ import { SessionManager, type ExtensionAPI, type ExtensionCommandContext } from 
 import { Type } from "typebox";
 import { run } from "./lib/exec";
 import { errorMessage } from "./lib/error";
+import { gitRoot } from "./lib/git-root";
 import { openWindow, rex, selectWindow } from "./lib/rex";
 
 const WORKTREE_DIR = ".worktrees";
@@ -311,6 +312,13 @@ export default function (pi: ExtensionAPI) {
     if (existsSync(ctx.cwd)) process.chdir(ctx.cwd);
   });
 
+  pi.on("before_agent_start", (_event, ctx) => {
+    const active = pi.getActiveTools();
+    const wanted = gitRoot(ctx.cwd) !== undefined;
+    if (wanted === active.includes(TOOL_NAME)) return;
+    pi.setActiveTools(wanted ? [...active, TOOL_NAME] : active.filter((name) => name !== TOOL_NAME));
+  });
+
   pi.on("agent_settled", (event, ctx) => {
     if (!pendingMove) return;
     if (event.aborted) {
@@ -394,9 +402,12 @@ export default function (pi: ExtensionAPI) {
       openWorldHint: false,
     },
     description:
-      "Git worktrees of this repo, under `.worktrees/`. `list` shows each worktree with its branch, changed files, commits ahead and behind the main checkout, and open Rex tab. Use the other actions when the user asks for them or when the repo's AGENTS.md or plan says to. `enter` moves this session into the worktree of `branch`, creating it if missing; end your turn after it. `spawn` starts a separate agent on `task` in the worktree of `branch`, in a background Rex tab, and this session keeps working. `done` removes the current clean worktree, keeps its branch, and returns to the main checkout; end your turn after it. `remove` deletes the clean worktree of another `branch`, keeps the branch, and closes its Rex tab. Use instead of `git worktree` or `wt`.",
+      "Git worktrees of this repo, under `.worktrees/`. Use it when the user, the repo's AGENTS.md or a plan asks for worktrees, instead of `git worktree` or `wt`.",
     parameters: Type.Object({
-      action: Type.Enum(["list", "enter", "spawn", "done", "remove"]),
+      action: Type.Enum(["list", "enter", "spawn", "done", "remove"], {
+        description:
+          "list: worktrees with branch, changed files, commits ahead/behind main, Rex tab. enter: move this session into branch's worktree, creating it if missing; end your turn after. spawn: start a separate agent on task in branch's worktree, in a background Rex tab. done: remove the current clean worktree, keep its branch, return to main; end your turn after. remove: delete another branch's clean worktree, keep the branch, close its Rex tab.",
+      }),
       branch: Type.Optional(
         Type.String({
           description: "Required for enter, spawn, and remove, e.g. feat/login",
