@@ -2,7 +2,8 @@ import { existsSync, rmSync } from "node:fs";
 import { basename } from "node:path";
 import type { UserMessage } from "@earendil-works/pi-ai";
 import { SessionManager, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { run } from "./lib/exec";
+import { errorMessage } from "./lib/error";
+import { openWindow, selectWindow } from "./lib/rex";
 
 const userText = (content: UserMessage["content"]): string =>
   typeof content === "string" ? content : content.flatMap((part) => (part.type === "text" ? [part.text] : [])).join("");
@@ -35,55 +36,23 @@ export default function (pi: ExtensionAPI) {
     const name = `${kind}: ${(pi.getSessionName() ?? basename(ctx.cwd)).replace(/^(fork|clone): /, "")}`;
     copy.appendSessionInfo(name);
 
-    const r = await run(
-      "rex",
-      [
-        "window",
-        "new",
-        "-s",
-        REX_SESSION,
-        "-c",
-        ctx.cwd,
-        "--json",
-        "--",
+    let window_id: string;
+    try {
+      ({ window_id } = await openWindow(REX_SESSION, ctx.cwd, [
         ...(draft === undefined ? [] : ["env", `PI_FORK_DRAFT=${draft}`]),
         "pi",
         "--session",
         file,
-      ],
-      undefined,
-      ctx.cwd,
-      15_000,
-    );
-    if (r.code !== 0) {
+      ]));
+    } catch (e) {
       rmSync(file);
-      ctx.ui.notify(
-        `Fork window: ${(r.stderr || r.stdout).trim() || `rex window new exited with ${r.code}`}. Forking in this pane instead.`,
-        "error",
-      );
+      ctx.ui.notify(`Fork window: ${errorMessage(e)}. Forking in this pane instead.`, "error");
       return;
     }
 
-    let window_id: string;
-    try {
-      ({ window_id } = JSON.parse(r.stdout) as { window_id: string });
-    } catch {
-      ctx.ui.notify("Fork window opened, but Rex returned no window ID, so it was not selected.", "warning");
-      return { cancel: true };
-    }
-    // Rex.app ignores the server's active window, so only an app action switches its visible tab: https://discord.com/channels/1546797889009881158/1559289044439932949
-    const select = await run(
-      "rex",
-      ["do", "-s", REX_SESSION, "session.select", `session_id=${REX_SESSION}`, `window_id=${window_id}`],
-      undefined,
-      ctx.cwd,
-      15_000,
+    await selectWindow(REX_SESSION, window_id).catch((e) =>
+      ctx.ui.notify(`Fork window opened, but Rex could not switch to it: ${errorMessage(e)}`, "warning"),
     );
-    if (select.code !== 0)
-      ctx.ui.notify(
-        `Fork window opened, but Rex could not switch to it: ${(select.stderr || select.stdout).trim()}`,
-        "warning",
-      );
     return { cancel: true };
   });
 }

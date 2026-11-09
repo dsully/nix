@@ -45,7 +45,6 @@ in
             git-trim
             git-who
             lazyworktree
-            worktrunk
           ]
           ++ (with my.pkgs; [
             autorebase
@@ -166,6 +165,7 @@ in
 
           # Misc
           "nohup.out"
+          ".worktrees/"
         ];
 
         settings = {
@@ -345,6 +345,17 @@ in
 
         # Don't set delta as the pager via it's git integration
         iniContent.core.pager = lib.mkForce config.home.sessionVariables.PAGER;
+      };
+
+      programs.worktrunk = {
+        enable = true;
+        settings = {
+          worktree-path = "{{ repo_path }}/.worktrees/{{ branch | sanitize }}";
+          skip-shell-integration-prompt = true;
+          list.json-schema = 2;
+          # Symlink mode links package files from uv's cache; pruning the cache breaks these venvs.
+          pre-start.venv = "if [ -f uv.lock ]; then UV_LINK_MODE=symlink uv sync --frozen --all-extras; fi";
+        };
       };
     };
   }
