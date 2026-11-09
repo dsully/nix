@@ -15,6 +15,7 @@
       "anylist"
       "backblaze-restore"
       "boltai"
+      "bytemail"
       "claude"
       "cotypist"
       "discord"
