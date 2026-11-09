@@ -210,11 +210,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793979366,
-        "narHash": "sha256-7OoWDsYO9teiPxl0QdlS5lYE20Pue8/5mpscSL32FUA=",
+        "lastModified": 1794242768,
+        "narHash": "sha256-4QGSpbg6Cy1R506dLaR7s/fK5e8Uai036enYSEdO3vY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2c0c1f01521469cf0271180c453c79782d53c2f6",
+        "rev": "623253a537129f025d49363434b429714f6bea1a",
         "type": "github"
       },
       "original": {
@@ -252,11 +252,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1794229407,
-        "narHash": "sha256-4L7pYuOdzzV5VgDBwZGYA6L4qs+S7/QcVKeBS9fIPZA=",
+        "lastModified": 1794236353,
+        "narHash": "sha256-rcmzzR+kdb4yKL+NPfF/M0I6oXA9YfzVazBzWDlG2Xg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "0538a7598ce7eb1f80619bb93f613ed664d33510",
+        "rev": "4c6c37495fc45a46cb6f86cc6b0865e363fb77f2",
         "type": "github"
       },
       "original": {
@@ -512,10 +512,10 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1794111130,
-        "narHash": "sha256-ZUIhnzNpmuEheybfzs9fFiLkicGWAqZVbTNSBxvLdZc=",
+        "lastModified": 1794237812,
+        "narHash": "sha256-52jwvkQlzTfPsFJPjSh1c7C4CE/MHuTf1NSXXAc5B1Y=",
         "type": "tarball",
-        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1794111130-g9bcf6a.tar.gz"
+        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1794237812-g75d0b3.tar.gz"
       },
       "original": {
         "type": "tarball",
