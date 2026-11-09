@@ -1,5 +1,5 @@
 function just --wraps=just
-    if not isatty stderr
+    if not isatty stderr; or set -q PI_CODING_AGENT; or set -q JUST_NO_OSC
         command just $argv
         return
     end
