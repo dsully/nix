@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "darwin_arm64";
-      hash = "sha256-MZNZZTV3uDgiYVDTM4IY/cES0SUAOnHDAgSC9CWPsuw=";
+      hash = "sha256-MmAZmj5PxCvjFQg0uHDTaNgHTVkIdnpgDCMVx2Smd8U=";
     };
     x86_64-linux = {
       suffix = "linux_amd64";
-      hash = "sha256-fCWePEb5JQ/PN4Dsju9CTvXrhJMfMr671LANKwj+pug=";
+      hash = "sha256-+POuA//j/IvKuynk4tSnBCLwCECOnkkAIzobj7EPmE8=";
     };
   };
   source =
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "tripsy";
-    version = "2.2.0";
+    version = "2.2.1";
 
     src = pkgs.fetchurl {
       url = "https://github.com/tripsyapp/cli/releases/download/v${version}/tripsy_${version}_${source.suffix}.tar.gz";
