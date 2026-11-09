@@ -73,7 +73,7 @@ export default function skillsManager(pi: ExtensionAPI): void {
         onToggle: async (skill, enabled) => await setSkillEnabled(ctx.cwd, skill, enabled, trusted),
         onRefresh: load,
       });
-      if (selection) ctx.ui.pasteToEditor(`/skill:${selection.name}\n`);
+      if (selection) ctx.ui.pasteToEditor(`/skill:${selection.name} `);
     },
   });
 }
