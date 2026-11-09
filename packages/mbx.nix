@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "mbx";
-  version = "1.29.2";
+  version = "1.30.0";
 
   src = fetchFromGitHub {
     owner = "jdx";
     repo = "mr-boxington";
-    rev = "ffbf5a6969327ab58731f8613af711ba03c6dc2b";
-    hash = "sha256-Ny1kMPmEupChFM/2v+VIIbwJiujdYvDULyvAUEV4HrQ=";
+    rev = "2299ea69519d142d85b5903cbd0e2690419b7bed";
+    hash = "sha256-Smz5HWY8LWuwsE6dyJ1bjURF8kDmt9AevdIa0NM+awo=";
   };
 
-  cargoHash = "sha256-VoRYa18UIy/MpdN52vLEIHWZYPQ6DlXTCRrd6vP+eu8=";
+  cargoHash = "sha256-y6O6zdwqD0g5J5Z39pvnKLT8t/sr6N6fZG9n2K1RlrM=";
   cargoBuildFlags = ["--package" pname];
   doCheck = false;
 
