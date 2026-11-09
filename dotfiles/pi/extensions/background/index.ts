@@ -434,7 +434,7 @@ export default function (pi: ExtensionAPI) {
       ...pisBash,
       promptGuidelines: [
         ...(pisBash.promptGuidelines ?? []),
-        `A bash command still running after ${AUTO_BACKGROUND_SECS} seconds, or after its timeout if that is shorter, moves to the background on its own, as if started with bg_run, and you get its job id instead of its output; it is not stopped. Still start a command you expect to take that long with bg_run, so you choose wake_on and the turn isn't held up first.`,
+        `A bash command still running after ${AUTO_BACKGROUND_SECS} seconds, or after its shorter timeout, moves to the background as a job and keeps running; you get its job id instead of its output.`,
       ],
       async execute(toolCallId, params, signal, onUpdate, ctx) {
         // Built per call from the same settings Pi builds its own bash from
@@ -461,12 +461,11 @@ export default function (pi: ExtensionAPI) {
     label: "Background",
     description:
       "Start a shell command in the background and return immediately with a job id. Output goes to a log file. " +
-      "When the command exits you automatically receive a message with its exit code and the last log lines, so do not poll or sleep waiting for it.",
+      "When the command exits you automatically receive a message with its exit code and the last log lines.",
     promptSnippet: "Run long shell commands (downloads, builds, long test suites) in the background",
     promptGuidelines: [
-      "Use bg_run, not bash, for anything that may run past ~30s (downloads, installs, builds, test suites, servers, watchers); keep bash for quick commands whose output you need now.",
-      "bg_run's exit message (code + log tail) arrives on its own: never sleep, poll, or tail its log. To react to output while it runs, pass wake_on with a regex.",
-      "Don't redirect bg_run output; it already logs. bash times out after 2 minutes unless you pass timeout (max 10).",
+      "Use bg_run, not bash, for anything that may run past ~30s (downloads, installs, builds, test suites, servers, watchers), so you choose wake_on and the turn isn't held up.",
+      "Never sleep, poll, tail or redirect a bg_run job: its exit message arrives on its own, and wake_on (a regex) wakes you on matching output lines while it runs.",
     ],
     // Runs after the edits in the same reply, so the job starts from the code pi just wrote
     executionMode: "sequential",
