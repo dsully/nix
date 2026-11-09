@@ -47,6 +47,7 @@ mkSystemModule {
         "raindropio"
         "raycast"
         "rocket"
+        "screendrop"
         "skulkworks/tap/riffle"
         "snapzy"
         "stay"
