@@ -46,6 +46,7 @@ mkUserModule {
         ]
         ++ (with my.pkgs; [
           clean-dev-dirs
+          tkmp
           xdg-open-svc
         ]);
     };

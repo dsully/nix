@@ -145,10 +145,10 @@ in
                 # Escape --version and similar.
                 set -f ext (string split "." -- $argv[1])[-1]
 
-                if contains $ext $markdown_extensions; and type -q mdterm
-                    ${lib.getExe pkgs.mdterm} $argv[1]
+                if contains $ext $markdown_extensions;
+                    ${lib.getExe my.pkgs.tkmp} $argv[1]
 
-                else if contains $ext $image_extensions; and type -q viu
+                else if contains $ext $image_extensions;
                     ${lib.getExe pkgs.viu} $argv
 
                 else
