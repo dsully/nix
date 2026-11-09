@@ -4,6 +4,7 @@
   forPlatform,
   inputs,
   lib,
+  my,
   pkgs,
   ...
 }: let
@@ -13,6 +14,10 @@
   homeDir = config.home.homeDirectory;
 
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
+
+  # Darwin runs the app's bundled server; on Linux the rex flake's services.rex runs it.
+  runsServer = isDarwin || config.services.rex.enable or false;
+  agentResume = "${my.pkgs.rex-agent-resume}/share/rex-agent-resume";
 
   # The helper bundle's name changes between builds ("Rex Server.app", "Rex Server.rex").
   rexCli = pkgs.writeShellScriptBin "rex" ''
@@ -183,13 +188,21 @@ in
           '');
 
           # Rex does not watch init.lua.
-          rexConfigReload = lib.mkIf isDarwin (inputs.home-manager.lib.hm.dag.entryAfter ["linkGeneration"] ''
-            run ${lib.getExe rexCli} config reload --autostart=false >/dev/null 2>&1 || true
+          rexConfigReload = lib.mkIf runsServer (inputs.home-manager.lib.hm.dag.entryAfter ["linkGeneration"] ''
+            run ${
+              if isDarwin
+              then lib.getExe rexCli
+              else "${config.services.rex.package}/bin/rex"
+            } config reload --autostart=false >/dev/null 2>&1 || true
           '');
         };
 
         # On Linux, the rex flake's programs.rex installs the CLI, terminfo and ssh fallback.
         packages = lib.optionals isDarwin [rexCli rexHints rexProjectPicker];
+
+        file."${config.xdg.configHome}/pi/agent/extensions/rex-agent-resume.ts" = lib.mkIf (runsServer && config.modules.users.${config.home.username}.pi.enable or false) {
+          source = "${agentResume}/integrations/pi/rex-agent-resume.ts";
+        };
       };
 
       packageTools.javascript = [
@@ -200,13 +213,69 @@ in
         # Lua type stub for rex.*, on emmylua_ls's library path (nvim/after/lsp/emmylua_ls.lua).
         dataFile."rex/types/rex.lua".source = ./types/rex.lua;
 
-        configFile.rex = lib.mkIf isDarwin {
-          source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/rex";
-        };
+        # init.lua and the agent-resume hooks below load the plugin from here.
+        dataFile.rex-agent-resume = lib.mkIf runsServer {source = agentResume;};
+
+        configFile =
+          if isDarwin
+          then {
+            rex.source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/rex";
+          }
+          else {
+            # Matches the block the plugin's toggle action writes; turning resume off from the palette fails on this read-only file.
+            "rex/init.lua" = lib.mkIf runsServer {
+              text = ''
+                -- >>> rex-agent-resume
+                -- Starts the rex-agent-resume watcher whenever the server loads this file.
+                dofile("${config.xdg.dataHome}/rex-agent-resume/plugin.lua")
+                -- <<< rex-agent-resume
+              '';
+            };
+          };
       };
 
       programs = {
-        ai.skills.local.ids = ["rex"];
+        ai = {
+          skills.local.ids = ["rex"];
+
+          hooks.SessionStart =
+            [
+              # `rex skill setup` writes the same hook into settings.json, which the same rewrite removes.
+              {
+                hooks = [
+                  {
+                    name = "rex-session";
+                    command = "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'";
+                    targets = ["claude"];
+                    timeout = 5;
+                  }
+                ];
+              }
+            ]
+            ++ lib.optionals runsServer [
+              {
+                matcher = "^(startup|resume|clear|compact|fork)$";
+                hooks = [
+                  {
+                    name = "rex-agent-resume";
+                    command = "${config.xdg.dataHome}/rex-agent-resume/bin/rex-agent-resume-hook claude";
+                    targets = ["claude"];
+                    timeout = 10;
+                  }
+                ];
+              }
+              {
+                hooks = [
+                  {
+                    name = "rex-agent-resume";
+                    command = "${config.xdg.dataHome}/rex-agent-resume/bin/rex-agent-resume-hook codex";
+                    targets = ["codex"];
+                    timeout = 10;
+                  }
+                ];
+              }
+            ];
+        };
 
         fish.completions.rex = "command -q rex; and rex completion fish | source";
 

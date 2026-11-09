@@ -12,6 +12,12 @@ in
   mkUserModule {
     name = "ai";
 
+    homeOptions.programs.ai.hooks = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.listOf lib.types.attrs);
+      default = {};
+      description = "Hook groups per event, appended to the built-in ones in shared/hooks.nix. Hooks carry `name`, `command`, `targets` and optional `timeout`.";
+    };
+
     # Default tool set; a host turns one off with `<tool>.enable = false`.
     requires = [
       "ccstatusline"

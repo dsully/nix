@@ -30,10 +30,7 @@
     }
     // lib.optionalAttrs (matcher != null) {inherit matcher;};
 
-  # `rex skill setup` writes the same hook into settings.json, which the same rewrite removes.
-  rexEnabled = config.modules.users.${config.home.username}.rex.enable or false;
-
-  events = {
+  builtinEvents = {
     PreToolUse = [
       (group {
         matcher = "Bash";
@@ -72,18 +69,10 @@
         ];
       })
     ];
-
-    SessionStart = lib.optional rexEnabled (group {
-      hooks = [
-        (hook {
-          name = "rex-session";
-          command = "/bin/sh -c 'rex __internal session-start --agent claude --feature-session-naming=false 2>/dev/null || true'";
-          targets = ["claude"];
-          timeout = 5;
-        })
-      ];
-    });
   };
+
+  # Other capabilities add groups through programs.ai.hooks (declared in modules/ai/ai.nix).
+  events = lib.zipAttrsWith (_: lib.concatLists) [builtinEvents (config.programs.ai.hooks or {})];
 
   supportsTarget = target: hookDef:
     builtins.elem target hookDef.targets
