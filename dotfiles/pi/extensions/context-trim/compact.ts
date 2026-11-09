@@ -1,5 +1,5 @@
-export const MAX_CHARS = 12_000;
-export const MAX_LINES = 240;
+export const MAX_CHARS = 6_000;
+export const MAX_LINES = 120;
 
 function cutChars(text: string): string {
   if (text.length <= MAX_CHARS) return text;
@@ -12,7 +12,7 @@ function cutChars(text: string): string {
 export function preview(text: string, isError: boolean): string | undefined {
   const lines = text.split("\n");
   if (text.length <= MAX_CHARS && lines.length <= MAX_LINES) return undefined;
-  const [head, tail] = isError ? [160, 120] : [100, 60];
+  const [head, tail] = isError ? [80, 60] : [60, 40];
   if (lines.length <= head + tail) return cutChars(text);
   const omitted = lines.length - head - tail;
   return cutChars(
