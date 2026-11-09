@@ -63,6 +63,7 @@ mkSystemModule {
         "1Password for Safari" = 1569813296;
         "AdGap" = 6818434016;
         "Amphetamine" = 937984704;
+        "Classycal" = 6821351089;
         "CleanMyKeyboard" = 6468120888;
         "Color Picker" = 1545870783;
         "CotEditor" = 1024640650;
