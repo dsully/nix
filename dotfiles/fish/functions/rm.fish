@@ -1,6 +1,5 @@
 function rm --wraps rip
     set -l cmd /bin/rm
-    set -l options
 
     if type -q trash
         set cmd trash
@@ -8,25 +7,50 @@ function rm --wraps rip
         set cmd rip
     end
 
-    if string match -q -- /bin/rm $cmd
+    if test $cmd = /bin/rm
         /bin/rm $argv
         return
     end
 
+    if contains -- --version $argv
+        $cmd --version
+        return
+    end
+
+    set -l rm_flags
+    set -l trash_flags
+    set -l trash_paths
+    set -l cloud_paths
+    set -l in_flags 1
+
     for arg in $argv
-
-        if string match -q -- --version $arg
-            $cmd $arg
-            return
-        end
-
-        # Skip recursive and force flags in various forms
-        if string match -q -- -r $arg; or string match -q -- -f $arg; or string match -q -- -rf $arg; or string match -q -- -fr $arg
+        if test $in_flags -eq 1; and string match -q -- '-*' $arg
+            if test $arg = --
+                set in_flags 0
+                continue
+            end
+            set -a rm_flags $arg
+            string match -qr -- '^-[rf]+$' $arg; or set -a trash_flags $arg
             continue
         end
 
-        set -a options $arg
+        # /usr/bin/trash fails on File Provider paths such as Box with NSCocoaErrorDomain 513.
+        if string match -q -- (path resolve -- $HOME)"/Library/CloudStorage/*" (path resolve -- $arg)
+            set -a cloud_paths $arg
+        else
+            set -a trash_paths $arg
+        end
     end
 
-    $cmd $options
+    set -l code 0
+
+    if set -q cloud_paths[1]
+        /bin/rm $rm_flags -- $cloud_paths; or set code $status
+    end
+
+    if set -q trash_paths[1]; or not set -q cloud_paths[1]
+        $cmd $trash_flags $trash_paths; or set code $status
+    end
+
+    return $code
 end
