@@ -1,0 +1,13 @@
+--- a/dist/index.js	2026-11-10 09:50:40
++++ b/dist/index.js	2026-11-10 15:04:48
+@@ -22491,10 +22491,6 @@
+   {
+     name: "Bare import",
+     load: async () => await import("@earendil-works/pi-coding-agent")
+-  },
+-  {
+-    name: "Bare import (OMP)",
+-    load: async () => await import("@oh-my-pi/pi-coding-agent")
+   }
+ ];
+ var cachedModulePromise = null;

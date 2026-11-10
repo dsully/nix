@@ -403,6 +403,14 @@ in
                 pkg = "@cortexkit/pi-magic-context";
                 patch = ./pi-magic-context-status-active-tool-defs.patch;
               }
+              {
+                pkg = "@cortexkit/pi-magic-context";
+                patch = ./pi-magic-context-drop-omp-loader.patch;
+              }
+              {
+                pkg = "pi-context-view";
+                patch = ./pi-context-view-local-idle-age.patch;
+              }
             ];
             # pi writes settings.json itself (model, theme, `pi install`); Nix values win on each switch.
             mutableSettings = true;
