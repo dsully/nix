@@ -68,7 +68,6 @@
     lib.filterAttrs (
       name: type:
         (type == "directory" || type == "regular" && lib.hasSuffix ".ts" name)
-        && (config.programs.pi-coding-agent.uiExtensions.enable || name != "transcript")
         && !lib.elem name config.programs.pi-coding-agent.excludeExtensions
     )
     (builtins.readDir ../../../dotfiles/pi/extensions);
@@ -124,12 +123,6 @@ in
         default = [];
         example = ["todo" "history.ts"];
         description = "Entries under dotfiles/pi/extensions (directory or .ts file name) not linked into pi.";
-      };
-
-      uiExtensions.enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Load the transcript extension, which draws tool rows, thinking labels, and silent mode.";
       };
 
       mcpDescriptions = lib.mkOption {

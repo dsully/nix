@@ -37,7 +37,7 @@ import { formatDuration, resultTail } from "./tail.js";
 const SILENT_SHORTCUT = "ctrl+'";
 const DIFF_PREVIEW = 12;
 const RUN_GLYPH = "●";
-const TRACKED = Symbol("pi-transcript.tracked");
+const TRACKED = Symbol("pi-display.tracked");
 
 type Ctx = {
   args?: any;
@@ -76,7 +76,7 @@ type Message = {
   toolCallId?: string;
 };
 
-export default function transcript(pi: ExtensionAPI) {
+export default function display(pi: ExtensionAPI) {
   const runs = new Runs();
   const rows = new Map<string, () => void>();
   const running = new Map<string, number>();
@@ -328,7 +328,7 @@ export default function transcript(pi: ExtensionAPI) {
   patchMethod<(this: Planner, message: Message) => Part[]>(
     AssistantMessageComponent.prototype,
     "planContent",
-    "pi-transcript.planContent",
+    "pi-display.planContent",
     (original) =>
       original &&
       function (this: Planner, message: Message) {
@@ -371,7 +371,7 @@ export default function transcript(pi: ExtensionAPI) {
   patchMethod<(this: Planner) => Planner>(
     AssistantMessageComponent.prototype,
     "compactedCopy",
-    "pi-transcript.compactedCopy",
+    "pi-display.compactedCopy",
     (original) =>
       original &&
       function (this: Planner) {
@@ -385,9 +385,9 @@ export default function transcript(pi: ExtensionAPI) {
 
   const redraw = (ctx: ExtensionContext) => {
     if (!ctx.hasUI) return;
-    ctx.ui.setWidget("pi-transcript-redraw", (tui) => {
+    ctx.ui.setWidget("pi-display-redraw", (tui) => {
       setTimeout(() => {
-        ctx.ui.setWidget("pi-transcript-redraw", undefined);
+        ctx.ui.setWidget("pi-display-redraw", undefined);
         tui.requestRender(true);
       }, 0);
       return new Container();
