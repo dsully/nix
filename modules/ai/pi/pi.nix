@@ -131,6 +131,23 @@ in
         description = "Per-server one-line descriptions listed in pi's system prompt, replacing the server's own instructions.";
       };
 
+      extensionPatches = lib.mkOption {
+        type = lib.types.listOf (lib.types.submodule {
+          options = {
+            pkg = lib.mkOption {
+              type = lib.types.str;
+              description = "Package name under pi's npm/node_modules.";
+            };
+            patch = lib.mkOption {
+              type = lib.types.path;
+              description = "Patch applied with -p1 from the package root.";
+            };
+          };
+        });
+        default = [];
+        description = "Patches applied to installed pi npm packages after each `pi update --extensions`.";
+      };
+
       magicContext = lib.mkOption {
         inherit (jsonFormat) type;
         default = {};
@@ -239,16 +256,8 @@ in
                       echo "piPatchExtensions: ${baseNameOf patch} did not apply to $_d"
                     fi
                   fi
-                '') [
-                  {
-                    pkg = "pi-hashline-edit-pro-lean";
-                    patch = ./pi-hashline-lean-edit-output-schema.patch;
-                  }
-                  {
-                    pkg = "@cortexkit/pi-magic-context";
-                    patch = ./pi-magic-context-status-active-tool-defs.patch;
-                  }
-                ]}
+                '')
+                config.programs.pi-coding-agent.extensionPatches}
             '';
 
             # AOT-compile the installed extensions into a pi-bolt build the package wrapper prefers.
@@ -344,6 +353,16 @@ in
 
             configDir = piPath;
 
+            extensionPatches = [
+              {
+                pkg = "pi-hashline-edit-pro-lean";
+                patch = ./pi-hashline-lean-edit-output-schema.patch;
+              }
+              {
+                pkg = "@cortexkit/pi-magic-context";
+                patch = ./pi-magic-context-status-active-tool-defs.patch;
+              }
+            ];
             # pi writes settings.json itself (model, theme, `pi install`); Nix values win on each switch.
             mutableSettings = true;
 
