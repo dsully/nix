@@ -235,8 +235,9 @@ in
             # Retry a few times to ride out transient registry failures.
             # Non-fatal: a persistent failure warns, never aborts the switch.
             piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange" "piCodingAgentMutableSettings"] ''
-              export PATH="${lib.makeBinPath [bunRuntime pkgs.diffutils pkgs.git pkgs.gnugrep]}:$PATH"
+              export PATH="${lib.makeBinPath [bunRuntime pkgs.diffutils pkgs.git pkgs.gnugrep pkgs.jq]}:$PATH"
               export PI_CODING_AGENT_DIR="${piPath}"
+
               _state="${piPath}/.nix-packages"
               _cur=${lib.escapeShellArg (lib.concatStringsSep "\n" declaredPackageSources)}
 
@@ -244,11 +245,17 @@ in
               if [[ -f $_state && ! -v DRY_RUN ]]; then
                 while IFS= read -r _src; do
                   [[ -n $_src ]] || continue
+
                   grep -qxF -- "$_src" <<< "$_cur" && continue
-                  run ${config.programs.pi-coding-agent.package}/bin/pi remove "$_src" || {
+
+                  # `pi remove` exits 1 for an entry settings.json no longer lists, which would pin it here forever.
+                  jq -e --arg s "$_src" 'any(.packages[]?; (.source? // .) == $s)' "${piPath}/settings.json" >/dev/null 2>&1 || continue
+
+                  run ${config.programs.pi-coding-agent.package}/bin/pi remove "$_src" </dev/null || {
                     echo "pi remove $_src failed; keeping it in $_state to retry"
                     _stale=1
                   }
+
                 done < "$_state"
               fi
 
