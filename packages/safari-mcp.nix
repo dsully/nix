@@ -10,16 +10,16 @@
 }:
 buildNpmPackage rec {
   pname = "safari-mcp";
-  version = "2.23.0-cc9a0821";
+  version = "2.23.0-813fd503";
 
   src = fetchFromGitHub {
     owner = "achiya-automation";
     repo = "safari-mcp";
-    rev = "cc9a0821351d60162ab09c5eb5c8a87321f7d718";
-    hash = "sha256-1ZilAyOxuoNADXYTNRD/8vfgd7ItExlHTDDS4SdbvbA=";
+    rev = "813fd503c566372f66bcb9edfa155238a80693cb";
+    hash = "sha256-D2kJf3oCODJtpkijGQjCZyreMiwRYekIVK/6rKoUH50=";
   };
 
-  npmDepsHash = "sha256-l40gzW0kuiZM3saAUlb3AHkhgcu2027fJcwSAaifK7A=";
+  npmDepsHash = "sha256-DQWzetO9iXXD2/jUwUE6hRVPd6YTjtoS1gg75ID/TH8=";
   dontNpmBuild = true;
   npmFlags = ["--ignore-scripts"];
   nativeBuildInputs = [makeWrapper removeReferencesTo];

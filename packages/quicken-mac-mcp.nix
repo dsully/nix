@@ -7,16 +7,16 @@
 }:
 buildNpmPackage rec {
   pname = "quicken-mac-mcp";
-  version = "0-bcd37a25";
+  version = "0-561c0621";
 
   src = fetchFromGitHub {
     owner = "dsully";
     repo = "quicken-mac-mcp";
-    rev = "bcd37a252125f9f37e363edcfa8afcfd30015b8b";
-    hash = "sha256-uMSuBJz5RYn5EYPdkuuZpgVvpTcUReFM5HfwBjFrm3A=";
+    rev = "561c06212a50010705308c6376c55c416e0d644f";
+    hash = "sha256-cWm+jsJvIe00Edzrxgrj3ds9Wjm/dFULXyQt4VejiWI=";
   };
 
-  npmDepsHash = "sha256-5MxeO6gq6jkx/vblvPCF0m38Zgmuh86vLr0BdwnoI3U=";
+  npmDepsHash = "sha256-WXO9/6uCFr3bilBuk5Wh5EIQ3NidlFFLp4dwr/2xh9k=";
   doCheck = false;
 
   nativeBuildInputs = [python3];
