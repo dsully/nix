@@ -8,6 +8,11 @@ test.each([
   ["head -20 README.md", "read"],
   ["rg foo src", "grep"],
   ["cd src && grep -n foo bar.ts", "grep"],
+  ["cat a.ts; head -5 b.ts", "read"],
+  ["cat x.ts | grep foo", "read"],
+  ["git status && npm run dev", "bg_run"],
+  ["ls && echo hi > out.txt", "write"],
+  ["git diff; sed -i 's/a/b/' x", "replace"],
   ["FOO=1 rg foo", "grep"],
   ["rg -g '*.nix' -i foo", "grep"],
   ["find . -name '*.nix'", "find"],
@@ -42,6 +47,11 @@ test.each([
   "rg foo --glob '!*.test.ts'",
   "rg -g '!vendor' foo",
   "rg --no-ignore foo",
+  'which pi; git status --short | head; cat shared/setup.ts | head -50; grep -rn "PI_MIN_VERSION" --include=*.ts .',
+  "cat package.json && git log -1",
+  "git status; find . -name '*.nix'",
+  "head -3 flake.nix | wc -l",
+  "cat package.json | jq .name",
 ])("allows %p", (command) => {
   expect(interception(command, all)).toBeUndefined();
 });

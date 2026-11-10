@@ -6,6 +6,8 @@ interface Rule {
   pattern: string;
   tool: string;
   message: string;
+  /** Skipped when the command also runs something else, since one tool call cannot replace the batch. */
+  standaloneOnly?: boolean;
 }
 
 export const RULES: Rule[] = [
@@ -19,6 +21,7 @@ export const RULES: Rule[] = [
     pattern:
       "^\\s*(?:(?:head|tail|less|more)\\s+|cat\\s+(?!\\s|(?:[02-9]>{1,2}\\|?\\s*[^\\s>|]\\S*\\s+)*(?:<<|1?>(?!&)|&>)))",
     tool: "read",
+    standaloneOnly: true,
     message: "Use the `read` tool instead of cat/head/tail; page with offset/limit.",
   },
   {
@@ -26,12 +29,14 @@ export const RULES: Rule[] = [
     pattern:
       "^\\s*(grep|rg|ripgrep|ag|ack)\\s+(?!.*(?<=\\s)(?:-[A-Za-z]*[cLlouUv][A-Za-z]*(?:\\s|$)|--(?:count|files|files-with-matches|files-without-match|invert-match|only-matching|no-ignore|hidden|multiline|exclude)\\b|(?:-g|--i?glob)[\\s=]+['\"]?!))",
     tool: "grep",
+    standaloneOnly: true,
     message:
       "Use the `grep` tool instead of grep/rg. It respects .gitignore and returns editable anchors. Shell grep/rg is allowed only with flags the tool lacks: -c, -l, -L, -v, -o, -u, -U, --hidden, --no-ignore, --exclude, negated -g/--glob.",
   },
   {
     pattern: "^\\s*(find|fd|locate)\\s+.*(-name|-iname|-type|--type|-glob)",
     tool: "find",
+    standaloneOnly: true,
     message: "Use the `find` tool instead of find/fd. It respects .gitignore.",
   },
   {
@@ -156,26 +161,35 @@ function withoutLeadingEnvironmentAssignments(command: string): string | null {
   return commandWithoutAssignments.length > 0 ? commandWithoutAssignments : null;
 }
 
-function interceptionCandidates(command: string): string[] {
-  const candidates = [command.trim()];
-  for (const segment of extractFlatShellCommandSegments(command)) {
-    // A segment that consumes the previous stage's stdout via `|` reads piped
-    // stdin, which no path-based dedicated tool (read/grep/glob) — nor any
-    // other dedicated tool — can replace, so it is not an interception
-    // candidate. Standalone and first-stage commands still match.
-    if (segment.pipedStdin) continue;
-    candidates.push(segment.text);
-    const withoutAssignments = withoutLeadingEnvironmentAssignments(segment.text);
-    if (withoutAssignments) candidates.push(withoutAssignments);
-  }
-  return candidates;
+function segmentCandidates(text: string): string[] {
+  const withoutAssignments = withoutLeadingEnvironmentAssignments(text);
+  return withoutAssignments ? [text, withoutAssignments] : [text];
+}
+
+const CD = /^\s*cd(?:\s|$)/;
+
+function runsOtherCommands(segments: string[]): boolean {
+  return segments.some(
+    (segment) =>
+      !CD.test(segment) &&
+      !compiled.some(
+        ({ rule, regex }) =>
+          rule.standaloneOnly && segmentCandidates(segment).some((candidate) => regex.test(candidate)),
+      ),
+  );
 }
 
 /** Returns the message for the first rule matching `command` whose suggested tool is active. */
 export function interception(command: string, activeTools: string[]): string | undefined {
-  const candidates = interceptionCandidates(command);
+  // A segment that consumes the previous stage's stdout via `|` reads piped
+  // stdin, which no dedicated tool can replace, so it is not a candidate.
+  const all = extractFlatShellCommandSegments(command);
+  const segments = all.filter((segment) => !segment.pipedStdin).map((segment) => segment.text);
+  const candidates = [command.trim(), ...segments.flatMap(segmentCandidates)];
+  const batch = runsOtherCommands(all.map((segment) => segment.text));
   for (const { rule, regex } of compiled) {
     if (!activeTools.includes(rule.tool)) continue;
+    if (rule.standaloneOnly && batch) continue;
     if (candidates.some((candidate) => regex.test(candidate))) return `Blocked: ${rule.message}`;
   }
 }
