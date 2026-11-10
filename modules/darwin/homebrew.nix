@@ -41,7 +41,6 @@ mkSystemModule {
         "jithin-sabu/tap/purge"
         "keka"
         "little-snitch"
-        "markdown-preview"
         "monodraw"
         "processspy"
         "raindropio"

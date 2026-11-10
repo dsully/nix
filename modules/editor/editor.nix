@@ -44,6 +44,7 @@ in
             stylua
             superhtml
             tombi
+            tree-sitter
             ts_query_ls
             ty
             typescript
