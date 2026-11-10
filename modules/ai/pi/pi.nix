@@ -64,6 +64,28 @@
     else p.source)
   config.programs.pi-coding-agent.settings.packages;
 
+  piNpmDependencies = lib.listToAttrs (map (src: let
+    m = builtins.match "npm:(@?[^@]+)(@(.+))?" src;
+  in
+    lib.nameValuePair (builtins.elemAt m 0) (
+      if builtins.elemAt m 2 == null
+      then "latest"
+      else builtins.elemAt m 2
+    )) (lib.filter (lib.hasPrefix "npm:") declaredPackageSources));
+
+  # Nix owns the whole file; bun.lock holds the resolved versions behind "latest".
+  piNpmPackageJson = jsonFormat.generate "pi-npm-package.json" ({
+      name = "pi-extensions";
+      private = true;
+      dependencies = piNpmDependencies;
+    }
+    // lib.optionalAttrs (config.programs.pi-coding-agent.npmOverrides != {}) {
+      overrides = config.programs.pi-coding-agent.npmOverrides;
+    }
+    // lib.optionalAttrs (config.programs.pi-coding-agent.npmTrustedDependencies != []) {
+      trustedDependencies = config.programs.pi-coding-agent.npmTrustedDependencies;
+    });
+
   piExtensions =
     lib.filterAttrs (
       name: type:
@@ -93,14 +115,7 @@
     name = "bun-runtime";
     meta.mainProgram = "bun";
 
-    paths = [
-      (pkgs.writeShellScriptBin "bun" ''
-        if [[ "''${1-}" == install ]]; then
-          exec ${bunExe} "$@" --trust
-        fi
-        exec ${bunExe} "$@"
-      '')
-    ];
+    paths = [config.programs.bun.package];
 
     postBuild = ''
       ln -s ${bunExe} $out/bin/node
@@ -145,7 +160,19 @@ in
           };
         });
         default = [];
-        description = "Patches applied to installed pi npm packages after each `pi update --extensions`.";
+        description = "Patches applied to installed pi npm packages after each install.";
+      };
+
+      npmOverrides = lib.mkOption {
+        inherit (jsonFormat) type;
+        default = {};
+        description = "`overrides` of pi's npm/package.json.";
+      };
+
+      npmTrustedDependencies = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = "Packages whose lifecycle scripts bun runs; bun's own default list (esbuild, ...) still applies.";
       };
 
       magicContext = lib.mkOption {
@@ -202,12 +229,13 @@ in
 
           activation = {
             # Removing a package from Nix is not enough: pi's mutable settings.json
-            # keeps the entry and its npm deps. Diff the declared list against the
-            # copy the last activation wrote, and let `pi remove` do the deleting.
+            # keeps the entry, and pi reinstalls it at startup. Diff the declared list
+            # against the copy the last activation wrote, and let `pi remove` drop it.
+            # Then write npm/package.json; `bun install` prunes what it no longer lists.
             # Retry a few times to ride out transient registry failures.
             # Non-fatal: a persistent failure warns, never aborts the switch.
             piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange" "piCodingAgentMutableSettings"] ''
-              export PATH="${lib.makeBinPath [config.programs.bun.package pkgs.git pkgs.gnugrep]}:$PATH"
+              export PATH="${lib.makeBinPath [bunRuntime pkgs.diffutils pkgs.git pkgs.gnugrep]}:$PATH"
               export PI_CODING_AGENT_DIR="${piPath}"
               _state="${piPath}/.nix-packages"
               _cur=${lib.escapeShellArg (lib.concatStringsSep "\n" declaredPackageSources)}
@@ -224,18 +252,21 @@ in
                 done < "$_state"
               fi
 
+              _npm="${piPath}/npm"
+              cmp -s ${piNpmPackageJson} "$_npm/package.json" || run install -D -m644 ${piNpmPackageJson} "$_npm/package.json"
+
               _ok=
               for _try in 1 2 3; do
-                if run ${config.programs.pi-coding-agent.package}/bin/pi update --extensions; then
+                if run bun install --cwd "$_npm" --omit=peer; then
                   _ok=1
                   break
                 fi
 
-                echo "pi update --extensions attempt $_try failed; retrying in 5s..."
+                echo "bun install attempt $_try failed; retrying in 5s..."
                 sleep 5
               done
 
-              [ -n "$_ok" ] || echo "pi update --extensions failed after 3 tries; run it manually to see errors"
+              [ -n "$_ok" ] || echo "bun install in $_npm failed after 3 tries; run it manually to see errors"
 
               # Only advance the baseline once the removals stuck, so a failure is retried on the next switch.
               if [[ ! -v DRY_RUN ]] && [[ -n $_ok ]] && [[ $_stale = 0 ]]; then
@@ -352,6 +383,9 @@ in
             };
 
             configDir = piPath;
+
+            # Its postinstall installs the macOS helper app.
+            npmTrustedDependencies = lib.optional (piNpmDependencies ? "@injaneity/pi-computer-use") "@injaneity/pi-computer-use";
 
             extensionPatches = [
               {
