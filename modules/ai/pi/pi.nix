@@ -406,6 +406,8 @@ in
 
               rewind.retention.maxAgeDays = 7;
 
+              shadedCodeBlocks = true;
+
               terminal = {
                 showTerminalProgress = true;
               };

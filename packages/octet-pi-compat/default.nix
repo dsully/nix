@@ -16,7 +16,6 @@ stdenvNoCC.mkDerivation rec {
   patches = [
     ./follow-agent-dir-symlinks.patch
     ./raise-reviewed-source-limit.patch
-    ./ignore-unknown-theme-colors.patch
     ./probe-background-refresh-as-absent.patch
     # DisturbedOcean/octet branch pi-provider-streams; needs a managed Pi release (packages/pi-release).
     ./run-extension-provider-streams.patch

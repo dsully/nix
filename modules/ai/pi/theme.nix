@@ -38,7 +38,6 @@
       # the off-palette defaults for the custom-message and tool-error blocks.
       nordCustomBg = config.colors.blend.blue;
       nordErrorBg = config.colors.blend.red;
-      nordCodeBg = config.colors.blend.turquoise;
     };
 
     colors = {
@@ -70,7 +69,6 @@
       mdCode = "nord14";
       mdCodeBlock = "nord4";
       mdCodeBlockBorder = "nord3Bright";
-      mdCodeBlockBg = "nordCodeBg";
       mdQuote = "nordMuted";
       mdQuoteBorder = "nord3";
       mdHr = "nordMuted";

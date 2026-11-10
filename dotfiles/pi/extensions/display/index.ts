@@ -3,7 +3,6 @@ import { type Component, Container, truncateToWidth } from "@earendil-works/pi-t
 import { patchMethod } from "../lib/patch.js";
 import { textOf } from "../lib/text.js";
 import { callLabel, EDIT_TOOLS, glyphOf, OWN_TOOLS, shortPath } from "./call.js";
-import { codeRender } from "./code-render.js";
 import { type DiffLine, markWords, parseUnified, patchPath, trimContext } from "./diff.js";
 import {
   collapseThinking,
@@ -541,6 +540,4 @@ export default function display(pi: ExtensionAPI) {
     running.clear();
     tick();
   });
-
-  codeRender(pi);
 }

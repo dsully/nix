@@ -29,11 +29,7 @@
   };
 
   piTheme = config.programs.pi-coding-agent.settings.theme;
-
-  # octet's native loader rejects the whole theme over pi-bolt's extra mdCodeBlockBg token.
-  octetTheme = pkgs.runCommand "octet-${piTheme}.json" {nativeBuildInputs = [pkgs.jq];} ''
-    jq 'del(.colors.mdCodeBlockBg)' ${config.home.file."${piPath}/themes/${piTheme}.json".source} > $out
-  '';
+  piThemeFile = config.home.file."${piPath}/themes/${piTheme}.json".source;
 
   configToml = (pkgs.formats.toml {}).generate "octet-config.toml" {
     model = "codex/gpt-6-sol";
@@ -89,7 +85,7 @@ in
           run install -m600 ${configToml} ${octetDir}/config.toml
           run install -m600 ${mcpJson} ${octetDir}/mcp.json
           run install -m644 ${keybindingsJson} ${octetDir}/keybindings.json
-          run install -D -m644 ${octetTheme} ${octetDir}/themes/${piTheme}.json
+          run install -D -m644 ${piThemeFile} ${octetDir}/themes/${piTheme}.json
 
           # Bundles pin the exact host version, so follow the installed octet.
           _version=$($_octet --version | cut -d' ' -f2)
