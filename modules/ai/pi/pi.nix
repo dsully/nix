@@ -46,17 +46,7 @@
     "npm:pi-context-view"
     "npm:pi-hashline-edit-pro-lean"
     "npm:pi-heads-up"
-    # chrome.ts would take over the working label, spinner, and editor that whimsical and footer own.
-    {
-      source = "npm:pi-polish";
-      extensions = ["extensions/tools.ts"];
-    }
     # "npm:@pi-kaush/pi-browser"
-    # Collapsed rows only; expanded rows still use pi-polish. The merger draws "│ * Thought".
-    {
-      source = "npm:@pi-kaush/pi-tool-call-markers";
-      extensions = ["src/index.ts" "src/thinking-block-merger.ts"];
-    }
     "npm:@cortexkit/pi-magic-context"
     # Snapshots per turn: hashline replace/insert carry no path, so edit/write-hooked checkpointers miss them.
     "npm:pi-rewind-hook"
@@ -73,9 +63,6 @@
     then p
     else p.source)
   config.programs.pi-coding-agent.settings.packages;
-
-  # Transcript renderers, toggled as a group by programs.pi-coding-agent.uiExtensions.enable.
-  piUiPackages = ["npm:pi-polish" "npm:@pi-kaush/pi-tool-call-markers"];
 
   piExtensions =
     lib.filterAttrs (
@@ -142,7 +129,7 @@ in
       uiExtensions.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Load the transcript-rendering extensions (pi-polish, pi-tool-call-markers, transcript). Disabled packages stay installed.";
+        description = "Load the transcript extension, which draws tool rows, thinking labels, and silent mode.";
       };
 
       mcpDescriptions = lib.mkOption {
@@ -263,14 +250,6 @@ in
                   {
                     pkg = "pi-hashline-edit-pro-lean";
                     patch = ./pi-hashline-lean-edit-output-schema.patch;
-                  }
-                  {
-                    pkg = "@pi-kaush/pi-tool-call-markers";
-                    patch = ./pi-tool-call-markers-hashline-diffs.patch;
-                  }
-                  {
-                    pkg = "@pi-kaush/pi-tool-call-markers";
-                    patch = ./pi-tool-call-markers-thought-grouping.patch;
                   }
                   {
                     pkg = "@cortexkit/pi-magic-context";
@@ -430,16 +409,7 @@ in
 
               npmCommand = [(lib.getExe bunRuntime)];
 
-              packages = map (p:
-                if config.programs.pi-coding-agent.uiExtensions.enable || !lib.elem (p.source or p) piUiPackages
-                then p
-                else
-                  (lib.optionalAttrs (builtins.isAttrs p) p)
-                  // {
-                    source = p.source or p;
-                    extensions = [];
-                  })
-              (lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages);
+              packages = lib.filter (p: !lib.elem (p.source or p) config.programs.pi-coding-agent.excludePackages) piDefaultPackages;
 
               rewind.retention.maxAgeDays = 7;
 

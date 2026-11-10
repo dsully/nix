@@ -17,7 +17,7 @@ import {
   wrapTextWithAnsi,
 } from "@earendil-works/pi-tui";
 import { Type } from "typebox";
-import { shortCommand } from "./command.ts";
+import { shortCommand } from "../lib/command.js";
 
 const TAIL_LINES = 20;
 const TAIL_BYTES = 64 * 1024;
@@ -275,7 +275,7 @@ export default function (pi: ExtensionAPI) {
     const head = d.error ? theme.fg("error", "● ") + theme.fg("toolTitle", title) : `  ${theme.fg("dim", title)}`;
     return branch(theme, expanded ? String(message.content) : (d.last ?? ""), head);
   });
-  // One line, like pi-polish's shell rows; expanded (ctrl+o) shows the whole text, wrapped under the row
+  // One line; expanded (ctrl+o) shows the whole text, wrapped under the row
   const row = (theme: any, text: string, context: any, full = text) => ({
     invalidate() {},
     render(width: number) {

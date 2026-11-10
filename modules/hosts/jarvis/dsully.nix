@@ -34,7 +34,6 @@
     };
 
     pi-coding-agent = {
-      uiExtensions.enable = false;
       settings.packages = [
         "npm:@gotgenes/pi-anthropic-auth"
       ];

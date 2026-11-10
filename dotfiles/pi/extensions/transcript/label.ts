@@ -1,3 +1,5 @@
+import { formatDuration } from "./tail.js";
+
 export type Part = { kind: string; hidden?: boolean };
 export type ThinkingBlock = { type?: string; thinking?: string };
 
@@ -34,8 +36,43 @@ export function collapseThinking<T extends Part>(parts: T[]): T[] {
   return kept;
 }
 
-export function presentThought(current: string | undefined, line: string | undefined): string | undefined {
-  if (!line || !current || /Thinking/.test(current)) return undefined;
-  const duration = current.match(/· \d+(?:\.\d+)?s$/)?.[0];
-  return `│ * Thought: ${line}${duration ? ` ${duration}` : ""}`;
+const SPINNER = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+const SPINNER_MS = 80;
+
+/** Thinking is live while the message streams and nothing has followed the thinking yet. */
+export function thinkingLive(content: readonly ThinkingBlock[] | undefined, isStreaming: boolean): boolean {
+  return isStreaming && content?.at(-1)?.type === "thinking";
+}
+
+export function thoughtLabel(
+  line: string | undefined,
+  live: boolean,
+  elapsedMs: number | undefined,
+  count = 1,
+): string {
+  const times = count > 1 ? ` ×${count}` : "";
+  if (live) return `${SPINNER[Math.floor((elapsedMs ?? 0) / SPINNER_MS) % SPINNER.length]} Thinking…${times}`;
+  const duration = elapsedMs === undefined ? "" : ` · ${formatDuration(elapsedMs)}`;
+  return `* Thought${times}${line ? `: ${line}` : ""}${duration}`;
+}
+
+/** A later round of a turn: its thinking shows on the turn's first thought line, so none of it draws here. */
+export function withoutThinking<T extends Part>(parts: T[]): T[] {
+  const kept = parts.filter((part) => part.kind !== "thinking");
+  const drawn = (part: T | undefined) => part?.kind === "text" || part?.kind === "error";
+  return kept.filter((part, index) => part.kind !== "spacer" || drawn(kept[index + 1]));
+}
+
+/** Silent mode keeps only answers: a message that calls tools shows nothing, an answer loses its thinking. */
+export function silentParts<T extends Part>(parts: T[]): T[] {
+  const callsTools = parts.some((part) => part.kind === "toolCalls" && (part as { present?: boolean }).present);
+  const kept = parts.filter((part) =>
+    callsTools ? part.kind === "toolCalls" || part.kind === "error" : part.kind !== "thinking",
+  );
+  const out: T[] = [];
+  for (const part of kept) {
+    if (part.kind === "spacer" && out.at(-1)?.kind === "spacer") continue;
+    out.push(part);
+  }
+  return out;
 }
