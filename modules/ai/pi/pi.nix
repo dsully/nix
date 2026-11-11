@@ -326,8 +326,10 @@ in
 
                   ln -sfn "$_new" "$_base/current"
 
+                  # A running pi spawns subagents from its own execPath, so keep builds still in use.
                   for _b in "$_base"/build-*; do
-                    [[ $_b == "$_new" || $_b == "$_prev" ]] || rm -rf "$_b"
+                    [[ $_b == "$_new" || $_b == "$_prev" ]] && continue
+                    ${pkgs.lsof}/bin/lsof -t -- "$_b/pi-bin" >/dev/null 2>&1 || rm -rf "$_b"
                   done
 
                 else
