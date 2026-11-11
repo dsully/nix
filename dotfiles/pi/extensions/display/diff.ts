@@ -121,34 +121,44 @@ export function trimContext(lines: DiffLine[], keep: number): DiffLine[] {
 
 const SGR = /\x1b\[([0-9;]*)m/y;
 
-/** Wraps visible character ranges of an ANSI string in `open`/`close`. */
+/** Wraps visible character ranges of an ANSI string in `open`/`close`, reopening after a reset inside a range. */
 export function markRanges(ansi: string, ranges: readonly Range[], open: string, close: string): string {
   if (!ranges.length) return ansi;
   let out = "";
   let visible = 0;
   let r = 0;
+  let inside = false;
   for (let i = 0; i < ansi.length;) {
     SGR.lastIndex = i;
     const sgr = SGR.exec(ansi);
     if (sgr) {
       out += sgr[0];
       i += sgr[0].length;
+      if (inside && resetsBackground(sgr[1]!)) out += open;
       continue;
     }
     while (r < ranges.length && ranges[r]![1] <= visible) r++;
-    if (r < ranges.length && ranges[r]![0] === visible) out += open;
+    if (r < ranges.length && ranges[r]![0] === visible) {
+      out += open;
+      inside = true;
+    }
     out += ansi[i];
     i++;
     visible++;
-    if (r < ranges.length && ranges[r]![1] === visible) out += close;
+    if (r < ranges.length && ranges[r]![1] === visible) {
+      out += close;
+      inside = false;
+    }
   }
   return out;
 }
 
 /** Puts `bg` back after every SGR that resets the background, so a band survives inner styling. */
 export function keepBackground(ansi: string, bg: string): string {
-  return ansi.replace(/\x1b\[([0-9;]*)m/g, (sgr, params: string) => {
-    const codes = params.split(";");
-    return params === "" || codes.includes("0") || codes.includes("49") ? sgr + bg : sgr;
-  });
+  return ansi.replace(/\x1b\[([0-9;]*)m/g, (sgr, params: string) => (resetsBackground(params) ? sgr + bg : sgr));
+}
+
+function resetsBackground(params: string): boolean {
+  const codes = params.split(";");
+  return params === "" || codes.includes("0") || codes.includes("49");
 }

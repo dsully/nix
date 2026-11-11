@@ -53,6 +53,11 @@ test("marks land on visible characters, skipping escape codes", () => {
   expect(markRanges(ansi, [[1, 3]], "[", "]")).toBe("\x1b[31ma[b\x1b[39mc]d");
 });
 
+test("a mark reopens after a reset inside it", () => {
+  expect(markRanges("ab\x1b[0mcd", [[1, 3]], "[", "]")).toBe("a[b\x1b[0m[c]d");
+  expect(markRanges("ab\x1b[0mcd", [[0, 2]], "[", "]")).toBe("[ab]\x1b[0mcd");
+});
+
 test("a band background survives inner resets", () => {
   expect(keepBackground("a\x1b[0mb", "BG")).toBe("a\x1b[0mBGb");
   expect(keepBackground("a\x1b[39mb", "BG")).toBe("a\x1b[39mb");

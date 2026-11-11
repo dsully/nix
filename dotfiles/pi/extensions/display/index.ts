@@ -1,8 +1,11 @@
+import { homedir } from "node:os";
+import { resolve } from "node:path";
 import { AssistantMessageComponent, type ExtensionAPI, type ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { type Component, Container, truncateToWidth } from "@earendil-works/pi-tui";
 import { patchMethod } from "../lib/patch.js";
 import { textOf } from "../lib/text.js";
 import { callLabel, EDIT_TOOLS, glyphOf, OWN_TOOLS, shortPath } from "./call.js";
+import { grepRows, listRows, matchRanges, readRows } from "./code.js";
 import { type DiffLine, markWords, parseUnified, patchPath, trimContext } from "./diff.js";
 import {
   collapseThinking,
@@ -16,17 +19,23 @@ import {
 } from "./label.js";
 import { nestedResultLines } from "./nested.js";
 import { answeredQuestions, askedQuestions } from "./question.js";
+import { llaTheme } from "./lla.js";
 import {
   diffLines,
   empty,
   framed,
   glyphLine,
   glyphMark,
+  grepView,
   lines,
+  listView,
+  readView,
+  shellView,
   type Status,
   tailLine,
   type Theme,
   theirs,
+  type View,
 } from "./rows.js";
 import { lookKind, type Run, Runs, runSummary } from "./runs.js";
 import { type Turn, Turns } from "./turns.js";
@@ -122,14 +131,19 @@ export default function display(pi: ExtensionAPI) {
 
   const runRow = (run: Run, theme: Theme): Component =>
     lines((width) => {
-      const failed = run.members.filter((m) => m.error).length;
-      const note = failed ? theme.fg("error", ` · ${failed} failed`) : "";
+      const failed = run.members.filter((m) => m.error);
+      const note = failed.length ? theme.fg("error", ` · ${failed.length} failed`) : "";
+      const failures = failed.map((m) => tailLine(theme, { text: m.label, tone: "error" }, width));
       const active = [...run.members].reverse().find((m) => !m.done);
       if (!active)
-        return [glyphLine(theme, RUN_GLYPH, failed ? "failed" : "done", runSummary(run.members, false), width, note)];
+        return [
+          glyphLine(theme, RUN_GLYPH, failed.length ? "failed" : "done", runSummary(run.members, false), width, note),
+          ...failures,
+        ];
       const time = theme.fg("dim", ` · ${formatDuration(Date.now() - run.startedAt)}`);
       return [
         glyphLine(theme, RUN_GLYPH, "running", `${runSummary(run.members, true)}…`, width, time + note),
+        ...failures,
         tailLine(theme, { text: active.label, tone: "dim" }, width),
       ];
     });
@@ -169,18 +183,35 @@ export default function display(pi: ExtensionAPI) {
   const header = (toolName: string, theme: Theme, ctx: Ctx, details?: any) => (width: number) =>
     glyphLine(theme, glyphOf(toolName), status(ctx), rowLabel(toolName, ctx, details), width);
 
-  const plainBody = (result: Result, theme: Theme): Component => {
+  const plainBody = (result: Result, theme: Theme, color = "toolOutput"): Component => {
     const text = textOf(result.content);
     return lines((width) =>
       text
         ? text
             .split("\n")
             .slice(0, 200)
-            .map((line) => truncateToWidth(`  ${theme.fg("toolOutput", line)}`, width))
+            .map((line) => truncateToWidth(`  ${theme.fg(color, line)}`, width))
         : [],
     );
   };
 
+  /** Colored bodies for an expanded read, grep or ls; undefined leaves the tool's own renderer. */
+  const expandedView = (toolName: string, result: Result, theme: Theme, ctx: Ctx): View | undefined => {
+    const text = textOf(result.content);
+    if (toolName === "read") {
+      const rows = readRows(text, typeof result.details?.offset === "number" ? result.details.offset : 1);
+      return rows && readView(theme, rows, ctx.args?.path);
+    }
+    if (toolName === "grep") {
+      const rows = grepRows(text);
+      return rows && grepView(theme, rows, (line) => matchRanges(line, ctx.args));
+    }
+    if (toolName === "ls") {
+      const path = typeof ctx.args?.path === "string" ? ctx.args.path.replace(/^~(?=\/|$)/, homedir()) : ".";
+      return listView(theme, listRows(text), resolve(ctx.cwd, path), llaTheme());
+    }
+    return undefined;
+  };
   /** Rows drawn here: the call while it runs; once settled, the result draws the header, its ⎿ line and any diff. */
   const ownTool = (toolName: string, own: Renderers | undefined): Renderers => {
     const writes = EDIT_TOOLS.has(toolName) || toolName === "write";
@@ -192,16 +223,23 @@ export default function display(pi: ExtensionAPI) {
         const folded = fold(toolName, args, ctx);
         if (folded === "hidden") return empty();
         if (folded === "lead") return runRow(runs.get(ctx.toolCallId)!, theme);
-        if (ctx.expanded && !writes && own?.renderCall) return framed(own.renderCall(args, theme, unframed(ctx)), "  ");
+        const mark = glyphMark(theme, glyphOf(toolName), status(ctx));
+        if (ctx.expanded && toolName === "bash" && typeof args?.command === "string")
+          return lines(shellView(mark, args.command));
+        if (ctx.expanded && !writes && own?.renderCall) return framed(own.renderCall(args, theme, unframed(ctx)), mark);
         if (!ctx.isPartial && !(ctx.expanded && !writes)) return empty();
         return lines((width) => [header(toolName, theme, ctx)(width)]);
       },
       renderResult(result, options, theme, ctx) {
         if (silent || fold(toolName, ctx.args, ctx)) return empty();
-        if (ctx.expanded && !writes)
+        if (ctx.expanded && !writes) {
+          if (ctx.isError) return plainBody(result, theme, "error");
+          const view = expandedView(toolName, result, theme, ctx);
+          if (view) return lines(view);
           return own?.renderResult
             ? framed(own.renderResult(result, options, theme, unframed(ctx)), "  ")
             : plainBody(result, theme);
+        }
         const tail = resultTail({
           toolName,
           args: ctx.args,
