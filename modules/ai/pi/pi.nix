@@ -408,8 +408,8 @@ in
                 patch = ./pi-magic-context-drop-omp-loader.patch;
               }
               {
-                pkg = "pi-context-view";
-                patch = ./pi-context-view-local-idle-age.patch;
+                pkg = "@juicesharp/rpiv-ask-user-question";
+                patch = ./pi-ask-user-question-blocked-status.patch;
               }
             ];
             # pi writes settings.json itself (model, theme, `pi install`); Nix values win on each switch.

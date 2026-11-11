@@ -1,0 +1,26 @@
+--- a/ask-user-question.ts
++++ b/ask-user-question.ts
+@@ -308,12 +308,14 @@
+ 	// may emit `setHidden` only when it was actually registered; otherwise collapse falls
+ 	// back to the visible one-line row.
+ 	const canReopenWhileHidden = removeOverlayInputListener !== undefined;
++	const blocked = { kind: "question" as const, message: config.typed.questions[0]?.question };
+ 	try {
+ 		return await ctx.ui.custom<QuestionnaireResult>(
+ 			makeSessionFactory({ ...config, canReopenWhileHidden, sessionRef }),
+ 			presentation.overlay
+ 				? {
+ 						overlay: true,
++						blocked,
+ 						overlayOptions: {
+ 							anchor: "bottom-center",
+ 							width: "100%",
+@@ -325,7 +327,7 @@
+ 							sessionRef.current?.setOverlayHandle(handle);
+ 						},
+ 					}
+-				: { overlay: false },
++				: { overlay: false, blocked },
+ 		);
+ 	} finally {
+ 		removeOverlayInputListener?.();
