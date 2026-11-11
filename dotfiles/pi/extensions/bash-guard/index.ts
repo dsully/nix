@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createBashToolDefinition, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { applyInlineFlags } from "./grep-flags.js";
 import { interception } from "./interceptor.js";
 import { searchesTooBroadly } from "./root-search.js";
 import { type Translation, translate } from "./translate.js";
@@ -33,6 +34,7 @@ export default function (pi: ExtensionAPI) {
   };
 
   pi.on("tool_call", async (event) => {
+    if (event.toolName === "grep") return applyInlineFlags(event.input as Record<string, unknown>);
     const command = (event.input as { command?: unknown }).command;
     if (typeof command !== "string") return;
     // Any tool taking a shell command (bash, bg_run) is checked for root searches.
