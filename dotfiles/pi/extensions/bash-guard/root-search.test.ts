@@ -23,6 +23,13 @@ test.each([
   "sudo fd foo /nix",
   "rg pattern /nix/store",
   "grep -r foo /nix/store/* | head",
+  "rg -m 1 foo /",
+  "rg --max-count=1 foo '/'",
+  "grep -rm1 foo / | head",
+  "grep -r x / --include=*.nix | wc -l && fd foo .",
+  "rg -n foo / | wc -l",
+  "rg -c foo /",
+  'grep -rl x "/"',
 ])("blocks %p", (command) => {
   expect(searchesTooBroadly(command)).toBe(true);
 });
@@ -37,7 +44,10 @@ test.each([
   "fd -e nix foo ~/dev",
   "locate foo",
   "rg 'find /' docs",
-  "grep -r x / --include=*.nix | wc -l && fd foo .",
+  "rg -m 1 foo /tmp",
+  "rg -m 1 foo src",
+  'rg "a /" src',
+  "grep -r x /etc",
   "fd foo /nix/store/abc123-hello-2.12",
   "find /nix/store/abc123-hello-2.12/bin -type f",
   "rg foo $(nix eval --raw .#hello.outPath)",

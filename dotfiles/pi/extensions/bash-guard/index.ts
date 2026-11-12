@@ -1,3 +1,4 @@
+import { statSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createBashToolDefinition, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
@@ -7,7 +8,7 @@ import { searchesTooBroadly } from "./root-search.js";
 import { type Translation, translate } from "./translate.js";
 
 const ROOT_SEARCH_REASON = [
-  "Searching from / (find, fd) or all of /nix/store (find, fd, rg, grep) is not allowed.",
+  "Searching from / or all of /nix/store (find, fd, rg, grep) is not allowed.",
   "For Nix files or derivations: `nix-locate <path>` finds the package that provides a file,",
   "`nix search nixpkgs <name>` finds packages, `nix eval --raw <flake>#<pkg>.outPath` or `nix path-info <installable>`",
   "gives a store path, and `nix-store -qR <path>` lists its closure; search inside that path, never all of /nix/store.",
@@ -21,6 +22,10 @@ async function tailOffset(file: string, lines: number): Promise<number | undefin
   return Math.max(1, total - lines + 1);
 }
 
+function isFile(path: string): boolean {
+  return statSync(path, { throwIfNoEntry: false })?.isFile() ?? false;
+}
+
 async function nativeArgs(translation: Translation, cwd: string): Promise<Translation["args"]> {
   if (translation.tailLines === undefined) return translation.args;
   const offset = await tailOffset(resolve(cwd, String(translation.args.path)), translation.tailLines);
@@ -28,18 +33,20 @@ async function nativeArgs(translation: Translation, cwd: string): Promise<Transl
 }
 
 export default function (pi: ExtensionAPI) {
-  const redirect = (command: string): Translation | undefined => {
+  const redirect = (command: string, cwd: string): Translation | undefined => {
     const translation = translate(command);
-    return translation && pi.getActiveTools().includes(translation.tool) ? translation : undefined;
+    if (!translation || !pi.getActiveTools().includes(translation.tool)) return undefined;
+    if (translation.fileOnly && !isFile(resolve(cwd, String(translation.args.path)))) return undefined;
+    return translation;
   };
 
-  pi.on("tool_call", async (event) => {
+  pi.on("tool_call", async (event, ctx) => {
     if (event.toolName === "grep") return applyInlineFlags(event.input as Record<string, unknown>);
     const command = (event.input as { command?: unknown }).command;
     if (typeof command !== "string") return;
     // Any tool taking a shell command (bash, bg_run) is checked for root searches.
     if (searchesTooBroadly(command)) return { block: true, reason: ROOT_SEARCH_REASON };
-    if (event.toolName !== "bash" || redirect(command)) return;
+    if (event.toolName !== "bash" || redirect(command, ctx.cwd)) return;
     const reason = interception(command, pi.getActiveTools());
     if (reason) return { block: true, reason };
   });
@@ -50,7 +57,7 @@ export default function (pi: ExtensionAPI) {
   pi.registerTool({
     ...bash,
     async execute(toolCallId, params, signal, onUpdate, ctx) {
-      const translation = redirect(params.command);
+      const translation = redirect(params.command, ctx.cwd);
       if (!translation) return createBashToolDefinition(ctx.cwd).execute(toolCallId, params, signal, onUpdate, ctx);
       const args = await nativeArgs(translation, ctx.cwd);
       const outcome = await ctx.executeTool(translation.tool, args, { signal });

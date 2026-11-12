@@ -1,10 +1,13 @@
 import { breToRegex } from "./bre.js";
+import { extractFlatShellCommandSegments } from "./shell-tokenize.js";
 
 export interface Translation {
   tool: "read" | "grep" | "find";
   args: Record<string, string | number | boolean>;
   /** For `tail -N`: the caller turns this into a read offset once it knows the file length. */
   tailLines?: number;
+  /** `limit` came from a per-file max count, so it is exact only when `path` names a file. */
+  fileOnly?: boolean;
 }
 
 const UNQUOTED_SPECIAL = /[\\$`[\]{}()<>|;&~#!\n'"]/;
@@ -50,7 +53,7 @@ function positiveCount(value: string | undefined): number | undefined {
   return n > 0 ? n : undefined;
 }
 
-function translateHeadTail(command: "head" | "tail", args: string[]): Translation | undefined {
+function lineArgs(args: string[]): { spec: string; files: string[] } | undefined {
   let spec: string | undefined = "10";
   const files: string[] = [];
   for (let i = 0; i < args.length; i++) {
@@ -62,8 +65,14 @@ function translateHeadTail(command: "head" | "tail", args: string[]): Translatio
     else if (word.startsWith("-")) return undefined;
     else files.push(word);
   }
-  if (files.length !== 1 || spec === undefined) return undefined;
-  const path = files[0];
+  return spec === undefined ? undefined : { spec, files };
+}
+
+function translateHeadTail(command: "head" | "tail", args: string[]): Translation | undefined {
+  const parsed = lineArgs(args);
+  if (parsed?.files.length !== 1) return undefined;
+  const { spec } = parsed;
+  const path = parsed.files[0];
   if (command === "tail" && spec.startsWith("+")) {
     const offset = positiveCount(spec.slice(1));
     return offset ? { tool: "read", args: { path, offset } } : undefined;
@@ -84,6 +93,7 @@ function translateSearch(command: "rg" | "grep", args: string[]): Translation | 
   let extended = command === "rg";
   let recursive = command === "rg";
   let context: number | undefined;
+  let maxCount: number | undefined;
   let glob: string | undefined;
   const positional: string[] = [];
 
@@ -95,6 +105,10 @@ function translateSearch(command: "rg" | "grep", args: string[]): Translation | 
   const setContext = (value: string | undefined): boolean => {
     context = positiveCount(value);
     return context !== undefined;
+  };
+  const setMaxCount = (value: string | undefined): boolean => {
+    maxCount = positiveCount(value);
+    return maxCount !== undefined;
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -118,6 +132,12 @@ function translateSearch(command: "rg" | "grep", args: string[]): Translation | 
       if (!setContext(word.slice("--context=".length))) return undefined;
     } else if (/^-C\d+$/.test(word)) {
       if (!setContext(word.slice(2))) return undefined;
+    } else if (word === "-m" || word === "--max-count") {
+      if (!setMaxCount(args[++i])) return undefined;
+    } else if (word.startsWith("--max-count=")) {
+      if (!setMaxCount(word.slice("--max-count=".length))) return undefined;
+    } else if (/^-m\d+$/.test(word)) {
+      if (!setMaxCount(word.slice(2))) return undefined;
     } else if (command === "rg" && (word === "-g" || word === "--glob")) {
       if (!setGlob(args[++i])) return undefined;
     } else if (command === "rg" && word.startsWith("--glob=")) {
@@ -148,7 +168,10 @@ function translateSearch(command: "rg" | "grep", args: string[]): Translation | 
   if (literal) result.literal = true;
   if (context !== undefined) result.context = context;
   if (glob !== undefined) result.glob = glob;
-  return { tool: "grep", args: result };
+  if (maxCount === undefined) return { tool: "grep", args: result };
+  if (result.path === undefined) return undefined;
+  result.limit = maxCount;
+  return { tool: "grep", args: result, fileOnly: true };
 }
 
 function translateFind(args: string[]): Translation | undefined {
@@ -199,8 +222,7 @@ function translateFd(args: string[]): Translation | undefined {
   return { tool: "find", args: path === undefined ? { pattern } : { pattern, path } };
 }
 
-/** Maps a single simple cat/head/tail/rg/grep/find/fd command to the equivalent native tool call. */
-export function translate(command: string): Translation | undefined {
+function translateSimple(command: string): Translation | undefined {
   const words = shellWords(command);
   if (!words || words.length === 0) return undefined;
   const [name, ...args] = words;
@@ -220,4 +242,30 @@ export function translate(command: string): Translation | undefined {
     default:
       return undefined;
   }
+}
+
+function headCount(stage: string): number | undefined {
+  const words = shellWords(stage);
+  if (words?.[0] !== "head") return undefined;
+  const parsed = lineArgs(words.slice(1));
+  return parsed?.files.length === 0 ? positiveCount(parsed.spec) : undefined;
+}
+
+function withLimit(translation: Translation, count: number): Translation | undefined {
+  // `head` counts grep context lines; the grep tool's `limit` counts only matching lines.
+  if (translation.args.context !== undefined) return undefined;
+  const { limit } = translation.args;
+  return { ...translation, args: { ...translation.args, limit: typeof limit === "number" ? Math.min(limit, count) : count } };
+}
+
+/** Maps a simple cat/head/tail/rg/grep/find/fd command, optionally piped into `head`, to the equivalent native tool call. */
+export function translate(command: string): Translation | undefined {
+  const stages = extractFlatShellCommandSegments(command);
+  if (stages.length !== 2) return translateSimple(command);
+  const [source, head] = stages;
+  const pipe = command.slice(command.indexOf(source.text) + source.text.length, command.lastIndexOf(head.text));
+  if (!head.pipedStdin || pipe.trim() !== "|") return undefined;
+  const translation = translateSimple(source.text);
+  const count = headCount(head.text);
+  return translation && count ? withLimit(translation, count) : undefined;
 }
