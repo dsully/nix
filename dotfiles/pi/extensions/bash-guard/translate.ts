@@ -1,3 +1,5 @@
+import { breToRegex } from "./bre.js";
+
 export interface Translation {
   tool: "read" | "grep" | "find";
   args: Record<string, string | number | boolean>;
@@ -75,8 +77,6 @@ function translateHeadTail(command: "head" | "tail", args: string[]): Translatio
 
 // rg's `-E` is --encoding, so `E` is accepted only for grep.
 const SEARCH_SHORT_FLAGS = { rg: "iFn", grep: "iFnrRE" };
-// Characters that are literal in a grep basic regex but operators in ripgrep's syntax.
-const BRE_MISMATCH = /[\\+?|(){}]/;
 
 function translateSearch(command: "rg" | "grep", args: string[]): Translation | undefined {
   let ignoreCase = false;
@@ -139,9 +139,10 @@ function translateSearch(command: "rg" | "grep", args: string[]): Translation | 
   if (pattern === undefined || paths.length > 1 || paths.includes("-")) return undefined;
   // grep without a path reads stdin unless it searches recursively.
   if (command === "grep" && paths.length === 0 && !recursive) return undefined;
-  if (!extended && !literal && BRE_MISMATCH.test(pattern)) return undefined;
+  const regex = extended || literal ? pattern : breToRegex(pattern);
+  if (regex === undefined) return undefined;
 
-  const result: Translation["args"] = { pattern };
+  const result: Translation["args"] = { pattern: regex };
   if (paths[0] !== undefined) result.path = paths[0];
   if (ignoreCase) result.ignoreCase = true;
   if (literal) result.literal = true;
