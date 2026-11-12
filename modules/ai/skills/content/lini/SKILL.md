@@ -37,7 +37,7 @@ A file is **one optional `{ }` stylesheet, then drawn statements** in source
 order. The stylesheet configures and styles; it draws nothing, and must come
 first.
 
-```
+```text
 {                                          // the stylesheet — setup only
   layout: grid;  columns: repeat(2);  gap: 30;   // scene config (root declarations)
   --brand: #ff6600;                        // a themeable colour variable
@@ -192,7 +192,7 @@ is its own child — `opacity: 0.75`. `href: "url"` makes anything clickable;
 
 ## Links
 
-```
+```text
 a -> b                          // 1 link (labels boxes into existence)
 a -> b -> c                     // chain: 2 links, every hop marked
 a -> b & c                      // fan-out — shares one trunk at a's side
@@ -280,7 +280,7 @@ identically inside each.
 
 ### Tables & entities
 
-```
+```text
 |table#basket| { columns: 80, 140, 80; align: start, center, end; } [
   "Fruit" "Quantity" "Notes"       // first row → header band
   "Apple" "12"       "fresh"
@@ -320,7 +320,7 @@ or auto-created on first use), messages top-to-bottom in source order. `->`
 call (opens an activation bar) · `-->` return (closes it) · `~>` async ·
 `a -> a` self-message. A participant's own paint colours its lifeline and bars.
 
-```
+```text
 { layout: sequence; }
 |box#user| "Customer" { fill: --rose-wash; stroke: --rose-deep; } [
   |icon| { symbol: user; fill: none; stroke: --rose-deep; }
@@ -348,7 +348,7 @@ its label on the symbol name.
 A chart fixes a shared scale from all children, then draws. Default size
 360×220 (`width`/`height` set the whole box); radial/pie default 280 square.
 
-```
+```text
 |chart| "Cycle time (s)" { categories: "15", "30", "50"; } [
   |bars| "1.8 kW" { data: 9, 15, 24; }
   |bars| "2.3 kW" { data: 7, 13, 20; }
@@ -395,7 +395,7 @@ centre, so shapes stack concentric; a `|sketch|`'s is its **pen origin**, so sev
 sketches keep the frame they were drawn in — which flow throws away. Reach for it for
 artwork (a logo), a hand-placed figure, or a diagram tuned past what an arranger will do.
 
-```
+```text
 { layout: stack; unit: mm; density: 10; padding: 25; cap = 0.9; bowl = 2.5; }
 |sketch#n| { draw: move(0, -3.4) arc(3.4, 3.4, 3.4) down(bowl) arc(cap, 180) up(bowl); mirror: y-axis; }
 |sketch#dots| { draw: move(11, -9) down(1) arc(cap, -180) up(1) arc(cap, -180) close(); pattern: grid(1, 3, 0, 3); }
@@ -416,7 +416,7 @@ identically in both; only a drawing draws a fused mirror's centreline.
 links become dimensions/leaders; **measured values are computed from the
 geometry** — never type a number a dimension can read. No auto-create.
 
-```
+```text
 { layout: drawing; }
 |rect#plate| { width: 120; height: 70; } [
   |hole#pin| { width: 10; translate: -35 20; pattern: grid(2, 1, 70, 0); }
@@ -492,8 +492,8 @@ plate.pin.2 <- "THRU"                          // leader to the 2nd pattern copy
   and `scale:` on the drawing / stack scope (the root itself when it is one).
 - Sheets: the root stays flow; views are `|drawing|` children of a `|page|`:
   `|page| { sheet: a4; align: origin } [ |drawing#side| "Title" { scale: 2 } [ … ]
-  side.a (-) side.b   |title-block| { title: "…"; drawing-number: "…"; revision:
-  "A"; sheet-number: "1/1"; date: "…"; author: "…"; } [ |image| { src: "logo.svg";
+  side.a (-) side.b   \|title-block\| { title: "…"; drawing-number: "…"; revision:
+  "A"; sheet-number: "1/1"; date: "…"; author: "…"; } [ \|image\| { src: "logo.svg";
   cell: 3 3; width: 12; height: 12 } ] ]` (authored cells seat after the
   generated fields; dimensions sit in the view or on the page). Multi-view rows
   share axes with `align: origin`, and an unmarked `-` between anchors in
@@ -519,7 +519,7 @@ same datum, `scale:`/`unit:`, anchors and dimensions. Build it in four passes:
 **walls → openings → fixtures → dimensions**. Sizes you type are drawing units;
 every *built-in* size is true physical mm converted through `unit:`.
 
-```
+```text
 { layout: floorplan; unit: m; scale: 0.02 }     // 1:50 — 80 px per metre
 
 |wall#outer| {                                  // draw: is the CENTRELINE
@@ -626,7 +626,7 @@ beside it, since no part's ink ever moves another part. **A schematic's
 col row` is ordinal — empty tracks collapse. `clearance` is 10 (past the
 `pin-pitch` 20 it errors). No auto-create — unknown bare ids error.
 
-```
+```text
 { layout: schematic; |vcc::label| { symbol: power } [ "5V" ] }
 |component#u1| "AMS1117-3.3" [
   |pin#vin| { side: left; number: 3; }
