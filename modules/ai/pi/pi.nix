@@ -419,7 +419,7 @@ in
 
             magicContext = {
               # Keep the 1M window as headroom, but reduce as if it were ~250K.
-              execute_threshold_tokens."${ai.models.large.provider}/${ai.models.large.model}" = lib.mkDefault 250000;
+              execute_threshold_tokens.${ai.models.large.model} = lib.mkDefault 250000;
 
               historian.pi.model = lib.mkDefault "${ai.models.small.provider}/${ai.models.small.model}";
             };
