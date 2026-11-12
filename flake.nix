@@ -49,9 +49,6 @@
     beautiful-rust.url = "github:morganlinton/BeautifulRust";
     beautiful-rust.flake = false;
 
-    claude-plugins-official.url = "github:anthropics/claude-plugins-official";
-    claude-plugins-official.flake = false;
-
     improve.url = "github:shadcn/improve";
     improve.flake = false;
 
@@ -63,9 +60,6 @@
 
     ponytail.url = "github:DietrichGebert/ponytail";
     ponytail.flake = false;
-
-    softaworks.url = "github:softaworks/agent-toolkit";
-    softaworks.flake = false;
 
     wshobson-agents.url = "github:wshobson/agents";
     wshobson-agents.flake = false;

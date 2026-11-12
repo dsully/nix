@@ -209,12 +209,13 @@ in
             ];
             manual =
               [
-                "cleanup"
-                "comment-sicko"
+                "comment-analyzer"
                 "dead-code-finder"
                 "just"
                 "prompt-optimizer"
+                "refactor-clean"
                 "tailscale"
+                "tech-debt"
                 "visual-explainer"
               ]
               ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin "swiftui";

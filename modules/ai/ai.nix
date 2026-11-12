@@ -1,13 +1,12 @@
 {
   mkUserModule,
   config,
-  inputs,
   lib,
   my,
   pkgs,
   ...
 }: let
-  ai = import ./shared/registry.nix {inherit config inputs lib my pkgs;};
+  ai = import ./shared/registry.nix {inherit config lib my pkgs;};
 in
   mkUserModule {
     name = "ai";

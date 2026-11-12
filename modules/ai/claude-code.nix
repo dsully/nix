@@ -154,12 +154,9 @@ in
 
             enableMcpIntegration = true;
 
-            inherit (ai) agents commands outputStyles;
+            inherit (ai) outputStyles;
             inherit settings;
 
-            # The curated official-marketplace agents/commands are delivered through
-            # the native `agents`/`commands` options above rather than Claude's
-            # native loader.
             marketplaces = {
               inherit (inputs) ponytail;
             };

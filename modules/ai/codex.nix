@@ -6,8 +6,6 @@
   pkgs,
   ...
 }: let
-  codexAgentRoles = lib.mapAttrs (_: description: {inherit description;}) ai.descriptions;
-
   # The home-manager Codex module merges `settings.mcp_servers` over entries
   # generated from `programs.mcp.servers`, but the merge is shallow per server
   # name, so each entry here must be complete rather than a partial overlay.
@@ -61,7 +59,6 @@ in
             '';
 
             settings = {
-              agents = codexAgentRoles;
               analytics.enabled = false;
               approval_policy = "on-request";
 

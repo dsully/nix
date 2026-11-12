@@ -70,22 +70,6 @@
         "type": "github"
       }
     },
-    "claude-plugins-official": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1794348076,
-        "narHash": "sha256-zgguBu2cDFU0hwgpWlG8baZhmFIwUS4pLl0pO3WAF20=",
-        "owner": "anthropics",
-        "repo": "claude-plugins-official",
-        "rev": "43fd1f9db0941b2b83cb62268e35970d4a67c202",
-        "type": "github"
-      },
-      "original": {
-        "owner": "anthropics",
-        "repo": "claude-plugins-official",
-        "type": "github"
-      }
-    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -252,11 +236,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1794397294,
-        "narHash": "sha256-ldRd1UWymZ+B1ngo5vNM2WYUbUYE0p8yTY6XIZJoc7A=",
+        "lastModified": 1794443360,
+        "narHash": "sha256-85i3FCdmdTuY9VP2aJ0vDuowjvLIfzB5s2M5MPaSY2A=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "3c4f3e7ccf54c7279659536160f9c58de38073c1",
+        "rev": "452b5267b51c8d70b34c1d14cd7d49ce432308f1",
         "type": "github"
       },
       "original": {
@@ -399,11 +383,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1793977579,
-        "narHash": "sha256-WrSODdZFVIs/Hh2NzC0bY+ROByi0bATg8WfePX8dPj8=",
+        "lastModified": 1794041552,
+        "narHash": "sha256-MVSrPp7q0OSbEsr2N8NWHrc0+MfIQS1r9TgFxnd3jXM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "4fe25e12eb9f4c744966dd3de5a05246cf098601",
+        "rev": "085af13c1607f4f73ab1e7a51071faf6577a7e87",
         "type": "github"
       },
       "original": {
@@ -512,10 +496,10 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1794371922,
-        "narHash": "sha256-zfURQQ+Misazkc5Wr8IWOmtmhgUD/6SW4OV0fEMxcAQ=",
+        "lastModified": 1794432956,
+        "narHash": "sha256-tPX+QDfTaR4tEWQSNrMq48gefFmw3ZN8L/frj0f1USQ=",
         "type": "tarball",
-        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1794371922-g89ffd0.tar.gz"
+        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1794432956-gaa2db1.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -526,7 +510,6 @@
       "inputs": {
         "agent-skills": "agent-skills",
         "beautiful-rust": "beautiful-rust",
-        "claude-plugins-official": "claude-plugins-official",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
@@ -542,25 +525,8 @@
         "opnix": "opnix",
         "ponytail": "ponytail",
         "rex": "rex",
-        "softaworks": "softaworks",
         "system-manager": "system-manager",
         "wshobson-agents": "wshobson-agents"
-      }
-    },
-    "softaworks": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1772729184,
-        "narHash": "sha256-1q4IP55kvZhJibTLJct0SSifw46lBmAQhp9nSmDzYxs=",
-        "owner": "softaworks",
-        "repo": "agent-toolkit",
-        "rev": "3027f20f3181758385a1bb8c022d4041dfb4de84",
-        "type": "github"
-      },
-      "original": {
-        "owner": "softaworks",
-        "repo": "agent-toolkit",
-        "type": "github"
       }
     },
     "system-manager": {

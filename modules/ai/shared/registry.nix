@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   my,
   pkgs,
@@ -158,32 +157,6 @@
     };
   };
 
-  # Curated agents/commands pulled verbatim from pinned marketplace inputs and
-  # handed to each tool's native `agents`/`commands` option. The `anthropic-`
-  # prefix namespaces claude-plugins-official agents to avoid name clashes.
-  #
-  # These are *sources*: interpolating a flake input yields a plain string, and
-  # the `agents`/`commands` options are `either lines path` — a string is taken
-  # as file content, so passing the interpolation directly writes the store path
-  # into the file instead of the agent. Read them (below) to get real content.
-  agentSources = {
-    codebase-pattern-finder = "${inputs.softaworks}/agents/codebase-pattern-finder.md";
-    code-explorer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-explorer.md";
-    code-reviewer = "${inputs.claude-plugins-official}/plugins/feature-dev/agents/code-reviewer.md";
-    code-simplifier = "${inputs.claude-plugins-official}/plugins/code-simplifier/agents/code-simplifier.md";
-    comment-analyzer = "${inputs.claude-plugins-official}/plugins/pr-review-toolkit/agents/comment-analyzer.md";
-    debugger = "${inputs.wshobson-agents}/plugins/debugging-toolkit/agents/debugger.md";
-  };
-
-  commandSources = {
-    refactor-clean = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/refactor-clean.md";
-    tech-debt = "${inputs.wshobson-agents}/plugins/code-refactoring/commands/tech-debt.md";
-  };
-
-  agents = lib.mapAttrs (_: builtins.readFile) agentSources;
-  commands = lib.mapAttrs (_: builtins.readFile) commandSources;
-  descriptions = lib.mapAttrs (_: agentDescription) agentSources;
-
   hooks = import ./hooks.nix {inherit config lib pkgs;};
 
   # Servers that must launch directly, never via mcp-mux. indxr serves a
@@ -235,11 +208,8 @@
 in {
   inherit
     agentDescription
-    agents
-    commands
     contextModeVersion
     defaultOutputStyle
-    descriptions
     hooks
     lsp
     models
