@@ -1,9 +1,13 @@
 {
+  aws-lc,
   lib,
   rustPlatform,
   fetchFromGitHub,
   cmake,
   makeWrapper,
+  openssl,
+  pkg-config,
+  zstd,
 }:
 rustPlatform.buildRustPackage rec {
   pname = "mbx";
@@ -20,7 +24,18 @@ rustPlatform.buildRustPackage rec {
   cargoBuildFlags = ["--package" pname];
   doCheck = false;
 
-  nativeBuildInputs = [cmake makeWrapper];
+  nativeBuildInputs = [
+    cmake
+    makeWrapper
+    pkg-config
+  ];
+
+  buildInputs = [
+    aws-lc
+    openssl
+    zstd
+  ];
+
   dontUseCmakeConfigure = true;
 
   # Same shim upstream's flake builds; kept out of bin/ so installing mbx alone doesn't take over cargo.
