@@ -1,3 +1,5 @@
+import { homedir } from "node:os";
+import { resolve } from "node:path";
 import { breToRegex } from "./bre.js";
 import { extractFlatShellCommandSegments } from "./shell-tokenize.js";
 
@@ -8,6 +10,10 @@ export interface Translation {
   tailLines?: number;
   /** `limit` came from a per-file max count, so it is exact only when `path` names a file. */
   fileOnly?: boolean;
+  /** Run once per path (`args.path` unset); `args.limit` caps each run. */
+  paths?: string[];
+  /** Matches allowed across all `paths` runs together, from a piped `head`. */
+  totalLimit?: number;
 }
 
 const UNQUOTED_SPECIAL = /[\\$`[\]{}()<>|;&~#!\n'"]/;
@@ -156,22 +162,24 @@ function translateSearch(command: "rg" | "grep", args: string[]): Translation | 
   }
 
   const [pattern, ...paths] = positional;
-  if (pattern === undefined || paths.length > 1 || paths.includes("-")) return undefined;
+  if (pattern === undefined || paths.includes("-")) return undefined;
   // grep without a path reads stdin unless it searches recursively.
   if (command === "grep" && paths.length === 0 && !recursive) return undefined;
   const regex = extended || literal ? pattern : breToRegex(pattern);
   if (regex === undefined) return undefined;
 
   const result: Translation["args"] = { pattern: regex };
-  if (paths[0] !== undefined) result.path = paths[0];
+  if (paths.length === 1) result.path = paths[0];
   if (ignoreCase) result.ignoreCase = true;
   if (literal) result.literal = true;
   if (context !== undefined) result.context = context;
   if (glob !== undefined) result.glob = glob;
-  if (maxCount === undefined) return { tool: "grep", args: result };
-  if (result.path === undefined) return undefined;
+  const search: Translation = { tool: "grep", args: result };
+  if (paths.length > 1) search.paths = paths;
+  if (maxCount === undefined) return search;
+  if (paths.length === 0) return undefined;
   result.limit = maxCount;
-  return { tool: "grep", args: result, fileOnly: true };
+  return { ...search, fileOnly: true };
 }
 
 function translateFind(args: string[]): Translation | undefined {
@@ -255,11 +263,11 @@ function withLimit(translation: Translation, count: number): Translation | undef
   // `head` counts grep context lines; the grep tool's `limit` counts only matching lines.
   if (translation.args.context !== undefined) return undefined;
   const { limit } = translation.args;
-  return { ...translation, args: { ...translation.args, limit: typeof limit === "number" ? Math.min(limit, count) : count } };
+  const args = { ...translation.args, limit: typeof limit === "number" ? Math.min(limit, count) : count };
+  return translation.paths ? { ...translation, args, totalLimit: count } : { ...translation, args };
 }
 
-/** Maps a simple cat/head/tail/rg/grep/find/fd command, optionally piped into `head`, to the equivalent native tool call. */
-export function translate(command: string): Translation | undefined {
+function translateLookup(command: string): Translation | undefined {
   const stages = extractFlatShellCommandSegments(command);
   if (stages.length !== 2) return translateSimple(command);
   const [source, head] = stages;
@@ -268,4 +276,32 @@ export function translate(command: string): Translation | undefined {
   const translation = translateSimple(source.text);
   const count = headCount(head.text);
   return translation && count ? withLimit(translation, count) : undefined;
+}
+
+const CD_HOME = /^cd\s+~(\/[\w./-]*)?$/;
+
+function cdTarget(segment: string): string | undefined {
+  const home = CD_HOME.exec(segment);
+  if (home) return homedir() + (home[1] ?? "");
+  const words = shellWords(segment);
+  return words?.length === 2 && words[0] === "cd" ? words[1] : undefined;
+}
+/** Returns the command after a leading `cd <cwd> &&` or `cd <cwd>;`, which changes nothing. */
+function withoutCdToCwd(command: string, cwd: string): string | undefined {
+  const [first, second] = extractFlatShellCommandSegments(command);
+  const dir = first && cdTarget(first.text);
+  if (!second || dir === undefined || resolve(cwd, dir) !== resolve(cwd)) return undefined;
+  const firstEnd = command.indexOf(first.text) + first.text.length;
+  const rest = command.indexOf(second.text, firstEnd);
+  const separator = command.slice(firstEnd, rest).trim();
+  return separator === "&&" || separator === ";" ? command.slice(rest) : undefined;
+}
+
+/**
+ * Maps a simple cat/head/tail/rg/grep/find/fd command, optionally piped into `head`, to the equivalent native tool call.
+ * With `cwd`, a leading `cd` into it is dropped first.
+ */
+export function translate(command: string, cwd?: string): Translation | undefined {
+  const lookup = cwd === undefined ? undefined : withoutCdToCwd(command, cwd);
+  return translateLookup(lookup ?? command);
 }

@@ -2,8 +2,10 @@ import { statSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createBashToolDefinition, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { applyInlineFlags } from "./grep-flags.js";
+import { stripAnsi } from "./ansi.js";
+import { applyInlineFlags, negatedGlobReason } from "./grep-flags.js";
 import { interception } from "./interceptor.js";
+import { runNative } from "./native.js";
 import { searchesTooBroadly } from "./root-search.js";
 import { type Translation, translate } from "./translate.js";
 
@@ -32,16 +34,38 @@ async function nativeArgs(translation: Translation, cwd: string): Promise<Transl
   return offset === undefined ? translation.args : { ...translation.args, offset };
 }
 
+type BashResult = Awaited<ReturnType<ReturnType<typeof createBashToolDefinition>["execute"]>>;
+
+// Configs such as ripgrep's `--pretty` force color even without a terminal; the escapes only cost the model tokens.
+async function runShell(running: Promise<BashResult>): Promise<BashResult> {
+  try {
+    const result = await running;
+    const content = result.content.map((part) =>
+      part.type === "text" ? { ...part, text: stripAnsi(part.text) } : part,
+    );
+    return { ...result, content };
+  } catch (error) {
+    if (error instanceof Error) error.message = stripAnsi(error.message);
+    throw error;
+  }
+}
+
 export default function (pi: ExtensionAPI) {
   const redirect = (command: string, cwd: string): Translation | undefined => {
-    const translation = translate(command);
+    const translation = translate(command, cwd);
     if (!translation || !pi.getActiveTools().includes(translation.tool)) return undefined;
-    if (translation.fileOnly && !isFile(resolve(cwd, String(translation.args.path)))) return undefined;
+    const files = translation.paths ?? [String(translation.args.path)];
+    if (translation.fileOnly && !files.every((path) => isFile(resolve(cwd, path)))) return undefined;
     return translation;
   };
 
   pi.on("tool_call", async (event, ctx) => {
-    if (event.toolName === "grep") return applyInlineFlags(event.input as Record<string, unknown>);
+    if (event.toolName === "grep") {
+      const input = event.input as Record<string, unknown>;
+      const reason = negatedGlobReason(input);
+      if (reason) return { block: true, reason };
+      return applyInlineFlags(input);
+    }
     const command = (event.input as { command?: unknown }).command;
     if (typeof command !== "string") return;
     // Any tool taking a shell command (bash, bg_run) is checked for root searches.
@@ -58,16 +82,18 @@ export default function (pi: ExtensionAPI) {
     ...bash,
     async execute(toolCallId, params, signal, onUpdate, ctx) {
       const translation = redirect(params.command, ctx.cwd);
-      if (!translation) return createBashToolDefinition(ctx.cwd).execute(toolCallId, params, signal, onUpdate, ctx);
+      if (!translation)
+        return runShell(createBashToolDefinition(ctx.cwd).execute(toolCallId, params, signal, onUpdate, ctx));
       const args = await nativeArgs(translation, ctx.cwd);
-      const outcome = await ctx.executeTool(translation.tool, args, { signal });
-      const note = `[ran as ${translation.tool} ${JSON.stringify(args)}]`;
-      const [first, ...rest] = outcome.result.content;
+      const ran = await runNative(translation, args, (tool, toolArgs) => ctx.executeTool(tool, toolArgs, { signal }));
+      const scope = translation.paths ? ` on each of ${JSON.stringify(translation.paths)}` : "";
+      const note = `[ran as ${translation.tool} ${JSON.stringify(args)}${scope}]`;
+      const [first, ...rest] = ran.content;
       const content =
         first?.type === "text"
           ? [{ ...first, text: `${note}\n${first.text}` }, ...rest]
-          : [{ type: "text" as const, text: note }, ...outcome.result.content];
-      return { content, details: undefined, isError: outcome.isError };
+          : [{ type: "text" as const, text: note }, ...ran.content];
+      return { content, details: undefined, isError: ran.isError };
     },
   });
 }

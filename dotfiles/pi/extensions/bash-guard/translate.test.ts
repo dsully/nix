@@ -1,3 +1,4 @@
+import { homedir } from "node:os";
 import { expect, test } from "bun:test";
 import { translate } from "./translate.js";
 
@@ -50,6 +51,60 @@ test("only a per-file max count needs the caller to confirm a file path", () => 
   expect(translate("rg -m 5 foo x.ts | head -2")?.fileOnly).toBe(true);
   expect(translate("rg foo x.ts | head -2")?.fileOnly).toBeUndefined();
 });
+
+test.each([
+  ["rg foo a b", { pattern: "foo" }, ["a", "b"], undefined],
+  ["rg -n 'x|y' src apps | head -20", { pattern: "x|y", limit: 20 }, ["src", "apps"], 20],
+  ["grep -m 3 foo a.txt b.txt", { pattern: "foo", limit: 3 }, ["a.txt", "b.txt"], undefined],
+  ["rg -m 5 foo a.ts b.ts | head -2", { pattern: "foo", limit: 2 }, ["a.ts", "b.ts"], 2],
+])("runs %p once per path", (command, args, paths, totalLimit) => {
+  const translation = translate(command);
+  expect(translation?.tool).toBe("grep");
+  expect(translation?.args).toMatchObject(args);
+  expect(translation?.args.path).toBeUndefined();
+  expect(translation?.paths).toEqual(paths);
+  expect(translation?.totalLimit).toBe(totalLimit);
+});
+
+test("a single path needs no total limit", () => {
+  expect(translate("rg foo src | head -5")?.totalLimit).toBeUndefined();
+});
+
+test.each([
+  ["cd /repo && rg foo src | head -5", "grep", { pattern: "foo", path: "src", limit: 5 }],
+  ["cd /repo/ && cat x.ts", "read", { path: "x.ts" }],
+  ["cd '/repo' ; rg foo", "grep", { pattern: "foo" }],
+  ["cd . && grep -rn foo .", "grep", { pattern: "foo", path: "." }],
+])("drops a cd into the working directory from %p", (command, tool, args) => {
+  const translation = translate(command, "/repo");
+  expect(translation?.tool).toBe(tool);
+  expect(translation?.args).toMatchObject(args);
+});
+
+test.each([
+  "cd /other && rg foo",
+  "cd src && rg foo",
+  "cd /repo || rg foo",
+  "cd /repo | rg foo",
+  "cd /repo && cd src && rg foo",
+  "cd /repo && rg foo; rg bar",
+  "cd",
+  "cd /repo",
+])("keeps %p in the shell", (command) => {
+  expect(translate(command, "/repo")).toBeUndefined();
+});
+
+test.each(["cd ~/repo && rg foo", "cd ~/repo/ ; rg foo"])("expands ~ in %p", (command) => {
+  expect(translate(command, `${homedir()}/repo`)?.args).toEqual({ pattern: "foo" });
+});
+
+test.each(["cd ~other/repo && rg foo", "cd ~/repo && rg foo"])(
+  "keeps %p outside the home cwd in the shell",
+  (command) => {
+    expect(translate(command, "/repo")).toBeUndefined();
+  },
+);
+
 test("tail keeps the line count for the caller", () => {
   expect(translate("tail -30 x.ts")?.tailLines).toBe(30);
 });
@@ -69,7 +124,8 @@ test.each([
   "rg -c foo",
   "rg -w foo",
   "rg -t rust foo",
-  "rg foo a b",
+  "rg foo a -",
+  "rg -C 2 foo a b | head -5",
   "rg -g '!vendor' foo",
   "grep foo",
   "grep '\\<a' x.txt",
