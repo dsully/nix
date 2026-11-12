@@ -88,3 +88,13 @@ Bad:  We parsed this as UTC before, which caused duplicate rows in prod, so...
   treat them as the coding standard.
 - Do not shell out for file operations. Use Read, Edit, Write, and the MCP
   tools instead of `cat`, `sed`, `awk`, or shell redirection.
+
+## Tool Output
+
+- Search before you read. Read only the range you need, at most 80 lines.
+- Keep grep context at 5 lines or less, and always set a result limit.
+- Never dump data files (plists, logs, JSON, generated text). Filter them with
+  grep, jq, or a script, and print only the matching part.
+- Cap long command output with a filter, `head`, or `tail`. Print counts
+  before contents.
+- Do not re-read a file after an edit. The edit diff shows the result.
