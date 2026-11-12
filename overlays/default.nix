@@ -13,4 +13,9 @@
     nixos-option = prev.nixos-option.override {inherit nix;};
     nurl = prev.nurl.override {inherit nix;};
   })
+
+  # cargo-setup-hook's cargoUseSystemLibs forces system C libs these packages don't declare.
+  (_: prev:
+    prev.lib.genAttrs ["cargo-clone" "samply" "syswatch" "ttl"] (name:
+      prev.${name}.overrideAttrs {dontCargoUseSystemLibs = true;}))
 ]
