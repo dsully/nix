@@ -405,6 +405,34 @@ struct ContentView: View {
 
 For older `alert` and `confirmationDialog` API patterns, see `latest-apis.md`. Prefer the SDK 27 item overloads above when the presentation is tied to an optional value.
 
+## Sheets Own Their Actions
+
+A sheet that saves or cancels should read `@Environment(\.dismiss)` and dismiss itself, rather than take `onCancel`/`onSave` closures that the parent must wire up. Pass in only the data and the model it acts on.
+
+## Deep Links
+
+Handle incoming URLs with `.onOpenURL` at the scene's root view and translate them into navigation state (a path append or a sheet item):
+
+```swift
+ContentView()
+    .onOpenURL { url in
+        guard let route = Route(url: url) else { return }
+        path.append(route)
+    }
+```
+
+To route links tapped inside the app (for example in `Text` with Markdown links), override `OpenURLAction` and fall back to the system for links you do not handle:
+
+```swift
+.environment(\.openURL, OpenURLAction { url in
+    if let route = Route(url: url) {
+        path.append(route)
+        return .handled
+    }
+    return .systemAction
+})
+```
+
 ## Summary Checklist
 
 - [ ] Use `.sheet(item:)` for model-based sheets

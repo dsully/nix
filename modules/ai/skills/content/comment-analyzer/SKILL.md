@@ -43,9 +43,10 @@ For each comment, read the code it describes, then check:
 - Staleness: the comment refers to code that moved, was renamed, or was
   removed. A `TODO`/`FIXME` describes work that is already done. An example
   no longer runs.
-- Value: the comment restates the code, narrates history ("we used to",
-  "now", "changed to"), describes the author's work, or is a section banner.
-  Commented-out code is always a removal.
+- Value: the comment fails the three conditions above. Use the list in the
+  remove-ai-slop skill, section "Code comments and docstrings", for the
+  patterns (narration, change history, banners, signature restating
+  docstrings). Commented-out code is always a removal.
 - Gaps: a non-obvious side effect, precondition, error case, or external
   constraint has no comment, and a reader would get it wrong. Report a gap
   only when a better name or type cannot remove the need.

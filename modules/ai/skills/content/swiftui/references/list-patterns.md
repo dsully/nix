@@ -518,6 +518,16 @@ Table(people) { /* columns */ }
 
 > **Best Practice:** Prefer handling the compact size class by showing combined info in the first column. This provides a seamless transition when the size class changes (e.g., entering/exiting Slide Over on iPad).
 
+## Adaptive Grids
+
+For pickers and galleries whose column count should follow the available width, use one adaptive `GridItem` instead of computing columns from `GeometryReader`:
+
+```swift
+LazyVGrid(columns: [GridItem(.adaptive(minimum: 44, maximum: 64))], spacing: 12) {
+    ForEach(icons) { IconCell(icon: $0) }
+}
+```
+
 ## Summary Checklist
 
 - [ ] ForEach uses stable identity (never `.indices` or `\.offset` for dynamic content); the same id rules apply to selection-aware `List`, `Picker`, and disclosure collections

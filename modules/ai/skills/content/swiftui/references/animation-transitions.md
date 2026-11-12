@@ -210,6 +210,29 @@ Rectangle()
 
 ---
 
+## Matched Geometry Effect
+
+Use `matchedGeometryEffect(id:in:)` to animate one element between two positions in the same hierarchy, for example a selection indicator that slides between tabs. Only one view with a given ID should be visible at a time (`isSource` defaults to `true`):
+
+```swift
+@Namespace private var indicator
+
+HStack {
+    ForEach(tabs) { tab in
+        Text(tab.title)
+            .background {
+                if tab == selected {
+                    Capsule().fill(.tint.opacity(0.2))
+                        .matchedGeometryEffect(id: "indicator", in: indicator)
+                }
+            }
+            .onTapGesture { withAnimation(.snappy) { selected = tab } }
+    }
+}
+```
+
+For navigation pushes and sheet presentations, use `matchedTransitionSource(id:in:)` with `.navigationTransition(.zoom(sourceID:in:))` instead.
+
 ## The Animatable Protocol
 
 Enables custom property interpolation during animations.

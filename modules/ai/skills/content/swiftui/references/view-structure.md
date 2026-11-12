@@ -301,6 +301,8 @@ General guidance:
 - avoid constructing expensive formatters in `body`
 - avoid heavy branching in large view trees
 - move data preparation into the model layer or dedicated helpers; do not filter in `init`
+- keep non-trivial button actions out of `body`; call a small private method instead
+- do not put business logic inside `.task`, `.onAppear`, `.onChange`, or `.refreshable` closures; call a method, and keep the real logic in the model or a service
 
 ## Keep View `init` Cheap
 

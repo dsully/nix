@@ -22,6 +22,7 @@ mkUserModule {
           gnused
           hyperfine
           jq
+          resvg
           scc
           sqlite
           typos

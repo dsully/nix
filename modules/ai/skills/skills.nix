@@ -212,6 +212,7 @@ in
                 "comment-analyzer"
                 "dead-code-finder"
                 "just"
+                "lini"
                 "prompt-optimizer"
                 "refactor-clean"
                 "tailscale"

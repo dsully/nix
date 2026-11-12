@@ -184,6 +184,19 @@ struct DataView: View {
 }
 ```
 
+When the work depends on an input, use `.task(id:)`. SwiftUI cancels the running task and starts a new one each time the ID changes, so stale results never overwrite newer ones:
+
+```swift
+.task(id: selectedAccount.id) {
+    state = .loading
+    do { state = .loaded(try await client.timeline(for: selectedAccount)) }
+    catch is CancellationError { }
+    catch { state = .failed(error) }
+}
+```
+
+Model the result as one enum (`idle`, `loading`, `loaded(Value)`, `failed(Error)`) rather than separate `isLoading`/`error`/`data` properties that can contradict each other.
+
 ### 8. Debug View Updates
 
 **Use `Self._printChanges()` or `Self._logChanges()` to debug unexpected view updates.**
@@ -386,6 +399,30 @@ Move sorting, filtering, and formatting into models or computed properties. The 
 
 var itemCount: Int { items.count }  // Computed property
 ```
+
+### 4. Swapping the Whole Root on a Flag
+
+```swift
+// BAD - the flag replaces the entire subtree, so SwiftUI tears down and rebuilds it
+var content: some View {
+    if isEditing {
+        editingView
+    } else {
+        readOnlyView
+    }
+}
+
+// GOOD - one stable base view; the flag changes only the parts that differ
+var content: some View {
+    Form {
+        titleSection
+        if isEditing { editControls }
+    }
+    .disabled(!isEditing)
+}
+```
+
+Keep the `if`/`else` when the two branches are genuinely different screens; then the identity change is correct.
 
 ## Narrowing Dependencies
 

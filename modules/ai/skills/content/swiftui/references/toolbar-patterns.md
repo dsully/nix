@@ -57,6 +57,35 @@ On iOS 26+ and macOS 26+, use `sharedBackgroundVisibility(.hidden)` on the `Tool
 
 Use `.searchToolbarBehavior(.minimize)` to opt into a compact, button-like search control that expands when selected. The modifier is available on all aligned 26 releases, but `.minimize` is available only on iOS and visionOS; use `.automatic` elsewhere.
 
+Use `.searchScopes(_:)` when one search field filters several categories, instead of separate search screens:
+
+```swift
+List(results) { ResultRow(result: $0) }
+    .searchable(text: $query)
+    .searchScopes($scope) {
+        ForEach(SearchScope.allCases) { Text($0.title).tag($0) }
+    }
+    .task(id: SearchKey(query: query, scope: scope)) {
+        try? await Task.sleep(for: .milliseconds(300))
+        guard !Task.isCancelled else { return }
+        results = await search(query, in: scope)
+    }
+```
+
+`.task(id:)` cancels the previous run whenever the query or scope changes, so the sleep debounces typing without a timer.
+
+## Title menus
+
+Use `ToolbarTitleMenu` for actions that apply to the whole screen, such as switching the current list or renaming the document. The navigation title becomes a menu button:
+
+```swift
+.navigationTitle(list.name)
+.toolbarTitleMenu {
+    Button("Rename", systemImage: "pencil") { isRenaming = true }
+    Picker("Sort", selection: $sortOrder) { ... }
+}
+```
+
 ## Transitioning from toolbar controls
 
 Attach `matchedTransitionSource(id:in:)` to toolbar content that presents another view, then use a zoom navigation transition with the same ID and namespace in the destination.

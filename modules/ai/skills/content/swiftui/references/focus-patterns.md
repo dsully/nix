@@ -257,6 +257,10 @@ NavigationStack {
 Button("Search") { isSearchFocused = true }
 ```
 
+## Composer Bars and the Keyboard
+
+For a chat-style composer pinned to the bottom of a scroll view, put the input in `.safeAreaInset(edge: .bottom)` (or `.safeAreaBar` where available) and add `.scrollDismissesKeyboard(.interactively)` to the scroll view, so dragging the content down dismisses the keyboard.
+
 ## Common Pitfalls
 
 ### Redundant `@FocusState` writes revoke focus
