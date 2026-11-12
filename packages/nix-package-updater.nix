@@ -8,6 +8,7 @@
   libgit2,
   openssl,
   zlib,
+  zstd,
   stdenv,
 }:
 rustPlatform.buildRustPackage rec {
@@ -33,6 +34,7 @@ rustPlatform.buildRustPackage rec {
     libgit2
     openssl
     zlib
+    zstd
   ];
 
   postInstall = lib.optionalString (stdenv.hostPlatform.emulatorAvailable buildPackages) (
