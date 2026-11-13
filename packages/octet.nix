@@ -6,11 +6,11 @@
   packages = {
     aarch64-darwin = {
       suffix = "aarch64-apple-darwin";
-      hash = "sha256-NRpjHOXWpQrS/WUZZfvlhP/rx3zCcFNGqTSZmooCzcQ=";
+      hash = "sha256-/4ItkMs1WbT/W6oC8BweuqPnrL9GiFXbNko3186tIHY=";
     };
     x86_64-linux = {
       suffix = "x86_64-unknown-linux-gnu";
-      hash = "sha256-Y0vRkaOtvKlskIi89VVIO+58kJ0nJ30dwPIbXA04l/k=";
+      hash = "sha256-pKOLcmknweFku7P+Z4twwQ7idLM6b9Wwpedi21cASP4=";
     };
   };
   source =
@@ -19,7 +19,7 @@
 in
   pkgs.stdenv.mkDerivation rec {
     pname = "octet";
-    version = "0.10.3";
+    version = "0.10.4";
 
     src = pkgs.fetchurl {
       url = "https://github.com/skaft-software/octet/releases/download/v${version}/octet-${version}-${source.suffix}.tar.gz";
