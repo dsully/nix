@@ -1,4 +1,4 @@
-From df3d2cd5167e1b15202e019c90350ea0039107e2 Mon Sep 17 00:00:00 2001
+From fae8ae517eb6609ec2039c3989de359c5da304f0 Mon Sep 17 00:00:00 2001
 From: Disturbed Ocean <241662633+DisturbedOcean@users.noreply.github.com>
 Date: Sun, 8 Nov 2026 15:53:50 -0800
 Subject: [PATCH] fix(pi-compat): let Pi extensions call their own provider
@@ -33,7 +33,7 @@ index d848f938..1b3ded3b 100644
    if (options.reasoning !== undefined && !efforts.has(options.reasoning)) invalid('nested inference reasoning');
    if (options.maxTokens !== undefined && (!Number.isSafeInteger(options.maxTokens) || options.maxTokens <= 0)) invalid('nested inference token limit');
 diff --git a/lib/providers.mjs b/lib/providers.mjs
-index 88b969cf..816b6fa7 100644
+index 29765d79..2504ec3a 100644
 --- a/lib/providers.mjs
 +++ b/lib/providers.mjs
 @@ -97,7 +97,14 @@ export function modelRegistry(getHost, runtime = {}) {
@@ -73,10 +73,10 @@ index 4c99921c..3a182347 100644
      }
    });
 diff --git a/test/provider-registration.test.mjs b/test/provider-registration.test.mjs
-index 77d971ca..aadfd9b0 100644
+index c753e972..dd27262e 100644
 --- a/test/provider-registration.test.mjs
 +++ b/test/provider-registration.test.mjs
-@@ -300,6 +300,16 @@ test('modelRegistry lists registered provider ids and returns their configs', as
+@@ -340,6 +340,16 @@ test('modelRegistry lists registered provider ids and returns their configs', as
    assert.deepEqual(registry.getRegisteredProviderIds(), []);
  });
  
@@ -111,3 +111,6 @@ index 3f5fe60f..cc186ac8 100644
  test('file mutation queue serializes aliases, releases on failure and permits other files', async t => {
    const dir = await mkdtemp(join(tmpdir(), 'octet-pi-helpers-'));
    t.after(() => rm(dir, { recursive: true, force: true }));
+-- 
+2.56.0
+

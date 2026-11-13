@@ -1,4 +1,4 @@
-From 19b4f9b0d9a0893a3c1db9105badfde9b2d8f231 Mon Sep 17 00:00:00 2001
+From 90b0c1893ca96e61d87d0921b24438ccd7503ef4 Mon Sep 17 00:00:00 2001
 From: Disturbed Ocean <241662633+DisturbedOcean@users.noreply.github.com>
 Date: Sun, 8 Nov 2026 15:53:50 -0800
 Subject: [PATCH] fix(pi-compat): stop repainting on unchanged session
@@ -19,15 +19,15 @@ non-session host fact changed.
  3 files changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/lib/remote-ui.mjs b/lib/remote-ui.mjs
-index b48a4635..35c52a8b 100644
+index f6ac772a..f8ae57c2 100644
 --- a/lib/remote-ui.mjs
 +++ b/lib/remote-ui.mjs
-@@ -542,13 +542,13 @@ export class RemoteUI {
+@@ -544,13 +544,13 @@ export class RemoteUI {
      // readiness or a publication barrier, which would delay frames under load.
      const columns = surface.columns, rows = surface.rows;
      let lines;
--    try { lines = this.runtime.scope.run(surface.store, () => surface.tui.render(columns)); }
-+    try { lines = this.runtime.scope.run(surface.store, () => surface.tui.render(columns)); surface.awaitingSessionView = false; }
+-    try { lines = this.runtime.scope.run(surface.store, () => inRender(() => surface.tui.render(columns))); }
++    try { lines = this.runtime.scope.run(surface.store, () => inRender(() => surface.tui.render(columns))); surface.awaitingSessionView = false; }
      catch (error) {
        if (nativeRetirements.get(error) === surface) return;
        // History-reading components cannot render a missing publication as an
@@ -39,10 +39,10 @@ index b48a4635..35c52a8b 100644
      }
      // Capture lines and this exact barrier in the same synchronous turn. Never
 diff --git a/lib/runtime.mjs b/lib/runtime.mjs
-index 281bb0f2..935d2b49 100644
+index 788401fe..866af7a7 100644
 --- a/lib/runtime.mjs
 +++ b/lib/runtime.mjs
-@@ -834,10 +834,12 @@ export class Runtime {
+@@ -837,10 +837,12 @@ export class Runtime {
      }
      const next = plainJSON(params.host, 'host snapshot', 524288);
      if (Object.hasOwn(next, 'theme')) nativeTheme(next.theme);
@@ -57,7 +57,7 @@ index 281bb0f2..935d2b49 100644
  
    async runEvent(event, value, store, { veto = false } = {}) {
 diff --git a/lib/session-transport.mjs b/lib/session-transport.mjs
-index 82c8ee02..e173a552 100644
+index 5d34267e..a0e06099 100644
 --- a/lib/session-transport.mjs
 +++ b/lib/session-transport.mjs
 @@ -36,7 +36,7 @@ export class SessionTransport {
@@ -80,4 +80,7 @@ index 82c8ee02..e173a552 100644
 +    for (const surface of this.runtime.ui.surfaces.values()) if (surface.store.state === store.state && (changed || surface.awaitingSessionView)) surface.requestRender();
      return { accepted: true, transfer_id: d.transfer_id, view_revision: d.view_revision, head: d.head, sha256: d.sha256 };
    }
-   async hydrate(params, store) {
+   // A hook's history descriptor that names the owner's current prepared view
+-- 
+2.56.0
+
