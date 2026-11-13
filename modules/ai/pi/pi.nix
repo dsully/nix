@@ -208,6 +208,12 @@ in
               # pi has no path-scoped rules; extensions/skills-manager registers the matching ones as skills per repo.
               "${piPath}/rules-skills".source = rulesSkills;
 
+              # `pi update` checks with an uncached `bun pm view`; without this, `bun add` resolves "latest" from bun's manifest cache and keeps the old version.
+              "${piPath}/npm/bunfig.toml".text = ''
+                [install.cache]
+                disableManifest = true
+              '';
+
               "${piPath}/mcp.json".source = jsonFormat.generate "pi-mcp.json" {
                 mcpServers = piMcpServers;
               };
