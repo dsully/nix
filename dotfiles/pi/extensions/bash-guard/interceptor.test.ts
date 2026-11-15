@@ -1,7 +1,12 @@
 import { expect, test } from "bun:test";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { interception, RULES } from "./interceptor.js";
 
 const all = [...new Set(RULES.map((rule) => rule.tool))];
+const cwd = mkdtempSync(join(tmpdir(), "bash-guard-"));
+writeFileSync(join(cwd, "out.txt"), "");
 
 test.each([
   ["cat package.json", "read"],
@@ -19,15 +24,19 @@ test.each([
   ["sed -i 's/a/b/' x", "replace"],
   ['echo "hi" > out.txt', "write"],
   ["cat <<EOF > out.txt\nhi\nEOF", "write"],
+  ["cat > \"out.txt\" <<'EOF'\nhi\nEOF", "write"],
+  [`echo hi > ${cwd}/out.txt`, "write"],
+  ["echo hi > $OUT", "write"],
   ["nohup server", "bg_run"],
   ["npm run dev", "bg_run"],
   ["vitest --watch", "bg_run"],
 ])("blocks %p (suggests %s)", (command, tool) => {
-  expect(interception(command, all)).toBeDefined();
+  expect(interception(command, all, cwd)).toBeDefined();
   expect(
     interception(
       command,
       all.filter((name) => name !== tool),
+      cwd,
     ),
   ).toBeUndefined();
 });
@@ -56,6 +65,10 @@ test.each([
   "git status; find . -name '*.nix'",
   "head -3 flake.nix | wc -l",
   "cat package.json | jq .name",
+  "cat > new.swift <<'EOF'\nlet x = 1\nEOF",
+  "echo hi > 'new file.txt'",
+  "echo hi >> out.txt",
+  "cat <<EOF >> out.txt\nhi\nEOF",
 ])("allows %p", (command) => {
-  expect(interception(command, all)).toBeUndefined();
+  expect(interception(command, all, cwd)).toBeUndefined();
 });

@@ -71,7 +71,7 @@ export default function (pi: ExtensionAPI) {
     // Any tool taking a shell command (bash, bg_run) is checked for root searches.
     if (searchesTooBroadly(command)) return { block: true, reason: ROOT_SEARCH_REASON };
     if (event.toolName !== "bash" || redirect(command, ctx.cwd)) return;
-    const reason = interception(command, pi.getActiveTools());
+    const reason = interception(command, pi.getActiveTools(), ctx.cwd);
     if (reason) return { block: true, reason };
   });
 

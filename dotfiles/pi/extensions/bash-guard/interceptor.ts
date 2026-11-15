@@ -1,5 +1,8 @@
 // From oh-my-pi packages/coding-agent/src/tools/bash-interceptor.ts and exec/settings.ts (MIT, see LICENSE),
 // with each rule's tool and message mapped to this harness's tools.
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import { resolve } from "node:path";
 import { extractFlatShellCommandSegments } from "./shell-tokenize.js";
 
 interface Rule {
@@ -8,6 +11,8 @@ interface Rule {
   message: string;
   /** Skipped when the command also runs something else, since one tool call cannot replace the batch. */
   standaloneOnly?: boolean;
+  /** Lets a matched command through after inspecting the match. */
+  allows?: (match: RegExpExecArray, cwd: string) => boolean;
 }
 
 export const RULES: Rule[] = [
@@ -78,6 +83,7 @@ export const RULES: Rule[] = [
     tool: "write",
     message:
       "Use the `write` tool instead of echo/cat redirection. `write` replaces the whole file; to append, `insert` after its last line.",
+    allows: redirectAppendsOrCreates,
   },
   {
     pattern: "^\\s*nohup\\s+|(?<!&)\\&\\s*$",
@@ -97,6 +103,16 @@ export const RULES: Rule[] = [
     message: "Use `bg_run` for watch mode so its output and lifecycle stay managed.",
   },
 ];
+
+// The match ends on the first character of the target; `$`/backtick targets cannot be resolved, so they stay blocked.
+function redirectAppendsOrCreates(match: RegExpExecArray, cwd: string): boolean {
+  const end = match.index + match[0].length - 1;
+  if (/>>\|?\s*$/.test(match.input.slice(0, end))) return true;
+  const word = /^(?:"([^"]*)"|'([^']*)'|([^\s;&|<>()]+))/.exec(match.input.slice(end));
+  const target = word?.[1] ?? word?.[2] ?? word?.[3];
+  if (!target || /[$`]/.test(target)) return false;
+  return !existsSync(resolve(cwd, target.replace(/^~(?=\/|$)/, homedir())));
+}
 
 const compiled = RULES.map((rule) => ({ rule, regex: new RegExp(rule.pattern) }));
 
@@ -180,7 +196,7 @@ function runsOtherCommands(segments: string[]): boolean {
 }
 
 /** Returns the message for the first rule matching `command` whose suggested tool is active. */
-export function interception(command: string, activeTools: string[]): string | undefined {
+export function interception(command: string, activeTools: string[], cwd = process.cwd()): string | undefined {
   // A segment that consumes the previous stage's stdout via `|` reads piped
   // stdin, which no dedicated tool can replace, so it is not a candidate.
   const all = extractFlatShellCommandSegments(command);
@@ -190,6 +206,9 @@ export function interception(command: string, activeTools: string[]): string | u
   for (const { rule, regex } of compiled) {
     if (!activeTools.includes(rule.tool)) continue;
     if (rule.standaloneOnly && batch) continue;
-    if (candidates.some((candidate) => regex.test(candidate))) return `Blocked: ${rule.message}`;
+    for (const candidate of candidates) {
+      const match = regex.exec(candidate);
+      if (match && !rule.allows?.(match, cwd)) return `Blocked: ${rule.message}`;
+    }
   }
 }
