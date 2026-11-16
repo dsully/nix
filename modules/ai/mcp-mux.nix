@@ -4,9 +4,12 @@
   config,
   lib,
   my,
+  pkgs,
   ...
 }: let
   muxExe = lib.getExe my.pkgs.mcp-mux;
+  psExe = "${pkgs.ps}/bin/ps";
+  awkExe = lib.getExe pkgs.gawk;
 
   # mcp-mux runs a long-lived daemon that owns one upstream process per server
   # command line. It auto-starts on the first shim connection and only auto-exits
@@ -46,8 +49,27 @@ in
           run mkdir -p "${stateDir}" "$(dirname "$engine")"
           run sh -c 'printf "%s\n" "$1" > "$2.tmp" && mv "$2.tmp" "$2"' _ "${muxExe}" "$engine"
 
+          mux_daemon_pids() {
+            ${psExe} -U "$(id -u)" -o pid= -o args= \
+              | ${awkExe} '$2 ~ /\/bin\/mcp-mux$/ && $3 == "daemon" && NF == 3 {print $1}'
+          }
+
           if [ "$(cat "$state" 2>/dev/null)" != "${configHash}" ]; then
             run ${muxExe} stop --force || true
+
+            # stop --force can block forever on an owner whose upstream already exited.
+            for _ in {1..50}; do
+              [ -z "$(mux_daemon_pids)" ] && break
+              sleep 0.1
+            done
+
+            pids="$(mux_daemon_pids)"
+
+            if [ -n "$pids" ]; then
+              warnEcho "mcp-mux daemon did not exit after stop --force; sending SIGKILL to $pids"
+              run kill -9 $pids || true
+            fi
+
             run sh -c 'printf "%s\n" "$1" > "$2"' _ "${configHash}" "$state"
           fi
         '';
