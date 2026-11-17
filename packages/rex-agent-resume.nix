@@ -11,7 +11,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     owner = "YangJonghun";
     repo = "rex-agent-resume";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-ZCloft5ZFVHNRPnkk5z2VeTZB2PpbOu7JDtD44cg4ME=";
+    hash = "sha256-UWHAB6tV1kqqOi0GYfRcoi870WQ0gyg9KAaNn0/dzwM=";
   };
 
   dontBuild = true;

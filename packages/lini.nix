@@ -6,14 +6,14 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "lini";
-  version = "1.1.0";
+  version = "1.1.1";
 
   src = fetchCrate {
     inherit pname version;
-    hash = "sha256-7sYPGN2VMNp7bhQSL292VUoq7OPxXXx81+zAZjq1UyI=";
+    hash = "sha256-wl5ZM2fonqz47Hg2TFHZPVLLhKuF0Q7bJqncVp5tb/s=";
   };
 
-  cargoHash = "sha256-8Z0dptp6tnqHt+OBSML1OBH7OUiO+V2oQuxlhgVgxdQ=";
+  cargoHash = "sha256-MgSNSz7/sTsGKC9kAELbDaVq6/VOIT1QPv/E9ILoIbQ=";
   doCheck = false;
 
   passthru.updateScript = nix-update-script {};
