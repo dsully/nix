@@ -208,7 +208,7 @@ in
               # pi has no path-scoped rules; extensions/skills-manager registers the matching ones as skills per repo.
               "${piPath}/rules-skills".source = rulesSkills;
 
-              # `pi update` checks with an uncached `bun pm view`; without this, `bun add` resolves "latest" from bun's manifest cache and keeps the old version.
+              # `pi update` checks with an uncached `bun pm view`; without this, `bun add` can also resolve "latest" from bun's local manifest cache.
               "${piPath}/npm/bunfig.toml".text = ''
                 [install.cache]
                 disableManifest = true
@@ -240,7 +240,9 @@ in
             # Then write npm/package.json; `bun install` prunes what it no longer lists.
             # Retry a few times to ride out transient registry failures.
             # Non-fatal: a persistent failure warns, never aborts the switch.
-            piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange" "piCodingAgentMutableSettings"] ''
+            piUpdateExtensions = lib.hm.dag.entryAfter ["onFilesChange" "piCodingAgentMutableSettings"]
+            # bash
+            ''
               export PATH="${lib.makeBinPath [bunRuntime pkgs.diffutils pkgs.git pkgs.gnugrep pkgs.jq]}:$PATH"
               export PI_CODING_AGENT_DIR="${piPath}"
 
@@ -280,6 +282,14 @@ in
               done
 
               [ -n "$_ok" ] || echo "bun install in $_npm failed after 3 tries; run it manually to see errors"
+
+              # The registry CDN can serve bun a manifest older than pi's version check for up to max-age=300; a second pass usually lands on a fresh copy.
+              if [[ -n $_ok ]]; then
+                run ${config.programs.pi-coding-agent.package}/bin/pi update --extensions </dev/null || echo "pi update --extensions failed"
+
+                [[ -v DRY_RUN ]] || sleep 1
+                run ${config.programs.pi-coding-agent.package}/bin/pi update --extensions </dev/null || echo "pi update --extensions (retry) failed"
+              fi
 
               # Only advance the baseline once the removals stuck, so a failure is retried on the next switch.
               if [[ ! -v DRY_RUN ]] && [[ -n $_ok ]] && [[ $_stale = 0 ]]; then
