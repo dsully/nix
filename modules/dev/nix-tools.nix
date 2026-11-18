@@ -14,7 +14,6 @@ mkUserModule {
           alejandra
           deadnix
           flake-checker
-          nix-output-monitor
           nurl
           statix
         ]
