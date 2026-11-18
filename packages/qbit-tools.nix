@@ -1,4 +1,5 @@
 {
+  aws-lc,
   lib,
   rustPlatform,
   installShellFiles,
@@ -27,6 +28,7 @@ then
     ];
 
     buildInputs = [
+      aws-lc
       openssl
     ];
 
