@@ -11,14 +11,14 @@ if stdenv.hostPlatform.isLinux
 then
   rustPlatform.buildRustPackage {
     pname = "qbit-tools";
-    version = "0.4.2";
+    version = "0.4.3";
 
     src = fetchGit {
       url = "git+ssh://git@github.com/dsully/qbit-tools";
-      rev = "92b29aec250e40826ae1f2b0866215390874c2a0";
+      rev = "022e51c5a8ca8f1c259a34c5f314c436fe4b7387";
     };
 
-    cargoHash = "sha256-/uiDE5T+ODbyemLl4niidLlt4QwMSQ0e0+cA1xkkBmc=";
+    cargoHash = "sha256-Xr7aRUceBR0POo2Hse+sss3agkZJg7YB1VqekoOTMBA=";
     doCheck = false;
 
     nativeBuildInputs = [
