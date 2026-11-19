@@ -6,6 +6,7 @@ mkDarwinHost {
     octet.enable = true;
     paste.enable = true;
     pi.enable = true;
+    rea.enable = true;
     rex.enable = true;
     rumdl.enable = true;
     ssh.opnixKey.enable = true;

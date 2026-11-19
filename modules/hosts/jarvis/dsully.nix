@@ -61,16 +61,6 @@
         enabled = false;
         stateless = true;
       };
-      rea = {
-        command = lib.getExe pkgs.rea;
-        args = ["mcp"];
-        enabled = false;
-        environment = {
-          GHIDRA_INSTALL_DIR = "${pkgs.ghidra}/lib/ghidra";
-          JAVA_HOME = toString pkgs.jdk25;
-          REA_KUNA_COMMAND = lib.getExe pkgs.kuna;
-        };
-      };
       tailscale = {
         command = lib.getExe' pkgs.bun "bunx";
         args = [
