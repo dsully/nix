@@ -166,6 +166,11 @@ in
             subdir = "skills";
             ids = ["no-ai-slop"];
           };
+          rea = {
+            path = "${pkgs.rea}/lib/node_modules/rea-agents/skills";
+            all = true;
+            manual = true;
+          };
           # Every enabled skill's description sits in the system prompt for the
           # whole session, so a group is only worth carrying globally if it fires
           # on most repos. Language/framework groups are opt-in: turn them on in
@@ -212,6 +217,7 @@ in
                 "comment-analyzer"
                 "dead-code-finder"
                 "just"
+                "kuna-decompiler"
                 "lini"
                 "prompt-optimizer"
                 "refactor-clean"

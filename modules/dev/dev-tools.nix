@@ -1,6 +1,7 @@
 {
   mkUserModule,
   config,
+  lib,
   my,
   pkgs,
   ...
@@ -15,13 +16,22 @@ mkUserModule {
         ".typos.toml".source = config.lib.file.mkOutOfStoreSymlink "${config.dotfiles.dir}/typos/typos.toml";
       };
 
+      sessionVariables = {
+        GHIDRA_INSTALL_DIR = "${pkgs.ghidra}/lib/ghidra";
+        JAVA_HOME = toString pkgs.jdk25;
+        REA_KUNA_COMMAND = lib.getExe pkgs.kuna;
+      };
+
       packages = with pkgs;
         [
           ast-grep
+          ghidra
           gibo
           gnused
           hyperfine
           jq
+          kuna
+          rea
           resvg
           scc
           sqlite
