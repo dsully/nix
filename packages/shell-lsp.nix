@@ -5,13 +5,13 @@
 }:
 buildGo127Module rec {
   pname = "shell-lsp";
-  version = "0.5.22";
+  version = "0.5.24";
 
   src = fetchFromGitHub {
     owner = "stubbedev";
     repo = "shell-lsp";
-    rev = "aa457a8f293bcb6cc2bd583ab2869179fa5fc461";
-    hash = "sha256-teUAMgr7G3wDgd0lDbZYJ0ra8dC7T5qYbKGQa0avP10=";
+    rev = "95ccaba3360e6417a15b7ce3aa49fdcd8a591efa";
+    hash = "sha256-akYAcrW/c7Tf4TML8zWltzOrHVdEejwSBvOgFMUgN7k=";
   };
 
   vendorHash = "sha256-TxEBzxsQdz/o4zjOoFggtfgrKDrpblWqOxs1a3io5Sk=";
