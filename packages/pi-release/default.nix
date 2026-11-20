@@ -5,14 +5,14 @@
 # A Pi release laid out as <agent dir>/install/releases/<version>, which octet-pi-compat loads for Pi's own provider streams.
 buildNpmPackage {
   pname = "pi-release";
-  version = "1.5.2";
+  version = "1.6.0";
 
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [./package.json ./package-lock.json];
   };
 
-  npmDepsHash = "sha256-fWBW3Lx/fxA10bq+JjVcxChawOA2OOOoMLPFpNoKwL8=";
+  npmDepsHash = "sha256-RW6qjkAvZaaJ7aIeITHpDCcbU7MQidld9JO9xSdOwhg=";
   npmFlags = ["--ignore-scripts"];
   dontNpmBuild = true;
 

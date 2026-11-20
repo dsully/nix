@@ -19,7 +19,7 @@ Subject: [PATCH] fix(pi-compat): let Pi extensions call their own provider
  5 files changed, 29 insertions(+), 3 deletions(-)
 
 diff --git a/lib/model-registry-stream.mjs b/lib/model-registry-stream.mjs
-index d848f938..1b3ded3b 100644
+index 4982d53..824c0e9 100644
 --- a/lib/model-registry-stream.mjs
 +++ b/lib/model-registry-stream.mjs
 @@ -68,7 +68,8 @@ function identity(value) {
@@ -33,10 +33,10 @@ index d848f938..1b3ded3b 100644
    if (options.reasoning !== undefined && !efforts.has(options.reasoning)) invalid('nested inference reasoning');
    if (options.maxTokens !== undefined && (!Number.isSafeInteger(options.maxTokens) || options.maxTokens <= 0)) invalid('nested inference token limit');
 diff --git a/lib/providers.mjs b/lib/providers.mjs
-index 29765d79..2504ec3a 100644
+index 10bd43d..95b0744 100644
 --- a/lib/providers.mjs
 +++ b/lib/providers.mjs
-@@ -97,7 +97,14 @@ export function modelRegistry(getHost, runtime = {}) {
+@@ -99,7 +99,14 @@ export function modelRegistry(getHost, runtime = {}) {
      }),
      getAll: () => all(),
      find: (provider, id) => all().find(model => model.provider === provider && model.id === id),
@@ -53,7 +53,7 @@ index 29765d79..2504ec3a 100644
      // The host states it, from the provider's own authentication resolver, for
      // every model it describes. A model it did not describe, or one whose
 diff --git a/lib/public-helpers.mjs b/lib/public-helpers.mjs
-index 4c99921c..3a182347 100644
+index 4c99921..3a18234 100644
 --- a/lib/public-helpers.mjs
 +++ b/lib/public-helpers.mjs
 @@ -125,13 +125,14 @@ function bashExecutionToText(message) {
@@ -73,10 +73,10 @@ index 4c99921c..3a182347 100644
      }
    });
 diff --git a/test/provider-registration.test.mjs b/test/provider-registration.test.mjs
-index c753e972..dd27262e 100644
+index 566263b..613bd74 100644
 --- a/test/provider-registration.test.mjs
 +++ b/test/provider-registration.test.mjs
-@@ -340,6 +340,16 @@ test('modelRegistry lists registered provider ids and returns their configs', as
+@@ -341,6 +341,16 @@ test('modelRegistry lists registered provider ids and returns their configs', as
    assert.deepEqual(registry.getRegisteredProviderIds(), []);
  });
  
@@ -94,7 +94,7 @@ index c753e972..dd27262e 100644
  test('model provider is rebased and per-model baseUrl overrides provider endpoint', async () => {
    let selected;
 diff --git a/test/public-helpers.test.mjs b/test/public-helpers.test.mjs
-index 3f5fe60f..cc186ac8 100644
+index 3f5fe60..cc186ac 100644
 --- a/test/public-helpers.test.mjs
 +++ b/test/public-helpers.test.mjs
 @@ -72,6 +72,13 @@ test('message conversion excludes private details and preserves original LLM mes
@@ -111,6 +111,3 @@ index 3f5fe60f..cc186ac8 100644
  test('file mutation queue serializes aliases, releases on failure and permits other files', async t => {
    const dir = await mkdtemp(join(tmpdir(), 'octet-pi-helpers-'));
    t.after(() => rm(dir, { recursive: true, force: true }));
--- 
-2.56.0
-

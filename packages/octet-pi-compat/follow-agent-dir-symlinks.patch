@@ -1,5 +1,5 @@
 diff --git i/lib/pi-setup.mjs w/lib/pi-setup.mjs
-index f5a029e..ac9ac41 100644
+index 3ab7c27..7f61d96 100644
 --- i/lib/pi-setup.mjs
 +++ w/lib/pi-setup.mjs
 @@ -1,7 +1,7 @@
@@ -11,7 +11,7 @@ index f5a029e..ac9ac41 100644
  import { homedir } from 'node:os';
  import { basename, dirname, extname, isAbsolute, join, matchesGlob, relative, resolve, sep } from 'node:path';
  import { fileURLToPath } from 'node:url';
-@@ -53,6 +53,13 @@ function markIncomplete(ctx, key, limit, message) {
+@@ -52,6 +52,13 @@ function markIncomplete(ctx, key, limit, message) {
    diagnostic(ctx, message);
  }
  
@@ -25,7 +25,7 @@ index f5a029e..ac9ac41 100644
  // Check every component: lstat on only the leaf still follows linked parents.
  function safeStat(path, ctx, label, required = false) {
    path = resolve(path);
-@@ -125,7 +132,7 @@ function directoryEntries(path, ctx, depth = 0) {
+@@ -124,7 +131,7 @@ function directoryEntries(path, ctx, depth = 0) {
      `directory ${path}: exceeds the ${remaining}-entry mirror budget; remaining entries were skipped`);
    names = names.slice(0, remaining);
    ctx.scanned += names.length;
@@ -34,7 +34,7 @@ index f5a029e..ac9ac41 100644
  }
  
  // The adapter has no locked minimatch dependency. Node's matchesGlob honors
-@@ -576,10 +583,10 @@ export function discoverPiSetup({ agentDir, env = process.env, cwd = process.cwd
+@@ -575,10 +582,10 @@ export function discoverPiSetup({ agentDir, env = process.env, cwd = process.cwd
      }
      setup[kind === 'extensions' ? kind : `${kind}Paths`] = files.length > limit ? [] : files;
    }

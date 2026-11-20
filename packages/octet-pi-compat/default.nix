@@ -6,11 +6,11 @@
 # Output is a bundle archive for `octet extension install --path`, not a directory.
 stdenvNoCC.mkDerivation rec {
   pname = "octet-pi-compat";
-  version = "0.10.4";
+  version = "0.10.6";
 
   src = fetchurl {
     url = "https://github.com/skaft-software/octet/releases/download/v${version}/${pname}-${version}.tar.gz";
-    hash = "sha256-ePvq4P64AhZ6QMYOUunojpF1miSHM0koHmQYP0r5TYE=";
+    hash = "sha256-lT3drnJ+n25pUlCtmrjhz8Qf81VwxGyknbPp+qbGsCc=";
   };
 
   patches = [
