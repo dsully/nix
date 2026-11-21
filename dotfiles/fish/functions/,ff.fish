@@ -3,6 +3,7 @@ function ,ff --description 'Find and open files with fzf'
 
     set -f fzf_args $PICKER_ARGS
     set -a fzf_args --preview "__fzf_preview_file_content --path {}"
+    set -a fzf_args --exact
     set -a fzf_args --print0
 
     set -l selected_files (command fzf $fzf_args | string split0)

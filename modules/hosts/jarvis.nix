@@ -3,7 +3,7 @@ mkDarwinHost {
   hostName = "jarvis";
 
   userConfig = {
-    octet.enable = true;
+    octet.enable = false;
     paste.enable = true;
     pi.enable = true;
     rea.enable = true;
