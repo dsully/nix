@@ -207,6 +207,49 @@ function layout.vertical(ratio, a, b) end
 ---@overload fun(argv: string[], opts?: rex.ExecOpts): rex.ExecResult?, string?
 ---@field start fun(argv: string[], opts?: rex.ExecStartOpts): rex.Process?, string?
 
+---@alias rex.UiIcon "document"|"folder"|"branch"|"terminal"|"code"|"server"|"database"|"package"|"globe"|"link"|"person"|"tag"|"clock"|"star"|"gear"|"plus"
+
+---@alias rex.UiFailure "cancelled"|"timeout"|"no_client"|"unsupported"|"busy"|"failed"
+
+---@class rex.UiInputOpts
+---@field title string
+---@field placeholder? string
+---@field value? string
+---@field confirm? string
+---@field timeout? number Seconds; default 300, max 3600.
+
+---@class rex.UiItem
+---@field id string
+---@field title? string
+---@field subtitle? string
+---@field icon? rex.UiIcon
+---@field detail? string
+---@field selected? boolean Only with `multiple`.
+
+---@class rex.UiPickOpts: rex.UiInputOpts
+---@field items (rex.UiItem|string)[] At most 2000.
+---@field multiple? boolean
+---@field allow_other? boolean Not with `multiple`.
+
+---@class rex.UiOther
+---@field text string
+
+-- Only inside a `rex.action` run function; elsewhere returns nil, "failed".
+---@class rex.ui
+local ui = {}
+
+---@param opts rex.UiInputOpts
+---@return string? text
+---@return rex.UiFailure? why
+---@return string? detail Only for "failed".
+function ui.input(opts) end
+
+---@param opts rex.UiPickOpts
+---@return (string|string[]|rex.UiOther)? choice id; ids with `multiple`; rex.UiOther with `allow_other`.
+---@return rex.UiFailure? why
+---@return string? detail Only for "failed".
+function ui.pick(opts) end
+
 ---@class rex.Server
 ---@field session rex.session
 ---@field block rex.block
@@ -226,6 +269,7 @@ function layout.vertical(ratio, a, b) end
 ---@field layout rex.layout
 ---@field json rex.json
 ---@field exec rex.exec
+---@field ui rex.ui
 ---@field args? table Script only.
 ---@field session_id? string Script only.
 ---@field block_id? string Script only.
