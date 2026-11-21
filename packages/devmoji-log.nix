@@ -8,16 +8,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "devmoji-log";
-  version = "0.1.2";
+  version = "0.1.3";
 
   src = fetchFromGitHub {
     owner = "dsully";
     repo = pname;
-    rev = "d8955570ab57bb9b3a5150f9eb971da96db2efb6";
-    hash = "sha256-oqv+K3Wz0zJzwmIx7QF0ewnM9Sxxr6mPmyAWmur9DAQ=";
+    rev = "2839c175f4b6958d7fbd2ec38c96460878b7f772";
+    hash = "sha256-OF31JDsYGxOzsTDrmXpW11yg6Oc+UcN5hd13/tkcMKI=";
   };
 
-  cargoHash = "sha256-Sad2E3Na/XsnGCri/IIZhWEcPy20O0GKOlDiZRHu0Vw=";
+  cargoHash = "sha256-DUMlEJ+OHz11ClaKZxlrphr8m1KzTQqtAjwz41W9/0A=";
   doCheck = false;
 
   nativeBuildInputs = [
