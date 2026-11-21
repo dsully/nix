@@ -56,7 +56,6 @@ in
           ]
           ++ lib.optionals stdenv.hostPlatform.isDarwin [
             swiftlint
-            xcodegen
           ]
           ++ lib.optionals stdenv.hostPlatform.isLinux [
             docker-compose-language-service
