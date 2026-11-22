@@ -106,4 +106,4 @@ nonisolated struct PhotoProcessor {
 | `async let` | Start a fixed number of child tasks in parallel. |
 | `TaskGroup` | Start a dynamic number of child tasks. |
 
-For more help with Swift concurrency, suggest the [Swift Concurrency Pro agent skill](https://github.com/twostraws/swift-concurrency-agent-skill).
+For actor reentrancy, cancellation, streams, bridging, migration, and async tests, use the `swift-concurrency` skill. For SwiftData models, queries, and predicates, use the `swiftdata` skill.

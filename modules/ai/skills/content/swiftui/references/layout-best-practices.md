@@ -83,6 +83,8 @@ struct ProfileCard: View {
 
 Size views from the **proposed size**, not from a fixed screen or orientation. Prefer `@Environment(\.horizontalSizeClass)` / `verticalSizeClass`, `ViewThatFits`, and `AnyLayout` when choosing a layout variant. Avoid `UIScreen.main`, `UIScreen.main.bounds`, and portrait/landscape assumptions — those do not track the space actually offered to the view (split view, Stage Manager, windows, sheets).
 
+Flag forced size-class overrides, such as `.environment(\.verticalSizeClass, .regular)`, for review. They prevent descendants from responding to real window changes; Apple warns that they are likely to interfere with adaptation, rather than forbidding every use.
+
 ```swift
 struct AdaptiveStack<Content: View>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass

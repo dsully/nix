@@ -26,7 +26,7 @@ These replacements have minimal API shape changes. Most are near-direct swaps; a
 - **`navigationTitle(_:)`** instead of `navigationBarTitle(_:)`
 - **`toolbar { ToolbarItem(...) }`** instead of `navigationBarItems(...)` (structural change)
 - **`ignoresSafeArea(_:edges:)`** instead of `edgesIgnoringSafeArea(_:)`
-- **`preferredColorScheme(_:)`** instead of `colorScheme(_:)`
+- **`.environment(\.colorScheme, .light)`** instead of `colorScheme(_:)`. `preferredColorScheme(_:)` is not equivalent: it changes the whole screen or sheet, not just the view and its descendants
 - **`foregroundStyle(_:)`** instead of `foregroundColor(_:)` (e.g., `.foregroundStyle(.primary)`)
 - **`clipShape(.rect(cornerRadius:))`** instead of `cornerRadius()`
 - **`textInputAutocapitalization(_:)`** instead of `autocapitalization(_:)` (note: `.never` replaces `.none`)
@@ -538,7 +538,7 @@ These APIs are from the beta iOS 27.1 SDK. Gate runtime use with `#available(iOS
 | `navigationBarHidden(_:)` | `toolbarVisibility(.hidden, for: .navigationBar)` | iOS 18+; retain old API in earlier fallback |
 | `statusBar(hidden:)` / `statusBarHidden(_:)` | `toolbarVisibility(_:for: .statusBar)` | iOS 27+; retain old API in earlier fallback |
 | `edgesIgnoringSafeArea(_:)` | `ignoresSafeArea(_:edges:)` | iOS 15+ |
-| `colorScheme(_:)` | `preferredColorScheme(_:)` | iOS 15+ |
+| `colorScheme(_:)` | `.environment(\.colorScheme, _)` (not `preferredColorScheme(_:)`, which affects the whole presentation) | iOS 13+ |
 | `foregroundColor(_:)` | `foregroundStyle(_:)` | iOS 15+ |
 | `cornerRadius(_:)` | `clipShape(.rect(cornerRadius:))` | iOS 15+ |
 | `actionSheet(...)` | `confirmationDialog(...)` | iOS 15+ |

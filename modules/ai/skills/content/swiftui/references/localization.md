@@ -40,6 +40,10 @@ Text("Explore", tableName: "Navigation",
      comment: "Tab bar item title for the Explore screen.")
 ```
 
+When the project uses `Localizable.xcstrings` and generated string symbols are enabled, add each new user-facing string as a symbol key with `extractionState` set to `"manual"`, then use the generated symbol, such as `Text(.libraryEmpty)`. Otherwise, follow the project's existing string-key access. Offer translations for the new keys in all the project's languages.
+
+Prefer to rely on automatic grammar agreement when dealing with English, French, German, Portuguese, Spanish, and Italian. For example, use `Text("^[\(people) person](inflect: true)")` to show a number of people.
+
 ## Bundle for Swift Packages and Frameworks
 
 Apps, app extensions, and XPC services are their own main bundle, so `bundle` can be omitted. Frameworks and Swift packages need an explicit `bundle:` — without one, SwiftUI looks up strings in `Bundle.main`, the lookup fails silently, and the string appears unlocalized at runtime.

@@ -61,6 +61,10 @@ ThemeSelector(config: config)  // Notified of ALL config changes
 
 With `ObservableObject`, any `@Published` change triggers all observers. With `@Observable`, views update only when accessed properties change, but passing entire objects still creates broader dependencies than necessary.
 
+- Pass each row its element, such as `BookmarkRow(bookmark: bookmark)`. Passing a store and a position or identifier makes the row search the collection, creating a dependency on the entire collection so one element's changes can update all rows.
+- If rows own separate observable models, create and retain those models once. Constructing `BookmarkRow(model: BookmarkModel(bookmark: bookmark))` inside `body` or a `ForEach` callback gives every row a different object on each update.
+- Always ensure view initializers are kept as small and simple as possible, avoiding any non-trivial work. Flag any work that can be moved into a `task()` modifier to be run when the view is shown.
+
 ### 4. Use Equatable Views
 
 For views with expensive bodies, conform to `Equatable`:
@@ -428,7 +432,15 @@ Keep the `if`/`else` when the two branches are genuinely different screens; then
 
 Reserve these for a requested deep performance review or a diagnosed performance problem.
 
+Reading several properties from one `@Observable` object is not itself a reason to split a view. Observation already tracks those properties individually, and changes to unread properties do not update the view. Apply every recommendation below within that limit.
+
+- When a view needs only a few fields of a struct, up to three, pass those fields individually. For example, `TrackTitle(title: track.title)` avoids updating for unrelated changes to `track`, unlike passing the entire value. If it needs four or more fields, consider passing the whole struct. This distinction does not apply to observable objects, whose properties are already tracked separately.
 - Avoid passing a very large value through many view layers: nested collections or dozens of fields make whole-value comparisons expensive each time a parent updates. Supply a smaller value containing the particular view's inputs, or the existing observable object that owns the data. Do not change a struct into a class merely to avoid comparison costs.
+- For a measured problem caused by a computed observable property, consider storing its result and refreshing it from `didSet` on each input property. Reading the cached property then creates one dependency instead of subscribing to everything the getter reads. Use this sparingly and maintain every update path; an incomplete cache produces stale UI.
+- When one frequently changing field inside an observed struct invalidates unrelated readers, move that field into a separate stored property on the observable object. Otherwise a view reading `player.track.title` also updates when `player.track.playCount` changes, because `track` is a single dependency.
+- If many independent views consume the same small portion of a large observable model and still update excessively, extract that portion into a smaller `@Observable` object and pass it directly. Those views then subscribe to the smaller model alone. Do not make this change merely because the parent model has many properties.
+- Where row fields change independently, a separate `@Observable` instance per element can confine notifications to rows reading the changed fields. Create these instances once and retain them in the parent; avoid wholesale conversion of existing value models.
+- If an expensive body reads a property solely for `onChange()`, isolate both the observation and modifier in a small `ViewModifier`. Otherwise every change reevaluates the expensive body for data it never displays. This is worthwhile only when that read has no other purpose in `body` and the cost is established.
 - For per-row results derived from scrolling, such as visibility, store each result in that row's own observable model. A row then updates when its derived value changes, rather than on every movement of the scroll position.
 
 ## Summary Checklist

@@ -141,6 +141,8 @@ var body: some View {
 
 Prefer the item overload for an action tied to an optional value instead of synchronizing a separate Boolean or pairing `isPresented` with `presenting:`. Do not use the older `Alert`-returning `alert(item:)`. These overloads require the SDK 27 toolchain but back-deploy to iOS 15, macOS 12, tvOS 15, watchOS 8, and visionOS 1; no runtime availability gate is needed at those deployment targets.
 
+If an alert has only a single "OK" button that does nothing but dismiss the alert, it can be omitted entirely: `.alert("Dismiss Me", isPresented: $isShowingAlert) { }`.
+
 ## Navigation Patterns
 
 ### Type-Safe Navigation with NavigationStack

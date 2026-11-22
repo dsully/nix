@@ -219,7 +219,7 @@ in
                 "tech-debt"
                 "visual-explainer"
               ]
-              ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin "swiftui";
+              ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin ["swift-concurrency" "swiftdata" "swiftui"];
           };
         };
       }

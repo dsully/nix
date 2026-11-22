@@ -163,6 +163,8 @@ Consult the reference file for each topic relevant to the current task:
 | Instruments trace recording | `references/trace-recording.md` |
 | Swift language and concurrency | `references/swift.md` |
 | Project hygiene, file layout, Info.plist, Xcode MCP | `references/hygiene.md` |
+| Deep concurrency review (reentrancy, cancellation, streams, bridging, migration, async tests) | `swift-concurrency` skill |
+| SwiftData models, queries, predicates, CloudKit | `swiftdata` skill |
 
 ## Correctness Checklist
 

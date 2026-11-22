@@ -205,6 +205,8 @@ For deployment targets below SDK 27, prefer one availability check around the to
 }
 ```
 
+Xcode 27.2+ and iOS 26.4+: toggle a toolbar item's `.hidden()` modifier instead of conditionally creating the item. For example, `ToolbarItem { Button("Export", systemImage: "square.and.arrow.up", action: export) }.hidden(!canExport)`. This rule is unavailable when building with Xcode 27.1; do not recommend it for that toolchain.
+
 ## Minimization, margins, and status bar
 
 `toolbarMinimizationBehavior(_:for:)`, `toolbarMinimizationSafeAreaAdjustment(_:for:)`, and `toolbarMinimizationRestoration(_:for:)` are available on all Apple platforms in SDK 27. The behavior cases `.automatic`, `.onScrollDown`, `.onScrollUp`, and `.never` and the safe-area cases `.automatic`, `.enabled`, and `.disabled` have platform-specific availability; use `.automatic` for cross-platform code and gate iOS-only cases as needed.

@@ -476,6 +476,8 @@ SwiftUI can't track changes through nested `ObservableObject` properties. Workar
 
 ## SwiftData
 
+For model design, predicates, delete rules, and CloudKit constraints, use the `swiftdata` skill.
+
 - If you only need the number of items matching a query, consider `ModelContext.fetchCount()` with a fetch descriptor. This will *not* live update if the data changes unless something else triggers the update, such as `@Query`, so it should be used carefully.
 
 If the project uses SwiftData with CloudKit:
