@@ -227,6 +227,12 @@ export default function autoName(pi: ExtensionAPI) {
     userOwned = event.name !== undefined;
   });
 
+  // Renaming after "done" makes pi re-send "done", which Rex alerts on a second time.
+  pi.on("message_end", async (event, ctx) => {
+    // Pi appends the message to the session after message_end handlers return.
+    if (event.message.role === "user") setImmediate(() => void run(ctx));
+  });
+
   pi.on("agent_settled", async (_event, ctx) => {
     await run(ctx);
   });
