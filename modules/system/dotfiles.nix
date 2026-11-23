@@ -58,10 +58,16 @@ in
 
       # Live-symlinked scripts: edits to the working tree are reflected immediately,
       # no rebuild needed. Target must remain executable in the source tree.
-      home.file."${config.xdg.binHome}/remove-unicode".source =
-        config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/remove-unicode.py";
+      home.file = {
+        "${config.xdg.binHome}/remove-unicode".source =
+          config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/remove-unicode.py";
 
-      home.file."${config.xdg.binHome}/deadcode".source =
-        config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/deadcode.py";
+        "${config.xdg.binHome}/deadcode".source =
+          config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/deadcode.py";
+
+        "${config.xdg.binHome}/bzstats" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+          source = config.lib.file.mkOutOfStoreSymlink "${dotfileDir}/bin/bzstats.py";
+        };
+      };
     };
   }
