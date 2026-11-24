@@ -25,12 +25,14 @@
   types = lib.splitString " " "c cc conf cpp css fish go gradle h hpp java js json jsx kt kts lock lua m md mjs mm nix properties py rb rs scss sh sql swift toml ts tsx txt xml yaml yml zsh";
 
   # shortcut: impure /usr/bin/swiftc (Xcode CLT) works because the Nix sandbox is off on darwin.
+  # nixbld cannot read the user's xcode-select target, so this is the CLT swiftc; its newest SDK can be built by a newer Swift than the CLT ships.
   bin = pkgs.stdenvNoCC.mkDerivation {
     name = "nvim-open";
     src = ./NvimOpen.swift;
     dontUnpack = true;
     buildPhase = ''
       env -i PATH=/usr/bin:/bin HOME="$TMPDIR" /usr/bin/swiftc -O -swift-version 5 \
+        -sdk /Library/Developer/CommandLineTools/SDKs/MacOSX15.sdk \
         -module-cache-path "$TMPDIR/mc" "$src" -o NvimOpen
     '';
     installPhase = "install -Dm755 NvimOpen $out/bin/NvimOpen";
