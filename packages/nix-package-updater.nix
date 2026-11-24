@@ -13,16 +13,16 @@
 }:
 rustPlatform.buildRustPackage rec {
   pname = "nix-package-updater";
-  version = "0.7.7";
+  version = "0.7.8";
 
   src = fetchFromGitHub {
     owner = "dsully";
     repo = pname;
-    rev = "2d3813ef19000ef35bc4fc0017f2a43a7db30567";
-    hash = "sha256-FY3mTjeTGPhKV0a5Z2LGCSKzzV2R4EHCibSfS29fsPo=";
+    rev = "8b5f2bae22fe1394f383c9b070f0c840ceab6cfd";
+    hash = "sha256-t1EQ9M8VMlZndrV3k0riV7Q/s/L29Ti7h/DTieCwt4I=";
   };
 
-  cargoHash = "sha256-PxzPFBrXUbnuZzlfTnZ7DiU5MVaJ+FWO2+A6NnS9hPc=";
+  cargoHash = "sha256-rUkiJkP1GyxwpUKi8jvFn6QKECuSWpdns/69nPX13WQ=";
   doCheck = false;
 
   nativeBuildInputs = [
