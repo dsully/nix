@@ -212,7 +212,9 @@ export function createSubagentsFacade(upstream: UpstreamExtension, rex?: RexAgen
 export default async function (pi: ExtensionAPI): Promise<void> {
   const engine = join(getAgentDir(), "npm", "node_modules", "@tintinweb", "pi-subagents", "src");
   const { default: upstream } = await import(join(engine, "index.ts"));
-  const parts = await Promise.all(["agent-types.ts", "agent-runner.ts", "skill-loader.ts"].map((file) => import(join(engine, file))));
+  const parts = await Promise.all(
+    ["agent-types.ts", "agent-runner.ts", "skill-loader.ts"].map((file) => import(join(engine, file))),
+  );
   const types: Engine = Object.assign({}, ...parts);
   createSubagentsFacade(upstream, rexAgents(pi, types))(pi);
 }

@@ -15,6 +15,7 @@ paths:
 
 - Prefer functional programming style; apply eta reduction where it improves
   clarity (e.g., `map f xs` not `map (x: f x) xs`).
+
 - Use `lib.pipe` to express sequential transformations instead of nested calls:
 
   ```nix
@@ -27,8 +28,10 @@ paths:
 
 - Prefer `lib` functions over builtins when an equivalent exists
   (e.g., `lib.attrNames` over `builtins.attrNames`).
+
 - Use `let inherit (x) a b c; in` to reduce repetition when pulling multiple
   names from the same attrset.
+
 - Always bind `cfg = config.<module-path>;` at the top of a module's `let`
   block and reference it throughout.
 

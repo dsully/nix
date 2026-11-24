@@ -13,6 +13,7 @@ the user rebuilds with `nyx update`, and a full build can take 30 minutes.
 
 1. Read the log from the bottom up. Name the first derivation that failed, not
    the dependents listed after it.
+
 2. Find which config path pulls it in:
    - `nix why-depends` on a store path from the log;
    - `nix-store -q --referrers` on the failed `.drv`;
@@ -31,9 +32,11 @@ the user rebuilds with `nyx update`, and a full build can take 30 minutes.
    - **Patch** the source when the failure is a small code issue. Hand off to the `nix-patch` skill.
    - **Override** for hash mismatches, flaky tests (`doCheck = false`) or a missing flag. Put it in `overlays/nixpkgs.nix`.
    - **Comment out** the package with `# until <upstream issue/PR> is fixed`. Only when nothing is used from it.
+
 5. Eval warnings (`stdenv.isLinux is deprecated`, renamed options): find the
    source with `--show-trace`. Fix it in this repo, or say which input owns it.
    Never patch an input's code to silence a warning.
+
 6. Say which fix you picked and why, then stop. Do not run the rebuild unless
    asked.
 

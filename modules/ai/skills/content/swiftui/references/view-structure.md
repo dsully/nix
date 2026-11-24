@@ -256,8 +256,11 @@ SDK 27 unifies many SwiftUI result builders under `@ContentBuilder`. Block conte
   ```
 
 - Fully qualify a shadowed SwiftUI type, such as `SwiftUI.Color.clear`.
+
 - Avoid spelling concrete `TupleView` or `TupleContent` generic structures; prefer opaque `some View`. If a concrete SDK 27 type is unavoidable, the builder now produces `TupleContent`. When the deployment target is below OS 27 and a concrete `TupleView` constraint is unavoidable, construct `TupleView((...))` explicitly inside the builder as a back-deployment fallback.
+
 - If an empty nested builder is ambiguous, provide `EmptyContent()` or `EmptyView()`. This can occur with MapKit in the dependency graph even when the file does not import MapKit, if member-import visibility is disabled. It also occurs with a conditional-compilation branch that becomes empty.
+
 - For deeply branching Charts content that times out only when back-deployed (typically around 10+ `if`/`else if` or `switch` branches), extract the branches into an `@ChartContentBuilder` helper.
 
 ## Keep View Body Simple and Avoid High-Cost Operations

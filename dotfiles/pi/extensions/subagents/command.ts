@@ -57,20 +57,43 @@ const MCP_BRIDGES = new Set(["codemode", "tool_search"]);
 const isMcpTool = (name: string) => name.startsWith("mcp__") || MCP_RESOURCE_TOOLS.includes(name);
 const matches = (name: string, patterns: string[]) =>
   patterns.some((p) =>
-    p.includes("*") ? new RegExp(`^${p.split("*").map((s) => s.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*")}$`).test(name) : p === name,
+    p.includes("*")
+      ? new RegExp(
+          `^${p
+            .split("*")
+            .map((s) => s.replace(/[.+?^${}()|[\]\\]/g, "\\$&"))
+            .join(".*")}$`,
+        ).test(name)
+      : p === name,
   );
 
 /**
  * The pi flags that load and surface what the engine would for an in-process agent (agent-runner.ts's
  * extensionsOverride and installExtensionToolScope). self is this extension, which the child always needs.
  */
-export function selection(scope: Scope, extensions: Extension[], tools: Tool[], builtins: string[], self: Extension): Selection {
-  const { extensions: spec, excludeNames, extNames, narrowing, builtinToolNames, mcpToolPatterns, disallowedTools } = scope;
+export function selection(
+  scope: Scope,
+  extensions: Extension[],
+  tools: Tool[],
+  builtins: string[],
+  self: Extension,
+): Selection {
+  const {
+    extensions: spec,
+    excludeNames,
+    extNames,
+    narrowing,
+    builtinToolNames,
+    mcpToolPatterns,
+    disallowedTools,
+  } = scope;
   const loadAll = spec === true || (spec !== false && spec.wildcard);
   const kept =
     spec === false
       ? []
-      : extensions.filter((e) => !e.names.some((n) => excludeNames.has(n)) && (loadAll || e.names.some((n) => spec.names.has(n))));
+      : extensions.filter(
+          (e) => !e.names.some((n) => excludeNames.has(n)) && (loadAll || e.names.some((n) => spec.names.has(n))),
+        );
   const extra = typeof spec === "object" ? spec.paths.filter((p) => !kept.some((e) => e.path === p)) : [];
   const filtered = !loadAll || excludeNames.size > 0 || !extensions.some((e) => e.path === self.path);
   const load = filtered ? [...new Set([...kept.map((e) => e.path), ...extra, self.path])] : undefined;
@@ -83,7 +106,8 @@ export function selection(scope: Scope, extensions: Extension[], tools: Tool[], 
   if (!mcpToolPatterns && mcp && !surfaced(mcp)) exclude.push("mcp__*", ...MCP_RESOURCE_TOOLS);
 
   if (!builtinToolNames && !optIn && !mcpToolPatterns && spec !== false) return { load, exclude };
-  if (extra.length) throw new Error(`Pane agents can only scope tools of extensions this session has loaded, not ${extra.join(", ")}`);
+  if (extra.length)
+    throw new Error(`Pane agents can only scope tools of extensions this session has loaded, not ${extra.join(", ")}`);
   const keep = new Set(builtinToolNames ?? builtins);
   for (const tool of tools) {
     const ext = kept.find((e) => e.path === tool.path);
@@ -94,7 +118,8 @@ export function selection(scope: Scope, extensions: Extension[], tools: Tool[], 
   if (mcpToolPatterns) {
     for (const name of keep) if (isMcpTool(name) && !matches(name, mcpToolPatterns)) keep.delete(name);
     for (const tool of tools)
-      if (kept.some((e) => e.path === tool.path) && (MCP_BRIDGES.has(tool.name) || matches(tool.name, mcpToolPatterns))) keep.add(tool.name);
+      if (kept.some((e) => e.path === tool.path) && (MCP_BRIDGES.has(tool.name) || matches(tool.name, mcpToolPatterns)))
+        keep.add(tool.name);
     for (const pattern of mcpToolPatterns) keep.add(pattern);
   }
   keep.add("ask_parent");
@@ -112,10 +137,21 @@ export function piCommand(
   skills: { name: string; content: string }[],
   task?: string,
 ): string[] {
-  const args = ["env", `PI_REX_AGENT_ID=${a.id}`, `PI_REX_RESULT_ID=${a.resultId}`, "pi", "--session-id", a.id, "--name", a.name];
+  const args = [
+    "env",
+    `PI_REX_AGENT_ID=${a.id}`,
+    `PI_REX_RESULT_ID=${a.resultId}`,
+    "pi",
+    "--session-id",
+    a.id,
+    "--name",
+    a.name,
+  ];
   if (a.model) args.push("--model", a.model);
   if (a.thinking) args.push("--thinking", a.thinking);
-  const prompt = [config.systemPrompt, ...skills.map((s) => `\n# Preloaded Skill: ${s.name}\n${s.content}`)].join("\n").trim();
+  const prompt = [config.systemPrompt, ...skills.map((s) => `\n# Preloaded Skill: ${s.name}\n${s.content}`)]
+    .join("\n")
+    .trim();
   if (config.promptMode === "replace") args.push("--system-prompt", prompt, "--append-system-prompt", intro(a.name));
   else args.push("--append-system-prompt", `${intro(a.name)}\n\n${prompt}`.trim());
   if (sel.load) args.push("--no-extensions", ...sel.load.flatMap((path) => ["-e", path]));

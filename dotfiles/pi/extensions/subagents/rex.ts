@@ -196,7 +196,9 @@ export function rexAgents(pi: ExtensionAPI, engine: Engine): RexAgents | undefin
     if (!own) throw new Error("Could not find the subagents extension's own path");
     const { extNames, narrowing } = engine.parseExtSelectors(config.extSelectors ?? []);
     const scope: Scope = {
-      extensions: Array.isArray(config.extensions) ? engine.parseExtensionsSpec(config.extensions, ctx.cwd) : config.extensions,
+      extensions: Array.isArray(config.extensions)
+        ? engine.parseExtensionsSpec(config.extensions, ctx.cwd)
+        : config.extensions,
       excludeNames: new Set((config.excludeExtensions ?? []).map((n) => n.toLowerCase())),
       extNames,
       narrowing,

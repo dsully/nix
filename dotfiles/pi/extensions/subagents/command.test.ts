@@ -65,8 +65,11 @@ test("piCommand loads, scopes, preloads skills, and guards an @-prefixed task", 
   const sel = { load: ["/a.ts"], tools: ["read"], exclude: ["bash"] };
   const args = piCommand(a, base, sel, [{ name: "nix", content: "Use alejandra." }], "@src look");
   expect(args.slice(0, 4)).toEqual(["env", "PI_REX_AGENT_ID=sid", "PI_REX_RESULT_ID=rid", "pi"]);
-  expect(args[args.indexOf("--append-system-prompt") + 1]).toEndWith("Be brief.\n\n# Preloaded Skill: nix\nUse alejandra.");
-  for (const flag of ["--no-extensions", "-e", "--tools", "--exclude-tools", "--no-skills"]) expect(args).toContain(flag);
+  expect(args[args.indexOf("--append-system-prompt") + 1]).toEndWith(
+    "Be brief.\n\n# Preloaded Skill: nix\nUse alejandra.",
+  );
+  for (const flag of ["--no-extensions", "-e", "--tools", "--exclude-tools", "--no-skills"])
+    expect(args).toContain(flag);
   expect(args.at(-1)).toBe(" @src look");
   const replace = piCommand(a, { ...base, promptMode: "replace", skills: true }, { exclude: [] }, []);
   expect(replace[replace.indexOf("--system-prompt") + 1]).toBe("Be brief.");

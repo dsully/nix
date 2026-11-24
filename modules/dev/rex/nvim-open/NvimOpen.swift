@@ -291,7 +291,8 @@ final class Handler: NSObject, NSApplicationDelegate {
 }
 
 func extensions(_ argv: [String]) -> [String] {
-  argv.count > 1 ? Array(argv.dropFirst()) : Bundle.main.infoDictionary!["RexNvimExtensions"] as! [String]
+  argv.count > 1
+    ? Array(argv.dropFirst()) : Bundle.main.infoDictionary!["RexNvimExtensions"] as! [String]
 }
 
 let argv = Array(CommandLine.arguments.dropFirst())
@@ -312,6 +313,7 @@ case nil:
   NSApplication.shared.delegate = handler
   NSApplication.shared.run()
 default:
-  FileHandle.standardError.write("usage: rex-nvim open FILE[:LINE[:COL]]... | bind | status\n".data(using: .utf8)!)
+  FileHandle.standardError.write(
+    "usage: rex-nvim open FILE[:LINE[:COL]]... | bind | status\n".data(using: .utf8)!)
   exit(64)
 }
