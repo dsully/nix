@@ -12,7 +12,7 @@ export GC_INITIAL_HEAP_SIZE := "4G"
 
 NH := if `command -v nh 2>/dev/null || true` != "" { "nh" } else { "nix run nixpkgs#nh --" }
 SM := if `command -v system-manager 2>/dev/null || true` != "" { "system-manager" } else { "nix run nixpkgs#system-manager --" }
-NH_ARGS := "--ask --keep-going"
+NH_ARGS := "--keep-going"
 NH_CLEAN_ARGS := "clean all --optimise --keep-one --cross-filesystems"
 USER_HOME := home_directory()
 
