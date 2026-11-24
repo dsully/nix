@@ -1,0 +1,218 @@
+// Adapted from @ssk_dev/pi-subagents-lean 0.26.3 (MIT), https://github.com/kunkun9527/pi-subagents-lean:
+// one provider-facing facade over the full subagents runtime.
+// Complete operation schemas stay local and are disclosed through help on demand.
+import { join } from "node:path";
+import { getAgentDir, type ExtensionAPI, type ToolDefinition } from "@earendil-works/pi-coding-agent";
+import { Type } from "typebox";
+import { Value } from "typebox/value";
+import { Text } from "@earendil-works/pi-tui";
+import { textOf } from "../lib/text.js";
+import { type Engine, type RexAgents, rexAgents } from "./rex.js";
+const COLLAPSED_DISPLAY_SERVICE = Symbol.for("@local/pi-collapsed-tools.display-service.v1");
+
+type CollapsedDisplayTool = { name: string };
+type CollapsedDisplayService = {
+  readonly version: 1;
+  decorate<T extends CollapsedDisplayTool>(tool: T): T;
+};
+
+function decorateWithCollapsedDisplay<T extends CollapsedDisplayTool>(tool: T): T {
+  const services = globalThis as unknown as Record<PropertyKey, unknown>;
+  const candidate = services[COLLAPSED_DISPLAY_SERVICE];
+  if (!candidate || typeof candidate !== "object") return tool;
+  const service = candidate as Partial<CollapsedDisplayService>;
+  return service.version === 1 && typeof service.decorate === "function" ? service.decorate(tool) : tool;
+}
+
+type CapturedTool = ToolDefinition<any, any, any>;
+type UpstreamExtension = (pi: ExtensionAPI) => void;
+type FacadeOperation = "run" | "result" | "steer" | "workflow" | "help";
+
+const SUBAGENT_TYPE_HELP = 'Agent type; op=help with input "run" lists available types.';
+const FACADE_PARAMETERS = Type.Object({
+  op: Type.Unsafe<FacadeOperation>({
+    type: "string",
+    enum: ["run", "result", "steer", "workflow", "help"],
+  }),
+  prompt: Type.Optional(Type.String({ description: "Task for run." })),
+  description: Type.Optional(Type.String({ description: "3-5 word UI label for run." })),
+  subagent_type: Type.Optional(Type.String({ description: SUBAGENT_TYPE_HELP })),
+  run_in_background: Type.Optional(Type.Boolean({ description: "False waits for the result inline." })),
+  agent_id: Type.Optional(Type.String()),
+  message: Type.Optional(Type.String()),
+  input: Type.Optional(Type.String({ description: "JSON object string for advanced parameters." })),
+});
+
+function capturePi(pi: ExtensionAPI, tools: Map<string, CapturedTool>): ExtensionAPI {
+  return new Proxy(pi, {
+    get(target, property, receiver) {
+      if (property === "registerTool") {
+        return (tool: CapturedTool) => {
+          tools.set(tool.name, tool);
+        };
+      }
+      const value = Reflect.get(target, property, receiver);
+      return typeof value === "function" ? value.bind(target) : value;
+    },
+  });
+}
+
+function renderParams(params: Record<string, unknown>): Record<string, unknown> {
+  const { op: _op, input, ...common } = params;
+  if (typeof input !== "string" || !input) return common;
+  try {
+    const parsed = JSON.parse(input) as unknown;
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? { ...(parsed as Record<string, unknown>), ...common }
+      : common;
+  } catch {
+    return common;
+  }
+}
+
+function getToolName(op: unknown): string {
+  return op === "result"
+    ? "get_subagent_result"
+    : op === "steer"
+      ? "steer_subagent"
+      : op === "workflow"
+        ? "SubagentWorkflow"
+        : "Agent";
+}
+
+// Models primed on Task-style tools often omit op or pass input as an object; repair only unambiguous cases.
+function prepareFacadeArguments(args: unknown): any {
+  if (!args || typeof args !== "object" || Array.isArray(args)) return args;
+  let fields = args as Record<string, unknown>;
+  if (fields.input && typeof fields.input === "object") fields = { ...fields, input: JSON.stringify(fields.input) };
+  if (fields.op !== undefined) return fields;
+  const run = fields.prompt !== undefined || fields.subagent_type !== undefined;
+  const agent = fields.agent_id !== undefined;
+  if (run === agent) return fields; // neither, or mixed run and agent_id signals
+  if (run) return { ...fields, op: "run" };
+  return { ...fields, op: fields.message !== undefined ? "steer" : "result" };
+}
+
+export function createSubagentsFacade(upstream: UpstreamExtension, rex?: RexAgents): (pi: ExtensionAPI) => void {
+  return (pi: ExtensionAPI): void => {
+    const tools = new Map<string, CapturedTool>();
+    upstream(capturePi(pi, tools));
+
+    const raw = tools.get("Agent")?.parameters?.properties?.subagent_type?.description;
+    const match =
+      typeof raw === "string"
+        ? raw.match(
+            /^The type of specialized agent to use\. Available types: ([\s\S]*)\. Custom agents from [\s\S]* are also available\.$/,
+          )
+        : null;
+    const parameters = Type.Object({
+      ...FACADE_PARAMETERS.properties,
+      subagent_type: Type.Optional(
+        Type.String({
+          description: match ? `Agent types at startup: ${match[1] || "(none)"}.` : SUBAGENT_TYPE_HELP,
+        }),
+      ),
+      ...(rex ? { pane: rex.paneParameter } : {}),
+    });
+
+    const facadeTool: ToolDefinition<typeof FACADE_PARAMETERS, any, any> = {
+      name: "subagent",
+      label: "Subagent",
+      description: "Run or inspect subagents/workflows through one tool; use help for advanced parameters.",
+      parameters,
+      promptGuidelines: [
+        "subagent: op=run requires prompt, description (3-5 words), and subagent_type; use workflow for scripted multi-agent orchestration.",
+        "subagent: result and steer need agent_id; steer needs message. Direct fields override input.",
+        `subagent: Await background notifications, not sleep/poll. If blocked, use op=result with input '{"wait":true}' (default: non-blocking). Summarize results; verify code changes.`,
+        ...(rex ? [rex.guideline] : []),
+      ],
+      prepareArguments: prepareFacadeArguments,
+      renderCall(args, theme, context) {
+        const prepared = prepareFacadeArguments(args);
+        const routed = renderParams(prepared);
+        const op = prepared.op;
+        const target = tools.get(getToolName(op));
+        if (target?.renderCall) {
+          return target.renderCall(routed, theme, { ...context, args: routed });
+        }
+        return new Text(theme.fg("toolTitle", `subagent ${op}`), 0, 0);
+      },
+      renderResult(result, options, theme, context) {
+        if (result.details?.rexAgent) return new Text(theme.fg("dim", textOf(result.content)), 0, 0);
+        const facadeArgs = prepareFacadeArguments(context.args);
+        const routed = renderParams(facadeArgs);
+        const toolName = getToolName(facadeArgs.op);
+        const target = tools.get(toolName);
+        if (target?.renderResult) {
+          return target.renderResult(result, options, theme, { ...context, args: routed });
+        }
+        const text = result.content
+          .filter((entry): entry is { type: "text"; text: string } => entry.type === "text")
+          .map((entry) => entry.text)
+          .join("\n");
+        return new Text(text, 0, 0);
+      },
+      async execute(callId, params, signal, onUpdate, ctx) {
+        if (params.op === "help") {
+          const requested = params.input?.trim();
+          const helpToolName =
+            requested === "run"
+              ? "Agent"
+              : requested === "result"
+                ? "get_subagent_result"
+                : requested === "steer"
+                  ? "steer_subagent"
+                  : requested === "workflow"
+                    ? "SubagentWorkflow"
+                    : undefined;
+          const helpTool = helpToolName ? tools.get(helpToolName) : undefined;
+          const text = helpTool
+            ? `${requested} -> ${helpToolName}\n\n${helpTool.description ?? ""}\n\nParameters:\n${JSON.stringify(helpTool.parameters, null, 2)}`
+            : "Subagent operations: run, result, steer, workflow. Use op=help with input set to one operation for its complete parameters.";
+          return { content: [{ type: "text", text }], details: {} };
+        }
+        const toolName = getToolName(params.op);
+        const target = tools.get(toolName);
+        if (!target) {
+          return {
+            content: [{ type: "text", text: `subagent operation is unavailable: ${params.op}` }],
+            details: {},
+          };
+        }
+        const { op: _op, input, ...common } = params;
+        let advanced: Record<string, unknown> = {};
+        if (input) {
+          try {
+            const parsed = JSON.parse(input) as unknown;
+            if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+              throw new Error("expected a JSON object");
+            }
+            advanced = parsed as Record<string, unknown>;
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            throw new Error(`subagent input is invalid JSON: ${message}`);
+          }
+        }
+        const routedParams = { ...advanced, ...common };
+        const handled = await rex?.route(params.op, routedParams, ctx);
+        if (handled) return handled;
+        const validationErrors = [...Value.Errors(target.parameters, routedParams)];
+        if (validationErrors.length > 0) {
+          const summary = validationErrors.map((error) => `${error.instancePath || "/"}: ${error.message}`).join("; ");
+          throw new Error(`subagent ${params.op} parameters are invalid: ${summary}`);
+        }
+        return target.execute(callId, routedParams, signal, onUpdate, ctx);
+      },
+    };
+    pi.registerTool(decorateWithCollapsedDisplay(facadeTool));
+  };
+}
+
+// The engine is installed as a pi package that loads no extensions; imported by path, it resolves its own imports there
+export default async function (pi: ExtensionAPI): Promise<void> {
+  const engine = join(getAgentDir(), "npm", "node_modules", "@tintinweb", "pi-subagents", "src");
+  const { default: upstream } = await import(join(engine, "index.ts"));
+  const parts = await Promise.all(["agent-types.ts", "agent-runner.ts", "skill-loader.ts"].map((file) => import(join(engine, file))));
+  const types: Engine = Object.assign({}, ...parts);
+  createSubagentsFacade(upstream, rexAgents(pi, types))(pi);
+}

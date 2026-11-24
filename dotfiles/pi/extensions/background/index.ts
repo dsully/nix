@@ -1,4 +1,4 @@
-import { createWriteStream, mkdirSync, readFileSync } from "node:fs";
+import { createWriteStream, mkdirSync, readFileSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -16,8 +16,21 @@ import {
   visibleWidth,
   wrapTextWithAnsi,
 } from "@earendil-works/pi-tui";
+import { StringEnum } from "@earendil-works/pi-ai";
 import { Type } from "typebox";
 import { shortCommand } from "../lib/command.js";
+import { follow } from "../lib/follow.js";
+import {
+  blockExists,
+  closeBlock,
+  focusBlock,
+  here,
+  openPane,
+  type Placement,
+  sendToBlock,
+  shellLayout,
+  waitForExit,
+} from "../lib/rex.js";
 
 const TAIL_LINES = 20;
 const TAIL_BYTES = 64 * 1024;
@@ -51,12 +64,17 @@ interface Job {
   group: number;
   // Started with wake_on, so it may run indefinitely and doesn't hold back the others
   watched: boolean;
+  // Runs in a Rex pane, whose script(1) typescript is the log; it outlives pi, which reattaches to it on resume
+  pane?: { session: string; block: string };
 }
+
+// id is set on a job's final report only
+type WakeDetails = { headline: string; last: string; error: boolean; id?: string };
 
 function tail(path: string, lines: number): string {
   try {
     const text = readFileSync(path).subarray(-TAIL_BYTES).toString("utf8");
-    return text.trimEnd().split("\n").slice(-lines).join("\n") || "(no output)";
+    return text.trimEnd().split("\n").slice(-lines).map(cleanLine).join("\n") || "(no output)";
   } catch {
     return "(no output)";
   }
@@ -108,6 +126,26 @@ function wakePattern(source: string): RegExp {
 // Output goes to a pipe, where Python would buffer prints until it exits; unbuffered, wake_on and the logs stay live
 const unbuffered = (env: NodeJS.ProcessEnv = process.env) => ({ ...env, PYTHONUNBUFFERED: "1" });
 
+// script(1) gives the command a terminal, so it stays interactive in its pane, and copies everything it prints to log
+const typescript = (command: string, log: string): string[] =>
+  process.platform === "darwin"
+    ? ["script", "-q", "-F", log, "bash", "-c", command]
+    : ["env", "SHELL=bash", "script", "-q", "-f", "-e", "-c", command, log];
+
+const sizeOf = (path: string) => {
+  try {
+    return statSync(path).size;
+  } catch {
+    return 0;
+  }
+};
+
+function logPath(id: string): string {
+  const dir = join(tmpdir(), "pi-bg");
+  mkdirSync(dir, { recursive: true });
+  return join(dir, `${process.pid}-${id}.log`);
+}
+
 /** Thrown by the bash operations below when a command moves to the background, carrying the job and its output so far. */
 class MovedToBackground extends Error {
   constructor(
@@ -122,8 +160,9 @@ export default function (pi: ExtensionAPI) {
   const jobs = new Map<string, Job>();
   const ops = createLocalBashOperations();
   let next = 1;
+  const inRex = here();
 
-  const wake = (content: string, details: { headline: string; last: string; error: boolean }, triggerTurn = true) =>
+  const wake = (content: string, details: WakeDetails, triggerTurn = true) =>
     pi.sendMessage(
       { customType: "background-job", content, display: true, details },
       { triggerTurn, deliverAs: "followUp" },
@@ -139,7 +178,7 @@ export default function (pi: ExtensionAPI) {
     [...jobs.values()].filter(
       (other) => other !== job && other.group === job.group && other.status === "running" && !other.watched,
     );
-  const report = (job: Job, content: string, details: { headline: string; last: string; error: boolean }) => {
+  const report = (job: Job, content: string, details: WakeDetails) => {
     const others = job.watched ? [] : runningInGroup(job);
     // Only Pi stops jobs, with bg_kill, so it already knows; the message is added without waking it again
     if (job.status === "killed") {
@@ -208,7 +247,7 @@ export default function (pi: ExtensionAPI) {
       if (wakes >= MAX_WAKES) return;
       const lines = (partial + data.toString("utf8")).split(/\r?\n|\r/);
       partial = lines.pop() ?? "";
-      const hits = lines.filter((line) => pattern.test(line));
+      const hits = lines.map(cleanLine).filter((line) => pattern.test(line));
       if (hits.length === 0) return;
       pending.push(...hits);
       timer ??= setTimeout(flush, WAKE_DEBOUNCE_MS);
@@ -301,28 +340,28 @@ export default function (pi: ExtensionAPI) {
     controller: AbortController,
     run: (onData: (d: Buffer) => void) => Promise<{ exitCode: number | null }>,
     earlier?: { started: number; output: Buffer; lastOutput?: number },
+    pane?: { id: string; log: string; session: string; block: string; started?: number },
   ) => {
-    const id = `bg${next++}`;
-    const dir = join(tmpdir(), "pi-bg");
-    mkdirSync(dir, { recursive: true });
-    const log = join(dir, `${process.pid}-${id}.log`);
-    const out = createWriteStream(log);
+    const id = pane?.id ?? `bg${next++}`;
+    const log = pane?.log ?? logPath(id);
+    const out = pane ? undefined : createWriteStream(log);
     const job: Job = {
       id,
       command,
       cwd,
       log,
-      started: earlier?.started ?? Date.now(),
+      started: earlier?.started ?? pane?.started ?? Date.now(),
       controller,
       status: "running",
       group: turn,
       watched: Boolean(pattern),
+      pane: pane && { session: pane.session, block: pane.block },
     };
     jobs.set(id, job);
 
     const watch = pattern ? watcher(job, pattern) : undefined;
     const onData = (d: Buffer) => {
-      out.write(d);
+      out?.write(d);
       watch?.(d);
       job.lastOutput = Date.now();
     };
@@ -331,6 +370,7 @@ export default function (pi: ExtensionAPI) {
       job.lastOutput = earlier.lastOutput;
     }
 
+    let failure = "";
     run(onData)
       .then(({ exitCode }) => {
         job.status = "exited";
@@ -338,24 +378,84 @@ export default function (pi: ExtensionAPI) {
       })
       .catch((err: Error) => {
         job.status = controller.signal.aborted ? "killed" : "failed";
-        out.write(`\n[bg] ${err.message}\n`);
+        if (out) out.write(`\n[bg] ${err.message}\n`);
+        else failure = `\n[bg] ${err.message}`;
       })
       .finally(() => {
         job.ended = Date.now();
         showJobs();
-        out.end(() => {
+        const done = () => {
           // A kill from session shutdown has no session left to notify
           if (job.status === "killed" && !jobs.has(id)) return;
-          report(job, `Background job finished: ${summary(job)}\nLast lines:\n${tail(log, TAIL_LINES)}`, {
-            headline: `${id} ${job.status === "exited" ? `exited ${job.exitCode}` : job.status} · ${elapsed(job)}`,
-            last: tail(log, 1),
-            error: job.status !== "exited" || job.exitCode !== 0,
-          });
-        });
+          const error = job.status !== "exited" || job.exitCode !== 0;
+          const kept = job.pane && error && job.status !== "killed" ? "\nIts Rex pane stays open." : "";
+          report(
+            job,
+            `Background job finished: ${summary(job)}\nLast lines:\n${tail(log, TAIL_LINES)}${failure}${kept}`,
+            {
+              headline: `${id} ${job.status === "exited" ? `exited ${job.exitCode}` : job.status} · ${elapsed(job)}`,
+              last: tail(log, 1),
+              error,
+              id,
+            },
+          );
+        };
+        if (out) out.end(done);
+        else done();
       });
 
     showJobs();
     return job;
+  };
+
+  // Stop watching pane jobs without stopping them: they keep running in Rex after pi exits or reloads
+  const detachers = new Map<string, () => void>();
+  type PaneRef = { id: string; log: string; session: string; block: string; started?: number };
+  // from: the log offset already seen, so a reattached job's wake_on only fires on new output
+  const attach = (command: string, cwd: string, wakeOn: string | undefined, pane: PaneRef, from: number) => {
+    const controller = new AbortController();
+    return startJob(
+      command,
+      cwd,
+      wakeOn ? wakePattern(wakeOn) : undefined,
+      controller,
+      (onData) =>
+        new Promise<{ exitCode: number | null }>((resolve, reject) => {
+          const stop = follow(pane.log, from, onData);
+          const unwait = waitForExit(pane.session, pane.block, (code) => {
+            detachers.delete(pane.id);
+            stop();
+            if (code === undefined) return reject(new Error("its Rex pane closed before the command exited"));
+            // A failed job's pane stays open, so the user can scroll back and retry there
+            if (code === 0) closeBlock(pane.session, pane.block).catch(() => {});
+            resolve({ exitCode: code });
+          });
+          detachers.set(pane.id, () => {
+            unwait();
+            stop();
+          });
+          controller.signal.addEventListener(
+            "abort",
+            () => {
+              detachers.get(pane.id)?.();
+              detachers.delete(pane.id);
+              closeBlock(pane.session, pane.block).catch(() => {});
+              reject(new Error("stopped; its Rex pane was closed"));
+            },
+            { once: true },
+          );
+        }),
+      undefined,
+      pane,
+    );
+  };
+  const startPane = async (command: string, cwd: string, wakeOn: string | undefined, placement: Placement) => {
+    const id = `bg${next++}`;
+    const log = logPath(id);
+    const label = `${id} ${shortCommand(command, cwd, 40)}`;
+    const layout = shellLayout(label, typescript(command, log), cwd, true);
+    const { block_id } = await openPane(inRex!.session, inRex!.block, placement, layout, { label });
+    return attach(command, cwd, wakeOn, { id, log, session: inRex!.session, block: block_id }, 0);
   };
 
   // Pi's bash, except that a command still running after AUTO_BACKGROUND_SECS becomes a job in the same process
@@ -484,11 +584,40 @@ export default function (pi: ExtensionAPI) {
           description: `Regex; also wake you while the job runs whenever an output line matches, e.g. 'listening on|ready'. Matches within a second are batched; at most ${MAX_WAKES} wake-ups per job.`,
         }),
       ),
+      ...(inRex
+        ? {
+            pane: Type.Optional(
+              StringEnum(["float", "split", "window", "none"] as const, {
+                description:
+                  "Rex pane the job runs in, which the user can watch and type into: float (default; starts minimized), split, window (new tab), or none for a hidden process",
+              }),
+            ),
+          }
+        : {}),
     }),
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       const pattern = params.wake_on ? wakePattern(params.wake_on) : undefined;
-      const controller = new AbortController();
       const cwd = params.cwd ?? ctx.cwd;
+      const placement = (params as { pane?: Placement | "none" }).pane ?? "float";
+      if (inRex && placement !== "none") {
+        const job = await startPane(params.command, cwd, params.wake_on, placement);
+        const where =
+          placement === "float" ? "a minimized Rex float" : placement === "split" ? "a Rex split" : "a new Rex tab";
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Started ${job.id} in ${where}; log: ${job.log}. You will be notified when it exits; bg_send types into it.`,
+            },
+          ],
+          details: {
+            id: job.id,
+            log: job.log,
+            pane: { ...job.pane!, command: params.command, cwd, started: job.started, wake_on: params.wake_on },
+          },
+        };
+      }
+      const controller = new AbortController();
       const { id, log } = startJob(params.command, cwd, pattern, controller, (onData) =>
         ops.exec(params.command, cwd, { onData, signal: controller.signal, env: unbuffered() }),
       );
@@ -498,6 +627,29 @@ export default function (pi: ExtensionAPI) {
       };
     },
   });
+
+  if (inRex)
+    pi.registerTool({
+      name: "bg_send",
+      label: "Background send",
+      description:
+        "Type text into a running bg_run job's Rex pane and/or press a key, e.g. to answer a prompt or send ctrl+c.",
+      renderShell: "self",
+      renderCall: (args: any, theme, context) => row(theme, `Background send ${args?.id ?? ""}`, context),
+      renderResult: (result, { expanded }, theme) => note(theme, result, expanded),
+      parameters: Type.Object({
+        id: Type.String({ description: "Job id such as bg1" }),
+        text: Type.Optional(Type.String({ description: "Text to type" })),
+        key: Type.Optional(Type.String({ description: "Key to press after the text, such as enter or ctrl+c" })),
+      }),
+      async execute(_toolCallId, params) {
+        const job = find(params.id);
+        if (!job.pane || job.status !== "running") throw new Error(`${job.id} is not running in a Rex pane`);
+        if (!params.text && !params.key) throw new Error("bg_send needs text or key");
+        await sendToBlock(job.pane.session, job.pane.block, params.text, params.key);
+        return { content: [{ type: "text", text: `Sent to ${job.id}` }], details: {} };
+      },
+    });
 
   pi.registerTool({
     name: "bg_status",
@@ -565,6 +717,13 @@ export default function (pi: ExtensionAPI) {
       );
       job = listed[options.indexOf((await ctx.ui.select("Background jobs", options)) ?? "")];
       if (!job) return;
+    }
+    // A running pane job is watched in its own pane; focusing it also restores a minimized float
+    if (job.pane && job.status === "running") {
+      const { id } = job;
+      return void focusBlock(job.pane.session, job.pane.block).catch(() =>
+        ctx.ui.notify(`Could not focus ${id}'s Rex pane`, "warning"),
+      );
     }
     const shown = job;
     viewing = shown;
@@ -635,21 +794,35 @@ export default function (pi: ExtensionAPI) {
         return { consume: true };
       });
     }
+    const panes: (PaneRef & { command: string; cwd: string; wake_on?: string })[] = [];
+    const reported = new Set<string>();
     for (const entry of ctx.sessionManager.getBranch()) {
+      if (entry.type === "custom_message" && entry.customType === "background-job") {
+        const id = (entry.details as WakeDetails | undefined)?.id;
+        if (id) reported.add(id);
+      }
       const msg = entry.type === "message" ? (entry.message as any) : undefined;
-      const n = Number(
-        /^bg(\d+)$/.exec(msg?.role === "toolResult" && msg.toolName === "bg_run" ? String(msg.details?.id) : "")?.[1],
-      );
+      const details = msg?.role === "toolResult" && msg.toolName === "bg_run" ? msg.details : undefined;
+      const n = Number(/^bg(\d+)$/.exec(String(details?.id))?.[1]);
       if (n >= next) next = n + 1;
+      if (details?.pane) panes.push({ ...details.pane, id: details.id, log: details.log });
     }
+    // Pane jobs left running by an earlier pi, or that finished since without being reported
+    if (inRex)
+      for (const pane of panes) {
+        if (reported.has(pane.id) || jobs.has(pane.id) || !(await blockExists(pane.session, pane.block))) continue;
+        attach(pane.command, pane.cwd, pane.wake_on, pane, sizeOf(pane.log));
+      }
   });
 
   pi.on("session_shutdown", async () => {
     clearInterval(ticker);
     for (const timer of holds.values()) clearTimeout(timer);
     holds.clear();
+    for (const detach of detachers.values()) detach();
+    detachers.clear();
     for (const job of jobs.values()) {
-      if (job.status === "running") job.controller.abort();
+      if (job.status === "running" && !job.pane) job.controller.abort();
     }
     jobs.clear();
   });

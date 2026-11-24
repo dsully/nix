@@ -51,7 +51,12 @@
     # Snapshots per turn: hashline replace/insert carry no path, so edit/write-hooked checkpointers miss them.
     "npm:pi-rewind-hook"
     "npm:@ssk_dev/pi-docs-slim"
-    "npm:@ssk_dev/pi-subagents-lean"
+    # The subagents engine, loaded by the facade in extensions/subagents and pinned to the version it was adapted against.
+    {
+      source = "npm:@tintinweb/pi-subagents@0.26.2";
+      extensions = [];
+      skills = [];
+    }
     "npm:@ssk_dev/rpiv-ask-user-question-lean"
     "npm:@vanillagreen/pi-session-manager"
   ];

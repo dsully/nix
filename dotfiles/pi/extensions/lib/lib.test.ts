@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync } from "node:fs";
+import { appendFileSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "bun:test";
@@ -6,6 +6,8 @@ import { gitRoot } from "./git-root.js";
 import { patchMethod } from "./patch.js";
 import { textOf } from "./text.js";
 import { field } from "./field.js";
+import { exitCode } from "./rex.js";
+import { follow } from "./follow.js";
 
 test("git root is found from a subdirectory, and is undefined outside a repo", () => {
   const dir = mkdtempSync(join(tmpdir(), "lib-git-root-"));
@@ -67,4 +69,21 @@ test("field reads a value, and a field whose getter throws as undefined", () => 
   });
   expect(field(() => message.usage)).toBe(1);
   expect(field(() => message.responseId)).toBeUndefined();
+});
+
+test("exitCode reads rex wait's exit_code, and is undefined when the pane closed first", () => {
+  expect(exitCode('{"exit_code":0}\n')).toBe(0);
+  expect(exitCode('{"exit_code":3}')).toBe(3);
+  expect(exitCode('{"block_closed":true}')).toBeUndefined();
+  expect(exitCode("")).toBeUndefined();
+});
+
+test("follow skips bytes before from, waits for a missing file, and delivers the rest on stop", () => {
+  const path = join(mkdtempSync(join(tmpdir(), "lib-follow-")), "log");
+  const seen: string[] = [];
+  const stop = follow(path, 4, (d) => seen.push(d.toString()));
+  writeFileSync(path, "old new");
+  appendFileSync(path, " more");
+  stop();
+  expect(seen.join("")).toBe("new more");
 });
