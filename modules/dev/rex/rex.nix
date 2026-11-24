@@ -46,6 +46,8 @@
 
   rexProjectPicker = fishScript "rex-project-picker" (with pkgs; [rexCli coreutils fd fzf gawk jq]) (builtins.readFile ./project-picker.fish);
 
+  nvimOpen = import ./nvim-open/nvim-open.nix {inherit config lib my pkgs rexCli;};
+
   nordThemeId = "custom-93EEFE7D-B004-481D-AE29-BE2E029C3E99";
 
   # Ghostty's built-in Nord slots, filled from the palette nvim uses. Rex stores
@@ -195,10 +197,12 @@ in
               else "${config.services.rex.package}/bin/rex"
             } config reload --autostart=false >/dev/null 2>&1 || true
           '');
+
+          nvimOpen = lib.mkIf isDarwin (inputs.home-manager.lib.hm.dag.entryAfter ["linkGeneration"] nvimOpen.activation);
         };
 
         # On Linux, the rex flake's programs.rex installs the CLI, terminfo and ssh fallback.
-        packages = lib.optionals isDarwin [rexCli rexHints rexProjectPicker];
+        packages = lib.optionals isDarwin ([rexCli rexHints rexProjectPicker] ++ nvimOpen.packages);
 
         file."${config.xdg.configHome}/pi/agent/extensions/rex-agent-resume.ts" = lib.mkIf (runsServer && config.modules.users.${config.home.username}.pi.enable or false) {
           source = "${agentResume}/integrations/pi/rex-agent-resume.ts";

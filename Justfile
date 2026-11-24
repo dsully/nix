@@ -154,6 +154,7 @@ fmt:
     @rumdl fmt .
     @oxfmt dotfiles/pi/extensions
     @oxlint dotfiles/pi/extensions
+    @swift format --in-place --recursive modules
 
 # Fetch a source using nix-init (via nurl)
 
