@@ -16,7 +16,6 @@
       "backblaze-restore"
       "boltai"
       "bytemail"
-      "claude"
       "cotypist"
       "discord"
       "downie"
@@ -38,7 +37,6 @@
       "tailscale-app"
       "telegram"
       "unifi-identity-endpoint"
-      "vorssaint"
       "whatsapp"
     ];
 
