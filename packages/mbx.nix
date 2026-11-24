@@ -16,11 +16,11 @@ rustPlatform.buildRustPackage rec {
   src = fetchFromGitHub {
     owner = "jdx";
     repo = "mr-boxington";
-    rev = "256d59446c77e63980fa2f4fee51c61facbbe9c0";
-    hash = "sha256-MGpVFXJb5Zr1wJzt5tEvGji2zL+n8/E4G8wI2qazg4U=";
+    rev = "03310fa0169879baf41a317db20701de81874bfa";
+    hash = "sha256-9jFDewdIDK6FL0hjwSoRasCEDF2yaTzpXQqxy1OU3jw=";
   };
 
-  cargoHash = "sha256-nTl8VJD/kSSF5gPme2ZlHze4ivTnn4RyumCgkJJAgig=";
+  cargoHash = "sha256-OrRXXopLnwi09Ap0bprsFHrXdbCr3VdlzFB2afFjIdc=";
   cargoBuildFlags = ["--package" pname];
   doCheck = false;
 
